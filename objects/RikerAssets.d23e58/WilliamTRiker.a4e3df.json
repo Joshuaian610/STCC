@@ -5,17 +5,17 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 19200,
+  "CardID": 19500,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "192": {
+    "195": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964908647/8957524A425D1AD5E6856D2DCD9A9AD87B0813BF/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14588273764459912289/8FD0D5B5738660FA7A5D3AE9E558592A1DF09E7D/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/10650795856816794127/9BC73DBFCEEFFA04DA5FEC17BF111C45ED7CBD8A/",
       "NumHeight": 1,
       "NumWidth": 1,
       "Type": 0,
@@ -24,8 +24,8 @@
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "dip_multi",
-  "GUID": "4d5117",
+  "GMNotes": "mil_multi",
+  "GUID": "a4e3df",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -37,7 +37,7 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "CardCustom",
-  "Nickname": "Christopher Pike",
+  "Nickname": "William T. Riker",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
@@ -45,14 +45,13 @@
     "snap_card",
     "suit_captain",
     "trait_human",
-    "trait_starfleet",
-    "trait_timetravel"
+    "trait_starfleet"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -30.156,
-    "posY": 3.795,
-    "posZ": 28.166,
+    "posX": -19.693,
+    "posY": 3.791,
+    "posZ": -28.19,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

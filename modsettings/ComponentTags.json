@@ -391,6 +391,10 @@
     {
       "displayed": "suit_status",
       "normalized": "suit_status"
+    },
+    {
+      "displayed": "skill_x3_variable",
+      "normalized": "skill_x3_variable"
     }
   ]
 }

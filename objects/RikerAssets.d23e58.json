@@ -5,25 +5,27 @@
     "z": 0
   },
   "Autoraise": true,
+  "Bag": {
+    "Order": 0
+  },
   "ColorDiffuse": {
     "b": 0,
-    "g": 0,
-    "r": 0
+    "g": 0.36652,
+    "r": 0.70588
   },
-  "CustomFigurine": {
-    "MirroredBack": false,
-    "UseMinimalCollider": false
-  },
-  "CustomImage": {
-    "ImageScalar": 2,
-    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/25439815955485149/91D4414BB645F1DD16C2183E5366F798EDDF23FA/",
-    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25439815955484859/9FC9B5397466311B7E9CDD734C9D7D2C20B8C8C0/",
-    "WidthScale": 0
-  },
+  "ContainedObjects_order": [
+    "RikerDevelopment.22b2ee",
+    "RikerReserves.d96f0a",
+    "RikerDrawDeck.3d87b5",
+    "RikerDiscard.14fbe2",
+    "USSTitan.ac5d4d",
+    "WilliamTRiker.a4e3df"
+  ],
+  "ContainedObjects_path": "RikerAssets.d23e58",
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "a7de14",
+  "GUID": "d23e58",
   "Grid": true,
   "GridProjection": false,
   "Hands": false,
@@ -33,20 +35,18 @@
   "Locked": false,
   "LuaScript": "",
   "LuaScriptState": "",
+  "MaterialIndex": -1,
   "MeasureMovement": false,
-  "Name": "Figurine_Custom",
-  "Nickname": "Kumari",
+  "MeshIndex": -1,
+  "Name": "Bag",
+  "Nickname": "Riker Assets",
   "Snap": true,
   "Sticky": true,
-  "Tags": [
-    "cleanup_target",
-    "snap_ship"
-  ],
   "Tooltip": true,
   "Transform": {
-    "posX": 79.389,
-    "posY": 2.076,
-    "posZ": 3.16,
+    "posX": -33.61,
+    "posY": 1.512,
+    "posZ": 27.689,
     "rotX": 0,
     "rotY": 0,
     "rotZ": 0,

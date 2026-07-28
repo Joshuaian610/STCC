@@ -5,17 +5,17 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 19200,
+  "CardID": 19600,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "192": {
+    "196": {
       "BackIsHidden": true,
-      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964908647/8957524A425D1AD5E6856D2DCD9A9AD87B0813BF/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14588273764459912289/8FD0D5B5738660FA7A5D3AE9E558592A1DF09E7D/",
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/16999386180740212368/6E5D48E188ED97D14E43F95675CC1D4A9048490E/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/15570504591343196819/DCB54B536502CD35F51359D013AA6C449C190891/",
       "NumHeight": 1,
       "NumWidth": 1,
       "Type": 0,
@@ -24,8 +24,8 @@
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "dip_multi",
-  "GUID": "4d5117",
+  "GMNotes": "VP=4",
+  "GUID": "a2e217",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -37,22 +37,20 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "CardCustom",
-  "Nickname": "Christopher Pike",
+  "Nickname": "Gluonic Distortion",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
     "snap_card",
-    "suit_captain",
-    "trait_human",
-    "trait_starfleet",
-    "trait_timetravel"
+    "suit_status",
+    "trait_anomaly"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -30.156,
-    "posY": 3.795,
-    "posZ": 28.166,
+    "posX": -21.086,
+    "posY": 0.764,
+    "posZ": -6.182,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

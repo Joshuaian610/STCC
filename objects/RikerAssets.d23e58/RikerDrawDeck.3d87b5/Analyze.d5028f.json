@@ -5,27 +5,27 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 19200,
+  "CardID": 19416,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "192": {
+    "194": {
       "BackIsHidden": true,
-      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964908647/8957524A425D1AD5E6856D2DCD9A9AD87B0813BF/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14588273764459912289/8FD0D5B5738660FA7A5D3AE9E558592A1DF09E7D/",
-      "NumHeight": 1,
-      "NumWidth": 1,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/16889471912993098392/8AC449434054812392875EFFB893A62308A2A044/",
+      "NumHeight": 4,
+      "NumWidth": 6,
       "Type": 0,
       "UniqueBack": false
     }
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "dip_multi",
-  "GUID": "4d5117",
+  "GMNotes": "",
+  "GUID": "d5028f",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -34,25 +34,21 @@
   "LayoutGroupSortIndex": 0,
   "Locked": false,
   "LuaScript": "",
-  "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "CardCustom",
-  "Nickname": "Christopher Pike",
+  "Name": "Card",
+  "Nickname": "Analyze",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
     "snap_card",
-    "suit_captain",
-    "trait_human",
-    "trait_starfleet",
-    "trait_timetravel"
+    "suit_directive"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -30.156,
-    "posY": 3.795,
-    "posZ": 28.166,
+    "posX": -16.834,
+    "posY": 1.796,
+    "posZ": -26.41,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,
