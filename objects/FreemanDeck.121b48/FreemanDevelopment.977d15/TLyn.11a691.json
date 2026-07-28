@@ -5,27 +5,27 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 17805,
+  "CardID": 18803,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "178": {
+    "188": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181683135300/D24EB60275259316551D69638ED1B2F1B926516D/",
-      "NumHeight": 2,
-      "NumWidth": 3,
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14282704425325042946/36BBC9F63AD92E1211BC5F3FCDFB4C339E48963D/",
+      "NumHeight": 4,
+      "NumWidth": 6,
       "Type": 0,
       "UniqueBack": false
     }
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "VP=-2",
-  "GUID": "bf1133",
+  "GMNotes": "VP=2",
+  "GUID": "11a691",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -34,25 +34,29 @@
   "LayoutGroupSortIndex": 0,
   "Locked": false,
   "LuaScript": "",
-  "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Card",
-  "Nickname": "Trade Embargo",
+  "Nickname": "T'Lyn",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "skill_science",
     "snap_card",
-    "suit_incident"
+    "suit_person",
+    "trait_lowerdecker",
+    "trait_scientist",
+    "trait_starfleet",
+    "trait_vulcan"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 12.5,
-    "posY": 1.06,
-    "posZ": 10,
+    "posX": -17.595,
+    "posY": 1.815,
+    "posZ": -28.043,
     "rotX": 0,
     "rotY": 180,
-    "rotZ": 180,
+    "rotZ": 0,
     "scaleX": 1.75,
     "scaleY": 1,
     "scaleZ": 1.75

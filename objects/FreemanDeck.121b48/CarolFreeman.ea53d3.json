@@ -5,27 +5,27 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 17805,
+  "CardID": 18900,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "178": {
+    "189": {
       "BackIsHidden": true,
-      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181683135300/D24EB60275259316551D69638ED1B2F1B926516D/",
-      "NumHeight": 2,
-      "NumWidth": 3,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964908647/8957524A425D1AD5E6856D2DCD9A9AD87B0813BF/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14119044247177362464/F18733004AEC6A1EE821F001EAD164C50835901C/",
+      "NumHeight": 1,
+      "NumWidth": 1,
       "Type": 0,
       "UniqueBack": false
     }
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "VP=-2",
-  "GUID": "bf1133",
+  "GMNotes": "",
+  "GUID": "ea53d3",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -36,23 +36,26 @@
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "Card",
-  "Nickname": "Trade Embargo",
+  "Name": "CardCustom",
+  "Nickname": "Carol Freeman",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "cleanup_target",
     "snap_card",
-    "suit_incident"
+    "suit_captain",
+    "trait_human",
+    "trait_starfleet"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 12.5,
-    "posY": 1.06,
-    "posZ": 10,
+    "posX": -29.236,
+    "posY": 3.796,
+    "posZ": -28.215,
     "rotX": 0,
     "rotY": 180,
-    "rotZ": 180,
+    "rotZ": 0,
     "scaleX": 1.75,
     "scaleY": 1,
     "scaleZ": 1.75
