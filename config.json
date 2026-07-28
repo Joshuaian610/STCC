@@ -382,7 +382,10 @@
     "CommonCardListSecondContact.e47084",
     "FreemanAssets.121b48",
     "PikeAssets.8ef4c0",
-    "RikerAssets.d23e58"
+    "RikerAssets.d23e58",
+    "CommonCardListBaseGame.c8d61e",
+    "SecondContactRulebook.54bf9b",
+    "SecondContactRulebook.b59c8e"
   ],
   "PlayArea": 0.5,
   "PlayerCounts": [
