@@ -16,14 +16,14 @@
   },
   "CustomImage": {
     "ImageScalar": 2,
-    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/25439815955486784/3BDC1D97C23A22FF9304E92A2240A03DB3BEB246/",
-    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25439815955486307/A85AC746F942F1D8F3858BB14F1B93B83AEF91A4/",
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/9310489960676519021/07FA68D8BB2C2C727B2A7B3525F9E9934A51156B/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/14689717052230363275/F84E774C92010642949E6947B9B24C406588CD32/",
     "WidthScale": 0
   },
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "833dbb",
+  "GUID": "bbe316",
   "Grid": true,
   "GridProjection": false,
   "Hands": false,
@@ -35,7 +35,7 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Figurine_Custom",
-  "Nickname": "Andorian Cruiser",
+  "Nickname": "A Fleet of 30 California-Class Ships",
   "Snap": true,
   "Sticky": true,
   "Tags": [
@@ -44,9 +44,9 @@
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 41.815,
+    "posX": 36.314,
     "posY": 2.874,
-    "posZ": 30.965,
+    "posZ": 23.83,
     "rotX": 0,
     "rotY": 0,
     "rotZ": 0,
