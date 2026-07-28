@@ -307,7 +307,7 @@
     "StartingLocationsDeck.1adf6b",
     "AdvancedLocationsDeck.eaec79",
     "EncountersDeck.5231b6",
-    "CommonCardList.608dce",
+    "CommonCardListBaseGame.608dce",
     "PersonsDeckBaseGame.3dbd70",
     "CargoDeckBaseGame.2479b4",
     "AlliesDeckBaseGame.f0ec6a",
@@ -378,7 +378,8 @@
     "RewardsDeckSecondContact.efaf0f",
     "ShipsDeckSecondContact.ceb661",
     "CargoDeckSecondContact.acd24f",
-    "AlliesDeckSecondContact.49acb3"
+    "AlliesDeckSecondContact.49acb3",
+    "CommonCardListSecondContact.e47084"
   ],
   "PlayArea": 0.5,
   "PlayerCounts": [
