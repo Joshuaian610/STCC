@@ -367,6 +367,26 @@
     {
       "displayed": "trait_creature",
       "normalized": "trait_creature"
+    },
+    {
+      "displayed": "trait_crossover",
+      "normalized": "trait_crossover"
+    },
+    {
+      "displayed": "trait_lowerdecker",
+      "normalized": "trait_lowerdecker"
+    },
+    {
+      "displayed": "trait_ancient",
+      "normalized": "trait_ancient"
+    },
+    {
+      "displayed": "trai_creature",
+      "normalized": "trai_creature"
+    },
+    {
+      "displayed": "trait_andoran",
+      "normalized": "trait_andoran"
     }
   ]
 }

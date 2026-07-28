@@ -5,30 +5,40 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 15500,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
+  "ContainedObjects_order": [
+    "NovaFleet.56557b",
+    "Illyrians.c089d8",
+    "BetazedIntelligence.23283f"
+  ],
+  "ContainedObjects_path": "AlliesDeckSecondContact.49acb3",
   "CustomDeck": {
-    "155": {
+    "187": {
       "BackIsHidden": true,
-      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964908647/8957524A425D1AD5E6856D2DCD9A9AD87B0813BF/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181680997936/66F1DA76292C0A57811A5CC94355F8425E733FC7/",
-      "NumHeight": 1,
-      "NumWidth": 1,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17222648268448340498/8E47E9D9E5CB53B1C3DF338B45F7ADAB5BC244F7/",
+      "NumHeight": 3,
+      "NumWidth": 7,
       "Type": 0,
       "UniqueBack": false
     }
   },
+  "DeckIDs": [
+    18702,
+    18701,
+    18700
+  ],
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "dip_multi",
-  "GUID": "3d6faf",
+  "GMNotes": "",
+  "GUID": "49acb3",
   "Grid": true,
   "GridProjection": false,
-  "Hands": true,
+  "Hands": false,
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
@@ -36,27 +46,23 @@
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "CardCustom",
-  "Nickname": "Thy'lek Shran",
+  "Name": "Deck",
+  "Nickname": "Allies Deck Second Contact",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "cleanup_target",
-    "resupply",
     "snap_card",
-    "suit_captain",
-    "trait_andorian",
-    "trait_imperial"
+    "suit_ally"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 70.73,
-    "posY": 1.924,
-    "posZ": -2.051,
+    "posX": 48.211,
+    "posY": 1.733,
+    "posZ": 27.5,
     "rotX": 0,
     "rotY": 180,
-    "rotZ": 0,
+    "rotZ": 180,
     "scaleX": 1.75,
     "scaleY": 1,
     "scaleZ": 1.75

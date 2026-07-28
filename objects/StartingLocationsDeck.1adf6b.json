@@ -1,0 +1,87 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "AmargosaObservatory.0251de",
+    "AncientRelayStation.363b60",
+    "ArcherIV.52ac9c",
+    "Betazed.5ad757",
+    "CorvanII.8a3abf",
+    "DeltaVega.42180b",
+    "Dozaria.60a035",
+    "IndriVIII.1f94e6",
+    "Risa.071d9f",
+    "TulganaIV.9e1602"
+  ],
+  "ContainedObjects_path": "StartingLocationsDeck.1adf6b",
+  "CustomDeck": {
+    "159": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181681058492/1EFB7AA0A7B30903C233851BD6B0E232DD39F10D/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181681058259/09515BAE9B700A9CC5EAEEDFEB4FAE16572A2B19/",
+      "NumHeight": 4,
+      "NumWidth": 5,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "DeckIDs": [
+    15900,
+    15901,
+    15902,
+    15904,
+    15905,
+    15907,
+    15909,
+    15911,
+    15915,
+    15917
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "1adf6b",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Starting Locations Deck",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_card",
+    "suit_location",
+    "trait_business"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 5.999,
+    "posY": 0.819,
+    "posZ": -1.998,
+    "rotX": 0,
+    "rotY": 270,
+    "rotZ": 180,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

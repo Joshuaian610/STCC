@@ -5,27 +5,27 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 15500,
+  "CardID": 18716,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "155": {
+    "187": {
       "BackIsHidden": true,
-      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964908647/8957524A425D1AD5E6856D2DCD9A9AD87B0813BF/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181680997936/66F1DA76292C0A57811A5CC94355F8425E733FC7/",
-      "NumHeight": 1,
-      "NumWidth": 1,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17222648268448340498/8E47E9D9E5CB53B1C3DF338B45F7ADAB5BC244F7/",
+      "NumHeight": 3,
+      "NumWidth": 7,
       "Type": 0,
       "UniqueBack": false
     }
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "dip_multi",
-  "GUID": "3d6faf",
+  "GMNotes": "VP=1",
+  "GUID": "ced9c6",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -34,26 +34,24 @@
   "LayoutGroupSortIndex": 0,
   "Locked": false,
   "LuaScript": "",
-  "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "CardCustom",
-  "Nickname": "Thy'lek Shran",
+  "Name": "Card",
+  "Nickname": "K'ranch",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "cleanup_target",
-    "resupply",
+    "skill_military",
     "snap_card",
-    "suit_captain",
-    "trait_andorian",
-    "trait_imperial"
+    "suit_person",
+    "trait_alien",
+    "trait_weapon"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 70.73,
-    "posY": 1.924,
-    "posZ": -2.051,
+    "posX": 9.655,
+    "posY": 1.786,
+    "posZ": -26.687,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,
