@@ -1,0 +1,76 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "SolovsLieutenantBotStardate5.08ad5b",
+    "SolovsLieutenantBotStardate4.034ab0",
+    "SolovsLieutenantBotStardate3.46b1fb",
+    "SolovsLieutenantBotStardate2.0da621",
+    "SolovsLieutenantBotStardate1.e227c9"
+  ],
+  "ContainedObjects_path": "SolovsLieutenantBotStardateDeck.dbae56",
+  "CustomDeck": {
+    "181": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25439356657917346/3CB83916C7E62328D3EEE363B0A133DF7E24BDA4/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439356657916153/0C37AC0BF3ECBF8A7DF222CF799CB501C5E55678/",
+      "NumHeight": 4,
+      "NumWidth": 8,
+      "Type": 0,
+      "UniqueBack": true
+    }
+  },
+  "DeckIDs": [
+    18116,
+    18115,
+    18114,
+    18113,
+    18112
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "dbae56",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Solo vs. Lieutenant Bot Stardate Deck",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_card",
+    "stardate"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": -0.004,
+    "posY": 1.742,
+    "posZ": 27.65,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

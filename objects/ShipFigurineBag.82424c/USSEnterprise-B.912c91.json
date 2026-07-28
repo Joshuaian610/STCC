@@ -1,0 +1,54 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0,
+    "g": 0,
+    "r": 0
+  },
+  "CustomImage": {
+    "ImageScalar": 2,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/25439815955562435/122C4D0028871F5F75963B0A70393F077BA4FB4E/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25439815955562110/97B382457188695BADAF8D7CB017F43376F999ED/",
+    "WidthScale": 0
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "912c91",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": true,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Figurine_Custom",
+  "Nickname": "U.S.S. Enterprise-B",
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_ship"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": -10.654,
+    "posY": 2.927,
+    "posZ": -12.159,
+    "rotX": 0,
+    "rotY": 90,
+    "rotZ": 0,
+    "scaleX": 1,
+    "scaleY": 1,
+    "scaleZ": 1
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

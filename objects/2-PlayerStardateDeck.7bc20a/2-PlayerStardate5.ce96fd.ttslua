@@ -1,0 +1,24 @@
+function onObjectEnterZone(zone, enter_object)
+    local market_strip  = getObjectFromGUID("ab8b38")
+    local color         = nil
+    local create_button = false
+    if zone == getObjectFromGUID("a9ca57") and enter_object == self then
+        color           = "Blue"
+        create_button   = true
+    end
+    if zone == getObjectFromGUID("818a7e") and enter_object == self then
+        color           = "Red"
+        create_button   = true
+    end
+    if create_button then
+        market_strip.call('stardate_card_button_create', {card=self, type="Endgame", color=color})
+    end
+end -- end onObjectEnterZone()
+
+
+function onObjectLeaveZone(zone, leave_object)
+    if leave_object == self and (zone == getObjectFromGUID("a9ca57") or zone == getObjectFromGUID("818a7e")) then
+        self.clearButtons()
+    end
+end -- end onObjectLeaveZone()
+

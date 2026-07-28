@@ -1,0 +1,60 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.09394,
+    "g": 0.09995,
+    "r": 0.856
+  },
+  "CustomImage": {
+    "CustomTile": {
+      "Stackable": false,
+      "Stretch": true,
+      "Thickness": 0.2,
+      "Type": 3
+    },
+    "ImageScalar": 1,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/25434112198033719/2C13CF596A5BD5A99A3BA53D3C5D753604C2676C/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25434112198033719/2C13CF596A5BD5A99A3BA53D3C5D753604C2676C/",
+    "WidthScale": 0
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "Red",
+  "GUID": "28a24b",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScriptState": "",
+  "LuaScript_path": "PadCrewBoardRed.28a24b.ttslua",
+  "MeasureMovement": false,
+  "Name": "Custom_Tile",
+  "Nickname": "Pad Crew Board Red",
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "non_int"
+  ],
+  "Tooltip": false,
+  "Transform": {
+    "posX": 42.15,
+    "posY": 0.951,
+    "posZ": -16,
+    "rotX": 0,
+    "rotY": 90,
+    "rotZ": 180,
+    "scaleX": 5,
+    "scaleY": 1,
+    "scaleZ": 5
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

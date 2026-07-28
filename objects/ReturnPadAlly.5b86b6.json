@@ -1,0 +1,60 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.23524,
+    "g": 0.23524,
+    "r": 0.23524
+  },
+  "CustomImage": {
+    "CustomTile": {
+      "Stackable": false,
+      "Stretch": true,
+      "Thickness": 0.1,
+      "Type": 3
+    },
+    "ImageScalar": 1,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/25434746174387918/23315B16B16D40CECF8F0B3CB9C61984E7D45641/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25434746174387918/23315B16B16D40CECF8F0B3CB9C61984E7D45641/",
+    "WidthScale": 0
+  },
+  "Description": "Drop an Ally card here to return it to the bottom of the Ally Deck.",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "5b86b6",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScriptState": "",
+  "LuaScript_path": "ReturnPadAlly.5b86b6.ttslua",
+  "MeasureMovement": false,
+  "Name": "Custom_Tile",
+  "Nickname": "Return Pad: Ally",
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_card"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 7.5,
+    "posY": 0.657,
+    "posZ": 20,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 0.6,
+    "scaleY": 1,
+    "scaleZ": 0.6
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

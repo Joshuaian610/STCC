@@ -1,0 +1,62 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.09395,
+    "g": 0.09995,
+    "r": 0.856
+  },
+  "CustomImage": {
+    "CustomTile": {
+      "Stackable": false,
+      "Stretch": true,
+      "Thickness": 0.348251373,
+      "Type": 3
+    },
+    "ImageScalar": 1,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/25434112197711283/EF3854D1963EBB7722114476895736FC3A5D1CD0/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25434112197711283/EF3854D1963EBB7722114476895736FC3A5D1CD0/",
+    "WidthScale": 0
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "a315ce",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Custom_Tile",
+  "Nickname": "Setup Sisko Advanced",
+  "Snap": false,
+  "Sticky": true,
+  "Tags": [
+    "button_faction_setup",
+    "non_int",
+    "setup_advanced"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 43.38,
+    "posY": 0.95,
+    "posZ": -10.77,
+    "rotX": 0,
+    "rotY": 90,
+    "rotZ": 0,
+    "scaleX": 1,
+    "scaleY": 1,
+    "scaleZ": 1
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

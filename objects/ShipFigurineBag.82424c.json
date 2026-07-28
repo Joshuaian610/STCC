@@ -1,0 +1,109 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "AttachedSnapPoints": [
+    {
+      "Position": {
+        "x": 0.019,
+        "y": 0.166,
+        "z": 0.153
+      }
+    }
+  ],
+  "Autoraise": true,
+  "Bag": {
+    "Order": 0
+  },
+  "ColorDiffuse": {
+    "b": 1,
+    "g": 1,
+    "r": 1
+  },
+  "ContainedObjects_order": [
+    "Xindi-ReptillianBattleship.fc7773",
+    "VothResearchVessel.09d50c",
+    "USSRioGrande.79ef6e",
+    "USSReliant.1877b7",
+    "USSPasteur.c98201",
+    "USSFederation.46a540",
+    "USSEnterprise-C.8aeaf9",
+    "USSEnterprise-B.912c91",
+    "USSDefiant.d76756",
+    "USSBozeman.20ea92",
+    "Type7Shuttlecraft.548341",
+    "SonaBattlecruiser.38fdb4",
+    "Scimitar.dba278",
+    "PakledFreighter.78a9d1",
+    "KtingaBattlecruiser.528eb4",
+    "KazonRaider.f77073",
+    "IRWValdore.0ba65d",
+    "IRWTerix.8ee6d1",
+    "IRWKhazara.aa8c99",
+    "IKSKlothos.0aa13c",
+    "IKSDevisor.fd9fa0",
+    "HolographicDroneShip.e6cba4",
+    "DkyrCruiser.84710e",
+    "BorgProbe.3f2142",
+    "BooksShip.4539f8",
+    "Bird-Of-Prey.dadfb6",
+    "AndorianCruiser.833dbb"
+  ],
+  "ContainedObjects_path": "ShipFigurineBag.82424c",
+  "CustomMesh": {
+    "CastShadows": true,
+    "ColliderURL": "",
+    "Convex": true,
+    "CustomShader": {
+      "FresnelStrength": 0,
+      "SpecularColor": {
+        "b": 1,
+        "g": 1,
+        "r": 1
+      },
+      "SpecularIntensity": 0,
+      "SpecularSharpness": 2
+    },
+    "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/25434112200167151/D66E1484031EE4C84FB4909CA1932E118A0A9A07/",
+    "MaterialIndex": 1,
+    "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1994562021176698519/9B45D437C9DF8B9BE4DE6D290B6F7211D08317A2/",
+    "NormalURL": "",
+    "TypeIndex": 6
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "82424c",
+  "Grid": true,
+  "GridProjection": true,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScriptState": "",
+  "LuaScript_path": "ShipFigurineBag.82424c.ttslua",
+  "MaterialIndex": -1,
+  "MeasureMovement": false,
+  "MeshIndex": -1,
+  "Name": "Custom_Model_Bag",
+  "Nickname": "Ship Figurine Bag",
+  "Snap": true,
+  "Sticky": true,
+  "Tooltip": true,
+  "Transform": {
+    "posX": 12.5,
+    "posY": 0.74,
+    "posZ": 19.635,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 2,
+    "scaleY": 2,
+    "scaleZ": 2
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

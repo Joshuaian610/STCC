@@ -1,0 +1,60 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.09396,
+    "g": 0.09996,
+    "r": 0.856
+  },
+  "CustomImage": {
+    "CustomTile": {
+      "Stackable": false,
+      "Stretch": true,
+      "Thickness": 0.199999988,
+      "Type": 3
+    },
+    "ImageScalar": 1,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/25439356643981608/CA8BBEBE2E428D324C1CE46C55ED664174537D49/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25439356643981608/CA8BBEBE2E428D324C1CE46C55ED664174537D49/",
+    "WidthScale": 0
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "Red",
+  "GUID": "c5021e",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScriptState": "",
+  "LuaScript_path": "ResearchCounterRed.c5021e.ttslua",
+  "MeasureMovement": false,
+  "Name": "Custom_Tile",
+  "Nickname": "Research Counter Red",
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "non_int"
+  ],
+  "Tooltip": false,
+  "Transform": {
+    "posX": 34,
+    "posY": 0.75,
+    "posZ": -16,
+    "rotX": 0,
+    "rotY": 90,
+    "rotZ": 0,
+    "scaleX": 0.8,
+    "scaleY": 1,
+    "scaleZ": 0.8
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

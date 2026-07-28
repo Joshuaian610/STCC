@@ -1,0 +1,82 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "TranceWorm.f53ea8",
+    "ThetaZeta.2d063e",
+    "Earth.8765fd",
+    "DoctorKovich.ba58d3",
+    "JettReno.86b09a",
+    "AdiraTal.27292e",
+    "AdmiralVance.619d93",
+    "USSFederation.8db85c"
+  ],
+  "ContainedObjects_path": "BurnhamDevelopment.9873af",
+  "CustomDeck": {
+    "150": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728965210603/67082C11BB9875BDC021BDC74E916100D51ABD97/",
+      "NumHeight": 4,
+      "NumWidth": 6,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "DeckIDs": [
+    15008,
+    15007,
+    15006,
+    15005,
+    15004,
+    15003,
+    15002,
+    15001
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "9873af",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Burnham Development",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "cleanup_target",
+    "snap_card"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": -65.1,
+    "posY": 1.769,
+    "posZ": 17,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

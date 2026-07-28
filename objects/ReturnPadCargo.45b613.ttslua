@@ -1,0 +1,40 @@
+drop_zone    = getObjectFromGUID("4b2cb1")
+deck_zone    = getObjectFromGUID("4eadea")
+card_tag     = "cargo"
+facedown_rot = {0.00, 180.00, 180.00}
+return_loc   = {2.50, 1.00, 14.00}
+
+function onObjectEnterZone(zone, drop_object)
+    if zone == drop_zone and drop_object.hasTag("suit_" .. card_tag) then
+        local found_deck = nil
+        for _, object in pairs(deck_zone.getObjects()) do
+            if object.tag == "Deck" or object.tag == "Card" then
+                found_deck = object
+            end
+        end
+        drop_object.setRotation(facedown_rot)
+        if found_deck ~= nil then
+            local deck_position = found_deck.getPosition()
+            deck_position.y = 0.50
+            if found_deck.tag == "Deck" then
+                drop_object.setPosition(deck_position)
+                found_deck.putObject(drop_object)
+            elseif found_deck.tag == "Card" then
+                local upward_position = found_deck.getPosition()
+                upward_position.y = 2.00
+                found_deck.setPosition(upward_position)
+                deck_position.y   = 1.00
+                drop_object.setPosition(deck_position)
+            end
+        elseif found_deck == nil then
+            drop_object.setPositionSmooth(return_loc, false, false)
+        end
+        Wait.time(function()
+        for _, object in pairs(deck_zone.getObjects()) do
+            if object.tag == "Deck" then
+                object.setName(card_tag:gsub("^%l", string.upper) .. " Deck")
+            end
+        end
+        end, 1)
+    end
+end -- end onObjectEnterZone()

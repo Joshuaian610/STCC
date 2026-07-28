@@ -1,0 +1,1048 @@
+math.randomseed(os.time())
+
+main_zone                = getObjectFromGUID("75c041")
+diff_zone                = getObjectFromGUID("bf1e62")
+discard_zone             = getObjectFromGUID("b72553")
+playerarea_color         = "Red"
+away_team_pile           = getObjectFromGUID("9a8f99")
+trackers                 = {
+    getObjectFromGUID("851536"), -- blue
+    getObjectFromGUID("deda2b"), -- yellow
+    getObjectFromGUID("b516a0"), -- red
+}
+counters                 = {
+    getObjectFromGUID("9a5066"), -- glory
+    getObjectFromGUID("c2bac2"), -- latinum
+    getObjectFromGUID("f40879"), -- dilithium
+}
+button_alternates        = {
+    burnham_basic        = getObjectFromGUID("3268c7"),
+    burnham_advanced     = getObjectFromGUID("bf2ae1"),
+    koloth_basic         = getObjectFromGUID("f9cb73"),
+    koloth_advanced      = getObjectFromGUID("64deba"),
+    picard_basic         = getObjectFromGUID("bf8c4c"),
+    picard_advanced      = getObjectFromGUID("b6e8fe"),
+    sela_basic           = getObjectFromGUID("f44dbc"),
+    sela_advanced        = getObjectFromGUID("af2e87"),
+    shran_basic          = getObjectFromGUID("da0506"),
+    shran_advanced       = getObjectFromGUID("c2b772"),
+    sisko_basic          = getObjectFromGUID("61f6f2"),
+    sisko_advanced       = getObjectFromGUID("a19cdf"),
+    solo                 = getObjectFromGUID("9e82e7"),
+}
+locs                     = {
+    crew_board           = {42.15, 1.05, -16.00},
+    trackers             = {
+        burnham_basic    = {
+            tracker_1    = {42.26, 1.19, -21.71},
+            tracker_2    = {44.23, 1.19, -21.71},
+            tracker_3    = {46.18, 1.19, -21.72},
+        },
+        burnham_advanced = {
+            tracker_1    = {42.06, 1.19, -21.72},
+            tracker_2    = {44.03, 1.19, -21.72},
+            tracker_3    = {45.98, 1.19, -21.72},
+        },
+        koloth_basic     = {
+            tracker_1    = {42.32, 1.19, -21.70},
+            tracker_2    = {44.28, 1.19, -21.70},
+            tracker_3    = {46.20, 1.19, -21.70},
+        },
+        koloth_advanced  = {
+            tracker_1    = {42.07, 1.19, -21.72},
+            tracker_2    = {44.01, 1.19, -21.72},
+            tracker_3    = {45.97, 1.19, -21.72},
+        },
+        picard_basic     = {
+            tracker_1    = {42.30, 1.19, -21.75},
+            tracker_2    = {44.27, 1.19, -21.75},
+            tracker_3    = {46.22, 1.19, -21.75},
+        },
+        picard_advanced  = {
+            tracker_1    = {42.05, 1.19, -21.69},
+            tracker_2    = {44.04, 1.19, -21.69},
+            tracker_3    = {45.97, 1.19, -21.69},
+        },
+        sela_basic       = {
+            tracker_1    = {42.26, 1.19, -21.73},
+            tracker_2    = {44.22, 1.19, -21.73},
+            tracker_3    = {46.20, 1.19, -21.74},
+        },
+        sela_advanced    = {
+            tracker_1    = {42.06, 1.19, -21.70},
+            tracker_2    = {44.02, 1.19, -21.70},
+            tracker_3    = {45.98, 1.19, -21.71},
+        },
+        shran_basic      = {
+            tracker_1    = {42.27, 1.19, -21.72},
+            tracker_2    = {44.23, 1.19, -21.72},
+            tracker_3    = {46.19, 1.19, -21.72},
+        },
+        shran_advanced   = {
+            tracker_1    = {42.06, 1.19, -21.69},
+            tracker_2    = {44.02, 1.19, -21.69},
+            tracker_3    = {45.99, 1.19, -21.70},
+        },
+        sisko_basic      = {
+            tracker_1    = {42.29, 1.19, -21.72},
+            tracker_2    = {44.26, 1.19, -21.72},
+            tracker_3    = {46.21, 1.19, -21.73},
+        },
+        sisko_advanced   = {
+            tracker_1    = {42.06, 1.19, -21.71},
+            tracker_2    = {44.05, 1.19, -21.72},
+            tracker_3    = {45.97, 1.19, -21.73},
+        },
+    },
+    draw_deck            = {44.50, 1.50, -7.00},
+    dev_deck             = {24.00, 1.50, -20.00},
+    reserve_deck         = {24.00, 2.50, -20.00},
+    captain_card         = {38.50, 1.50, -7.00},
+    deploy_card          = {38.50, 1.50, -2.46},
+    status_card          = {30.00, 1.50, -17.95},
+    discard              = {44.57, 1.50, 21.00},
+    location_card        = {30.00, 1.50, -2.46},
+    ships                = {
+        {37.00, 1.25, -2.46}, -- first loc is on deploy card
+        {30.50, 2.00, -28.00}, -- next four locs are out of play, off table, next to duty officer pad
+        {34.50, 2.00, -28.00},
+        {38.50, 2.00, -28.00},
+        {42.50, 2.00, -28.00},
+        {26.50, 2.00, -28.00},
+    }
+}
+solo_tracker_locs        = {
+        burnham          = {
+            tracker_1    = {42.03, 1.19, -10.30},
+            tracker_2    = {40.08, 1.19, -10.30},
+            tracker_3    = {38.13, 1.19, -10.30},
+        },
+        koloth           = {
+            tracker_1    = {41.99, 1.19, -10.25},
+            tracker_2    = {40.03, 1.19, -10.25},
+            tracker_3    = {38.04, 1.19, -10.25},
+        },
+        picard           = {
+            tracker_1    = {42.02, 1.19, -10.25},
+            tracker_2    = {40.04, 1.19, -10.25},
+            tracker_3    = {38.09, 1.19, -10.25},
+        },
+        sela             = {
+            tracker_1    = {42.03, 1.19, -10.29},
+            tracker_2    = {40.07, 1.19, -10.29},
+            tracker_3    = {38.11, 1.19, -10.28},
+        },
+        shran            = {
+            tracker_1    = {42.05, 1.19, -10.26},
+            tracker_2    = {40.09, 1.19, -10.26},
+            tracker_3    = {38.12, 1.19, -10.25},
+        },
+        sisko            = {
+            tracker_1    = {42.01, 1.19, -10.29},
+            tracker_2    = {40.06, 1.19, -10.29},
+            tracker_3    = {38.10, 1.19, -10.29},
+        },
+}
+rots                     = {
+    crew_board           = {0.00, 90.0, 180.00},
+    draw_deck            = {0.00, 90.0, 180.00},
+    dev_deck             = {0.00, 90.0, 0.00},
+    reserve_deck         = {0.00, 180.00, 180.00},
+    captain_card         = {0.00, 90.0, 0.00},
+    deploy_card          = {0.00, 90.0, 0.00},
+    status_card          = {0.00, 90.0, 0.00},
+    discard              = {0.00, 90.0, 0.00},
+    location_card        = {0.00, 90.0, 0.00},
+    ships                = {0.00, 270.00, 0.00},
+}
+solo_rots                = {
+    crew_board           = {0.00, 270.0, 180.00},
+    draw_deck            = {0.00, 270.0, 180.00},
+    dev_deck             = {0.00, 270.0, 180.00},
+    reserve_deck         = {0.00, 270.00, 180.00},
+    captain_card         = {0.00, 270.0, 0.00},
+    deploy_card          = {0.00, 270.0, 0.00},
+    status_card          = {0.00, 270.0, 0.00},
+    discard              = {0.00, 270.0, 0.00},
+    location_card        = {0.00, 270.0, 0.00},
+    ships                = {0.00, 90.00, 0.00},
+}
+
+-- play object vars per Captain
+play_objects             = {
+    burnham              = {
+        crew_boards      = {
+            basic        = getObjectFromGUID("e1fccf"),
+            advanced     = getObjectFromGUID("5f3448"),
+        },
+        ships            = {
+            getObjectFromGUID("b2d7b4"), -- discovery
+            getObjectFromGUID("4539f8"), -- book's ship
+            getObjectFromGUID("46a540"), -- federation
+        },
+        draw_deck        = getObjectFromGUID("18e650"),
+        reserve_deck     = getObjectFromGUID("aeac06"),
+        dev_deck         = getObjectFromGUID("9873af"),
+        captain_card     = getObjectFromGUID("e52c8f"),
+        deploy_card      = getObjectFromGUID("31db50"),
+        status_card      = getObjectFromGUID("a7ecd3"),
+        incident_card    = getObjectFromGUID("78e9cd"),
+    },
+    koloth              = {
+        crew_boards     = {
+            basic       = getObjectFromGUID("6abe1f"),
+            advanced    = getObjectFromGUID("564cc6"),
+        },
+        ships           = {
+            getObjectFromGUID("5d057c"), -- gr'oth
+            getObjectFromGUID("0aa13c"), -- klothos
+            getObjectFromGUID("fd9fa0"), -- devisor
+        },
+        draw_deck       = getObjectFromGUID("807fbb"),
+        reserve_deck    = getObjectFromGUID("193d80"),
+        dev_deck        = getObjectFromGUID("2889b6"),
+        captain_card    = getObjectFromGUID("01fc64"),
+        deploy_card     = getObjectFromGUID("e559ba"),
+    },
+    picard              = {
+        crew_boards     = {
+            basic       = getObjectFromGUID("e5b53f"),
+            advanced    = getObjectFromGUID("6da83f"),
+        },
+        ships           = {
+            getObjectFromGUID("52ac7e"), -- enterprise
+            getObjectFromGUID("20ea92"), -- bozeman
+            getObjectFromGUID("548341"), -- shuttle
+        },
+        draw_deck       = getObjectFromGUID("4a9b9f"),
+        reserve_deck    = getObjectFromGUID("d3a59a"),
+        dev_deck        = getObjectFromGUID("061faa"),
+        captain_card    = getObjectFromGUID("cfc6a0"),
+        deploy_card     = getObjectFromGUID("63cb0c"),
+    },
+    sela                = {
+        crew_boards     = {
+            basic       = getObjectFromGUID("f6395a"),
+            advanced    = getObjectFromGUID("807586"),
+        },
+        ships           = {
+            getObjectFromGUID("76b11e"), -- goraxus
+            getObjectFromGUID("aa8c99"), -- kharaza
+            getObjectFromGUID("8ee6d1"), -- terix
+            getObjectFromGUID("0ba65d"), -- valdore
+            getObjectFromGUID("dba278"), -- scimitar
+        },
+        draw_deck       = getObjectFromGUID("a4eb48"),
+        reserve_deck    = getObjectFromGUID("bcdfd2"),
+        dev_deck        = getObjectFromGUID("ecb28b"),
+        captain_card    = getObjectFromGUID("dfd726"),
+        deploy_card     = getObjectFromGUID("213139"),
+        discard_deck    = getObjectFromGUID("4480c5"),
+    },
+    shran               = {
+        crew_boards     = {
+            basic       = getObjectFromGUID("14ddda"),
+            advanced    = getObjectFromGUID("495108"),
+        },
+        ships           = {
+            getObjectFromGUID("a7de14"), -- kumari
+            getObjectFromGUID("833dbb"), -- cruiser
+        },
+        draw_deck       = getObjectFromGUID("9a6808"),
+        reserve_deck    = getObjectFromGUID("6158a9"),
+        dev_deck        = getObjectFromGUID("b8dafa"),
+        captain_card    = getObjectFromGUID("3d6faf"),
+        deploy_card     = getObjectFromGUID("a52492"),
+    },
+    sisko               = {
+        crew_boards     = {
+            basic       = getObjectFromGUID("2d34d8"),
+            advanced    = getObjectFromGUID("44a1f8"),
+        },
+        ships           = {
+            getObjectFromGUID("82b2ed"), -- ds9
+            getObjectFromGUID("d76756"), -- defiant
+            getObjectFromGUID("79ef6e"), -- rio grande
+        },
+        draw_deck       = getObjectFromGUID("0102c5"),
+        reserve_deck    = getObjectFromGUID("80f7a6"),
+        dev_deck        = getObjectFromGUID("768e7a"),
+        captain_card    = getObjectFromGUID("d32cef"),
+        deploy_card     = getObjectFromGUID("3f2795"),
+        location_card   = getObjectFromGUID("18165c"),
+    },
+}
+
+
+
+
+function onLoad()
+    setup_buttons()
+end  -- end onLoad()
+
+
+function setup_buttons()
+    local buttons_found            = false
+    for _, object in pairs(main_zone.getObjects()) do
+        button_width = 600
+        local button_name      = object.getName()
+        local split_name       = {}
+        for str in string.gmatch(button_name,  "%S+") do
+            table.insert(split_name, str)
+        end
+        local captain_name     = nil
+        local difficulty       = nil
+        if split_name         ~= {} then
+            captain_name       = split_name[2]
+            difficulty         = split_name[3]
+        end
+        local tooltip          = nil
+        if captain_name ~= nil  and difficulty ~= nil then
+            tooltip            = "Click to setup playerarea for Captain " .. captain_name .. " using " .. difficulty .. " side."
+        end
+        if captain_name   == "Random" and difficulty ~= nil then
+            tooltip        = "Click to setup playerarea for Random Captain, using " .. difficulty .. " side."
+        end
+        if object.getName()   == "Setup Random Basic OR Advanced" then
+            tooltip            = "Click to setup playerarea for Random Captain, randomly using either difficulty side."
+        end
+        if object.hasTag('button_faction_setup') then
+            object.createButton({
+                click_function = "setup_captain",
+                function_owner = self,
+                label          = "",
+                position       = {0, 0.36, 0.02},
+                rotation       = {0, 180, 0},
+                width          = button_width,
+                height         = 450,
+                scale          = {2.3, 2.3, 2.3},
+                color          = {1, 1, 1, .0},
+                hover_color    = {1, 1, 1, .4},
+                tooltip        = tooltip,
+            })
+        end
+    end
+end -- end setup_buttons()
+
+
+function setup_captain(button, click_color, _)
+    local button_name     = button.getName()
+    local split_name      = {}
+    for str in string.gmatch(button_name,  "%S+") do
+        table.insert(split_name, str)
+    end
+    local captain_name    = split_name[2]
+    local difficulty      = split_name[3]
+    local captain_objects = play_objects[string.lower(captain_name)]
+
+    -- ensure selected bot difficulty button if bot, broadcast/return out if not selected and required
+    local is_solo = false
+    for _, object in pairs(main_zone.getObjects()) do
+        if object.hasTag('button_solo_setup') then
+            if object.getGMNotes() == "enabled" then
+                is_solo = true
+            end
+        end
+    end
+    local difficulty_chosen = false
+    local bot_difficulty    = nil
+    if is_solo then
+        -- destruct other solo buttons
+        local solo_diff_buttons = {
+            getObjectFromGUID(playerarea_color == "Blue" and "0bad8b" or "9e82e7"),
+            getObjectFromGUID(playerarea_color == "Blue" and "b79b3c" or "480492"),
+            getObjectFromGUID(playerarea_color == "Blue" and "dae39b" or "1a31d8"),
+            getObjectFromGUID(playerarea_color == "Blue" and "eea328" or "e421a1"),
+            getObjectFromGUID(playerarea_color == "Blue" and "ec27fb" or "378de4"),
+            getObjectFromGUID(playerarea_color == "Blue" and "c96d22" or "6d9c4c"),
+            getObjectFromGUID(playerarea_color == "Blue" and "65a2f2" or "3b7e7c"),
+        }
+        for i = 1, 7 do
+            if solo_diff_buttons[i] ~= nil then
+                solo_diff_buttons[i].destruct()
+            end
+        end
+        for _, object in pairs(diff_zone.getObjects()) do
+            if object.getGMNotes() == "enabled" then
+                difficulty_chosen = true
+                local button_name = object.getName()
+                local split_name  = {}
+                for str in string.gmatch(button_name,  "%S+") do
+                    table.insert(split_name, str)
+                end
+                bot_difficulty    = split_name[3]
+            end
+        end
+    end
+    if is_solo and not difficulty_chosen then
+        broadcastToColor("Please make sure to select solo bot difficulty before selecting captain!", click_color, "Orange")
+        return nil
+    end
+
+    -- if random basic, make table of 'random_basic' tags in zone, randomly select
+    if button.getName() == "Setup Random Basic" then
+        local available_basic_buttons = {}
+        for _, object in pairs(main_zone.getObjects()) do
+            if object.hasTag('button_faction_setup') and object.hasTag('setup_basic') then
+                table.insert(available_basic_buttons, object)
+            end
+        end
+        local random_index = math.random(1, #available_basic_buttons)
+        local button_name  = available_basic_buttons[random_index].getName()
+        local split_name   = {}
+        for str in string.gmatch(button_name,  "%S+") do
+            table.insert(split_name, str)
+        end
+        captain_name       = split_name[2]
+    end
+
+    -- if random advanced, make table of 'random_advanced' tags in zone, randomly select
+    if button.getName() == "Setup Random Advanced" then
+        local available_advanced_buttons = {}
+        for _, object in pairs(main_zone.getObjects()) do
+            if object.hasTag('button_faction_setup') and object.hasTag('setup_basic') then
+                table.insert(available_advanced_buttons, object)
+            end
+        end
+        local random_index    = math.random(1, #available_advanced_buttons)
+        local button_name     = available_advanced_buttons[random_index].getName()
+        local split_name      = {}
+        for str in string.gmatch(button_name,  "%S+") do
+            table.insert(split_name, str)
+        end
+        captain_name          = split_name[2]
+    end
+
+    -- if random_either, make table of both tags, randomly select
+    if button.getName() == "Setup Random Basic OR Advanced" then
+        local available_buttons = {}
+        for _, object in pairs(main_zone.getObjects()) do
+            if object.hasTag('button_faction_setup') and
+            (object.hasTag('setup_basic') or object.hasTag('setup_advanced')) then
+                table.insert(available_buttons, object)
+            end
+        end
+        local random_index    = math.random(1, #available_buttons)
+        local button_name     = available_buttons[random_index].getName()
+        local split_name      = {}
+        for str in string.gmatch(button_name,  "%S+") do
+            table.insert(split_name, str)
+        end
+        captain_name          = split_name[2]
+        difficulty            = split_name[3]
+    end
+
+    -- broadcast captain selection
+    if not is_solo then
+        broadcastToAll("[" .. Color.fromString(playerarea_color):toHex() .. "]" .. playerarea_color .. "[-] side set up for " .. difficulty .. " side Captain " .. captain_name .. ".", "White")
+    else
+        broadcastToAll("[" .. Color.fromString(playerarea_color):toHex() .. "]" .. playerarea_color .. "[-] side set up for " .. bot_difficulty .. " bot Captain " .. captain_name .. ".", "White")
+    end
+
+    -- destroy all buttons for this playerarea
+    local checkzones = {main_zone, diff_zone}
+    for i = 1, 2 do
+        for _, object in pairs(checkzones[i].getObjects()) do
+            if object.hasTag('button_faction_setup') or object.hasTag('button_solo_setup') then
+                object.destruct()
+            end
+        end
+    end
+
+    -- destroy corresponding basic/advanced captain buttons in other playarea
+    if button_alternates[string.lower(captain_name) .. "_basic"] ~= nil then
+        button_alternates[string.lower(captain_name) .. "_basic"].destruct()
+    end
+    if button_alternates[string.lower(captain_name) .. "_advanced"] ~= nil then
+        button_alternates[string.lower(captain_name) .. "_advanced"].destruct()
+    end
+
+    -- setup for bot if bot,
+    if is_solo then
+        for _, object in pairs(getObjects()) do
+            if object.getName() == "Solo vs. " .. bot_difficulty .. " Bot Stardate Deck" then
+                object.setRotation({0.00, 180.00, 0.00})
+                object.setPositionSmooth({-12.50, 1.50, 0.00}, false, false)
+                Global.call('show_stardate_glory_counter', {stardate_type=string.lower(bot_difficulty)})
+                Wait.time(function()
+                getObjectFromGUID("e5e2d0").call('refresh_glory')
+                end, 2)
+            end
+        end
+
+        -- mark stardate card pad with bot difficulty, accessed and used after last stardate card goes away
+        getObjectFromGUID("75821b").setGMNotes(bot_difficulty)
+
+        -- pull, lock, tint corresponding bot crew board
+        local crew_board = play_objects[string.lower(captain_name)]['crew_boards']['basic']
+        crew_board.setLock(true)
+        crew_board.setColorTint(playerarea_color)
+        crew_board.setRotation(solo_rots.crew_board)
+        crew_board.setPositionSmooth(locs.crew_board, false, false)
+
+        -- place bot tracker cubes
+        Wait.time(function()
+        for i = 1, 3 do
+            trackers[i].setPositionSmooth(solo_tracker_locs[string.lower(captain_name)]["tracker_" .. i], false, false)
+            trackers[i].setGMNotes('bottom')
+        end
+        end, 1.5)
+
+        -- place bot decks, shuffle draw & reserve
+        local deck_types = {"draw", "dev", "reserve"}
+        for i = 1, 3 do
+            local deck = play_objects[string.lower(captain_name)][deck_types[i] .. '_deck']
+            deck.shuffle()
+            deck.setRotation(solo_rots[deck_types[i] .. '_deck'])
+            deck.setPosition(locs[deck_types[i] .. '_deck'])
+        end
+
+        -- rename supplement deck
+        Wait.time(function()
+        for _, object in pairs(getObjectFromGUID("b75338").getObjects()) do
+            if object.tag == "Deck" then
+                object.setName(captain_name .. " Supplement Deck")
+            end
+        end
+        end, 1)
+
+        -- place extra cards
+        if captain_name == "Burnham" then
+            -- shuffle incident into incident deck
+            local incident_deck       = nil
+            local incident_deck_found = false
+            for _, object in pairs(getObjectFromGUID("13c103").getObjects()) do
+                if object.tag == "Deck" then
+                    incident_deck       = object
+                    incident_deck_found = true
+                end
+            end
+            if not incident_deck_found then
+                broadcastToColor("Incident deck not located - you will need to manually shuffle Burnham's Incident into Incident deck.", click_color, "Orange")
+            else
+                local incident_card = getObjectFromGUID("78e9cd")
+                incident_card.setRotation({0.00, 180.00, 180.00})
+                incident_card.setPosition({12.50, 1.20, 10.00})
+                Wait.time(function() incident_deck.shuffle() end, 2)
+            end
+            -- place status card
+            local status_card = getObjectFromGUID("a7ecd3")
+            status_card.setRotation(solo_rots.status_card)
+            status_card.setPosition(locs.status_card)
+        end
+        if captain_name == "Sela" then
+            local discard_deck = getObjectFromGUID("4480c5")
+            discard_deck.setRotation(solo_rots.discard)
+            discard_deck.setPosition(locs.discard)
+        end
+        Wait.time(function()
+        local deploy_card = play_objects[string.lower(captain_name)]['deploy_card']
+        if captain_name ~= "Sisko" then
+            -- deployed to top of bot deck
+            deploy_card.setRotation(solo_rots.draw_deck)
+            deploy_card.setPosition(locs.draw_deck)
+        elseif captain_name == "Sisko" then
+            deploy_card.setRotation(solo_rots.draw_deck)
+            deploy_card.setPosition(locs.discard)
+            local location_card = getObjectFromGUID("18165c")
+            location_card.setRotation(solo_rots.draw_deck)
+            location_card.setPosition(locs.discard)
+            Wait.time(function()
+            for _, object in pairs(discard_zone.getObjects()) do
+                if object.tag == "Deck" then
+                    object.shuffle()
+                    object.setPositionSmooth(locs.draw_deck)
+                end
+            end
+            end, 1)
+        end
+        end, .5)
+
+        -- place bot captain card
+        local captain_card = play_objects[string.lower(captain_name)]['captain_card']
+        captain_card.setRotation(solo_rots.captain_card)
+        captain_card.setPosition(locs.captain_card)
+
+        -- place bot first ship in bot space dock
+        local ships = play_objects[string.lower(captain_name)]['ships']
+        getObjectFromGUID(playerarea_color == "Blue" and "b5c141" or "f047fb").putObject(ships[1])
+
+        -- remove bot away teams per captain count
+        local bag_unused_objects = getObjectFromGUID("f6e30d")
+        local remove_count       = nil
+        if captain_name == "Sela" then
+            remove_count = 2
+        elseif captain_name == "Koloth" or captain_name == "Sisko" then
+            remove_count = 0
+        else
+            remove_count = 1
+        end
+        for i = 1, remove_count do
+            local remove_object = away_team_pile.takeObject()
+            bag_unused_objects.putObject(remove_object)
+        end
+        -- place bot traits card
+        local traits_deck = getObjectFromGUID("19c754")
+        local trait_card  = nil
+        for _, object in pairs(traits_deck.getObjects()) do
+            if object.name == captain_name then
+                trait_card = traits_deck.takeObject({index=object.index})
+            end
+        end
+        trait_card.setRotation(playerarea_color == "Blue" and {0.00, 90.00, 0.00} or {0.00, 270.00, 0.00})
+        trait_card.setPositionSmooth(playerarea_color == "Blue" and {20.00, 1.00, 3.00} or {-20.00, 1.00, -3.00}, false, false)
+        Wait.time(function() trait_card.setScale({3.00, 1.00, 3.00}) end, 1)
+
+        -- place bot suits card
+        local suits_deck = getObjectFromGUID("846ed1")
+        local suits_card = nil
+        for _, object in pairs(suits_deck.getObjects()) do
+            if object.name == captain_name then
+                suits_card = suits_deck.takeObject({index=object.index})
+            end
+        end
+        suits_card.setRotation(playerarea_color == "Blue" and {0.00, 90.00, 0.00} or {0.00, 270.00, 0.00})
+        suits_card.setPositionSmooth(playerarea_color == "Blue" and {20.00, 1.00, 9.00} or {-20.00, 1.00, -9.00}, false, false)
+        Wait.time(function() suits_card.setScale({3.00, 1.00, 3.00}) end, 1)
+
+        -- flip playerarea UI elements
+
+        -- card / deck pads (to face snap points to human player when vs solo bot)
+        local pads = playerarea_color == "Blue" and {
+            getObjectFromGUID("2ed81f"),
+            getObjectFromGUID("3aeced"),
+            getObjectFromGUID("3accb4"),
+            getObjectFromGUID("82884a"),
+            getObjectFromGUID("08fb97"),
+            getObjectFromGUID("c0fb5d"),
+            getObjectFromGUID("54fde1"),
+        } or
+        {
+            getObjectFromGUID("b209c9"),
+            getObjectFromGUID("78def6"),
+            getObjectFromGUID("34adac"),
+            getObjectFromGUID("364dc3"),
+            getObjectFromGUID("3584fe"),
+            getObjectFromGUID("f09a7b"),
+            getObjectFromGUID("ff5f79"),
+        }
+        for i = 1, 7 do
+            pads[i].setRotation(playerarea_color == "Blue" and {0.00, 180.00, 0.00} or {0.00, 180.00, 0.00})
+            if playerarea_color == "Blue" then
+                local pos   = pads[i].getPosition()
+                pos.y       = 0.95
+                pads[i].setPosition(pos)
+            end
+        end
+        local beam_bags = playerarea_color == "Blue" and {
+            getObjectFromGUID("26a5c6"),
+            getObjectFromGUID("ca88c0"),
+            getObjectFromGUID("40b578"),
+            getObjectFromGUID("eeadbe"),
+            getObjectFromGUID("7a7548"),
+            getObjectFromGUID("397e6d"),
+            getObjectFromGUID("ce11ad"),
+            getObjectFromGUID("ff0165"),
+            getObjectFromGUID("9d0439"),
+            getObjectFromGUID("d57c5c"),
+            getObjectFromGUID("5807b2"),
+            getObjectFromGUID("f8fc03"),
+            getObjectFromGUID("acf736"),
+            getObjectFromGUID("f3ac62"),
+            getObjectFromGUID("973d0b"),
+        } or
+        {
+            getObjectFromGUID("7f4770"),
+            getObjectFromGUID("577602"),
+            getObjectFromGUID("82a5c5"),
+            getObjectFromGUID("4f12e8"),
+            getObjectFromGUID("351f79"),
+            getObjectFromGUID("efdbd0"),
+            getObjectFromGUID("cf1df7"),
+            getObjectFromGUID("b5d6f9"),
+            getObjectFromGUID("c32b20"),
+            getObjectFromGUID("392caa"),
+            getObjectFromGUID("9e394f"),
+            getObjectFromGUID("910a26"),
+            getObjectFromGUID("30048e"),
+            getObjectFromGUID("95dff1"),
+            getObjectFromGUID("3f15f8"),
+        }
+        local control_buttons = playerarea_color == "Blue" and {
+            getObjectFromGUID("e3b81f"),
+            getObjectFromGUID("62f38f"),
+            getObjectFromGUID("89ed0a"),
+        } or
+        {
+            getObjectFromGUID("5358c8"),
+            getObjectFromGUID("548407"),
+            getObjectFromGUID("e4d081"),
+        }
+        for i = 1, 14 do
+            beam_bags[i].destruct()
+        end
+        beam_bags[15].setRotation(playerarea_color == "Blue" and {0.00, 90.00, 0.00} or {0.00, 270.00, 0.00})
+        -- resource counters
+        local dilithium_counter                         = getObjectFromGUID(playerarea_color == "Blue" and "a3ec59" or "f40879")
+        local latinum_counter                           = getObjectFromGUID(playerarea_color == "Blue" and "39e892" or "c2bac2")
+        local glory_counter                             = getObjectFromGUID(playerarea_color == "Blue" and "d96ce2" or "9a5066")
+        local glory_bag                                 = getObjectFromGUID(playerarea_color == "Blue" and "cd069a" or "47b4f7")
+        dilithium_counter.setRotation(playerarea_color == "Blue" and {0.00, 90.00, 0.00}   or {0.00, 270.00, 0.00})
+        dilithium_counter.setPosition(playerarea_color == "Blue" and {-24.45, 0.79, 9.28}  or {24.45, 0.79, -9.28})
+        latinum_counter.setRotation(playerarea_color   == "Blue" and {0.00, 0.00, 0.00}    or {0.00, 180.00, 0.00})
+        latinum_counter.setPosition(playerarea_color   == "Blue" and {-24.45, 0.96, 10.52} or {24.45, 0.96, -10.52})
+        glory_counter.setRotation(playerarea_color     == "Blue" and {0.00, 90.00, 0.00}   or {0.00, 270.00, 0.00})
+        glory_bag.setRotation(playerarea_color         == "Blue" and {0.00, 90.00, 0.00}   or {0.00, 270.00, 0.00})
+        glory_counter.setPosition(playerarea_color     == "Blue" and {-24.45, 0.85, 14.00} or {24.45, 0.85, -14.00})
+        glory_bag.setPosition(playerarea_color         == "Blue" and {-24.45, 0.85, 14.00} or {24.45, 0.85, -14.00})
+        -- skill counters
+        local sci_counter                               = getObjectFromGUID(playerarea_color == "Blue" and "8317bd" or "c5021e")
+        local dip_counter                               = getObjectFromGUID(playerarea_color == "Blue" and "9b4f79" or "f3c9be")
+        local mil_counter                               = getObjectFromGUID(playerarea_color == "Blue" and "9a7130" or "5564b6")
+        local skill_counters                            = {sci_counter, dip_counter, mil_counter}
+        for i = 1, 3 do
+            skill_counters[i].setRotation(playerarea_color == "Blue" and {0.00, 90.00, 0.00} or {0.00, 270.00, 0.00})
+            local position = skill_counters[i].getPosition()
+            position.x     = playerarea_color == "Blue" and -36.15 or 36.15
+            if i == 1 then
+                position.z = playerarea_color == "Blue" and 10.00 or -10.00
+            elseif i == 3 then
+                position.z = playerarea_color == "Blue" and 16.00 or -16.00
+            end
+            skill_counters[i].setPosition(position)
+        end
+        -- control location buttons
+        for i = 1, 3 do
+            control_buttons[i].setRotation(playerarea_color == "Blue" and {0.00, 90.00, 0.00} or {0.00, 270.00, 0.00})
+        end
+        -- away teams
+        getObjectFromGUID(playerarea_color             == "Blue" and "73f73f" or "9a8f99").setRotationSmooth(playerarea_color == "Blue" and {0.00, 90.00, 0.00} or {0.00, 270.00, 0.00}, false, false)
+        -- space docks
+        getObjectFromGUID(playerarea_color             == "Blue" and "b5c141" or "f047fb").setRotationSmooth(playerarea_color == "Blue" and {0.00, 90.00, 0.00} or {0.00, 270.00, 0.00}, false, false)
+        -- destruct buttons
+        local destruct_buttons = playerarea_color          == "Blue" and {
+            getObjectFromGUID("6e577f"),
+            getObjectFromGUID("afcb5f"),
+            getObjectFromGUID("74d1e2"),
+            getObjectFromGUID("1d3ff1"),
+            getObjectFromGUID("5c6a9d"),
+            getObjectFromGUID("e63fc8"),
+            getObjectFromGUID("897a61"),
+            getObjectFromGUID("dfc1da"),
+        } or
+        {
+            getObjectFromGUID("5c0cf5"),
+            getObjectFromGUID("3951c0"),
+            getObjectFromGUID("a67b28"),
+            getObjectFromGUID("88acb3"),
+            getObjectFromGUID("aa577e"),
+            getObjectFromGUID("6c9b36"),
+            getObjectFromGUID("b53453"),
+            getObjectFromGUID("60e2f8"),
+        }
+        for i = 1, 8 do
+            destruct_buttons[i].destruct()
+        end
+        -- flip button
+        getObjectFromGUID(playerarea_color == "Blue" and "23bed4" or "1a78a6").setRotation(playerarea_color == "Blue" and {0.00, 90.00, 0.00} or {0.00, 270.00, 0.00})
+        -- mark refresh button to know it's for solo
+        getObjectFromGUID(playerarea_color == "Blue" and "23bed4" or "1a78a6").setGMNotes('solo')
+        -- destroy mission/action tokens/action button
+        local bot_destroy_objects = playerarea_color == "Blue" and {
+            getObjectFromGUID("d8a4e4"),
+            getObjectFromGUID("3a9253"),
+            getObjectFromGUID("8e3619"),
+            getObjectFromGUID("093a8c"),
+        } or
+        {
+            getObjectFromGUID("2122bd"),
+            getObjectFromGUID("3cbc59"),
+            getObjectFromGUID("5aa9e1"),
+            getObjectFromGUID("312718"),
+        }
+        for i = 1, 4 do
+            bot_destroy_objects[i].destruct()
+        end
+        -- reposition deck refresh button
+        local refresh_button     = getObjectFromGUID("9e4a12")
+        local refresh_button_pos = refresh_button.getPosition()
+        refresh_button_pos.y     = refresh_button_pos.y - 2
+        refresh_button.setPosition(refresh_button_pos)
+        self.clearButtons()
+
+    -- otherwise if not bot....
+    elseif not is_solo then
+        -- pull, lock, tint corresponding crew board
+        local crew_board = play_objects[string.lower(captain_name)]['crew_boards'][string.lower(difficulty)]
+        crew_board.setLock(true)
+        crew_board.setColorTint(playerarea_color)
+        crew_board.setRotation(rots.crew_board)
+        crew_board.setPositionSmooth(locs.crew_board, false, false)
+
+        -- place tracker cubes
+        Wait.time(function()
+        for i = 1, 3 do
+            trackers[i].setPositionSmooth(locs['trackers'][string.lower(captain_name) .. "_" .. string.lower(difficulty)]["tracker_" .. i], false, false)
+            if difficulty == "Basic" then
+                trackers[i].setGMNotes('bottom')
+            else
+                trackers[i].setGMNotes('top')
+            end
+        end
+        end, 1.5)
+
+        -- place decks, shuffle draw & reserve
+        local deck_types = {"draw", "dev", "reserve"}
+        for i = 1, 3 do
+            local deck = play_objects[string.lower(captain_name)][deck_types[i] .. '_deck']
+            deck.setRotation(rots[deck_types[i] .. '_deck'])
+            deck.setPosition(locs[deck_types[i] .. '_deck'])
+            if deck_types[i] ~= "dev" then
+                Wait.time(function() deck.shuffle() end, 2)
+            end
+            if deck_types[i] == "draw" then
+                Wait.time(function()
+                deck.deal(5, playerarea_color)
+                if captain_name == "Burnham" then deck.deal(1, playerarea_color) end
+                end, 3)
+            end
+        end
+
+        -- place captain card
+        local captain_card = play_objects[string.lower(captain_name)]['captain_card']
+        captain_card.setRotation(rots.captain_card)
+        captain_card.setPosition(locs.captain_card)
+        setup_goal_buttons()
+
+        -- remove away teams per captain count
+        local bag_unused_objects = getObjectFromGUID("f6e30d")
+        local remove_count       = nil
+        if captain_name == "Sela" then
+            remove_count = 2
+        elseif captain_name == "Koloth" or captain_name == "Sisko" then
+            remove_count = 0
+        else
+            remove_count = 1
+        end
+        for i = 1, remove_count do
+            local remove_object = away_team_pile.takeObject()
+            bag_unused_objects.putObject(remove_object)
+        end
+        -- place deployed ship card & figurine, color / highlight figurine
+        local deploy_card = play_objects[string.lower(captain_name)]['deploy_card']
+        deploy_card.setRotation(rots.deploy_card)
+        deploy_card.setPosition(locs.deploy_card)
+        local ships = play_objects[string.lower(captain_name)]['ships']
+        ships[1].setRotation(rots.ships)
+        ships[1].setPositionSmooth(locs['ships'][1])
+        if captain_name == "Sela" then
+            ships[1].highlightOn("Purple")
+        else
+            ships[1].highlightOn(playerarea_color)
+        end
+        ships[1].setColorTint(playerarea_color)
+
+        -- place other special assorted cards per captain
+        if captain_name == "Burnham" then
+            -- shuffle incident into incident deck
+            local incident_deck       = nil
+            local incident_deck_found = false
+            for _, object in pairs(getObjectFromGUID("13c103").getObjects()) do
+                if object.tag == "Deck" then
+                    incident_deck       = object
+                    incident_deck_found = true
+                end
+            end
+            if not incident_deck_found then
+                broadcastToPlayer("Incident deck not located - you will need to manually shuffle Burnham's Incident into Incident deck.", playerarea_color, playerarea_color)
+            else
+                local incident_card = getObjectFromGUID("78e9cd")
+                incident_card.setRotation({0.00, 180.00, 180.00})
+                incident_card.setPosition({12.50, 1.20, 10.00})
+                Wait.time(function() incident_deck.shuffle() end, 2)
+            end
+            -- place status card
+            local status_card = getObjectFromGUID("a7ecd3")
+            status_card.setRotation(rots.status_card)
+            status_card.setPosition(locs.status_card)
+        end
+        if captain_name == "Sela" then
+            local discard_deck = getObjectFromGUID("4480c5")
+            discard_deck.setRotation(rots.discard)
+            discard_deck.setPosition(locs.discard)
+        end
+        if captain_name == "Sisko" then
+            local location_card = getObjectFromGUID("18165c")
+            location_card.setRotation(rots.location_card)
+            location_card.setPosition(locs.location_card)
+        end
+        -- set counters to 1 each for human players
+        if not is_solo then
+            for i = 1, 3 do
+                counters[i].call('set_val', 1)
+            end
+        end
+    end
+    -- display XML UI
+    if captain_name == "Burnham" or captain_name == "Picard" or captain_name == "Sisko" then
+        UI.setAttribute(playerarea_color == "Blue" and "blue_starfleet_panel" or "red_starfleet_panel", "active", "true")
+        UI.setAttribute(playerarea_color == "Blue" and "blue_hum_glory" or "red_hum_glory", "text", getObjectFromGUID(playerarea_color == "Blue" and "d96ce2" or "9a5066").getVar('val'))
+        UI.setAttribute(playerarea_color == "Blue" and "blue_hum_latinum" or "red_hum_latinum", "text", getObjectFromGUID(playerarea_color == "Blue" and "39e892" or "c2bac2").getVar('val'))
+        UI.setAttribute(playerarea_color == "Blue" and "blue_hum_dilithium" or "red_hum_dilithium", "text", getObjectFromGUID(playerarea_color == "Blue" and "a3ec59" or "f40879").getVar('val'))
+    elseif captain_name == "Shran" then
+        UI.setAttribute(playerarea_color == "Blue" and "blue_andorian_panel" or "red_andorian_panel", "active", "true")
+        UI.setAttribute(playerarea_color == "Blue" and "blue_and_glory" or "red_and_glory", "text", getObjectFromGUID(playerarea_color == "Blue" and "d96ce2" or "9a5066").getVar('val'))
+        UI.setAttribute(playerarea_color == "Blue" and "blue_and_latinum" or "red_and_latinum", "text", getObjectFromGUID(playerarea_color == "Blue" and "39e892" or "c2bac2").getVar('val'))
+        UI.setAttribute(playerarea_color == "Blue" and "blue_and_dilithium" or "red_and_dilithium", "text", getObjectFromGUID(playerarea_color == "Blue" and "a3ec59" or "f40879").getVar('val'))
+    elseif captain_name == "Sela" then
+        UI.setAttribute(playerarea_color == "Blue" and "blue_romulan_panel" or "red_romulan_panel", "active", "true")
+        UI.setAttribute(playerarea_color == "Blue" and "blue_rom_glory" or "red_rom_glory", "text", getObjectFromGUID(playerarea_color == "Blue" and "d96ce2" or "9a5066").getVar('val'))
+        UI.setAttribute(playerarea_color == "Blue" and "blue_rom_latinum" or "red_rom_latinum", "text", getObjectFromGUID(playerarea_color == "Blue" and "39e892" or "c2bac2").getVar('val'))
+        UI.setAttribute(playerarea_color == "Blue" and "blue_rom_dilithium" or "red_rom_dilithium", "text", getObjectFromGUID(playerarea_color == "Blue" and "a3ec59" or "f40879").getVar('val'))
+    elseif captain_name == "Koloth" then
+        UI.setAttribute(playerarea_color == "Blue" and "blue_klingon_panel" or "red_klingon_panel", "active", "true")
+        UI.setAttribute(playerarea_color == "Blue" and "blue_kli_glory" or "red_kli_glory", "text", getObjectFromGUID(playerarea_color == "Blue" and "d96ce2" or "9a5066").getVar('val'))
+        UI.setAttribute(playerarea_color == "Blue" and "blue_kli_latinum" or "red_kli_latinum", "text", getObjectFromGUID(playerarea_color == "Blue" and "39e892" or "c2bac2").getVar('val'))
+        UI.setAttribute(playerarea_color == "Blue" and "blue_kli_dilithium" or "red_kli_dilithium", "text", getObjectFromGUID(playerarea_color == "Blue" and "a3ec59" or "f40879").getVar('val'))
+    end
+    UI.show(playerarea_color == "Blue" and "ui_hide_blue" or "ui_hide_red")
+    -- check if last playerarea to be set up, if so, clean up unused captain decks objects etc
+    local solo_check = button_alternates.solo
+    if solo_check == nil then
+        Wait.time(function()
+        local zones = {getObjectFromGUID("a1c39b"), getObjectFromGUID("20818f")}
+        for i = 1, 2 do
+            for _, object in pairs(zones[i].getObjects()) do
+                if object.hasTag('cleanup_target') then
+                    getObjectFromGUID("f6e30d").putObject(object)
+                end
+            end
+        end
+        if getObjectFromGUID("04c44a") ~= nil then
+            getObjectFromGUID("04c44a").setState(1)
+        end
+        if getObjectFromGUID("6e517a") ~= nil then
+            getObjectFromGUID("6e517a").setState(1)
+        end
+        -- place random firstplayer, ensure turns enabled
+        local sides              = {"Blue", "Red"}
+        local first_player_color = sides[math.random(1, 2)]
+        local fp_token           = getObjectFromGUID("ee1737")
+        if getObjectFromGUID("23bed4").getGMNotes() == "solo" then
+            first_player_color = "Red"
+        end
+        if getObjectFromGUID("1a78a6").getGMNotes() == "solo" then
+            first_player_color = "Blue"
+        end
+        fp_token.setRotation(first_player_color == "Blue" and {0.00, 180.00, 0.00} or {0.00, 0.00, 0.00})
+        fp_token.setPositionSmooth(first_player_color == "Blue" and {-46.00, 1.95, 28.00} or {46.00, 1.95, -28.00})
+        local seated_players = getSeatedPlayers()
+        if #seated_players > 1 then
+            Turns.enable     = true
+            Turns.turn_color = first_player_color
+        end
+        if Player[first_player_color].steam_name ~= nil then
+            broadcastToAll("[" .. Color.fromString(first_player_color):toHex() .. "]" .. Player[first_player_color].steam_name .. "[-] will be First Player!", "White")
+        else
+            broadcastToAll("[" .. Color.fromString(first_player_color):toHex() .. "]" .. first_player_color .. " Player[-] will be First Player!", "White")
+        end
+        -- check for stardate card, will be empty by now if 2p. pull 2p deck if empty
+        local deck_found = false
+        for _, object in pairs(getObjectFromGUID("090f7a").getObjects()) do
+            if object.tag == "Deck" then
+                deck_found = true
+            end
+        end
+        if not deck_found then
+            getObjectFromGUID("7bc20a").setPositionSmooth({-12.50, 1.50, 0.00}, false, false)
+            Global.call('show_stardate_glory_counter', {stardate_type="two_player"})
+            Wait.time(function()
+            getObjectFromGUID("e5e2d0").call('refresh_glory')
+            end, 2)
+        end
+        -- clean up top of table, solo cards etc
+        Wait.time(function()
+        local unused_bag = getObjectFromGUID("f6e30d")
+        for _, object in pairs(getObjectFromGUID("5d05ff").getObjects()) do
+            if object.tag == "Deck" then
+                unused_bag.putObject(object)
+            end
+        end
+        local bag_pos = unused_bag.getPosition()
+        bag_pos.x = 0.00
+        unused_bag.setPositionSmooth(bag_pos, false, false)
+        -- clean up extra solo cards (reinforce/conspiracy)
+        local card_1 = getObjectFromGUID("43c807")
+        local card_2 = getObjectFromGUID("4e8dcb")
+        -- if solo, position around bag
+        if getObjectFromGUID("23bed4").getGMNotes() == "solo" or getObjectFromGUID("1a78a6").getGMNotes() == "solo" then
+            if card_1 then
+                card_1.setPositionSmooth({-5.50, 1.71, 27.65}, false, false)
+            end
+            if card_2 then
+                card_2.setPositionSmooth({5.50, 1.71, 27.65}, false, false)
+            end
+        -- otherwise, put into bag
+        else
+            unused_bag.putObject(card_1)
+            unused_bag.putObject(card_2)
+        end
+        end, .5)
+        -- place button most value, button next bot action
+        if getObjectFromGUID("23bed4").getGMNotes() == "solo" or getObjectFromGUID("1a78a6").getGMNotes() == "solo" then
+            UI.setAttribute("bot_controls", "active", "true")
+            UI.setAttribute('end_player_turn', 'active', 'true')
+            UI.setAttribute('bot_discard', 'active', 'true')
+            UI.setAttribute('bot_discard_x3', 'active', 'true')
+            UI.setAttribute('bot_log', 'active', 'true')
+            UI.setAttribute('bot_incident', 'active', 'true')
+            local unused_bag_objects = getObjectFromGUID("f6e30d").getObjects()
+            local button_mvp_index       = nil
+            for _, unused_bag_object in pairs(unused_bag_objects) do
+                if unused_bag_object.name == "Button Most Value" then
+                    button_mvp_index = unused_bag_object.index
+                end
+            end
+            if button_mvp_index ~= nil then
+                local button_most_value = getObjectFromGUID("f6e30d").takeObject({index=button_mvp_index})
+                button_most_value.setPosition({6.80, 0.75, -2.00})
+                Wait.time(function()
+                button_most_value.setLock(true)
+                button_most_value.interactable = false
+                end, .1)
+            end
+            local button_next_bot_action = getObjectFromGUID("f6e30d").takeObject({guid="e28824"})
+            local bot_color, human_color = getObjectFromGUID("ab8b38").call('get_colors')
+            button_next_bot_action.setRotation(bot_color == "Blue" and {0.00, 90.00, 0.00} or {0.00, 270.00, 0.00})
+            button_next_bot_action.setPosition(bot_color == "Blue" and {25.75, 0.75, -6.06} or {-25.75, 0.75, 6.06})
+            button_next_bot_action.setColorTint(bot_color == "Blue" and "Red" or "Blue")
+            Wait.time(function()
+            button_next_bot_action.setLock(true)
+            button_next_bot_action.interactable = false
+            end, .1)
+        end
+        end, 3)
+    end
+end -- end setup_captain()
+
+
+function setup_goal_buttons()
+    Wait.time(function()
+    local button_object = nil
+    for _, object in pairs(main_zone.getObjects()) do
+        if string.find(object.getName(), "Crew Board") and object ~= self then
+            button_object = object
+        end
+    end
+    if button_object then
+        if string.find(button_object.getName(), "Basic") then
+            button_object.call('create_uncompleted_mission_button')
+        end
+        if string.find(button_object.getName(), "Advanced") then
+            button_object.call('create_uncompleted_mission_button_1')
+            button_object.call('create_uncompleted_mission_button_2')
+            button_object.call('create_uncompleted_mission_button_3')
+        end
+    end
+    end, 3)
+end -- end setup_goal_buttons()

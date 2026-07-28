@@ -1,0 +1,57 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.23524,
+    "g": 0.23524,
+    "r": 0.23524
+  },
+  "CustomImage": {
+    "CustomTile": {
+      "Stackable": false,
+      "Stretch": true,
+      "Thickness": 0.2,
+      "Type": 3
+    },
+    "ImageScalar": 1,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181683410264/AD3124474EB6BCD76684D9A19C9AA9DFBEEA827A/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181683410264/AD3124474EB6BCD76684D9A19C9AA9DFBEEA827A/",
+    "WidthScale": 0
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "608dce",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Custom_Tile",
+  "Nickname": "Common Card List",
+  "Snap": true,
+  "Sticky": true,
+  "Tooltip": false,
+  "Transform": {
+    "posX": 0,
+    "posY": 12.26,
+    "posZ": 39.2,
+    "rotX": 60,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 12,
+    "scaleY": 1,
+    "scaleZ": 12
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

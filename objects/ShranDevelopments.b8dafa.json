@@ -1,0 +1,81 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "AmbasadorThoris.a0241b",
+    "AndorianAle.28534d",
+    "AndorianCruiser.0b07c1",
+    "TenebianAmethyst.a0849b",
+    "CommandoUnit.d7c2e7",
+    "Coridan.dd59fc",
+    "Aenar.709fd6"
+  ],
+  "ContainedObjects_path": "ShranDevelopments.b8dafa",
+  "CustomDeck": {
+    "156": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181680999184/158FF8CA0608DEA33F6511779E4778CBB160D083/",
+      "NumHeight": 4,
+      "NumWidth": 6,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "DeckIDs": [
+    15607,
+    15606,
+    15605,
+    15604,
+    15603,
+    15602,
+    15601
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "b8dafa",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Shran Developments",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "cleanup_target",
+    "snap_card",
+    "trait_andorian"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 65.1,
+    "posY": 1.765,
+    "posZ": 3,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

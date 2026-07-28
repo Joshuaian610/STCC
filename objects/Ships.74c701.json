@@ -1,0 +1,92 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "Xindi-ReptillianBattleship.c9cb4f",
+    "VothResearchVessel.d1a3dc",
+    "USSReliant.509d40",
+    "USSPasteur.f9728d",
+    "USSEnterprise-C.c091f9",
+    "SonaBattlecruiser.1b862e",
+    "PakledFreighter.d770fa",
+    "KazonRaider.68b558",
+    "KtingaBattlecruiser.7fed4c",
+    "HolographicDroneShip.06c9ca",
+    "DkyrCruiser.48e459",
+    "BorgProbe.e5df19",
+    "Bird-Of-Prey.3b97de"
+  ],
+  "ContainedObjects_path": "Ships.74c701",
+  "CustomDeck": {
+    "182": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13217578753935317285/83CCE516BCFD266562D143EFB3E1205FE27E97CC/",
+      "NumHeight": 2,
+      "NumWidth": 7,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "DeckIDs": [
+    18212,
+    18211,
+    18210,
+    18209,
+    18208,
+    18207,
+    18206,
+    18205,
+    18204,
+    18203,
+    18202,
+    18201,
+    18200
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "74c701",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Ships",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_card",
+    "suit_ship"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 2.5,
+    "posY": 1.034,
+    "posZ": 14,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 180,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

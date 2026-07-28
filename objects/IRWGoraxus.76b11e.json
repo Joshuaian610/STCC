@@ -1,0 +1,59 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0,
+    "g": 0,
+    "r": 0
+  },
+  "CustomFigurine": {
+    "MirroredBack": false,
+    "UseMinimalCollider": false
+  },
+  "CustomImage": {
+    "ImageScalar": 2,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/25439815955489883/2ED7A57D185A7B51A4ECE54C16AF9010120620FA/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25439815955489678/3BD1DD8A0B7891585B1CCE579538F04205388CB0/",
+    "WidthScale": 0
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "76b11e",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Figurine_Custom",
+  "Nickname": "I.R.W. Goraxus",
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "cleanup_target",
+    "snap_ship"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 79.389,
+    "posY": 2.076,
+    "posZ": 17.155,
+    "rotX": 0,
+    "rotY": 0,
+    "rotZ": 0,
+    "scaleX": 1,
+    "scaleY": 1,
+    "scaleZ": 1
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

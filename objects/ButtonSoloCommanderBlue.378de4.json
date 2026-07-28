@@ -1,0 +1,61 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 1,
+    "g": 0.53,
+    "r": 0.11794
+  },
+  "CustomImage": {
+    "CustomTile": {
+      "Stackable": false,
+      "Stretch": false,
+      "Thickness": 0.348251343,
+      "Type": 3
+    },
+    "ImageScalar": 1,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/25434746166457934/B7854F3D988E11DC7F7A7091128D88F7DC7667A7/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25434746166457934/B7854F3D988E11DC7F7A7091128D88F7DC7667A7/",
+    "WidthScale": 0
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "378de4",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Custom_Tile",
+  "Nickname": "Button Solo Commander Blue",
+  "Snap": false,
+  "Sticky": true,
+  "Tags": [
+    "button_faction_setup",
+    "non_int"
+  ],
+  "Tooltip": false,
+  "Transform": {
+    "posX": -38.955,
+    "posY": -2,
+    "posZ": 7,
+    "rotX": 0,
+    "rotY": 90,
+    "rotZ": 0,
+    "scaleX": 1.65,
+    "scaleY": 1,
+    "scaleZ": 0.3
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

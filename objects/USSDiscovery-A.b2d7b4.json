@@ -1,0 +1,59 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0,
+    "g": 0,
+    "r": 0
+  },
+  "CustomFigurine": {
+    "MirroredBack": false,
+    "UseMinimalCollider": false
+  },
+  "CustomImage": {
+    "ImageScalar": 2,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/25439815955465157/D095EB6074EBBAB67AE64F075B82FE842DDB416F/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25439815955464750/2DF616661DA3FDB0C683ABE99030F093FB7536D1/",
+    "WidthScale": 0
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "b2d7b4",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Figurine_Custom",
+  "Nickname": "U.S.S. Discovery-A",
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "cleanup_target",
+    "snap_ship"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": -70.61,
+    "posY": 2.071,
+    "posZ": 17.154,
+    "rotX": 0,
+    "rotY": 0,
+    "rotZ": 0,
+    "scaleX": 1,
+    "scaleY": 1,
+    "scaleZ": 1
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

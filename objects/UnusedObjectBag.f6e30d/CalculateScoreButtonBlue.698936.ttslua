@@ -1,0 +1,2056 @@
+zone_hand_blue    = getObjectFromGUID("73058e")
+zone_hand_red     = getObjectFromGUID("72070a")
+zone_captain_blue = getObjectFromGUID("596317")
+zone_captain_red  = getObjectFromGUID("bf1e62")
+zone_draw_blue    = getObjectFromGUID("58f8ce")
+zone_draw_red     = getObjectFromGUID("5e07a8")
+zone_discard_blue = getObjectFromGUID("fbfe84")
+zone_discard_red  = getObjectFromGUID("b72553")
+zone_staging_blue = getObjectFromGUID("e54fe3")
+zone_staging_red  = getObjectFromGUID("586a2e")
+zone_ship_blue    = getObjectFromGUID("fc7f21")
+zone_ship_red     = getObjectFromGUID("5103b2")
+zone_loc_blue     = getObjectFromGUID("2c336e")
+zone_loc_red      = getObjectFromGUID("77d0cb")
+zone_duty_blue    = getObjectFromGUID("a9ca57")
+zone_duty_red     = getObjectFromGUID("818a7e")
+bag_caplog_blue   = getObjectFromGUID("973d0b")
+bag_caplog_red    = getObjectFromGUID("3f15f8")
+beam_bags_blue    = {
+    getObjectFromGUID("26a5c6"),
+    getObjectFromGUID("ca88c0"),
+    getObjectFromGUID("40b578"),
+    getObjectFromGUID("eeadbe"),
+    getObjectFromGUID("7a7548"),
+    getObjectFromGUID("397e6d"),
+    getObjectFromGUID("ce11ad"),
+    getObjectFromGUID("f3ac62"),
+    getObjectFromGUID("acf736"),
+    getObjectFromGUID("f8fc03"),
+    getObjectFromGUID("5807b2"),
+    getObjectFromGUID("d57c5c"),
+    getObjectFromGUID("9d0439"),
+    getObjectFromGUID("ff0165"),
+}
+beam_bags_red     = {
+    getObjectFromGUID("7f4770"),
+    getObjectFromGUID("577602"),
+    getObjectFromGUID("82a5c5"),
+    getObjectFromGUID("4f12e8"),
+    getObjectFromGUID("351f79"),
+    getObjectFromGUID("efdbd0"),
+    getObjectFromGUID("cf1df7"),
+    getObjectFromGUID("95dff1"),
+    getObjectFromGUID("30048e"),
+    getObjectFromGUID("910a26"),
+    getObjectFromGUID("9e394f"),
+    getObjectFromGUID("392caa"),
+    getObjectFromGUID("c32b20"),
+    getObjectFromGUID("b5d6f9"),
+}
+
+
+
+function onLoad()
+    create_button()
+end -- end onLoad()
+
+function create_button()
+    self.createButton({
+        click_function = "calculate_score",
+        function_owner = self,
+        label          = "",
+        position       = {0, 0.36, -0.01},
+        width          = 1700,
+        height         = 435,
+        scale          = {2.3, 2.3, 2.3},
+        color          = {1, 1, 1, .3},
+        hover_color    = {1, 1, 1, .6},
+        tooltip        = "Clicking this button will update player scoring pads and player notebooks with the score as it currently stands. Ensure all cards are in their correct locations, all completed missions are checked off on Captain board, and Skill counters are correct to ensure correct scoring.\n\n *Important: If counting for Su'kal or Kelpians, manually return incidents before scoring.",
+    })
+end -- end create_button()
+
+
+function null_func()
+    return nil
+end -- end null_func()
+
+
+function remove_buttons(object)
+    local buttons = object.getButtons()
+    if buttons ~= nil then
+        if #buttons > 0 then
+            for k = #buttons, 1, -1 do
+                if buttons[k].index ~= nil then
+                    object.removeButton(buttons[k].index)
+                end
+            end
+        end
+    end
+end -- end remove_buttons()
+
+
+function get_track_multipliers(captain_card, sci_count, dip_count, mil_count)
+    local sci_multiplier    = nil
+    local dip_multiplier    = nil
+    local mil_multiplier    = nil
+    local captain_card_name = captain_card.getName()
+    local split_card_name   = {}
+    for str in string.gmatch(captain_card_name,  "%S+") do
+        table.insert(split_card_name, str)
+    end
+    local captain_name      = split_card_name[1]
+    local difficulty        = split_card_name[4]
+
+    if captain_name     == "Burnham" then
+        -- science
+        if sci_count < 2 then
+            sci_multiplier = 1
+        elseif sci_count > 1 and sci_count < 7 then
+            sci_multiplier = 2
+        elseif sci_count > 6 and sci_count < 10 then
+            sci_multiplier = 3
+        elseif sci_count > 9 and sci_count < 13 then
+            sci_multiplier = 4
+        elseif sci_count > 12 and sci_count < 15 then
+            sci_multiplier = 5
+        elseif sci_count == 15 then
+            sci_multiplier = 6
+        end
+        -- diplomacy
+        if dip_count < 2 then
+            dip_multiplier = 1
+        elseif dip_count > 1 and dip_count < 7 then
+            dip_multiplier = 2
+        elseif dip_count > 6 and dip_count < 10 then
+            dip_multiplier = 3
+        elseif dip_count > 9 and dip_count < 13 then
+            dip_multiplier = 4
+        elseif dip_count > 12 and dip_count < 15 then
+            dip_multiplier = 5
+        elseif dip_count == 15 then
+            dip_multiplier = 6
+        end
+        -- military
+        if mil_count < 5 then
+            mil_multiplier = 1
+        elseif mil_count > 4 and mil_count < 10 then
+            mil_multiplier = 3
+        elseif mil_count > 9 and mil_count < 13 then
+            mil_multiplier = 4
+        elseif mil_count > 13 then
+            mil_multiplier = 5
+        end
+    elseif captain_name == "Koloth" then
+        -- science
+        if sci_count < 5 then
+            sci_multiplier = 1
+        elseif sci_count > 4 and sci_count < 10 then
+            sci_multiplier = 3
+        elseif sci_count > 9 and sci_count < 13 then
+            sci_multiplier = 4
+        elseif mil_count > 13 then
+            sci_multiplier = 5
+        end
+        -- diplomacy
+        if dip_count < 3 then
+            dip_multiplier = 1
+        elseif dip_count > 2 and dip_count < 8 then
+            dip_multiplier = 2
+        elseif dip_count > 7 and dip_count < 11 then
+            dip_multiplier = 3
+        elseif dip_count > 10 and dip_count < 15 then
+            dip_multiplier = 5
+        elseif dip_count == 15 then
+            dip_multiplier = 7
+        end
+        -- military
+        if mil_count < 2 then
+            mil_multiplier = 1
+        elseif mil_count > 1 and mil_count < 7 then
+            mil_multiplier = 2
+        elseif mil_count > 6 and mil_count < 10 then
+            mil_multiplier = 3
+        elseif mil_count > 9 and mil_count < 13 then
+            mil_multiplier = 4
+        elseif mil_count > 12 and mil_count < 15 then
+            mil_multiplier = 5
+        elseif mil_count == 15 then
+            mil_multiplier = 7
+        end
+    elseif captain_name == "Picard" then
+        -- science
+        if sci_count < 2 then
+            sci_multiplier = 1
+        elseif sci_count > 1 and sci_count < 7 then
+            sci_multiplier = 2
+        elseif sci_count > 6 and sci_count < 10 then
+            sci_multiplier = 3
+        elseif sci_count > 9 and sci_count < 13 then
+            sci_multiplier = 4
+        elseif sci_count > 12 and sci_count < 15 then
+            sci_multiplier = 5
+        elseif sci_count == 15 then
+            sci_multiplier = 6
+        end
+        -- diplomacy
+        if dip_count < 3 then
+            dip_multiplier = 1
+        elseif dip_count > 2 and dip_count < 8 then
+            dip_multiplier = 2
+        elseif dip_count > 7 and dip_count < 11 then
+            dip_multiplier = 3
+        elseif dip_count > 10 and dip_count < 15 then
+            dip_multiplier = 5
+        elseif dip_count == 15 then
+            dip_multiplier = 7
+        end
+        -- military
+        if mil_count < 5 then
+            mil_multiplier = 1
+        elseif mil_count > 4 and mil_count < 10 then
+            mil_multiplier = 3
+        elseif mil_count > 9 and mil_count < 14 then
+            mil_multiplier = 4
+        elseif mil_count > 14 then
+            mil_multiplier = 5
+        end
+    elseif captain_name == "Sela" then
+        -- science
+        if sci_count < 5 then
+            sci_multiplier = 1
+        elseif sci_count > 4 and sci_count < 10 then
+            sci_multiplier = 3
+        elseif sci_count > 9 and sci_count < 13 then
+            sci_multiplier = 4
+        elseif mil_count > 13 then
+            sci_multiplier = 5
+        end
+        -- diplomacy
+        if dip_count < 5 then
+            dip_multiplier = 1
+        elseif dip_count > 4 and dip_count < 10 then
+            dip_multiplier = 3
+        elseif dip_count > 9 and dip_count < 14 then
+            dip_multiplier = 4
+        elseif dip_count > 13 then
+            dip_multiplier = 5
+        end
+        -- military
+        if mil_count < 5 then
+            mil_multiplier = 1
+        elseif mil_count > 4 and mil_count < 10 then
+            mil_multiplier = 3
+        elseif mil_count > 9 and mil_count < 14 then
+            mil_multiplier = 4
+        elseif mil_count > 13 then
+            mil_multiplier = 5
+        end
+    elseif captain_name == "Shran" then
+        -- science
+        if sci_count < 5 then
+            sci_multiplier = 1
+        elseif sci_count > 4 and sci_count < 10 then
+            sci_multiplier = 3
+        elseif sci_count > 9 and sci_count < 13 then
+            sci_multiplier = 4
+        elseif mil_count > 13 then
+            sci_multiplier = 5
+        end
+        -- diplomacy
+        if dip_count < 2 then
+            dip_multiplier = 1
+        elseif dip_count > 1 and dip_count < 7 then
+            dip_multiplier = 2
+        elseif dip_count > 6 and dip_count < 10 then
+            dip_multiplier = 3
+        elseif dip_count > 9 and dip_count < 13 then
+            dip_multiplier = 4
+        elseif dip_count > 12 and dip_count < 15 then
+            dip_multiplier = 5
+        elseif dip_count == 15 then
+            dip_multiplier = 6
+        end
+        -- military
+        if mil_count < 3 then
+            mil_multiplier = 1
+        elseif mil_count > 2 and mil_count < 8 then
+            mil_multiplier = 2
+        elseif mil_count > 7 and mil_count < 11 then
+            mil_multiplier = 3
+        elseif mil_count > 10 and mil_count < 15 then
+            mil_multiplier = 5
+        elseif mil_count == 15 then
+            mil_multiplier = 6
+        end
+    elseif captain_name == "Sisko" then
+        -- science
+        if sci_count < 3 then
+            sci_multiplier = 1
+        elseif sci_count > 2 and sci_count < 8 then
+            sci_multiplier = 2
+        elseif sci_count > 7 and sci_count < 11 then
+            sci_multiplier = 3
+        elseif sci_count > 10 and sci_count < 15 then
+            sci_multiplier = 5
+        elseif sci_count == 15 then
+            sci_multiplier = 7
+        end
+        -- diplomacy
+        if dip_count < 2 then
+            dip_multiplier = 1
+        elseif dip_count > 1 and dip_count < 7 then
+            dip_multiplier = 2
+        elseif dip_count > 6 and dip_count < 10 then
+            dip_multiplier = 3
+        elseif dip_count > 9 and dip_count < 13 then
+            dip_multiplier = 4
+        elseif dip_count > 12 and dip_count < 15 then
+            dip_multiplier = 5
+        elseif dip_count == 15 then
+            dip_multiplier = 6
+        end
+        -- military
+        if mil_count < 4 then
+            mil_multiplier = 1
+        elseif mil_count > 3 and mil_count < 9 then
+            mil_multiplier = 2
+        elseif mil_count > 8 and mil_count < 13 then
+            mil_multiplier = 4
+        elseif mil_count > 12 and mil_count < 15 then
+            mil_multiplier = 5
+        elseif mil_count == 15 then
+            mil_multiplier = 6
+        end
+    end
+    if difficulty == "Advanced" then
+        sci_multiplier = sci_multiplier - 1
+        dip_multiplier = dip_multiplier - 1
+        mil_multiplier = mil_multiplier - 1
+    end
+    return sci_multiplier, dip_multiplier, mil_multiplier
+end -- end get_track_multipliers()
+
+
+function get_away_count()
+    local blue_count = 0
+    local red_count  = 0
+
+    for i = 1, 2 do
+        local zones = i == 1 and {"eaec24", "3c477c", "ba30f9"} or {"817308", "a0256f", "758ef4"}
+        for j = 1, 3 do
+            for _, object in pairs(getObjectFromGUID(zones[j]).getObjects()) do
+                -- count ships
+                if object.hasTag('snap_ship') then
+                    if i == 1 then
+                        blue_count = blue_count + 1
+                    else
+                        red_count = red_count + 1
+                    end
+                end
+                -- count away teams
+                if i == 1 then
+                    if object.hasTag('away_blue') then
+                        blue_count = blue_count + 1
+                    end
+                else
+                    if object.hasTag('away_red') then
+                        red_count = red_count + 1
+                    end
+                end
+            end
+        end
+    end
+    return blue_count, red_count
+end -- end get_away_count()
+
+
+function get_owned_cards()
+    -- create owned card lists for both players
+    local card_list_blue   = {}
+    local card_list_red    = {}
+    for i = 1, 2 do
+        local color        = i == 1 and "Blue" or "Red"
+        local card_list    = i == 1 and card_list_blue or card_list_red
+        local zone_hand    = i == 1 and zone_hand_blue or zone_hand_red
+        local zone_captain = i == 1 and zone_captain_blue or zone_captain_red
+        local zone_draw    = i == 1 and zone_draw_blue or zone_draw_red
+        local zone_discard = i == 1 and zone_discard_blue or zone_discard_red
+        local zone_staging = i == 1 and zone_staging_blue or zone_staging_red
+        local zone_ship    = i == 1 and zone_ship_blue or zone_ship_red
+        local zone_loc     = i == 1 and zone_loc_blue or zone_loc_red
+        local zone_duty    = i == 1 and zone_duty_blue or zone_duty_red
+        local bag_caplog   = i == 1 and bag_caplog_blue or bag_caplog_red
+        local beam_bags    = i == 1 and beam_bags_blue or beam_bags_red
+        local zones        = {
+            zone_hand,
+            zone_captain,
+            zone_draw,
+            zone_discard,
+            zone_staging,
+            zone_ship,
+            zone_loc,
+            zone_duty,
+        }
+        -- cards in zones
+        for i = 1, 8 do
+            for _, object in pairs(zones[i].getObjects()) do
+                if object.tag == "Card" then
+                    table.insert(card_list, object.getName())
+                end
+                if object.tag == "Deck" then
+                    local deck_objects = object.getObjects()
+                    for _, deck_object in pairs(deck_objects) do
+                        table.insert(card_list, deck_object.name)
+                    end
+                end
+            end
+        end
+        -- cards in log/beam bags
+        for _, bag_object in pairs(bag_caplog.getObjects()) do
+            table.insert(card_list, bag_object.name)
+        end
+        for i = 1, 14 do
+            if beam_bags[i] ~= nil then
+                for _, bag_object in pairs(beam_bags[i].getObjects()) do
+                    table.insert(card_list, bag_object.name)
+                end
+            end
+        end
+    end
+    return card_list_blue, card_list_red
+end -- get_owned_cards()
+
+
+function get_endgame_count()
+    local card_list_blue, card_list_red = get_owned_cards()
+    local endgame_card_list_blue        = {}
+    local endgame_card_list_red         = {}
+    local nbstr_blue                    = ""
+    local nbstr_red                     = ""
+
+    for i = 1, 2 do
+        local color                     = i == 1 and "Blue" or "Red"
+        local card_list                 = i == 1 and card_list_blue or card_list_red
+        local endgame_card_list         = i == 1 and endgame_card_list_blue or endgame_card_list_red
+        local nb_str                    = i == 1 and nbstr_blue or nbstr_red
+        local nb_str_color              = i == 1 and "1E87FF" or "DB1B18"
+        local zone_hand                 = i == 1 and zone_hand_blue or zone_hand_red
+        local zone_captain              = i == 1 and zone_captain_blue or zone_captain_red
+        local zone_draw                 = i == 1 and zone_draw_blue or zone_draw_red
+        local zone_discard              = i == 1 and zone_discard_blue or zone_discard_red
+        local zone_staging              = i == 1 and zone_staging_blue or zone_staging_red
+        local zone_ship                 = i == 1 and zone_ship_blue or zone_ship_red
+        local zone_loc                  = i == 1 and zone_loc_blue or zone_loc_red
+        local zone_duty                 = i == 1 and zone_duty_blue or zone_duty_red
+        local bag_caplog                = i == 1 and bag_caplog_blue or bag_caplog_red
+        local beam_bags                 = i == 1 and beam_bags_blue or beam_bags_red
+        local solo_check                = i == 1 and getObjectFromGUID("23bed4") or getObjectFromGUID("1a78a6")
+        local is_solo                   = false
+        if solo_check.getGMNotes()     == "solo" then
+            is_solo                     = true
+        end
+        local zones                     = {
+            zone_hand,
+            zone_captain,
+            zone_draw,
+            zone_discard,
+            zone_staging,
+            zone_ship,
+            zone_loc,
+            zone_duty,
+        }
+
+        for i = 1, #card_list do
+
+            -- Locations
+            if card_list[i]            == "Verex III" then
+                -- Verex III: score 1 for every shady owned
+                -- check if in play
+                local in_play    = false
+                for _, object in pairs(getObjects()) do
+                    if object.getName() == "Verex III" then
+                        local checkzones = {"fc7f21", "2c336e", "5103b2", "77d0cb"}
+                        for i = 1, 4 do
+                            for _, object in pairs(getObjectFromGUID(checkzones[i]).getObjects()) do
+                                if object.getName() == "Verex III" then
+                                    in_play = true
+                                end
+                            end
+                        end
+                    end
+                end
+                if in_play then
+                    local shady_count = 0
+                    -- check zones for shady trait
+                    for i = 1, 8 do
+                        for _, object in pairs(zones[i].getObjects()) do
+                            if object.tag == "Card" and object.hasTag('trait_shady') then
+                                shady_count = shady_count + 1
+                            end
+                            if object.tag == "Deck" then
+                                for _, deck_object in pairs(object.getObjects()) do
+                                    local deck_object_tags = deck_object.tags
+                                    for i = 1, #deck_object_tags do
+                                        if deck_object_tags[i] == "trait_shady" then
+                                            shady_count = shady_count + 1
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                    -- check bags for shady trait
+                    for _, bag_object in pairs(bag_caplog.getObjects()) do
+                        local bag_object_tags = bag_object.tags
+                        for i = 1, #bag_object_tags do
+                            if bag_object_tags[i] == "trait_shady" then
+                                shady_count = shady_count + 1
+                            end
+                        end
+                    end
+                    for i = 1, 14 do
+                        for _, bag_object in pairs(beam_bags[i].getObjects()) do
+                            local bag_object_tags = bag_object.tags
+                            for i = 1, #bag_object_tags do
+                                if bag_object_tags[i] == "trait_shady" then
+                                    shady_count = shady_count + 1
+                                end
+                            end
+                        end
+                    end
+                    if is_solo then shady_count = 5 end
+                    if shady_count > 0 then
+                        table.insert(endgame_card_list, {["Verex III"] = shady_count})
+                        nb_str = nb_str .. "\nVerex III: " .. shady_count
+                    end
+                end
+
+            elseif card_list[i]        == "Derna" then
+                -- Derna: score 2 for every weapon beamed here
+                -- get card position, use to determine beam bag
+                local card_pos   = {}
+                local beam_bag   = nil
+                local in_play    = false
+                for _, object in pairs(getObjects()) do
+                    if object.getName() == "Derna" then
+                        card_pos = object.getPosition()
+                        local checkzones = {"fc7f21", "2c336e", "5103b2", "77d0cb"}
+                        for i = 1, 4 do
+                            for _, object in pairs(getObjectFromGUID(checkzones[i]).getObjects()) do
+                                if object.getName() == "Derna" then
+                                    in_play = true
+                                end
+                            end
+                        end
+                    end
+                end
+                if in_play then
+                    -- check X position to narrow down potential bag suspects to rows
+                    local possible_bags = {}
+                    if card_pos.x > 37.50 and card_pos.x < 39.50 or  --ships pad
+                    card_pos.x > -39.50 and card_pos.x < -37.50 then
+                        for i = 8, 14 do
+                            table.insert(possible_bags, beam_bags[i])
+                        end
+                    elseif card_pos.x > 29.00 and card_pos.x < 31.00 or -- locations pad
+                    card_pos.x > -31.00 and card_pos.x < -29.00 then
+                        for i = 1, 7 do
+                            table.insert(possible_bags, beam_bags[i])
+                        end
+                    end
+                    -- match up the Z positioning
+                    for i = 1, 7 do
+                        local bag_pos = possible_bags[i].getPosition()
+                        if card_pos.z > bag_pos.z - 1 and card_pos.z < bag_pos.z + 1 then
+                            beam_bag = possible_bags[i]
+                        end
+                    end
+                    local weapon_count = 0
+                    if beam_bag ~= nil then
+                        for _, bag_object in pairs(beam_bag.getObjects()) do
+                            local bag_object_tags = bag_object.tags
+                            for i = 1, #bag_object_tags do
+                                if bag_object_tags[i] == "trait_weapon" then
+                                    weapon_count = weapon_count + 1
+                                end
+                            end
+                        end
+                        if not is_solo then
+                            if weapon_count > 0 then
+                                table.insert(endgame_card_list, {["Derna"] = weapon_count * 2})
+                                nb_str = nb_str .. "\nDerna: " .. weapon_count * 2
+                            end
+                        else
+                            table.insert(endgame_card_list, {["Derna"] = 5})
+                            nb_str = nb_str .. "\nDerna: 5"
+                        end
+                    end
+                end
+
+            elseif card_list[i]        == "Ba'ku" then
+                -- Ba'ku score 1 for every person beamed here
+                -- get card position, use to determine beam bag
+                local card_pos   = {}
+                local beam_bag   = nil
+                local in_play    = false
+                for _, object in pairs(getObjects()) do
+                    if object.getName() == "Ba'ku" then
+                        card_pos = object.getPosition()
+                        local checkzones = {"fc7f21", "2c336e", "5103b2", "77d0cb"}
+                        for i = 1, 4 do
+                            for _, object in pairs(getObjectFromGUID(checkzones[i]).getObjects()) do
+                                if object.getName() == "Ba'ku" then
+                                    in_play = true
+                                end
+                            end
+                        end
+                    end
+                end
+                if in_play then
+                    -- check X position to narrow down potential bag suspects to rows
+                    local possible_bags = {}
+                    if card_pos.x > 37.50 and card_pos.x < 39.50 or  --ships pad
+                    card_pos.x > -39.50 and card_pos.x < -37.50 then
+                        for i = 8, 14 do
+                            table.insert(possible_bags, beam_bags[i])
+                        end
+                    elseif card_pos.x > 29.00 and card_pos.x < 31.00 or -- locations pad
+                    card_pos.x > -31.00 and card_pos.x < -29.00 then
+                        for i = 1, 7 do
+                            table.insert(possible_bags, beam_bags[i])
+                        end
+                    end
+                    -- match up the Z positioning
+                    for i = 1, 7 do
+                        local bag_pos = possible_bags[i].getPosition()
+                        if card_pos.z > bag_pos.z - 1 and card_pos.z < bag_pos.z + 1 then
+                            beam_bag = possible_bags[i]
+                        end
+                    end
+                    local person_count = 0
+                    if beam_bag ~= nil then
+                        for _, bag_object in pairs(beam_bag.getObjects()) do
+                            local bag_object_tags = bag_object.tags
+                            for i = 1, #bag_object_tags do
+                                if bag_object_tags[i] == "suit_person" then
+                                    person_count = person_count + 1
+                                end
+                            end
+                        end
+                    end
+                    if is_solo then erson_count = 5 end
+                    if person_count > 0 then
+                        table.insert(endgame_card_list, {["Ba'ku"] = person_count})
+                        nb_str = nb_str .. "\nBa'ku: " .. person_count
+                    end
+                end
+
+            elseif card_list[i]        == "Regula I" then
+                -- Regula I: score 1 for every anomaly owned
+                -- check if in play
+                local in_play    = false
+                for _, object in pairs(getObjects()) do
+                    if object.getName() == "Regula I" then
+                        local checkzones = {"fc7f21", "2c336e", "5103b2", "77d0cb"}
+                        for i = 1, 4 do
+                            for _, object in pairs(getObjectFromGUID(checkzones[i]).getObjects()) do
+                                if object.getName() == "Regula I" then
+                                    in_play = true
+                                end
+                            end
+                        end
+                    end
+                end
+                if in_play then
+                    local anomaly_count = 0
+                    -- check zones for anomaly trait
+                    for i = 1, 8 do
+                        for _, object in pairs(zones[i].getObjects()) do
+                            if object.tag == "Card" and object.hasTag('trait_anomaly') then
+                                anomaly_count = anomaly_count + 1
+                            end
+                            if object.tag == "Deck" then
+                                for _, deck_object in pairs(object.getObjects()) do
+                                    local deck_object_tags = deck_object.tags
+                                    for i = 1, #deck_object_tags do
+                                        if deck_object_tags[i] == "trait_anomaly" then
+                                            anomaly_count = anomaly_count + 1
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                    -- check bags for anomaly trait
+                    for _, bag_object in pairs(bag_caplog.getObjects()) do
+                        local bag_object_tags = bag_object.tags
+                        for i = 1, #bag_object_tags do
+                            if bag_object_tags[i] == "trait_anomaly" then
+                                anomaly_count = anomaly_count + 1
+                            end
+                        end
+                    end
+                    for i = 1, 14 do
+                        for _, bag_object in pairs(beam_bags[i].getObjects()) do
+                            local bag_object_tags = bag_object.tags
+                            for i = 1, #bag_object_tags do
+                                if bag_object_tags[i] == "trait_anomaly" then
+                                    anomaly_count = anomaly_count + 1
+                                end
+                            end
+                        end
+                    end
+                    if is_solo then
+                        anomaly_count = 5
+                    end
+                    if anomaly_count > 0 then
+                        table.insert(endgame_card_list, {["Regula I"] = anomaly_count})
+                        nb_str = nb_str .. "\nRegula I: " .. anomaly_count
+                    end
+                end
+
+            elseif card_list[i]        == "Daystrom Institute" then
+                -- Daystrom Institute: score 1 for every sythetic card owned
+                -- check if in play
+                local in_play    = false
+                for _, object in pairs(getObjects()) do
+                    if object.getName() == "Daystrom Institute" then
+                        local checkzones = {"fc7f21", "2c336e", "5103b2", "77d0cb"}
+                        for i = 1, 4 do
+                            for _, object in pairs(getObjectFromGUID(checkzones[i]).getObjects()) do
+                                if object.getName() == "Daystrom Institute" then
+                                    in_play = true
+                                end
+                            end
+                        end
+                    end
+                end
+                if in_play then
+                    local synthetic_count = 0
+                    -- check zones for synthetic trait
+                    for i = 1, 8 do
+                        for _, object in pairs(zones[i].getObjects()) do
+                            if object.tag == "Card" and object.hasTag('trait_synthetic') then
+                                synthetic_count = synthetic_count + 1
+                            end
+                            if object.tag == "Deck" then
+                                for _, deck_object in pairs(object.getObjects()) do
+                                    local deck_object_tags = deck_object.tags
+                                    for i = 1, #deck_object_tags do
+                                        if deck_object_tags[i] == "trait_synthetic" then
+                                            synthetic_count = synthetic_count + 1
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                    -- check bags for synthetic trait
+                    for _, bag_object in pairs(bag_caplog.getObjects()) do
+                        local bag_object_tags = bag_object.tags
+                        for i = 1, #bag_object_tags do
+                            if bag_object_tags[i] == "trait_synthetic" then
+                                synthetic_count = synthetic_count + 1
+                            end
+                        end
+                    end
+                    for i = 1, 14 do
+                        for _, bag_object in pairs(beam_bags[i].getObjects()) do
+                            local bag_object_tags = bag_object.tags
+                            for i = 1, #bag_object_tags do
+                                if bag_object_tags[i] == "trait_synthetic" then
+                                    synthetic_count = synthetic_count + 1
+                                end
+                            end
+                        end
+                    end
+                    if is_solo then synthetic_count = 5 end
+                    if synthetic_count > 0 then
+                        table.insert(endgame_card_list, {["Daystrom Institute"] = synthetic_count})
+                        nb_str = nb_str .. "\nDaystrom Institute: " .. synthetic_count
+                    end
+                end
+
+            elseif card_list[i]        == "Boreth" then
+                -- Boreth: score 1 for every non beamed skill icon (inc wildcard) in play
+                -- check if in play
+                local in_play    = false
+                for _, object in pairs(getObjects()) do
+                    if object.getName() == "Boreth" then
+                        local checkzones = {"fc7f21", "2c336e", "5103b2", "77d0cb"}
+                        for i = 1, 4 do
+                            for _, object in pairs(getObjectFromGUID(checkzones[i]).getObjects()) do
+                                if object.getName() == "Boreth" then
+                                    in_play = true
+                                end
+                            end
+                        end
+                    end
+                end
+                if in_play then
+                    -- check slots: captain, staging, ships, locations, duty officers
+                    local check_zones = {
+                        zone_captain,
+                        zone_staging,
+                        zone_ship,
+                        zone_loc,
+                        zone_duty,
+                    }
+                    local sci_count = 0
+                    local dip_count = 0
+                    local mil_count = 0
+                    local wil_count = 0
+                    for i = 1, 5 do
+                        for _, object in pairs(check_zones[i].getObjects()) do
+                            if object.hasTag('skill_science') then
+                                sci_count = sci_count + 1
+                            end
+                            if object.hasTag('skill_diplomacy') then
+                                dip_count = dip_count + 1
+                            end
+                            if object.hasTag('skill_military') then
+                                mil_count = mil_count + 1
+                            end
+                            if object.hasTag('skill_wildcard') then
+                                wil_count = wil_count + 1
+                            end
+                            if object.hasTag('skill_x2_science') then
+                                sci_count = sci_count + 2
+                            end
+                            if object.hasTag('skill_x2_diplomacy') then
+                                dip_count = dip_count + 2
+                            end
+                            if object.hasTag('skill_x2_military') then
+                                mil_count = mil_count + 2
+                            end
+                            if object.hasTag('skill_x2_wildcard') then
+                                wil_count = wil_count + 2
+                            end
+                            if object.hasTag('skill_x3_science') then
+                                sci_count = sci_count + 3
+                            end
+                            if object.hasTag('skill_x3_diplomacy') then
+                                dip_count = dip_count + 3
+                            end
+                            if object.hasTag('skill_x3_military') then
+                                mil_count = mil_count + 3
+                            end
+                            if object.hasTag('skill_x3_wildcard') then
+                                wil_count = wil_count + 3
+                            end
+                        end
+                    end
+                    local total_boreth_score = sci_count + dip_count + mil_count + wil_count
+                    if is_solo then total_boreth_score = 5 end
+                    if total_boreth_score > 0 then
+                        table.insert(endgame_card_list, {["Boreth"] = total_boreth_score})
+                        nb_str = nb_str .. "\nBoreth: " .. total_boreth_score
+                    end
+                end
+
+            elseif card_list[i]        == "Theta Zeta" then
+                -- Theta Zeta: score 1 for every 2 dilithium owned
+                -- check if in play
+                local in_play    = false
+                for _, object in pairs(getObjects()) do
+                    if object.getName() == "Theta Zeta" then
+                        local checkzones = {"fc7f21", "2c336e", "5103b2", "77d0cb"}
+                        for i = 1, 4 do
+                            for _, object in pairs(getObjectFromGUID(checkzones[i]).getObjects()) do
+                                if object.getName() == "Theta Zeta" then
+                                    in_play = true
+                                end
+                            end
+                        end
+                    end
+                end
+                if in_play then
+                    if not is_solo then
+                        local dilithium_count = getObjectFromGUID(color == "Blue" and "a3ec59" or "f40879").getVar('val')
+                        if dilithium_count > 1 then
+                            table.insert(endgame_card_list, {["Theta Zeta"] = math.floor(dilithium_count / 2)})
+                            nb_str = nb_str .. "\nTheta Zeta: " .. math.floor(dilithium_count / 2)
+                        end
+                    else
+                        table.insert(endgame_card_list, {["Theta Zeta"] = 5})
+                        nb_str = nb_str .. "\nTheta Zeta: 5"
+                    end
+                end
+
+            elseif card_list[i]        == "Coridan" then
+                -- Coridan: score 1 for every 4 dilithium owned
+                -- check if in play
+                local in_play    = false
+                for _, object in pairs(getObjects()) do
+                    if object.getName() == "Coridan" then
+                        local checkzones = {"fc7f21", "2c336e", "5103b2", "77d0cb"}
+                        for i = 1, 4 do
+                            for _, object in pairs(getObjectFromGUID(checkzones[i]).getObjects()) do
+                                if object.getName() == "Coridan" then
+                                    in_play = true
+                                end
+                            end
+                        end
+                    end
+                end
+                if in_play then
+                    if not is_solo then
+                        local dilithium_count = getObjectFromGUID(color == "Blue" and "a3ec59" or "f40879").getVar('val')
+                        if dilithium_count > 1 then
+                            table.insert(endgame_card_list, {["Coridan"] = math.floor(dilithium_count / 4)})
+                            nb_str = nb_str .. "\nCoridan: " .. math.floor(dilithium_count / 4)
+                        end
+                    else
+                        table.insert(endgame_card_list, {["Coridan"] = 5})
+                        nb_str = nb_str .. "\nCoridan: 5"
+                    end
+                end
+
+            elseif card_list[i]        == "Weytahn" then
+                -- Weytahn: score 4 if 2 or more away teams are here
+                -- check if in play
+                local in_play    = false
+                local weytahn    = nil
+                for _, object in pairs(getObjects()) do
+                    if object.getName() == "Weytahn" then
+                        local checkzones = {"fc7f21", "2c336e", "5103b2", "77d0cb"}
+                        for i = 1, 4 do
+                            for _, object in pairs(getObjectFromGUID(checkzones[i]).getObjects()) do
+                                if object.getName() == "Weytahn" then
+                                    in_play = true
+                                    weytahn = object
+                                end
+                            end
+                        end
+                    end
+                end
+                if in_play then
+                    if not is_solo then
+                        local bounds = weytahn.getBounds()
+                        local size = bounds.size
+                        local center = bounds.center
+                        local width = size.x
+                        local depth = size.z
+                        local height = 8.0
+                        local min_x = center.x - width/2
+                        local max_x = center.x + width/2
+                        local min_z = center.z - depth/2
+                        local max_z = center.z + depth/2
+                        local min_y = center.y + size.y/2
+                        local max_y = min_y + height
+                        for _, obj in ipairs(getAllObjects()) do
+                            if obj ~= weytahn and string.find(obj.getName(), "Away Team") then
+                                local pos = obj.getPosition()
+                                if pos.x >= min_x and pos.x <= max_x and
+                                pos.y >= min_y-2 and pos.y <= max_y and
+                                pos.z >= min_z and pos.z <= max_z then
+                                    local stack = obj.getQuantity()
+                                    if stack and stack >= 2 then
+                                        table.insert(endgame_card_list, {["Weytahn"] = 4})
+                                        nb_str = nb_str .. "\nWeytahn: 4"
+                                        break
+                                    end
+                                end
+                            end
+                        end
+                    else
+                        table.insert(endgame_card_list, {["Weytahn"] = 5})
+                        nb_str = nb_str .. "\nWeytahn: 5"
+                    end
+                end
+
+            -- Captains
+            elseif card_list[i]        == "Jean-Luc Picard" then
+                -- Picard: score 1 for every ally card owned
+                local ally_count = 0
+                -- check zones for ally trait
+                for i = 1, 8 do
+                    for _, object in pairs(zones[i].getObjects()) do
+                        if object.tag == "Card" and object.hasTag('suit_ally') then
+                            ally_count = ally_count + 1
+                        end
+                        if object.tag == "Deck" then
+                            for _, deck_object in pairs(object.getObjects()) do
+                                local deck_object_tags = deck_object.tags
+                                for i = 1, #deck_object_tags do
+                                    if deck_object_tags[i] == "suit_ally" then
+                                        ally_count = ally_count + 1
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+                -- check bags for ally trait
+                for _, bag_object in pairs(bag_caplog.getObjects()) do
+                    local bag_object_tags = bag_object.tags
+                    for i = 1, #bag_object_tags do
+                        if bag_object_tags[i] == "suit_ally" then
+                            ally_count = ally_count + 1
+                        end
+                    end
+                end
+                for i = 1, 14 do
+                    for _, bag_object in pairs(beam_bags[i].getObjects()) do
+                        local bag_object_tags = bag_object.tags
+                        for i = 1, #bag_object_tags do
+                            if bag_object_tags[i] == "suit_ally" then
+                                ally_count = ally_count + 1
+                            end
+                        end
+                    end
+                end
+                if is_solo then
+                    ally_count = 5
+                end
+                if ally_count > 0 then
+                    table.insert(endgame_card_list, {["Jean-Luc Picard"] = ally_count})
+                    nb_str = nb_str .. "\nJean-Luc Picard: " .. ally_count
+                end
+
+            elseif card_list[i]        == "Benjamin Sisko" then
+                -- Sisko: score 1 for every controlled Location in play
+                local checkzones = color == "Blue" and {"fc7f21", "2c336e"} or {"5103b2", "77d0cb"}
+                local location_count = 0
+                for i = 1, 2 do
+                    for _, object in pairs(getObjectFromGUID(checkzones[i]).getObjects()) do
+                        if object.hasTag('suit_location') then
+                            location_count = location_count + 1
+                        end
+                    end
+                end
+                if is_solo then location_count = 5 end
+                if location_count > 0 then
+                    table.insert(endgame_card_list, {["Benjamin Sisko"] = location_count})
+                    nb_str = nb_str .. "\nBenjamin Sisko: " .. location_count
+                end
+
+            elseif card_list[i]        == "Sela" then
+                -- Sela: score 1 for every non romulan/reman attack card
+                local attack_count = 0
+                -- check zones for attack trait
+                for zone_count = 1, 8 do
+                    for _, object in pairs(zones[zone_count].getObjects()) do
+                        if object.hasTag('trait_attack') and
+                        (object.hasTag('trait_romulan') == false and object.hasTag('trait_reman') == false) then
+                            attack_count = attack_count + 1
+                        end
+                        if object.tag == "Deck" then
+                            for _, deck_object in pairs(object.getObjects()) do
+                                local deck_object_tags = deck_object.tags
+                                for i = 1, #deck_object_tags do
+                                    if deck_object_tags[i] == "trait_attack" then
+                                        local rom_rem_found = false
+                                        for _, tag in pairs(deck_object_tags) do
+                                            if tag == "trait_romulan" or tag == "trait_reman" then
+                                                rom_rem_found = true
+                                            end
+                                        end
+                                        if not rom_rem_found then attack_count = attack_count + 1 end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+                -- check bags for attack trait
+                for _, bag_object in pairs(bag_caplog.getObjects()) do
+                    local bag_object_tags = bag_object.tags
+                    for i = 1, #bag_object_tags do
+                        if bag_object_tags[i] == "trait_attack" then
+                            local rom_rem_found = false
+                            for _, tag in pairs(bag_object_tags) do
+                                if tag == "trait_romulan" or tag == "trait_reman" then
+                                    rom_rem_found = true
+                                end
+                            end
+                            if not rom_rem_found then attack_count = attack_count + 1 end
+                        end
+                    end
+                end
+                for i = 1, 14 do
+                    for _, bag_object in pairs(beam_bags[i].getObjects()) do
+                        local bag_object_tags = bag_object.tags
+                        for i = 1, #bag_object_tags do
+                            if bag_object_tags[i] == "trait_attack" then
+                                local rom_rem_found = false
+                                for _, tag in pairs(bag_object_tags) do
+                                    if tag == "trait_romulan" or tag == "trait_reman" then
+                                        rom_rem_found = true
+                                    end
+                                end
+                                if not rom_rem_found then attack_count = attack_count + 1 end
+                            end
+                        end
+                    end
+                end
+                if is_solo then attack_count = 5 end
+                if attack_count > 0 then
+                    table.insert(endgame_card_list, {["Sela"] = attack_count})
+                    nb_str = nb_str .. "\nSela: " .. attack_count
+                end
+
+            -- Ship (ofc Burnham is special)
+            elseif card_list[i]        == "U.S.S. Federation" then
+                -- U.S.S. Federation: score 1 for every card with military/influence focus (_multi in GMNotes)
+                -- check if in play
+                local in_play    = false
+                for _, object in pairs(getObjects()) do
+                    if object.getName() == "U.S.S. Federation" then
+                        local checkzones = {"fc7f21", "2c336e", "5103b2", "77d0cb"}
+                        for i = 1, 4 do
+                            for _, object in pairs(getObjectFromGUID(checkzones[i]).getObjects()) do
+                                if object.getName() == "U.S.S. Federation" then
+                                    in_play = true
+                                end
+                            end
+                        end
+                    end
+                end
+                if in_play then
+                    local focus_count = 0
+                    -- check owned card zones for influence/military focus cards
+                    for zone_count = 1, 8 do
+                        for _, object in pairs(zones[zone_count].getObjects()) do
+                            if object.tag == "Card" then
+                                if object.getGMNotes() == "dip_multi" or object.getName() == "mil_multi" then
+                                    focus_count = focus_count + 1
+                                end
+                            elseif object.tag == "Deck" then
+                                for _, deck_object in pairs(object.getObjects()) do
+                                    if deck_object.gm_notes == "dip_multi" or deck_object.gm_notes == "mil_multi" then
+                                        focus_count = focus_count + 1
+                                    end
+                                end
+                            end
+                        end
+                    end
+                    -- check bags for focus cards
+                    for _, bag_object in pairs(bag_caplog.getObjects()) do
+                        if bag_object.gm_notes == "dip_multi" or bag_object.gm_notes == "mil_multi" then
+                            focus_count = focus_count + 1
+                        end
+                    end
+                    for i = 1, 14 do
+                        for _, bag_object in pairs(beam_bags[i].getObjects()) do
+                            if bag_object.gm_notes == "dip_multi" or bag_object.gm_notes == "mil_multi" then
+                                focus_count = focus_count + 1
+                            end
+                        end
+                    end
+                    if is_solo then focus_count = 5 end
+                    if focus_count > 0 then
+                        table.insert(endgame_card_list, {["U.S.S. Federation"] = focus_count})
+                        nb_str = nb_str .. "\nU.S.S. Federation: " .. focus_count
+                    end
+                end
+            end
+        end
+        if i == 1 then
+            nbstr_blue = nb_str
+        else
+            nbstr_red  = nb_str
+        end
+    end
+    return endgame_card_list_blue, nbstr_blue, endgame_card_list_red, nbstr_red
+end -- end get_endgame_count()
+
+
+function get_vp_count()
+    local card_list_blue, card_list_red                      = get_owned_cards()
+    local vp_card_list_blue                                  = {}
+    local vp_card_list_red                                   = {}
+    local sci_focus_card_list_blue                           = {}
+    local sci_focus_card_list_red                            = {}
+    local dip_focus_card_list_blue                           = {}
+    local dip_focus_card_list_red                            = {}
+    local mil_focus_card_list_blue                           = {}
+    local mil_focus_card_list_red                            = {}
+    local nbstr_vp_blue                                      = ""
+    local nbstr_vp_red                                       = ""
+    local nbstr_sci_blue                                     = ""
+    local nbstr_sci_red                                      = ""
+    local nbstr_dip_blue                                     = ""
+    local nbstr_dip_red                                      = ""
+    local nbstr_mil_blue                                     = ""
+    local nbstr_mil_red                                      = ""
+
+    for i = 1, 2 do
+
+        local captain_card                                   = nil
+        local captain_card_zone                              = i == 1 and getObjectFromGUID("75465f") or getObjectFromGUID("75c041")
+        for _, object in pairs(captain_card_zone.getObjects()) do
+            if string.find(object.getName(), "Crew Board") then
+                captain_card = object
+            end
+        end
+        local sci_multiplier                                 = 0
+        local dip_multiplier                                 = 0
+        local mil_multiplier                                 = 0
+        local sci_count                                      = getObjectFromGUID(i == 1 and "8317bd" or "c5021e").getVar('val')
+        local dip_count                                      = getObjectFromGUID(i == 1 and "9b4f79" or "f3c9be").getVar('val')
+        local mil_count                                      = getObjectFromGUID(i == 1 and "9a7130" or "5564b6").getVar('val')
+        if captain_card then
+            sci_multiplier, dip_multiplier, mil_multiplier   = get_track_multipliers(captain_card, sci_count, dip_count, mil_count)
+        end
+        local color                                          = i == 1 and "Blue"                    or "Red"
+        local card_list                                      = i == 1 and card_list_blue            or card_list_red
+        local vp_card_list                                   = i == 1 and vp_card_list_blue         or vp_card_list_red
+        local sci_focus_card_list                            = i == 1 and sci_focus_card_list_blue  or sci_focus_card_list_red
+        local dip_focus_card_list                            = i == 1 and dip_focus_card_list_blue  or dip_focus_card_list_red
+        local mil_focus_card_list                            = i == 1 and mil_focus_card_list_blue  or mil_focus_card_list_red
+        local nbstr_vp                                       = i == 1 and nbstr_vp_blue             or nbstr_vp_red
+        local nbstr_sci                                      = i == 1 and nbstr_sci_blue            or nbstr_sci_red
+        local nbstr_dip                                      = i == 1 and nbstr_dip_blue            or nbstr_dip_red
+        local nbstr_mil                                      = i == 1 and nbstr_mil_blue            or nbstr_mil_red
+        local nbstr_color                                    = i == 1 and "1E87FF"                  or "DB1B18"
+        local zone_hand                                      = i == 1 and zone_hand_blue            or zone_hand_red
+        local zone_captain                                   = i == 1 and zone_captain_blue         or zone_captain_red
+        local zone_draw                                      = i == 1 and zone_draw_blue            or zone_draw_red
+        local zone_discard                                   = i == 1 and zone_discard_blue         or zone_discard_red
+        local zone_staging                                   = i == 1 and zone_staging_blue         or zone_staging_red
+        local zone_ship                                      = i == 1 and zone_ship_blue            or zone_ship_red
+        local zone_loc                                       = i == 1 and zone_loc_blue             or zone_loc_red
+        local zone_duty                                      = i == 1 and zone_duty_blue            or zone_duty_red
+        local bag_caplog                                     = i == 1 and bag_caplog_blue           or bag_caplog_red
+        local beam_bags                                      = i == 1 and beam_bags_blue            or beam_bags_red
+        local zones                                          = {
+            zone_hand,
+            zone_captain,
+            zone_draw,
+            zone_discard,
+            zone_staging,
+            zone_ship,
+            zone_loc,
+            zone_duty,
+        }
+        -- check zones, get vp and focus card list=score pairs
+        for zone_count = 1, 8 do
+            for _, object in pairs(zones[zone_count].getObjects()) do
+                if object.tag == "Card" then
+                    local card_name         = object.getName()
+                    local vp_count          = tonumber(string.match(object.getGMNotes(), "VP=(-?%d+)"))
+                    if vp_count then
+                        table.insert(vp_card_list, {[card_name] = vp_count})
+                        nbstr_vp = nbstr_vp .. "\n".. card_name .. ": " .. vp_count
+                    end
+                    if object.getGMNotes() == "sci_multi" and sci_multiplier > 0 then
+                        table.insert(sci_focus_card_list, {[card_name] = sci_multiplier})
+                        nbstr_sci = nbstr_sci .. "\n".. card_name .. ": " .. sci_multiplier
+                    end
+                    if object.getGMNotes() == "dip_multi" and dip_multiplier > 0 then
+                        table.insert(dip_focus_card_list, {[card_name] = dip_multiplier})
+                        nbstr_dip = nbstr_dip .. "\n".. card_name .. ": " .. dip_multiplier
+                    end
+                    if object.getGMNotes() == "mil_multi" and mil_multiplier > 0 then
+                        table.insert(mil_focus_card_list, {[card_name] = mil_multiplier})
+                        nbstr_mil = nbstr_mil .. "\n".. card_name .. ": " .. mil_multiplier
+                    end
+                end
+                if object.tag == "Deck" then
+                    for _, deck_object in pairs(object.getObjects()) do
+                        local card_name         = deck_object.name
+                        local vp_count          = tonumber(string.match(deck_object.gm_notes, "VP=(-?%d+)"))
+                        if vp_count then
+                            table.insert(vp_card_list, {[card_name] = vp_count})
+                            nbstr_vp = nbstr_vp .. "\n".. card_name .. ": " .. vp_count
+                        end
+                        if deck_object.gm_notes == "sci_multi" and sci_multiplier > 0 then
+                            table.insert(sci_focus_card_list, {[card_name] = sci_multiplier})
+                            nbstr_sci = nbstr_sci .. "\n".. card_name .. ": " .. sci_multiplier
+                        end
+                        if deck_object.gm_notes == "dip_multi" and dip_multiplier > 0 then
+                            table.insert(dip_focus_card_list, {[card_name] = dip_multiplier})
+                            nbstr_dip = nbstr_dip .. "\n".. card_name .. ": " .. dip_multiplier
+                        end
+                        if deck_object.gm_notes == "mil_multi" and mil_multiplier > 0 then
+                            table.insert(mil_focus_card_list, {[card_name] = mil_multiplier})
+                            nbstr_mil = nbstr_mil .. "\n".. card_name .. ": " .. mil_multiplier
+                        end
+                    end
+                end
+            end
+        end
+        -- check bags for VP or focus cards
+        for _, bag_object in pairs(bag_caplog.getObjects()) do
+            local card_name                     = bag_object.name
+            local vp_count                      = tonumber(string.match(bag_object.gm_notes, "VP=(-?%d+)"))
+            if vp_count then
+                table.insert(vp_card_list, {[card_name] = vp_count})
+                nbstr_vp = nbstr_vp .. "\n".. card_name .. ": " .. vp_count
+            end
+            if bag_object.gm_notes             == "sci_multi" and sci_multiplier > 0 then
+                table.insert(sci_focus_card_list, {[card_name] = sci_multiplier})
+                nbstr_sci = nbstr_sci .. "\n".. card_name .. ": " .. sci_multiplier
+            end
+            if bag_object.gm_notes             == "dip_multi" and dip_multiplier > 0 then
+                table.insert(dip_focus_card_list, {[card_name] = dip_multiplier})
+                nbstr_dip = nbstr_dip .. "\n".. card_name .. ": " .. dip_multiplier
+            end
+            if bag_object.gm_notes             == "mil_multi" and mil_multiplier > 0 then
+                table.insert(mil_focus_card_list, {[card_name] = mil_multiplier})
+                nbstr_mil = nbstr_mil .. "\n".. card_name .. ": " .. mil_multiplier
+            end
+        end
+        for i = 1, 14 do
+            if beam_bags[i] ~= nil then
+                for _, bag_object in pairs(beam_bags[i].getObjects()) do
+                    local card_name                 = bag_object.name
+                    local vp_count                  = tonumber(string.match(bag_object.gm_notes, "VP=(-?%d+)"))
+                    if vp_count then
+                        table.insert(vp_card_list, {[card_name] = vp_count})
+                        nbstr_vp = nbstr_vp .. "\n".. card_name .. ": " .. vp_count
+                    end
+                    if bag_object.gm_notes         == "sci_multi" and sci_multiplier > 0 then
+                        table.insert(sci_focus_card_list, {[card_name] = sci_multiplier})
+                        nbstr_sci = nbstr_sci .. "\n".. card_name .. ": " .. sci_multiplier
+                    end
+                    if bag_object.gm_notes         == "dip_multi" and dip_multiplier > 0 then
+                        table.insert(dip_focus_card_list, {[card_name] = dip_multiplier})
+                        nbstr_dip = nbstr_dip .. "\n".. card_name .. ": " .. dip_multiplier
+                    end
+                    if bag_object.gm_notes         == "mil_multi" and mil_multiplier > 0 then
+                        table.insert(mil_focus_card_list, {[card_name] = mil_multiplier})
+                        nbstr_mil = nbstr_mil .. "\n".. card_name .. ": " .. mil_multiplier
+                    end
+                end
+            end
+        end
+        if i == 1 then
+            nbstr_vp_blue      = nbstr_vp
+            nbstr_sci_blue     = nbstr_sci
+            nbstr_dip_blue     = nbstr_dip
+            nbstr_mil_blue     = nbstr_mil
+            vp_card_list_blue  = vp_card_list
+            sci_card_list_blue = sci_focus_card_list
+            dip_card_list_blue = dip_focus_card_list
+            mil_card_list_blue = mil_focus_card_list
+        else
+            nbstr_vp_red       = nbstr_vp
+            nbstr_sci_red      = nbstr_sci
+            nbstr_dip_red      = nbstr_dip
+            nbstr_mil_red      = nbstr_mil
+            vp_card_list_red   = vp_card_list
+            sci_card_list_red  = sci_focus_card_list
+            dip_card_list_red  = dip_focus_card_list
+            mil_card_list_red  = mil_focus_card_list
+        end
+    end
+    return vp_card_list_blue, sci_focus_card_list_blue, dip_focus_card_list_blue, mil_focus_card_list_blue, nbstr_vp_blue, nbstr_sci_blue, nbstr_dip_blue, nbstr_mil_blue,
+           vp_card_list_red,  sci_focus_card_list_red,  dip_focus_card_list_red,  mil_focus_card_list_red,  nbstr_vp_red,  nbstr_sci_red,  nbstr_dip_red,  nbstr_mil_red
+end -- end get_vp_count()
+
+
+
+
+function calculate_score()
+    Global.call('animate_button', {button=self})
+    -- prime notebook
+    local tabs              = Notes.getNotebookTabs()
+    local blue_color        = "1E87FF"
+    local red_color         = "DB1B18"
+    local notebook_string   = "Current Score Breakdown as it stands:\n\n"
+
+    -- Gather Scores
+    -- glory count
+    local glory_count_blue  = getObjectFromGUID("d96ce2").getVar('val')
+    local glory_count_red   = getObjectFromGUID("9a5066").getVar('val')
+    notebook_string         = notebook_string .. "["..blue_color.."]Blue[-] Glory Score: " .. glory_count_blue .. "\n" .. "["..red_color.."]Red[-]  Glory Score: " .. glory_count_red .. "\n\n\n"
+
+    -- neutral location count
+    local away_count_blue, away_count_red = get_away_count()
+    notebook_string         = notebook_string .. "["..blue_color.."]Blue[-] Neutral Zone Score: " .. away_count_blue .. "\n" .. "["..red_color.."]Red[-]  Neutral Zone Score: " .. away_count_red .. "\n\n\n"
+
+    -- endgame scoring cards
+    local  endgame_card_list_blue, nbstr_endgame_blue, endgame_card_list_red, nbstr_endgame_red = get_endgame_count()
+    local blue_endgame_score = 0
+    local red_endgame_score  = 0
+    for _, v in pairs(endgame_card_list_blue) do
+        for _, score_count in pairs(v) do
+            blue_endgame_score = blue_endgame_score + score_count
+        end
+    end
+    for _, v in pairs(endgame_card_list_red) do
+        for _, score_count in pairs(v) do
+            red_endgame_score = red_endgame_score + score_count
+        end
+    end
+    notebook_string = notebook_string .. "["..blue_color.."]Blue[-] End Game Cards Score: " .. blue_endgame_score
+    notebook_string = notebook_string .. "\n["..red_color.."]Red[-]  End Game Cards Score: " .. red_endgame_score
+    if blue_endgame_score > 0 then
+        notebook_string = notebook_string .. "\n\n["..blue_color.."]Blue[-] End Game Cards Breakdown:" .. nbstr_endgame_blue
+    end
+    if red_endgame_score > 0 then
+        notebook_string = notebook_string .. "\n\n["..red_color.."]Red[-]  End Game Cards Breakdown:" .. nbstr_endgame_red
+    end
+
+    -- victory point cards
+    vp_card_list_blue, sci_focus_card_list_blue, dip_focus_card_list_blue, mil_focus_card_list_blue, nbstr_vp_blue, nbstr_sci_blue, nbstr_dip_blue, nbstr_mil_blue,
+    vp_card_list_red,  sci_focus_card_list_red,  dip_focus_card_list_red,  mil_focus_card_list_red,  nbstr_vp_red,  nbstr_sci_red,  nbstr_dip_red,  nbstr_mil_red = get_vp_count()
+    local blue_vp_score = 0
+    local red_vp_score  = 0
+    for _, v in pairs(vp_card_list_blue) do
+        for _, score_count in pairs(v) do
+            blue_vp_score = blue_vp_score + score_count
+        end
+    end
+    for _, v in pairs(vp_card_list_red) do
+        for _, score_count in pairs(v) do
+            red_vp_score = red_vp_score + score_count
+        end
+    end
+    notebook_string = notebook_string .. "\n\n\n["..blue_color.."]Blue[-] Card Victory Points Score: " .. blue_vp_score
+    notebook_string = notebook_string .. "\n["..red_color.."]Red[-]  Card Victory Points Score: " .. red_vp_score
+    if blue_vp_score > 0 then
+        notebook_string = notebook_string .. "\n\n["..blue_color.."]Blue[-] Card Victory Points Breakdown:" .. nbstr_vp_blue
+    end
+    if red_vp_score > 0 then
+        notebook_string = notebook_string .. "\n\n["..red_color.."]Red[-]  Card Victory Points Breakdown:" .. nbstr_vp_red
+    end
+
+    notebook_string = notebook_string .. "\n"
+
+
+    -- focus multipliers
+    local sci_color              = "1597C4"
+    local dip_color              = "D4D129"
+    local mil_color              = "C11E1E"
+    local mission_completed_blue = false
+    local mission_completed_red  = false
+    for _, object in pairs(getObjectFromGUID("75465f").getObjects()) do
+        if object.hasTag('mission_basic_completed') or object.hasTag('mission_1_completed') or object.hasTag('mission_2_completed') or object.hasTag('mission_3_completed') then
+            mission_completed_blue = true
+        end
+    end
+    for _, object in pairs(getObjectFromGUID("75c041").getObjects()) do
+        if object.hasTag('mission_basic_completed') or object.hasTag('mission_1_completed') or object.hasTag('mission_2_completed') or object.hasTag('mission_3_completed') then
+            mission_completed_red  = true
+        end
+    end
+
+    local blue_sci_score = 0
+    local blue_dip_score = 0
+    local blue_mil_score = 0
+    local red_sci_score = 0
+    local red_dip_score = 0
+    local red_mil_score = 0
+    for _, v in pairs(sci_focus_card_list_blue) do
+        for _, score_count in pairs(v) do
+            blue_sci_score = blue_sci_score + score_count
+        end
+    end
+    for _, v in pairs(dip_focus_card_list_blue) do
+        for _, score_count in pairs(v) do
+            blue_dip_score = blue_dip_score + score_count
+        end
+    end
+    for _, v in pairs(mil_focus_card_list_blue) do
+        for _, score_count in pairs(v) do
+            blue_mil_score = blue_mil_score + score_count
+        end
+    end
+    for _, v in pairs(sci_focus_card_list_red) do
+        for _, score_count in pairs(v) do
+            red_sci_score = red_sci_score + score_count
+        end
+    end
+    for _, v in pairs(dip_focus_card_list_red) do
+        for _, score_count in pairs(v) do
+            red_dip_score = red_dip_score + score_count
+        end
+    end
+    for _, v in pairs(mil_focus_card_list_red) do
+        for _, score_count in pairs(v) do
+            red_mil_score = red_mil_score + score_count
+        end
+    end
+    if mission_completed_blue or getObjectFromGUID("23bed4").getGMNotes() == "solo" then
+        if blue_sci_score > 0 then
+            notebook_string = notebook_string .. "\n\n["..blue_color.."]Blue[-] ["..sci_color.."]Research[-] Focus Cards Score: " .. blue_sci_score
+            notebook_string = notebook_string .. "\n["..blue_color.."]Blue[-] ["..sci_color.."]Research[-] Focus Cards Breakdown:" .. nbstr_sci_blue
+        end
+        if blue_dip_score > 0 then
+            notebook_string = notebook_string .. "\n\n["..blue_color.."]Blue[-] ["..dip_color.."]Influence[-] Focus Cards Score: " .. blue_dip_score
+            notebook_string = notebook_string .. "\n["..blue_color.."]Blue[-] ["..dip_color.."]Influence[-] Focus Cards Breakdown:" .. nbstr_dip_blue
+        end
+        if blue_mil_score > 0 then
+            notebook_string = notebook_string .. "\n\n["..blue_color.."]Blue[-] ["..mil_color.."]Military[-] Focus Cards Score: " .. blue_mil_score
+            notebook_string = notebook_string .. "\n["..blue_color.."]Blue[-] ["..mil_color.."]Military[-] Focus Cards Breakdown:" .. nbstr_mil_blue
+        end
+        notebook_string = notebook_string .. "\n"
+    else
+        notebook_string = notebook_string .. "\n["..blue_color.."]Blue[-] Focus Cards Score: 0 (No Missions Completed)"
+        blue_sci_score = 0
+        blue_dip_score = 0
+        blue_mil_score = 0
+    end
+    if mission_completed_red or getObjectFromGUID("1a78a6").getGMNotes() == "solo" then
+        if red_sci_score > 0 then
+            notebook_string = notebook_string .. "\n\n["..red_color.."]Red[-] ["..sci_color.."]Research[-] Focus Cards Score: " .. red_sci_score
+            notebook_string = notebook_string .. "\n["..red_color.."]Red[-] ["..sci_color.."]Research[-] Focus Cards Breakdown:" .. nbstr_sci_red
+        end
+        if red_dip_score > 0 then
+            notebook_string = notebook_string .. "\n\n["..red_color.."]Red[-] ["..dip_color.."]Influence[-] Focus Cards Score: " .. red_dip_score
+            notebook_string = notebook_string .. "\n["..red_color.."]Red[-] ["..dip_color.."]Influence[-] Focus Cards Breakdown:" .. nbstr_dip_red
+        end
+        if red_mil_score > 0 then
+            notebook_string = notebook_string .. "\n\n["..red_color.."]Red[-] ["..mil_color.."]Military[-] Focus Cards Score: " .. red_mil_score
+            notebook_string = notebook_string .. "\n["..red_color.."]Red[-] ["..mil_color.."]Military[-] Focus Cards Breakdown:" .. nbstr_mil_red
+        end
+        notebook_string = notebook_string .. "\n"
+    else
+        notebook_string = notebook_string .. "\n["..red_color.."]Red[-] Focus Cards Score: 0 (No Missions Completed)"
+        red_sci_score = 0
+        red_dip_score = 0
+        red_mil_score = 0
+    end
+    notebook_string = notebook_string .. "\n"
+
+
+    -- advanced mission stuff
+    -- get blue board, determine captain & difficulty
+    local blue_adv_count     = 0
+    local blue_is_solo       = false
+    local split_blue_captain = {}
+    local blue_captain_board = nil
+    local blue_adv_tooltip   = ""
+    for _, object in pairs(getObjectFromGUID("75465f").getObjects()) do
+        if string.find(object.getName(), "Crew Board") and object.getGUID() ~= "997491" then
+            blue_captain_board = object
+            for str in string.gmatch(object.getName(),  "%S+") do
+                table.insert(split_blue_captain, str)
+            end
+        end
+    end
+    local captain_name = split_blue_captain[1]
+    if getObjectFromGUID("23bed4").getGMNotes() == "solo" then
+        blue_adv_tooltip = "Combined Dilithium/Latinum"
+        blue_is_solo = true
+        local dil_count = getObjectFromGUID("a3ec59").getVar('val')
+        local lat_count = getObjectFromGUID("39e892").getVar('val')
+        if captain_name == "Burnham" then
+            blue_adv_count = dil_count + math.floor(lat_count / 2)
+        else
+            blue_adv_count = math.floor(dil_count / 2) + math.floor(lat_count / 2)
+        end
+    else
+        blue_adv_tooltip = "Advanced Mission"
+        if captain_name == "Burnham" then
+            if blue_captain_board.hasTag("mission_1_completed") then
+                blue_adv_count = blue_adv_count + 4
+            end
+            if blue_captain_board.hasTag("mission_2_completed") then
+                blue_adv_count = blue_adv_count + 3
+            end
+            if blue_captain_board.hasTag("mission_3_completed") then
+                blue_adv_count = blue_adv_count + 6
+            end
+        elseif captain_name == "Koloth" then
+            if blue_captain_board.hasTag("mission_1_completed") then
+                blue_adv_count = blue_adv_count + 3
+            end
+            if blue_captain_board.hasTag("mission_2_completed") then
+                blue_adv_count = blue_adv_count + 1
+            end
+            if blue_captain_board.hasTag("mission_3_completed") then
+                blue_adv_count = blue_adv_count + 4
+            end
+        elseif captain_name == "Picard" then
+            if blue_captain_board.hasTag("mission_1_completed") then
+                blue_adv_count = blue_adv_count + 5
+            end
+            if blue_captain_board.hasTag("mission_2_completed") then
+                blue_adv_count = blue_adv_count + 3
+            end
+            if blue_captain_board.hasTag("mission_3_completed") then
+                blue_adv_count = blue_adv_count + 2
+            end
+        elseif captain_name == "Sela" then
+            if blue_captain_board.hasTag("mission_1_completed") then
+                blue_adv_count = blue_adv_count + 4
+            end
+            if blue_captain_board.hasTag("mission_2_completed") then
+                blue_adv_count = blue_adv_count + 4
+            end
+            if blue_captain_board.hasTag("mission_3_completed") then
+                blue_adv_count = blue_adv_count + 1
+            end
+        elseif captain_name == "Shran" then
+            if blue_captain_board.hasTag("mission_1_completed") then
+                blue_adv_count = blue_adv_count + 2
+            end
+            if blue_captain_board.hasTag("mission_2_completed") then
+                blue_adv_count = blue_adv_count + 4
+            end
+            if blue_captain_board.hasTag("mission_3_completed") then
+                blue_adv_count = blue_adv_count + 3
+            end
+        elseif captain_name == "Sisko" then
+            if blue_captain_board.hasTag("mission_1_completed") then
+                blue_adv_count = blue_adv_count + 4
+            end
+            if blue_captain_board.hasTag("mission_2_completed") then
+                blue_adv_count = blue_adv_count + 5
+            end
+            if blue_captain_board.hasTag("mission_3_completed") then
+                blue_adv_count = blue_adv_count + 3
+            end
+        end
+    end
+    -- get red board, determine captain & difficulty
+    local red_adv_count     = 0
+    local red_is_solo       = false
+    local split_red_captain = {}
+    local red_captain_board = nil
+    local red_adv_tooltip   = ""
+    for _, object in pairs(getObjectFromGUID("75c041").getObjects()) do
+        if string.find(object.getName(), "Crew Board") and object.getGUID() ~= "28a24b" then
+            red_captain_board = object
+            for str in string.gmatch(object.getName(),  "%S+") do
+                table.insert(split_red_captain, str)
+            end
+        end
+    end
+    local captain_name = split_red_captain[1]
+    if getObjectFromGUID("1a78a6").getGMNotes() == "solo" then
+        red_adv_tooltip = "Combined Dilithium/Latinum"
+        red_is_solo = true
+        local dil_count = getObjectFromGUID("f40879").getVar('val')
+        local lat_count = getObjectFromGUID("c2bac2").getVar('val')
+        if captain_name == "Burnham" then
+            red_adv_count = dil_count + math.floor(lat_count / 2)
+        else
+            red_adv_count = math.floor(dil_count / 2) + math.floor(lat_count / 2)
+        end
+    else
+        red_adv_tooltip = "Advanced Mission"
+        if captain_name == "Burnham" then
+            if red_captain_board.hasTag("mission_1_completed") then
+                red_adv_count = red_adv_count + 4
+            end
+            if red_captain_board.hasTag("mission_2_completed") then
+                red_adv_count = red_adv_count + 3
+            end
+            if red_captain_board.hasTag("mission_3_completed") then
+                red_adv_count = red_adv_count + 6
+            end
+        elseif captain_name == "Koloth" then
+            if red_captain_board.hasTag("mission_1_completed") then
+                red_adv_count = red_adv_count + 3
+            end
+            if red_captain_board.hasTag("mission_2_completed") then
+                red_adv_count = red_adv_count + 1
+            end
+            if red_captain_board.hasTag("mission_3_completed") then
+                red_adv_count = red_adv_count + 4
+            end
+        elseif captain_name == "Picard" then
+            if red_captain_board.hasTag("mission_1_completed") then
+                red_adv_count = red_adv_count + 5
+            end
+            if red_captain_board.hasTag("mission_2_completed") then
+                red_adv_count = red_adv_count + 3
+            end
+            if red_captain_board.hasTag("mission_3_completed") then
+                red_adv_count = red_adv_count + 2
+            end
+        elseif captain_name == "Sela" then
+            if red_captain_board.hasTag("mission_1_completed") then
+                red_adv_count = red_adv_count + 4
+            end
+            if red_captain_board.hasTag("mission_2_completed") then
+                red_adv_count = red_adv_count + 4
+            end
+            if red_captain_board.hasTag("mission_3_completed") then
+                red_adv_count = red_adv_count + 1
+            end
+        elseif captain_name == "Shran" then
+            if red_captain_board.hasTag("mission_1_completed") then
+                red_adv_count = red_adv_count + 2
+            end
+            if red_captain_board.hasTag("mission_2_completed") then
+                red_adv_count = red_adv_count + 4
+            end
+            if red_captain_board.hasTag("mission_3_completed") then
+                red_adv_count = red_adv_count + 3
+            end
+        elseif captain_name == "Sisko" then
+            if red_captain_board.hasTag("mission_1_completed") then
+                red_adv_count = red_adv_count + 4
+            end
+            if red_captain_board.hasTag("mission_2_completed") then
+                red_adv_count = red_adv_count + 5
+            end
+            if red_captain_board.hasTag("mission_3_completed") then
+                red_adv_count = red_adv_count + 3
+            end
+        end
+    end
+    -- set tab with full notebook string
+    if blue_adv_count > 0 then
+        notebook_string = notebook_string .. "\n["..blue_color.."]Blue[-] " .. blue_adv_tooltip .. " Score: " .. blue_adv_count
+    end
+    if red_adv_count > 0 then
+        notebook_string = notebook_string .. "\n["..red_color.."]Red[-] " .. red_adv_tooltip .. " Score: " .. red_adv_count
+    end
+    -- finally, build notebook
+    for _, tab in pairs(tabs) do
+        if tab.color == "Grey" then
+            Notes.editNotebookTab({
+                index = tab.index,
+                title = "Score Breakdown",
+                body  = notebook_string,
+                color = "Grey"
+            })
+        end
+    end
+
+    -- Score Pad Button Creation
+    local blue_pad                = getObjectFromGUID("276508")
+    local red_pad                 = getObjectFromGUID("6931ee")
+    local blue_str                = "Blue"
+    local red_str                 = "Red"
+    local score_pads              = {blue_pad, red_pad}
+    local color_strs              = {blue_str, red_str}
+    local blue_color              = {31/255, 136/255, 255/255}
+    local red_color               = {219/255, 26/255, 24/255}
+
+    for i = 1, 2 do
+        local pad = score_pads[i]
+        -- remove buttons
+        remove_buttons(pad)
+        -- create score text field buttons on every slot (reversed in color)
+        local left_color          = i == 1 and blue_color         or red_color
+        local right_color         = i == 1 and red_color          or blue_color
+        local left_str            = i == 1 and blue_str           or red_str
+        local right_str           = i == 1 and red_str            or blue_str
+        local left_glory_count    = i == 1 and glory_count_blue   or glory_count_red
+        local right_glory_count   = i == 1 and glory_count_red    or glory_count_blue
+        local left_away_count     = i == 1 and away_count_blue    or away_count_red
+        local right_away_count    = i == 1 and away_count_red     or away_count_blue
+        local left_endgame_count  = i == 1 and blue_endgame_score or red_endgame_score
+        local right_endgame_count = i == 1 and red_endgame_score  or blue_endgame_score
+        local left_vp_count       = i == 1 and blue_vp_score      or red_vp_score
+        local right_vp_count      = i == 1 and red_vp_score       or blue_vp_score
+        local left_sci_count      = i == 1 and blue_sci_score     or red_sci_score
+        local right_sci_count     = i == 1 and red_sci_score      or blue_sci_score
+        local left_dip_count      = i == 1 and blue_dip_score     or red_dip_score
+        local right_dip_count     = i == 1 and red_dip_score      or blue_dip_score
+        local left_mil_count      = i == 1 and blue_mil_score     or red_mil_score
+        local right_mil_count     = i == 1 and red_mil_score      or blue_mil_score
+        local left_adv_count      = i == 1 and blue_adv_count     or red_adv_count
+        local right_adv_count     = i == 1 and red_adv_count      or blue_adv_count
+        local left_adv_tooltip    = i == 1 and blue_adv_tooltip   or red_adv_tooltip
+        local right_adv_tooltip   = i == 1 and red_adv_tooltip    or blue_adv_tooltip
+
+
+        -- Glory
+        pad.createButton({
+            click_function      = "null_func",
+            function_owner      = self,
+            label               = left_glory_count,
+            position            = {0.06, 0.21, -0.65},
+            width               = 180,
+            height              = 180,
+            font_size           = 100,
+            scale               = {.5, .5, .5},
+            color               = left_color,
+            font_color          = {1, 1, 1, 1},
+            tooltip             = "Current " .. left_str .. " Glory points.",
+        })
+        pad.createButton({
+            click_function      = "null_func",
+            function_owner      = self,
+            label               = right_glory_count,
+            position            = {0.55, 0.21, -0.65},
+            width               = 180,
+            height              = 180,
+            font_size           = 100,
+            scale               = {.5, .5, .5},
+            color               = right_color,
+            font_color          = {1, 1, 1, 1},
+            tooltip             = "Current " .. right_str .. " Glory points.",
+        })
+        -- Neutral Zone Tokens
+        pad.createButton({
+            click_function      = "null_func",
+            function_owner      = self,
+            label               = left_away_count,
+            position            = {0.06, 0.21, -0.45},
+            width               = 180,
+            height              = 180,
+            font_size           = 100,
+            scale               = {.5, .5, .5},
+            color               = left_color,
+            font_color          = {1, 1, 1, 1},
+            tooltip             = "Current " .. left_str .. " Neutral Zone token points.",
+        })
+        pad.createButton({
+            click_function      = "null_func",
+            function_owner      = self,
+            label               = right_away_count,
+            position            = {0.55, 0.21, -0.45},
+            width               = 180,
+            height              = 180,
+            font_size           = 100,
+            scale               = {.5, .5, .5},
+            color               = right_color,
+            font_color          = {1, 1, 1, 1},
+            tooltip             = "Current " .. right_str .. " Neutral Zone token points.",
+        })
+        -- Endgame Scoring
+        pad.createButton({
+            click_function      = "null_func",
+            function_owner      = self,
+            label               = left_endgame_count,
+            position            = {0.06, 0.21, -0.25},
+            width               = 180,
+            height              = 180,
+            font_size           = 100,
+            scale               = {.5, .5, .5},
+            color               = left_color,
+            font_color          = {1, 1, 1, 1},
+            tooltip             = "Current " .. left_str .. "Endgame Scoring points.",
+        })
+        pad.createButton({
+            click_function      = "null_func",
+            function_owner      = self,
+            label               = right_endgame_count,
+            position            = {0.55, 0.21, -0.25},
+            width               = 180,
+            height              = 180,
+            font_size           = 100,
+            scale               = {.5, .5, .5},
+            color               = right_color,
+            font_color          = {1, 1, 1, 1},
+            tooltip             = "Current " .. right_str .. " Endgame Scoring points.",
+        })
+        -- Printed VP
+        pad.createButton({
+            click_function      = "null_func",
+            function_owner      = self,
+            label               = left_vp_count,
+            position            = {0.06, 0.21, -0.05},
+            width               = 180,
+            height              = 180,
+            font_size           = 100,
+            scale               = {.5, .5, .5},
+            color               = left_color,
+            font_color          = {1, 1, 1, 1},
+            tooltip             = "Current " .. left_str .. " Printed Victory points.",
+        })
+        pad.createButton({
+            click_function      = "null_func",
+            function_owner      = self,
+            label               = right_vp_count,
+            position            = {0.55, 0.21, -0.05},
+            width               = 180,
+            height              = 180,
+            font_size           = 100,
+            scale               = {.5, .5, .5},
+            color               = right_color,
+            font_color          = {1, 1, 1, 1},
+            tooltip             = "Current " .. right_str .. " Printed Victory points.",
+        })
+        -- Research Multiplier
+        pad.createButton({
+            click_function      = "null_func",
+            function_owner      = self,
+            label               = left_sci_count,
+            position            = {0.06, 0.21, 0.15},
+            width               = 180,
+            height              = 180,
+            font_size           = 100,
+            scale               = {.5, .5, .5},
+            color               = left_color,
+            font_color          = {1, 1, 1, 1},
+            tooltip             = "Current " .. left_str .. " Research Multiplier points.",
+        })
+        pad.createButton({
+            click_function      = "null_func",
+            function_owner      = self,
+            label               = right_sci_count,
+            position            = {0.55, 0.21, 0.15},
+            width               = 180,
+            height              = 180,
+            font_size           = 100,
+            scale               = {.5, .5, .5},
+            color               = right_color,
+            font_color          = {1, 1, 1, 1},
+            tooltip             = "Current " .. right_str .. " Research Multiplier points.",
+        })
+        -- Influence Multiplier
+        pad.createButton({
+            click_function      = "null_func",
+            function_owner      = self,
+            label               = left_dip_count,
+            position            = {0.06, 0.21, 0.35},
+            width               = 180,
+            height              = 180,
+            font_size           = 100,
+            scale               = {.5, .5, .5},
+            color               = left_color,
+            font_color          = {1, 1, 1, 1},
+            tooltip             = "Current " .. left_str .. " Influence Multiplier points.",
+        })
+        pad.createButton({
+            click_function      = "null_func",
+            function_owner      = self,
+            label               = right_dip_count,
+            position            = {0.55, 0.21, 0.35},
+            width               = 180,
+            height              = 180,
+            font_size           = 100,
+            scale               = {.5, .5, .5},
+            color               = right_color,
+            font_color          = {1, 1, 1, 1},
+            tooltip             = "Current " .. right_str .. " Influence Multiplier points.",
+        })
+        -- Military Multiplier
+        pad.createButton({
+            click_function      = "null_func",
+            function_owner      = self,
+            label               = left_mil_count,
+            position            = {0.06, 0.21, 0.55},
+            width               = 180,
+            height              = 180,
+            font_size           = 100,
+            scale               = {.5, .5, .5},
+            color               = left_color,
+            font_color          = {1, 1, 1, 1},
+            tooltip             = "Current " .. left_str .. " Military Multiplier points.",
+        })
+        pad.createButton({
+            click_function      = "null_func",
+            function_owner      = self,
+            label               = right_mil_count,
+            position            = {0.55, 0.21, 0.55},
+            width               = 180,
+            height              = 180,
+            font_size           = 100,
+            scale               = {.5, .5, .5},
+            color               = right_color,
+            font_color          = {1, 1, 1, 1},
+            tooltip             = "Current " .. right_str .. " Military Multiplier points.",
+        })
+        -- special make advanced button fields if advanced captain side for that board
+        if i == 1 then
+            local blue_adv_found = false
+            for _, object in pairs(getObjectFromGUID("75465f").getObjects()) do
+                if string.find(object.getName(), "Advanced") then
+                    blue_adv_found = true
+                end
+            end
+            if blue_adv_found or blue_is_solo then
+                pad.createButton({
+                    click_function = "null_func",
+                    function_owner = self,
+                    label          = left_adv_count,
+                    position       = {0.06, 0.21, 0.75},
+                    width          = 180,
+                    height         = 180,
+                    font_size      = 100,
+                    scale          = {.5, .5, .5},
+                    color          = left_color,
+                    font_color     = {1, 1, 1, 1},
+                    tooltip        = "Current " .. left_str  .. " " .. left_adv_tooltip .. " points.",
+                })
+            end
+            local red_adv_found = false
+            for _, object in pairs(getObjectFromGUID("75c041").getObjects()) do
+                if string.find(object.getName(), "Advanced") then
+                    red_adv_found = true
+                end
+            end
+            if red_adv_found or red_is_solo then
+                pad.createButton({
+                    click_function = "null_func",
+                    function_owner = self,
+                    label          = right_adv_count,
+                    position       = {0.55, 0.21, 0.75},
+                    width          = 180,
+                    height         = 180,
+                    font_size      = 100,
+                    scale          = {.5, .5, .5},
+                    color          = right_color,
+                    font_color     = {1, 1, 1, 1},
+                    tooltip        = "Current " .. right_str  .. " " .. right_adv_tooltip .. " points.",
+                })
+            end
+        elseif i == 2 then
+            local blue_adv_found   = false
+            for _, object in pairs(getObjectFromGUID("75465f").getObjects()) do
+                if string.find(object.getName(), "Advanced") then
+                    blue_adv_found = true
+                end
+            end
+            if blue_adv_found or blue_is_solo then
+                pad.createButton({
+                    click_function    = "null_func",
+                    function_owner    = self,
+                    label             = right_adv_count,
+                    position          = {0.55, 0.21, 0.75},
+                    width             = 180,
+                    height            = 180,
+                    font_size         = 100,
+                    scale             = {.5, .5, .5},
+                    color             = right_color,
+                    font_color        = {1, 1, 1, 1},
+                    tooltip           = "Current " .. right_str  .. " " .. right_adv_tooltip .. " points.",
+                })
+            end
+            local red_adv_found = false
+            for _, object in pairs(getObjectFromGUID("75c041").getObjects()) do
+                if string.find(object.getName(), "Advanced") then
+                    red_adv_found = true
+                end
+            end
+            if red_adv_found or red_is_solo then
+                pad.createButton({
+                    click_function    = "null_func",
+                    function_owner    = self,
+                    label             = left_adv_count,
+                    position          = {0.06, 0.21, 0.75},
+                    width             = 180,
+                    height            = 180,
+                    font_size         = 100,
+                    scale             = {.5, .5, .5},
+                    color             = left_color,
+                    font_color        = {1, 1, 1, 1},
+                    tooltip           = "Current " .. left_str  .. " " .. left_adv_tooltip .. " points.",
+                })
+            end
+        end
+        local left_total  = left_glory_count  + left_away_count  + left_endgame_count  + left_vp_count  + left_sci_count  + left_dip_count  + left_mil_count  + left_adv_count
+        local right_total = right_glory_count + right_away_count + right_endgame_count + right_vp_count + right_sci_count + right_dip_count + right_mil_count + right_adv_count
+        -- Total
+        pad.createButton({
+            click_function      = "null_func",
+            function_owner      = self,
+            label               = left_total,
+            position            = {0.06, 0.21, 0.92},
+            width               = 260,
+            height              = 180,
+            font_size           = 100,
+            scale               = {.5, .5, .5},
+            color               = left_color,
+            font_color          = {1, 1, 1, 1},
+            tooltip             = "Current " .. left_str .. " Total points.",
+        })
+        pad.createButton({
+            click_function      = "null_func",
+            function_owner      = self,
+            label               = right_total,
+            position            = {0.55, 0.21, 0.92},
+            width               = 260,
+            height              = 180,
+            font_size           = 100,
+            scale               = {.5, .5, .5},
+            color               = right_color,
+            font_color          = {1, 1, 1, 1},
+            tooltip             = "Current " .. right_str .. " Total points.",
+        })
+    end
+    broadcastToAll("Table current score updated!", "Green")
+end -- end calculate_score()

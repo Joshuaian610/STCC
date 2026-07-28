@@ -1,0 +1,54 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0,
+    "g": 0,
+    "r": 0
+  },
+  "CustomImage": {
+    "ImageScalar": 2,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/25439815955557225/9B594D20ACA12AFBD68E76D9510CCD61808B3882/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25439815955556820/08D1951FCD7B8BF354E44310A449302CB277A349/",
+    "WidthScale": 0
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "f77073",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": true,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Figurine_Custom",
+  "Nickname": "Kazon Raider",
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_ship"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": -14.499,
+    "posY": 2.927,
+    "posZ": -19.094,
+    "rotX": 0,
+    "rotY": 90,
+    "rotZ": 0,
+    "scaleX": 1,
+    "scaleY": 1,
+    "scaleZ": 1
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

@@ -1,0 +1,67 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.23527,
+    "g": 0.23527,
+    "r": 0.23527
+  },
+  "CustomImage": {
+    "CustomTile": {
+      "Stackable": false,
+      "Stretch": true,
+      "Thickness": 0.1,
+      "Type": 3
+    },
+    "ImageScalar": 1,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/10157433988098982980/91243EED24648ABDB04FEF98BC3C07040C643F24/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/10157433988098982980/91243EED24648ABDB04FEF98BC3C07040C643F24/",
+    "WidthScale": 0
+  },
+  "CustomUIAssets": [
+    {
+      "Name": "Completed Mission",
+      "Type": 0,
+      "URL": "https://steamusercontent-a.akamaihd.net/ugc/25439356640984575/300BF380C3419B12F700864F94EBC70B92ED253C/"
+    }
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "44a1f8",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScriptState": "",
+  "LuaScript_path": "SiskoCrewBoardAdvanced.44a1f8.ttslua",
+  "MeasureMovement": false,
+  "Name": "Custom_Tile",
+  "Nickname": "Sisko Crew Board Advanced",
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "cleanup_target"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 75,
+    "posY": 1.81,
+    "posZ": -14,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 180,
+    "scaleX": 5.28,
+    "scaleY": 1,
+    "scaleZ": 5
+  },
+  "Value": 0,
+  "XmlUI_path": "SiskoCrewBoardAdvanced.44a1f8.xml"
+}

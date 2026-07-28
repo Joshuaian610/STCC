@@ -1,0 +1,31 @@
+playerarea_color = "Red"
+zone_1           = getObjectFromGUID("77d0cb")
+zone_2           = getObjectFromGUID("5103b2")
+
+function onCollisionEnter(info)
+    if info.collision_object.hasTag('suit_ship') then
+        local enter_object = info.collision_object
+        local zones        = enter_object.getZones()
+        for _, zone in pairs(zones) do
+            if zone == zone_1 or zone == zone_2 then
+                if enter_object.hasTag('suit_ship') then
+                    if enter_object.hasTag('trait_cloak') then
+                        enter_object.highlightOn("Purple")
+                        enter_object.setDescription('Cloaked')
+                    end
+                    getObjectFromGUID("82424c").call("deploy_ship_via_pad", {value=enter_object.getGUID()})
+                    enter_object.call('create_dismiss_button')
+                end
+            end
+        end
+    end
+end -- end onCollisionEnter()
+
+
+function onObjectLeaveZone(zone, leave_object)
+    if zone == zone_1 or zone == zone_2 then
+        if leave_object.hasTag('suit_ship') then
+            leave_object.call('remove_dismiss_button', {playerarea_color=playerarea_color})
+        end
+    end
+end -- end onObjectLeaveZone()

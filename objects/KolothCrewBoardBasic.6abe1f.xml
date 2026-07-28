@@ -1,0 +1,12 @@
+<Panel
+    id                = "completed_mission"
+    active            = "false"
+    height            = "40"
+    width             = "40"
+    position          = "-50 -72 1"
+    rotation          = "180 0 0"
+    showAnimation     = "Grow"
+    hideAnimation     = "Shrink"
+    animationDuration = ".25">
+    <Button onClick   = "e5b53f/uncheck_mission_complete()" image="Completed Mission"></Button>
+</Panel>

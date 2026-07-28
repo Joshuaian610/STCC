@@ -1,0 +1,58 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "CardID": 17000,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "CustomDeck": {
+    "170": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181682579294/048CB6D6C61C9A62FB8010634F535B4EC6845BF3/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181682579294/048CB6D6C61C9A62FB8010634F535B4EC6845BF3/",
+      "NumHeight": 1,
+      "NumWidth": 1,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "89beac",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": true,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "CardCustom",
+  "Nickname": "Icon Reference",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tooltip": false,
+  "Transform": {
+    "posX": -31.247,
+    "posY": 8.35,
+    "posZ": 36.95,
+    "rotX": 60,
+    "rotY": 180,
+    "rotZ": 180,
+    "scaleX": 5,
+    "scaleY": 1,
+    "scaleZ": 5
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

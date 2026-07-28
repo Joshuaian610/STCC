@@ -1,0 +1,69 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": false,
+  "ColorDiffuse": {
+    "b": 1,
+    "g": 1,
+    "r": 1
+  },
+  "ContainedObjects_path": "TableExtension.04c44a",
+  "CustomAssetbundle": {
+    "AssetbundleSecondaryURL": "",
+    "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/868496546869694123/1567EBEAA6AA35068A6FFD335F3A773EDD17B48D/",
+    "LoopingEffectIndex": 0,
+    "MaterialIndex": 1,
+    "TypeIndex": 4
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "04c44a",
+  "Grid": false,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScriptState": "",
+  "LuaScript_path": "TableExtension.04c44a.ttslua",
+  "MeasureMovement": false,
+  "Name": "Custom_Assetbundle",
+  "Nickname": "Table Extension",
+  "PhysicsMaterial": {
+    "BounceCombine": 0,
+    "Bounciness": 0,
+    "DynamicFriction": 0.6,
+    "FrictionCombine": 0,
+    "StaticFriction": 0.6
+  },
+  "Rigidbody": {
+    "AngularDrag": 10000000000000,
+    "Drag": 1000000000000000,
+    "Mass": 1000000000,
+    "UseGravity": false
+  },
+  "Snap": false,
+  "States_path": {
+    "1": "Extend.dcbdb2"
+  },
+  "Sticky": true,
+  "Tooltip": false,
+  "Transform": {
+    "posX": 0.002,
+    "posY": -41.99,
+    "posZ": 0.001,
+    "rotX": 0,
+    "rotY": 0,
+    "rotZ": 0,
+    "scaleX": 1,
+    "scaleY": 1,
+    "scaleZ": 1
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

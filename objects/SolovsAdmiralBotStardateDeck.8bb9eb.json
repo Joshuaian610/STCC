@@ -1,0 +1,76 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "SolovsAdmiralBotStardate5.42fe26",
+    "SolovsAdmiralBotStardate4.b6f66d",
+    "SolovsAdmiralBotStardate3.bd1e6f",
+    "SolovsAdmiralBotStardate2.d0c520",
+    "SolovsAdmiralBotStardate1.5153c8"
+  ],
+  "ContainedObjects_path": "SolovsAdmiralBotStardateDeck.8bb9eb",
+  "CustomDeck": {
+    "181": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25439356657917346/3CB83916C7E62328D3EEE363B0A133DF7E24BDA4/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439356657916153/0C37AC0BF3ECBF8A7DF222CF799CB501C5E55678/",
+      "NumHeight": 4,
+      "NumWidth": 8,
+      "Type": 0,
+      "UniqueBack": true
+    }
+  },
+  "DeckIDs": [
+    18131,
+    18130,
+    18129,
+    18128,
+    18127
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "8bb9eb",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Solo vs. Admiral Bot Stardate Deck",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_card",
+    "stardate"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 13.383,
+    "posY": 1.742,
+    "posZ": 27.65,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

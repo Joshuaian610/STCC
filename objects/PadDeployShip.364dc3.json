@@ -1,0 +1,212 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "AttachedSnapPoints": [
+    {
+      "Position": {
+        "x": 0.001,
+        "y": 0.2,
+        "z": -0.576
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "Tags": [
+        "snap_card"
+      ]
+    },
+    {
+      "Position": {
+        "x": 0,
+        "y": 0.2,
+        "z": -0.289
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "Tags": [
+        "snap_card"
+      ]
+    },
+    {
+      "Position": {
+        "x": 0,
+        "y": 0.2,
+        "z": -0.002
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "Tags": [
+        "snap_card"
+      ]
+    },
+    {
+      "Position": {
+        "x": 0,
+        "y": 0.2,
+        "z": 0.284
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "Tags": [
+        "snap_card"
+      ]
+    },
+    {
+      "Position": {
+        "x": -0.001,
+        "y": 0.2,
+        "z": 0.571
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "Tags": [
+        "snap_card"
+      ]
+    },
+    {
+      "Position": {
+        "x": -0.001,
+        "y": 0.2,
+        "z": 0.858
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "Tags": [
+        "snap_card"
+      ]
+    },
+    {
+      "Position": {
+        "x": 0.001,
+        "y": 0.2,
+        "z": -0.863
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "Tags": [
+        "snap_card"
+      ]
+    },
+    {
+      "Position": {
+        "x": 0,
+        "y": 0.31,
+        "z": -0.289
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "Tags": [
+        "snap_action"
+      ]
+    },
+    {
+      "Position": {
+        "x": -0.732,
+        "y": 0.31,
+        "z": 0.571
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "Tags": [
+        "away_red"
+      ]
+    },
+    {
+      "Position": {
+        "x": -0.732,
+        "y": 0.31,
+        "z": 0.284
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "Tags": [
+        "away_red"
+      ]
+    }
+  ],
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.09394,
+    "g": 0.09995,
+    "r": 0.856
+  },
+  "CustomImage": {
+    "CustomTile": {
+      "Stackable": false,
+      "Stretch": true,
+      "Thickness": 0.2,
+      "Type": 3
+    },
+    "ImageScalar": 1,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/25434112198033719/2C13CF596A5BD5A99A3BA53D3C5D753604C2676C/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25434112198033719/2C13CF596A5BD5A99A3BA53D3C5D753604C2676C/",
+    "WidthScale": 0
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "Red",
+  "GUID": "364dc3",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScriptState": "",
+  "LuaScript_path": "PadDeployShip.364dc3.ttslua",
+  "MeasureMovement": false,
+  "Name": "Custom_Tile",
+  "Nickname": "Pad Deploy Ship",
+  "Snap": false,
+  "Sticky": true,
+  "Tags": [
+    "non_int"
+  ],
+  "Tooltip": false,
+  "Transform": {
+    "posX": 38.5,
+    "posY": 0.75,
+    "posZ": 9.28,
+    "rotX": 0,
+    "rotY": 0,
+    "rotZ": 0,
+    "scaleX": 1.98,
+    "scaleY": 1,
+    "scaleZ": 13.66
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

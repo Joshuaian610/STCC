@@ -1,0 +1,54 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0,
+    "g": 0,
+    "r": 0
+  },
+  "CustomImage": {
+    "ImageScalar": 2,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/25439815955564660/4FE03752A530493E5B16DDABD4A40B937632F95F/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25439815955564097/F731A577A8F532E26E5844FE4689A78570BDC48F/",
+    "WidthScale": 0
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "c98201",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": true,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Figurine_Custom",
+  "Nickname": "U.S.S. Pasteur",
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_ship"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": -10.581,
+    "posY": 2.927,
+    "posZ": -20.173,
+    "rotX": 0,
+    "rotY": 90,
+    "rotZ": 0,
+    "scaleX": 1,
+    "scaleY": 1,
+    "scaleZ": 1
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

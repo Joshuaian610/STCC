@@ -1,0 +1,69 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "CardID": 14900,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "CustomDeck": {
+    "149": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728965206880/6E5D48E188ED97D14E43F95675CC1D4A9048490E/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728965201403/DBA100B1087914289F4010ED254D763216178D64/",
+      "NumHeight": 1,
+      "NumWidth": 1,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "CustomUIAssets": [
+    {
+      "Name": "Recrystallize",
+      "Type": 0,
+      "URL": "https://steamusercontent-a.akamaihd.net/ugc/25439356658951218/D916B77BA5C35248B643CABA9275FF2D5D03E9E3/"
+    }
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "a7ecd3",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": true,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScriptState": "",
+  "LuaScript_path": "InertDilithium.a7ecd3.ttslua",
+  "MeasureMovement": false,
+  "Name": "CardCustom",
+  "Nickname": "Inert Dilithium",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "cleanup_target",
+    "snap_card"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": -70.001,
+    "posY": 1.968,
+    "posZ": 11.993,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI_path": "InertDilithium.a7ecd3.xml"
+}

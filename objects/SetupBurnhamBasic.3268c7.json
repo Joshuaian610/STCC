@@ -1,0 +1,62 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 1,
+    "g": 0.53,
+    "r": 0.11794
+  },
+  "CustomImage": {
+    "CustomTile": {
+      "Stackable": false,
+      "Stretch": true,
+      "Thickness": 0.348251373,
+      "Type": 3
+    },
+    "ImageScalar": 1,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/61462909213386640/A86404CF5FC1DE671EBBA45E12B0D1A17B9A2A42/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/61462909213386640/A86404CF5FC1DE671EBBA45E12B0D1A17B9A2A42/",
+    "WidthScale": 0
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "3268c7",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Custom_Tile",
+  "Nickname": "Setup Burnham Basic",
+  "Snap": false,
+  "Sticky": true,
+  "Tags": [
+    "button_faction_setup",
+    "non_int",
+    "setup_basic"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": -38.544,
+    "posY": 0.95,
+    "posZ": 21.2,
+    "rotX": 0,
+    "rotY": 270,
+    "rotZ": 0,
+    "scaleX": 1,
+    "scaleY": 1,
+    "scaleZ": 1
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

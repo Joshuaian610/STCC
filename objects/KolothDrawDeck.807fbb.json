@@ -1,0 +1,87 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "IKSKlothos.5b02f9",
+    "Krell.e0e254",
+    "Korax.36629f",
+    "ArneDarvin.c8c07b",
+    "Qonos.2145b9",
+    "KlingonDisruptors.62e3aa",
+    "Utilize.2957fa",
+    "GoodDayToDie.9cef3d",
+    "Conquer.ae8eec",
+    "Confiscate.4bd005"
+  ],
+  "ContainedObjects_path": "KolothDrawDeck.807fbb",
+  "CustomDeck": {
+    "147": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964982730/F089C2D8D0EF3420A47FA7D5ADC6499EE166F21B/",
+      "NumHeight": 4,
+      "NumWidth": 6,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "DeckIDs": [
+    14722,
+    14721,
+    14720,
+    14719,
+    14718,
+    14717,
+    14716,
+    14715,
+    14714,
+    14713
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "807fbb",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Koloth Draw Deck",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "cleanup_target",
+    "snap_card",
+    "trait_klingon"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": -65.106,
+    "posY": 1.779,
+    "posZ": -3.001,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 180,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

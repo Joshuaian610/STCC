@@ -1,0 +1,61 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.09395,
+    "g": 0.09995,
+    "r": 0.856
+  },
+  "CustomImage": {
+    "CustomTile": {
+      "Stackable": false,
+      "Stretch": false,
+      "Thickness": 0.348251343,
+      "Type": 3
+    },
+    "ImageScalar": 1,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/25434746166461268/057A045BB9C435930050B0286BAF1DE4FB166178/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25434746166461268/057A045BB9C435930050B0286BAF1DE4FB166178/",
+    "WidthScale": 0
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "disabled",
+  "GUID": "c96d22",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Custom_Tile",
+  "Nickname": "Button Solo Captain Red",
+  "Snap": false,
+  "Sticky": true,
+  "Tags": [
+    "button_faction_setup",
+    "non_int"
+  ],
+  "Tooltip": false,
+  "Transform": {
+    "posX": 39.854,
+    "posY": -2,
+    "posZ": -7,
+    "rotX": 0,
+    "rotY": 270,
+    "rotZ": 0,
+    "scaleX": 1.65,
+    "scaleY": 1,
+    "scaleZ": 0.3
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

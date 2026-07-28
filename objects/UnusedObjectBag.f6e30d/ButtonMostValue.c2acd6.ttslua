@@ -1,0 +1,531 @@
+
+
+local location_zones = {
+    getObjectFromGUID("65beaa"),
+    getObjectFromGUID("429b74"),
+    getObjectFromGUID("8e265f"),
+}
+
+function onLoad()
+    self.createButton({
+        click_function = "mvps_for_bot",
+        function_owner = self,
+        label          = "",
+        position       = {0.00, 0.36, 0.050},
+        width          = 1050,
+        height         = 250,
+        scale          = {1, 1, 1},
+        color          = {1, 1, 1, .3},
+        hover_color    = {1, 1, 1, .6},
+        tooltip        = "Left Clicking this button will broadcast the current Most Valuable Market and Location Cards for the Bot Player.\n\nRight Clicking will broadcast the current Least Valuable Market and Location Cards for the Bot Player.",
+    })
+    self.createButton({
+        click_function = "mvps_for_human",
+        function_owner = self,
+        label          = "",
+        position       = {0.00, 0.36, 0.615},
+        width          = 1050,
+        height         = 250,
+        scale          = {1, 1, 1},
+        color          = {1, 1, 1, .3},
+        hover_color    = {1, 1, 1, .6},
+        tooltip        = "Left Clicking this button will broadcast the current Most Valuable Market and Location Cards for the Human Player.\n\nRight Clicking will broadcast the current Least Valuable Market and Location Cards for the Human Player.",
+    })
+end -- end onLoad()
+
+
+function get_track_multipliers(captain_card, sci_count, dip_count, mil_count)
+    local sci_multiplier    = nil
+    local dip_multiplier    = nil
+    local mil_multiplier    = nil
+    local captain_card_name = captain_card.getName()
+    local split_card_name   = {}
+    for str in string.gmatch(captain_card_name,  "%S+") do
+        table.insert(split_card_name, str)
+    end
+    local captain_name      = split_card_name[1]
+    local difficulty        = split_card_name[4]
+
+    if captain_name     == "Burnham" then
+        -- science
+        if sci_count < 2 then
+            sci_multiplier = 1
+        elseif sci_count > 1 and sci_count < 7 then
+            sci_multiplier = 2
+        elseif sci_count > 6 and sci_count < 10 then
+            sci_multiplier = 3
+        elseif sci_count > 9 and sci_count < 13 then
+            sci_multiplier = 4
+        elseif sci_count > 12 and sci_count < 15 then
+            sci_multiplier = 5
+        elseif sci_count == 15 then
+            sci_multiplier = 6
+        end
+        -- diplomacy
+        if dip_count < 2 then
+            dip_multiplier = 1
+        elseif dip_count > 1 and dip_count < 7 then
+            dip_multiplier = 2
+        elseif dip_count > 6 and dip_count < 10 then
+            dip_multiplier = 3
+        elseif dip_count > 9 and dip_count < 13 then
+            dip_multiplier = 4
+        elseif dip_count > 12 and dip_count < 15 then
+            dip_multiplier = 5
+        elseif dip_count == 15 then
+            dip_multiplier = 6
+        end
+        -- military
+        if mil_count < 5 then
+            mil_multiplier = 1
+        elseif mil_count > 4 and mil_count < 10 then
+            mil_multiplier = 3
+        elseif mil_count > 9 and mil_count < 13 then
+            mil_multiplier = 4
+        elseif mil_count > 13 then
+            mil_multiplier = 5
+        end
+    elseif captain_name == "Koloth" then
+        -- science
+        if sci_count < 5 then
+            sci_multiplier = 1
+        elseif sci_count > 4 and sci_count < 10 then
+            sci_multiplier = 3
+        elseif sci_count > 9 and sci_count < 13 then
+            sci_multiplier = 4
+        elseif mil_count > 13 then
+            sci_multiplier = 5
+        end
+        -- diplomacy
+        if dip_count < 3 then
+            dip_multiplier = 1
+        elseif dip_count > 2 and dip_count < 8 then
+            dip_multiplier = 2
+        elseif dip_count > 7 and dip_count < 11 then
+            dip_multiplier = 3
+        elseif dip_count > 10 and dip_count < 15 then
+            dip_multiplier = 5
+        elseif dip_count == 15 then
+            dip_multiplier = 7
+        end
+        -- military
+        if mil_count < 2 then
+            mil_multiplier = 1
+        elseif mil_count > 1 and mil_count < 7 then
+            mil_multiplier = 2
+        elseif mil_count > 6 and mil_count < 10 then
+            mil_multiplier = 3
+        elseif mil_count > 9 and mil_count < 13 then
+            mil_multiplier = 4
+        elseif mil_count > 12 and mil_count < 15 then
+            mil_multiplier = 5
+        elseif mil_count == 15 then
+            mil_multiplier = 7
+        end
+    elseif captain_name == "Picard" then
+        -- science
+        if sci_count < 2 then
+            sci_multiplier = 1
+        elseif sci_count > 1 and sci_count < 7 then
+            sci_multiplier = 2
+        elseif sci_count > 6 and sci_count < 10 then
+            sci_multiplier = 3
+        elseif sci_count > 9 and sci_count < 13 then
+            sci_multiplier = 4
+        elseif sci_count > 12 and sci_count < 15 then
+            sci_multiplier = 5
+        elseif sci_count == 15 then
+            sci_multiplier = 6
+        end
+        -- diplomacy
+        if dip_count < 3 then
+            dip_multiplier = 1
+        elseif dip_count > 2 and dip_count < 8 then
+            dip_multiplier = 2
+        elseif dip_count > 7 and dip_count < 11 then
+            dip_multiplier = 3
+        elseif dip_count > 10 and dip_count < 15 then
+            dip_multiplier = 5
+        elseif dip_count == 15 then
+            dip_multiplier = 7
+        end
+        -- military
+        if mil_count < 5 then
+            mil_multiplier = 1
+        elseif mil_count > 4 and mil_count < 10 then
+            mil_multiplier = 3
+        elseif mil_count > 9 and mil_count < 14 then
+            mil_multiplier = 4
+        elseif mil_count > 14 then
+            mil_multiplier = 5
+        end
+    elseif captain_name == "Sela" then
+        -- science
+        if sci_count < 5 then
+            sci_multiplier = 1
+        elseif sci_count > 4 and sci_count < 10 then
+            sci_multiplier = 3
+        elseif sci_count > 9 and sci_count < 13 then
+            sci_multiplier = 4
+        elseif mil_count > 13 then
+            sci_multiplier = 5
+        end
+        -- diplomacy
+        if dip_count < 5 then
+            dip_multiplier = 1
+        elseif dip_count > 4 and dip_count < 10 then
+            dip_multiplier = 3
+        elseif dip_count > 9 and dip_count < 14 then
+            dip_multiplier = 4
+        elseif dip_count > 13 then
+            dip_multiplier = 5
+        end
+        -- military
+        if mil_count < 5 then
+            mil_multiplier = 1
+        elseif mil_count > 4 and mil_count < 10 then
+            mil_multiplier = 3
+        elseif mil_count > 9 and mil_count < 14 then
+            mil_multiplier = 4
+        elseif mil_count > 13 then
+            mil_multiplier = 5
+        end
+    elseif captain_name == "Shran" then
+        -- science
+        if sci_count < 5 then
+            sci_multiplier = 1
+        elseif sci_count > 4 and sci_count < 10 then
+            sci_multiplier = 3
+        elseif sci_count > 9 and sci_count < 13 then
+            sci_multiplier = 4
+        elseif mil_count > 13 then
+            sci_multiplier = 5
+        end
+        -- diplomacy
+        if dip_count < 2 then
+            dip_multiplier = 1
+        elseif dip_count > 1 and dip_count < 7 then
+            dip_multiplier = 2
+        elseif dip_count > 6 and dip_count < 10 then
+            dip_multiplier = 3
+        elseif dip_count > 9 and dip_count < 13 then
+            dip_multiplier = 4
+        elseif dip_count > 12 and dip_count < 15 then
+            dip_multiplier = 5
+        elseif dip_count == 15 then
+            dip_multiplier = 6
+        end
+        -- military
+        if mil_count < 3 then
+            mil_multiplier = 1
+        elseif mil_count > 2 and mil_count < 8 then
+            mil_multiplier = 2
+        elseif mil_count > 7 and mil_count < 11 then
+            mil_multiplier = 3
+        elseif mil_count > 10 and mil_count < 15 then
+            mil_multiplier = 5
+        elseif mil_count == 15 then
+            mil_multiplier = 6
+        end
+    elseif captain_name == "Sisko" then
+        -- science
+        if sci_count < 3 then
+            sci_multiplier = 1
+        elseif sci_count > 2 and sci_count < 8 then
+            sci_multiplier = 2
+        elseif sci_count > 7 and sci_count < 11 then
+            sci_multiplier = 3
+        elseif sci_count > 10 and sci_count < 15 then
+            sci_multiplier = 5
+        elseif sci_count == 15 then
+            sci_multiplier = 7
+        end
+        -- diplomacy
+        if dip_count < 2 then
+            dip_multiplier = 1
+        elseif dip_count > 1 and dip_count < 7 then
+            dip_multiplier = 2
+        elseif dip_count > 6 and dip_count < 10 then
+            dip_multiplier = 3
+        elseif dip_count > 9 and dip_count < 13 then
+            dip_multiplier = 4
+        elseif dip_count > 12 and dip_count < 15 then
+            dip_multiplier = 5
+        elseif dip_count == 15 then
+            dip_multiplier = 6
+        end
+        -- military
+        if mil_count < 4 then
+            mil_multiplier = 1
+        elseif mil_count > 3 and mil_count < 9 then
+            mil_multiplier = 2
+        elseif mil_count > 8 and mil_count < 13 then
+            mil_multiplier = 4
+        elseif mil_count > 12 and mil_count < 15 then
+            mil_multiplier = 5
+        elseif mil_count == 15 then
+            mil_multiplier = 6
+        end
+    end
+    if difficulty == "Advanced" then
+        sci_multiplier = sci_multiplier - 1
+        dip_multiplier = dip_multiplier - 1
+        mil_multiplier = mil_multiplier - 1
+    end
+    return sci_multiplier, dip_multiplier, mil_multiplier
+end -- end get_track_multipliers()
+
+
+function find_playerareas()
+    local blue_solo = getObjectFromGUID("23bed4").getGMNotes() == "solo" and true or false
+    local red_solo  = getObjectFromGUID("1a78a6").getGMNotes() == "solo" and true or false
+    -- ensure 1 human, 1 bot, as it should be returning
+    if (blue_solo and red_solo) or (not blue_solo and not red_solo) then
+        return nil
+    else
+        return blue_solo, red_solo
+    end
+
+end -- end find_playerareas()
+
+
+function get_mvp_card_remote(args)
+    local cards     = args.cards
+    local alt_click = args.alt_click
+    return get_mvp_card(cards, alt_click)
+end -- end get_mvp_card_remote()
+
+
+function get_mvp_card(cards, alt_click)
+    if #cards == 0 then return nil end
+    for _, card in ipairs(cards) do
+        local total_vp = (card.vp or 0) + (card.glory or 0)
+        local total_resources = (card.glory or 0) + (card.dilithium or 0) + (card.latinum or 0)
+        card.total_vp = total_vp
+        card.total_resources = total_resources
+        card.index = card.index or 99
+    end
+    local function compare_most_valuable(a, b)
+        if a.total_vp ~= b.total_vp then return a.total_vp > b.total_vp end
+        if a.total_resources ~= b.total_resources then return a.total_resources > b.total_resources end
+        return a.index < b.index
+    end
+    local function compare_least_valuable(a, b)
+        if a.total_vp ~= b.total_vp then return a.total_vp < b.total_vp end
+        if a.total_resources ~= b.total_resources then return a.total_resources < b.total_resources end
+        return a.index < b.index
+    end
+    if alt_click then
+        table.sort(cards, compare_least_valuable)
+        return cards[1].obj.getName()
+    else
+        table.sort(cards, compare_most_valuable)
+        return cards[1].obj.getName()
+    end
+end -- end get_mvp_card()
+
+
+function get_cards_values_remote(args)
+    local playercolor = args.playercolor
+    local type        = args.type
+    local cards       = get_cards_values(playercolor, type)
+    return cards
+end -- end get_cards_values_remote()
+
+function get_cards_values(playercolor, type) -- playercolor == "Blue" or "Red" / type == "Market" or "Location"
+    local check_zones = type == "Market" and { -- in left to right order for market row
+        getObjectFromGUID("7d6590"),
+        getObjectFromGUID("ac4301"),
+        getObjectFromGUID("489f00"),
+        getObjectFromGUID("2edc6f"),
+    } or
+    { -- in top to bottom, top being considered left (blue side orientation)
+        getObjectFromGUID("65beaa"),
+        getObjectFromGUID("429b74"),
+        getObjectFromGUID("8e265f"),
+    }
+    -- swap market location zone index ordering to make bottom to top be left to right (red side orientation)
+    if playercolor == "Red" and type == "Location" then
+        local reversed_locations = {}
+        for i = #check_zones, 1, -1 do
+            table.insert(reversed_locations, check_zones[i])
+        end
+        check_zones = reversed_locations
+    end
+
+    local captain_card_zone               = getObjectFromGUID(playercolor == "Blue" and "75465f" or "75c041")
+    for _, object in pairs(captain_card_zone.getObjects()) do
+        if string.find(object.getName(), "Crew Board") then
+            captain_card = object
+        end
+    end
+    local sci_count                       = getObjectFromGUID(playercolor == "Blue" and "8317bd" or "c5021e").getVar('val')
+    local dip_count                       = getObjectFromGUID(playercolor == "Blue" and "9b4f79" or "f3c9be").getVar('val')
+    local mil_count                       = getObjectFromGUID(playercolor == "Blue" and "9a7130" or "5564b6").getVar('val')
+    local sci_multi, dip_multi, mil_multi = get_track_multipliers(captain_card, sci_count, dip_count, mil_count)
+    local cards                           = {}
+    local iteration_count                 = type == "Market" and 4 or 3
+    for i = 1, iteration_count do
+        -- [obj] = card object
+        -- [vp] = printed/focus/endgame total
+        -- [glory] = glory count in card zone
+        -- [dilithium] = dilithium count in card zone
+        -- [latinum] = latinum count in card zone
+        -- [index] = card zone index (L-R positioning)
+        local current_card_table          = {
+            obj                           = nil,
+            vp                            = nil,
+            glory                         = nil,
+            latinum                       = nil,
+            dilithium                     = nil,
+            index                         = nil,
+        }
+        local current_card                = nil
+        for _, object in pairs(check_zones[i].getObjects()) do
+            if object.tag == "Card" then
+                current_card              = object
+            end
+        end
+        if current_card then
+            -- get [obj]
+
+            current_card_table.obj = current_card
+
+            -- get [vp]
+            local total_printed_score     = 0
+            -- get printed VP
+            local printed_vp_score        = 0
+            if string.find(current_card.getGMNotes(), "VP=") then
+                printed_vp_score          = tonumber(string.match(current_card.getGMNotes(), "VP=(-?%d+)")) or 0
+            end
+            -- get focus VP
+            local focus_vp_score          = 0
+            if current_card.getGMNotes() == "sci_multi" then focus_vp_score = sci_multi end
+            if current_card.getGMNotes() == "dip_multi" then focus_vp_score = dip_multi end
+            if current_card.getGMNotes() == "mil_multi" then focus_vp_score = mil_multi end
+            -- get endgame_VP
+            local endgame_vp_score        = 0
+            if current_card.getName()    == "Verex III" or current_card.getName() == "Derna" or
+            current_card.getName()       == "Ba'ku" or current_card.getName() == "Regula I" or
+            current_card.getName()       == "Daystrom Institute" or current_card.getName() == "Boreth" or
+            current_card.getName()       == "Theta Zeta" or current_card.getName() == "Coridan" then
+                endgame_vp_score          = 5
+            end
+            total_printed_score           = printed_vp_score + focus_vp_score + endgame_vp_score
+            current_card_table.vp         = total_printed_score
+
+            -- get [glory]
+            local glory_count             = 0
+            for _, object in pairs(check_zones[i].getObjects()) do
+                if object.getName()      == "Glory Token" then
+                    glory_count           = glory_count + 1
+                end
+            end
+            current_card_table.glory     = glory_count
+
+            -- get [latinum]
+            local latinum_count             = 0
+            for _, object in pairs(check_zones[i].getObjects()) do
+                if object.getName()      == "Latinum Token" then
+                    latinum_count           = latinum_count + 1
+                end
+            end
+            current_card_table.latinum     = latinum_count
+
+            -- get [dilithium]
+            local dilithium_count             = 0
+            for _, object in pairs(check_zones[i].getObjects()) do
+                if object.getName()      == "Dilithium Token" then
+                    dilithium_count           = dilithium_count + 1
+                end
+            end
+            current_card_table.dilithium     = dilithium_count
+
+            -- get [index]
+            current_card_table.index         = i
+            table.insert(cards, current_card_table)
+        end
+    end
+    return cards
+end -- end get_card_values()
+
+
+function mvps_for_bot(_, _, alt_click)
+    -- get player areas, multipliers
+    local blue_solo, red_solo = find_playerareas()
+    if blue_solo             == true then
+        local market_cards    = get_cards_values("Blue", "Market")
+        local location_cards  = get_cards_values("Blue", "Location")
+        local market_mvp      = get_mvp_card(market_cards, alt_click)
+        local location_mvp    = get_mvp_card(location_cards, alt_click)
+        if not alt_click then
+            broadcastToAll("[" .. Color.fromString("Blue"):toHex() .. "]Bot[-] Current Most Valuable Cards:", "White")
+            broadcastToAll("[" .. Color.fromString("Yellow"):toHex() .. "]Market[-]: " .. market_mvp, "White")
+            broadcastToAll("[" .. Color.fromString("Green"):toHex() .. "]Location[-]: " .. location_mvp, "White")
+        else
+            broadcastToAll("[" .. Color.fromString("Blue"):toHex() .. "]Bot[-] Current Least Valuable Cards:", "White")
+            broadcastToAll("[" .. Color.fromString("Yellow"):toHex() .. "]Market[-]: " .. market_mvp, "White")
+            broadcastToAll("[" .. Color.fromString("Green"):toHex() .. "]Location[-]: " .. location_mvp, "White")
+        end
+    else
+        local market_cards    = get_cards_values("Red", "Market")
+        local location_cards  = get_cards_values("Red", "Location")
+        local market_mvp      = get_mvp_card(market_cards, alt_click)
+        local location_mvp    = get_mvp_card(location_cards, alt_click)
+        if not alt_click then
+            broadcastToAll("[" .. Color.fromString("Red"):toHex() .. "]Bot[-] Current Most Valuable Cards:", "White")
+            broadcastToAll("[" .. Color.fromString("Yellow"):toHex() .. "]Market[-]: " .. market_mvp, "White")
+            broadcastToAll("[" .. Color.fromString("Green"):toHex() .. "]Location[-]: " .. location_mvp, "White")
+        else
+            broadcastToAll("[" .. Color.fromString("Red"):toHex() .. "]Bot[-] Current Least Valuable Cards:", "White")
+            broadcastToAll("[" .. Color.fromString("Yellow"):toHex() .. "]Market[-]: " .. market_mvp, "White")
+            broadcastToAll("[" .. Color.fromString("Green"):toHex() .. "]Location[-]: " .. location_mvp, "White")
+        end
+    end
+end -- end mvps_for_bot()
+
+
+
+function mvps_for_human(_, _, alt_click)
+    -- get player areas, multipliers
+    local blue_solo, red_solo = find_playerareas()
+    local zones                 = {"7d6590", "ac4301", "489f00", "2edc6f", "65beaa", "429b74", "8e265f"}
+    if blue_solo               == true then
+        local market_cards      = get_cards_values("Red", "Market")
+        local location_cards    = get_cards_values("Red", "Location")
+        local market_mvp        = get_mvp_card(market_cards, alt_click)
+        local location_mvp      = get_mvp_card(location_cards, alt_click)
+        if market_mvp and location_mvp then
+            if not alt_click then
+                broadcastToAll("[" .. Color.fromString("Red"):toHex() .. "]Player[-] Current Most Valuable Cards:", "White")
+                broadcastToAll("[" .. Color.fromString("Yellow"):toHex() .. "]Market[-]: " .. market_mvp, "White")
+                broadcastToAll("[" .. Color.fromString("Green"):toHex() .. "]Location[-]: " .. location_mvp, "White")
+                -- highlight_cards(market_mvp_card, location_mvp_card, "Blue")
+            else
+                broadcastToAll("[" .. Color.fromString("Red"):toHex() .. "]Player[-] Current Least Valuable Cards:", "White")
+                broadcastToAll("[" .. Color.fromString("Yellow"):toHex() .. "]Market[-]: " .. market_mvp, "White")
+                broadcastToAll("[" .. Color.fromString("Green"):toHex() .. "]Location[-]: " .. location_mvp, "White")
+                -- highlight_cards(market_mvp_card, location_mvp_card, "Blue")
+            end
+        end
+    else
+        local market_cards    = get_cards_values("Blue", "Market")
+        local location_cards  = get_cards_values("Blue", "Location")
+        local market_mvp      = get_mvp_card(market_cards, alt_click)
+        local location_mvp    = get_mvp_card(location_cards, alt_click)
+        if market_mvp and location_mvp then
+            local highlight_targets = {market_mvp_card, location_mvp_card}
+            if not alt_click then
+                broadcastToAll("[" .. Color.fromString("Blue"):toHex() .. "]Player[-] Current Most Valuable Cards:", "White")
+                broadcastToAll("[" .. Color.fromString("Yellow"):toHex() .. "]Market[-]: " .. market_mvp, "White")
+                broadcastToAll("[" .. Color.fromString("Green"):toHex() .. "]Location[-]: " .. location_mvp, "White")
+                -- highlight_cards(market_mvp_card, location_mvp_card, "Red")
+            else
+                broadcastToAll("[" .. Color.fromString("Blue"):toHex() .. "]Player[-] Current Least Valuable Cards:", "White")
+                broadcastToAll("[" .. Color.fromString("Yellow"):toHex() .. "]Market[-]: " .. market_mvp, "White")
+                broadcastToAll("[" .. Color.fromString("Green"):toHex() .. "]Location[-]: " .. location_mvp, "White")
+                -- highlight_cards(market_mvp_card, location_mvp_card, "Red")
+            end
+        end
+    end
+end -- end mvps_for_human()

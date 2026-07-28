@@ -1,0 +1,119 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ChildObjects": [
+    {
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "Autoraise": true,
+      "ColorDiffuse": {
+        "b": 1,
+        "g": 1,
+        "r": 1
+      },
+      "CustomImage": {
+        "CustomToken": {
+          "MergeDistancePixels": 15,
+          "Stackable": false,
+          "StandUp": false,
+          "Thickness": 0.1
+        },
+        "ImageScalar": 1,
+        "ImageSecondaryURL": "",
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25434112198246448/2008DC0BB986B71E941B39DF375877FA7F4186E8/",
+        "WidthScale": 0
+      },
+      "Description": "",
+      "DragSelectable": true,
+      "GMNotes": "",
+      "GUID": "fad6b3",
+      "Grid": true,
+      "GridProjection": false,
+      "Hands": false,
+      "HideWhenFaceDown": false,
+      "IgnoreFoW": false,
+      "LayoutGroupSortIndex": 0,
+      "Locked": false,
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "MeasureMovement": false,
+      "Name": "Custom_Token",
+      "Nickname": "",
+      "Snap": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "Transform": {
+        "posX": 0.00003950195,
+        "posY": -0.0999924839,
+        "posZ": 0.0000630652939,
+        "rotX": -0.000236021224,
+        "rotY": 0.07334428,
+        "rotZ": 179.99913,
+        "scaleX": 0.9999999,
+        "scaleY": 0.999999762,
+        "scaleZ": 0.9999999
+      },
+      "Value": 0,
+      "XmlUI": ""
+    }
+  ],
+  "ColorDiffuse": {
+    "b": 1,
+    "g": 1,
+    "r": 1
+  },
+  "CustomImage": {
+    "CustomToken": {
+      "MergeDistancePixels": 15,
+      "Stackable": false,
+      "StandUp": false,
+      "Thickness": 0.1
+    },
+    "ImageScalar": 1,
+    "ImageSecondaryURL": "",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25434112198246059/BA8E8AA2E3A3AADD603BA304C942E4569F8377AB/",
+    "WidthScale": 0
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "Red",
+  "GUID": "3cbc59",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Custom_Token",
+  "Nickname": "Action Token",
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_action"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 34.25,
+    "posY": 0.8,
+    "posZ": -20.496,
+    "rotX": 0,
+    "rotY": 300,
+    "rotZ": 0,
+    "scaleX": 0.3,
+    "scaleY": 1,
+    "scaleZ": 0.3
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

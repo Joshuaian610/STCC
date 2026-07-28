@@ -1,0 +1,12 @@
+function onLoad()
+    self.highlightOn("Red")
+end
+
+function onObjectEnterContainer(container, object)
+    if container.hasTag('away_blue') and object.hasTag('away_blue') then
+        container.highlightOn("Blue")
+    end
+    if container.hasTag('away_red') and object.hasTag('away_red') then
+        container.highlightOn("Red")
+    end
+end

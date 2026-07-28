@@ -1,0 +1,40 @@
+<Panel
+    id                = "completed_mission_1"
+    active            = "false"
+    height            = "40"
+    width             = "40"
+    position          = "-71 -72 1"
+    rotation          = "180 0 0"
+    showAnimation     = "Grow"
+    hideAnimation     = "Shrink"
+    animationDuration = ".25">
+    <Button onClick   = "6da83f/uncheck_mission_complete_1()" image="Completed Mission"></Button>
+</Panel>
+
+
+<Panel
+    id                = "completed_mission_2"
+    active            = "false"
+    height            = "40"
+    width             = "40"
+    position          = "0 -72 1"
+    rotation          = "180 0 0"
+    showAnimation     = "Grow"
+    hideAnimation     = "Shrink"
+    animationDuration = ".25">
+    <Button onClick   = "6da83f/uncheck_mission_complete_2()" image="Completed Mission"></Button>
+</Panel>
+
+
+<Panel
+    id                = "completed_mission_3"
+    active            = "false"
+    height            = "40"
+    width             = "40"
+    position          = "71 -72 1"
+    rotation          = "180 0 0"
+    showAnimation     = "Grow"
+    hideAnimation     = "Shrink"
+    animationDuration = ".25">
+    <Button onClick   = "6da83f/uncheck_mission_complete_3()" image="Completed Mission"></Button>
+</Panel>

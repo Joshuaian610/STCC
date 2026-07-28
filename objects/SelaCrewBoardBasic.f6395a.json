@@ -1,0 +1,67 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.23527,
+    "g": 0.23527,
+    "r": 0.23527
+  },
+  "CustomImage": {
+    "CustomTile": {
+      "Stackable": false,
+      "Stretch": true,
+      "Thickness": 0.1,
+      "Type": 3
+    },
+    "ImageScalar": 1,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/16448286229766873123/D1484C164BB7F90B79F946CE0B7A6E9ECD491727/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/16448286229766873123/D1484C164BB7F90B79F946CE0B7A6E9ECD491727/",
+    "WidthScale": 0
+  },
+  "CustomUIAssets": [
+    {
+      "Name": "Completed Mission",
+      "Type": 0,
+      "URL": "https://steamusercontent-a.akamaihd.net/ugc/25439356640984575/300BF380C3419B12F700864F94EBC70B92ED253C/"
+    }
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "f6395a",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScriptState": "",
+  "LuaScript_path": "SelaCrewBoardBasic.f6395a.ttslua",
+  "MeasureMovement": false,
+  "Name": "Custom_Tile",
+  "Nickname": "Sela Crew Board Basic",
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "cleanup_target"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 75.001,
+    "posY": 1.909,
+    "posZ": 13.996,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 180,
+    "scaleX": 5.28,
+    "scaleY": 1,
+    "scaleZ": 5
+  },
+  "Value": 0,
+  "XmlUI_path": "SelaCrewBoardBasic.f6395a.xml"
+}

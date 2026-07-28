@@ -1,0 +1,65 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "CardID": 15900,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "CustomDeck": {
+    "159": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181681058492/1EFB7AA0A7B30903C233851BD6B0E232DD39F10D/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181681058259/09515BAE9B700A9CC5EAEEDFEB4FAE16572A2B19/",
+      "NumHeight": 4,
+      "NumWidth": 5,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "VP=3",
+  "GUID": "0251de",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": true,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Card",
+  "Nickname": "Amargosa Observatory",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "skill_science",
+    "snap_card",
+    "suit_location",
+    "trait_scientist",
+    "trait_starbase"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 31.204,
+    "posY": 1.854,
+    "posZ": -27.405,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

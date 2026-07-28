@@ -1,0 +1,125 @@
+playerarea_color = "Blue"
+
+function onLoad()
+    create_button()
+end -- end onLoad()
+
+function create_button()
+    self.createButton({
+        click_function = "refresh_playerarea",
+        function_owner = self,
+        label          = "",
+        position       = {0, 0.36, 0.02},
+        rotation       = {0, 180, 0},
+        width          = 865,
+        height         = 435,
+        scale          = {2.3, 2.3, 2.3},
+        color          = {1, 1, 1, .3},
+        hover_color    = {1, 1, 1, .6},
+        tooltip        = "Refresh Action Tokens & Cards, and discard Staging Area.",
+    })
+end -- end create_button()
+
+
+function refresh_playerarea()
+    Global.call('animate_button', {button=self})
+    -- check for stardate card in zones, announce reminder
+    local all_zones = {
+        getObjectFromGUID("a9ca57"),
+        getObjectFromGUID("2c336e"),
+        getObjectFromGUID("fc7f21"),
+        getObjectFromGUID("e54fe3"),
+    }
+    local stardate_found = false
+    local is_solo = self.getGMNotes() == "solo"
+    for i = 1, 4 do
+        for _, object in pairs(all_zones[i].getObjects()) do
+            if string.find(object.getName(), "Stardate") then
+                broadcastToColor("Stardate Card found in " .. playerarea_color .. " Player area. Resolve and remove Stardate card at the beginning of Clean-Up Step.", playerarea_color, "Orange")
+                return nil
+            end
+        end
+    end
+    -- refresh action tokens
+    local guids    = {"d8a4e4", "3a9253", "8e3619"}
+    local locs     = {{-34.25, 0.80, 22.50}, {-34.25, 0.80, 20.50}, {-34.25, 0.80, 18.50}}
+    for i = 1, 3 do
+        if getObjectFromGUID(guids[i]) ~= nil then
+            getObjectFromGUID(guids[i]).setPositionSmooth(locs[i], false, false)
+            Wait.Time(function() getObjectFromGUID(guids[i]).setRotationSmooth({0.00, 120.00, 0.00}, false, false) end, 1.8)
+        end
+    end
+    local checkzone = getObjectFromGUID("e54fe3")
+    -- discard staging area cards
+    for _, object in pairs(checkzone.getObjects()) do
+        if object.tag == "Card" or object.tag == "Deck" then
+            if not is_solo then
+                object.setRotation({0.00, 270.00, 0.00})
+            else
+                object.setRotation({0.00, 90.00, 0.00})
+            end
+            object.setPositionSmooth({-44.57, 2.00, -21.00}, false, false)
+        end
+    end
+    -- refresh exhausted cards
+    -- [1] captain, [2] ships, [3] duty officers, [4] locations
+    local checkzones = {"596317", "fc7f21", "a9ca57", "2c336e"}
+    for i = 1, 4 do
+        for _, object in pairs(getObjectFromGUID(checkzones[i]).getObjects()) do
+            if object.tag == "Card" then
+                if not is_solo then
+                    object.setRotation({0.00, 270.00, 0.00})
+                else
+                    object.setRotation({0.00, 90.00, 0.00})
+                end
+            end
+        end
+    end
+    -- destroy any summoned action tokens
+    local tokens_found = false
+    local token_count  = 0
+    for _, object in pairs(getObjects()) do
+        if object.hasTag('refresh_destruct_' .. string.lower(playerarea_color)) then
+            object.destruct()
+            tokens_found = true
+            token_count  = token_count + 1
+        end
+    end
+    if tokens_found then
+        if token_count == 1 then
+            if Player[playerarea_color].steam_name ~= nil then
+                broadcastToAll("[" .. Color.fromString(playerarea_color):toHex() .. "]" .. Player[playerarea_color].steam_name .. "[-] - Extra Action Token has been destroyed.", "White")
+            else
+                broadcastToAll("[" .. Color.fromString(playerarea_color):toHex() .. "]" .. playerarea_color .. " Player[-] - Extra Action Token has been destroyed.", "White")
+            end
+        elseif token_count > 1 then
+            if Player[playerarea_color].steam_name ~= nil then
+                broadcastToAll("[" .. Color.fromString(playerarea_color):toHex() .. "]" .. Player[playerarea_color].steam_name .. "[-] - Extra Action Tokens have been destroyed.", "White")
+            else
+                broadcastToAll("[" .. Color.fromString(playerarea_color):toHex() .. "]" .. playerarea_color .. " Player[-] - Extra Action Tokens have been destroyed.", "White")
+            end
+        end
+    end
+    -- -- remove on turn end cloaking
+    -- local zone_1 = playerarea_color == "Blue" and getObjectFromGUID("2c336e") or getObjectFromGUID("77d0cb")
+    -- local zone_2 = playerarea_color == "Blue" and getObjectFromGUID("fc7f21") or getObjectFromGUID("5103b2")
+    -- local zones  = {zone_1, zone_2}
+    -- for i = 1, 2 do
+    --     for _, object in pairs(zones[i].getObjects()) do
+    --         local desc = object.getDescription()
+    --         local cloaked_via = desc:sub(1, 11) == "Cloaked via"
+    --         if cloaked_via then
+    --             object.setDescription("")
+    --             object.highlightOff()
+    --             object.removeTag('trait_cloak')
+    --             -- change ship color back to playerarea_color
+    --             for _, obj in pairs(getObjects()) do
+    --                 if (obj.getName() == object.getName()) and obj.hasTag('snap_ship') then
+    --                     obj.highlightOff()
+    --                     obj.highlightOn(playerarea_color)
+    --                 end
+    --             end
+    --         end
+    --     end
+    -- end
+end -- end refresh_action_tokens()

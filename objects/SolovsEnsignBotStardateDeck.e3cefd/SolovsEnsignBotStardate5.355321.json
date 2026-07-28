@@ -1,0 +1,62 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "CardID": 18111,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "CustomDeck": {
+    "181": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25439356657917346/3CB83916C7E62328D3EEE363B0A133DF7E24BDA4/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439356657916153/0C37AC0BF3ECBF8A7DF222CF799CB501C5E55678/",
+      "NumHeight": 4,
+      "NumWidth": 8,
+      "Type": 0,
+      "UniqueBack": true
+    }
+  },
+  "Description": "Trigger the end of the game.",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "355321",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": true,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScriptState": "",
+  "LuaScript_path": "SolovsEnsignBotStardateDeck.e3cefd/SolovsEnsignBotStardate5.355321.ttslua",
+  "MeasureMovement": false,
+  "Name": "Card",
+  "Nickname": "Solo vs. Ensign Bot Stardate 5",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_card",
+    "stardate"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": -29.602,
+    "posY": 0.964,
+    "posZ": -17.754,
+    "rotX": 0,
+    "rotY": 270,
+    "rotZ": 0,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

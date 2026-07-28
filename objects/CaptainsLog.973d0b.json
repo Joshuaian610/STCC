@@ -1,0 +1,71 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "Bag": {
+    "Order": 0
+  },
+  "ColorDiffuse": {
+    "b": 1,
+    "g": 1,
+    "r": 1
+  },
+  "CustomMesh": {
+    "CastShadows": true,
+    "ColliderURL": "",
+    "Convex": true,
+    "CustomShader": {
+      "FresnelStrength": 0,
+      "SpecularColor": {
+        "b": 1,
+        "g": 1,
+        "r": 1
+      },
+      "SpecularIntensity": 0,
+      "SpecularSharpness": 2
+    },
+    "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/25434746165955625/7D4E60DA09D21C3D2AB7BA4638509DCB6E5C44E6/",
+    "MaterialIndex": 1,
+    "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1994562021176698519/9B45D437C9DF8B9BE4DE6D290B6F7211D08317A2/",
+    "NormalURL": "",
+    "TypeIndex": 6
+  },
+  "Description": "Ensure to only drop single cards, decks will not allow vision of tags on logged cards",
+  "DragSelectable": true,
+  "GMNotes": "Blue",
+  "GUID": "973d0b",
+  "Grid": true,
+  "GridProjection": true,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScriptState": "",
+  "LuaScript_path": "CaptainsLog.973d0b.ttslua",
+  "MaterialIndex": -1,
+  "MeasureMovement": false,
+  "MeshIndex": -1,
+  "Name": "Custom_Model_Bag",
+  "Nickname": "Captain's Log",
+  "Number": 0,
+  "Snap": true,
+  "Sticky": true,
+  "Tooltip": true,
+  "Transform": {
+    "posX": -34.25,
+    "posY": 0.739,
+    "posZ": 6.954,
+    "rotX": 0,
+    "rotY": 270,
+    "rotZ": 0,
+    "scaleX": 1.12,
+    "scaleY": 2,
+    "scaleZ": 0.89
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

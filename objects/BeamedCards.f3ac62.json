@@ -1,0 +1,80 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "AttachedSnapPoints": [
+    {
+      "Position": {
+        "x": 0.031,
+        "y": 0.166,
+        "z": -0.219
+      }
+    }
+  ],
+  "Autoraise": true,
+  "Bag": {
+    "Order": 0
+  },
+  "ColorDiffuse": {
+    "b": 1,
+    "g": 1,
+    "r": 1
+  },
+  "CustomMesh": {
+    "CastShadows": true,
+    "ColliderURL": "",
+    "Convex": true,
+    "CustomShader": {
+      "FresnelStrength": 0,
+      "SpecularColor": {
+        "b": 1,
+        "g": 1,
+        "r": 1
+      },
+      "SpecularIntensity": 0,
+      "SpecularSharpness": 2
+    },
+    "DiffuseURL": "https://steamusercontent-a.akamaihd.net/ugc/25434746165905712/1A071E2921B1EB344EF5650D46B23EECD2B1F35E/",
+    "MaterialIndex": 1,
+    "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1994562021176698519/9B45D437C9DF8B9BE4DE6D290B6F7211D08317A2/",
+    "NormalURL": "",
+    "TypeIndex": 6
+  },
+  "Description": "Ensure to only drop single cards, decks will not allow vision of tags on beamed cards",
+  "DragSelectable": true,
+  "GMNotes": "Blue",
+  "GUID": "f3ac62",
+  "Grid": true,
+  "GridProjection": true,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScriptState": "",
+  "LuaScript_path": "BeamedCards.f3ac62.ttslua",
+  "MaterialIndex": -1,
+  "MeasureMovement": false,
+  "MeshIndex": -1,
+  "Name": "Custom_Model_Bag",
+  "Nickname": "Beamed Cards",
+  "Number": 0,
+  "Snap": true,
+  "Sticky": true,
+  "Tooltip": true,
+  "Transform": {
+    "posX": -34.25,
+    "posY": 0.739,
+    "posZ": 2.47,
+    "rotX": 0,
+    "rotY": 270,
+    "rotZ": 0,
+    "scaleX": 1.12,
+    "scaleY": 2,
+    "scaleZ": 0.89
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

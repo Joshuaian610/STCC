@@ -1,0 +1,152 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "AttachedSnapPoints": [
+    {
+      "Position": {
+        "x": 0,
+        "y": 0.31,
+        "z": -0.836
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "Tags": [
+        "snap_card"
+      ]
+    },
+    {
+      "Position": {
+        "x": 0.001,
+        "y": 0.31,
+        "z": -0.502
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "Tags": [
+        "snap_card"
+      ]
+    },
+    {
+      "Position": {
+        "x": 0.001,
+        "y": 0.31,
+        "z": -0.167
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "Tags": [
+        "snap_card"
+      ]
+    },
+    {
+      "Position": {
+        "x": 0.001,
+        "y": 0.31,
+        "z": 0.168
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "Tags": [
+        "snap_card"
+      ]
+    },
+    {
+      "Position": {
+        "x": 0.001,
+        "y": 0.31,
+        "z": 0.503
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "Tags": [
+        "snap_card"
+      ]
+    },
+    {
+      "Position": {
+        "x": 0.001,
+        "y": 0.31,
+        "z": 0.838
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 90,
+        "z": 0
+      },
+      "Tags": [
+        "snap_card"
+      ]
+    }
+  ],
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.09394,
+    "g": 0.09995,
+    "r": 0.856
+  },
+  "CustomImage": {
+    "CustomTile": {
+      "Stackable": false,
+      "Stretch": true,
+      "Thickness": 0.2,
+      "Type": 3
+    },
+    "ImageScalar": 1,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/25434112198033719/2C13CF596A5BD5A99A3BA53D3C5D753604C2676C/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25434112198033719/2C13CF596A5BD5A99A3BA53D3C5D753604C2676C/",
+    "WidthScale": 0
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "Red",
+  "GUID": "78def6",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Custom_Tile",
+  "Nickname": "Pad Played",
+  "Snap": false,
+  "Sticky": true,
+  "Tags": [
+    "non_int"
+  ],
+  "Tooltip": false,
+  "Transform": {
+    "posX": 44.5,
+    "posY": 0.75,
+    "posZ": 6.93,
+    "rotX": 0,
+    "rotY": 0,
+    "rotZ": 0,
+    "scaleX": 1.98,
+    "scaleY": 1,
+    "scaleZ": 11.7
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

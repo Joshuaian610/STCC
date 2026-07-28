@@ -1,0 +1,98 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "UnstableWormhole.5c8c68",
+    "TypeIIIDisruptorPistols.b926f6",
+    "Tribbles.0add95",
+    "TachyonDetectionGrid.ae7adf",
+    "PlasmaManifold.21d471",
+    "Phasers.5a7a2b",
+    "OrbOfTime.1fb507",
+    "Mekleth.e57cfd",
+    "Lirpa.b6d5a7",
+    "Horta.26a69e",
+    "Holosuite.a3d0b7",
+    "ForcedSingularity.aaf846",
+    "FerengiWine.497a05",
+    "CloakingDevice.d0d973",
+    "BorgSpatialTrajector.e18309",
+    "Biobed.d9fd13"
+  ],
+  "ContainedObjects_path": "Cargo.2479b4",
+  "CustomDeck": {
+    "162": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181682383302/EAB5FEF5B1329A4B229618D523109B5AB817E4D9/",
+      "NumHeight": 4,
+      "NumWidth": 4,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "DeckIDs": [
+    16215,
+    16214,
+    16213,
+    16212,
+    16211,
+    16210,
+    16209,
+    16208,
+    16207,
+    16206,
+    16205,
+    16204,
+    16203,
+    16202,
+    16201,
+    16200
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "2479b4",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Cargo",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_card",
+    "suit_cargo"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": -2.5,
+    "posY": 1.048,
+    "posZ": 14,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 180,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

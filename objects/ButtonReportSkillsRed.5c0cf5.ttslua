@@ -1,0 +1,209 @@
+playerarea_color = "Red"
+tag_type         = "Skill Icons"
+
+checkzones = {
+    getObjectFromGUID("bf1e62"), -- captain
+    getObjectFromGUID("586a2e"), -- staging
+    getObjectFromGUID("5103b2"), -- ships
+    getObjectFromGUID("77d0cb"), -- locations
+    getObjectFromGUID("818a7e"), -- duty officers
+}
+
+
+checkbags = {
+    -- from top left. clockwise
+    getObjectFromGUID("7f4770"),
+    getObjectFromGUID("577602"),
+    getObjectFromGUID("82a5c5"),
+    getObjectFromGUID("4f12e8"),
+    getObjectFromGUID("351f79"),
+    getObjectFromGUID("efdbd0"),
+    getObjectFromGUID("cf1df7"),
+    getObjectFromGUID("95dff1"),
+    getObjectFromGUID("30048e"),
+    getObjectFromGUID("910a26"),
+    getObjectFromGUID("9e394f"),
+    getObjectFromGUID("392caa"),
+    getObjectFromGUID("c32b20"),
+    getObjectFromGUID("b5d6f9"),
+}
+
+
+function onLoad()
+    create_button()
+end -- end onLoad()
+
+
+function create_button()
+    self.createButton({
+        click_function = "report_tags",
+        function_owner = self,
+        label          = "",
+        position       = {0, 0.36, -0.01},
+        width          = 865,
+        height         = 435,
+        scale          = {2.3, 2.3, 2.3},
+        color          = {1, 1, 1, .3},
+        hover_color    = {1, 1, 1, .6},
+        tooltip        = "Clicking this button will report all currently in play " .. tag_type .. " for the " .. playerarea_color .. " player.",
+    })
+end -- end create_button()
+
+
+function report_tags()
+    Global.call('animate_button', {button=self})
+    local in_play_skill_icons = {
+        diplomacy             = 0, -- influence
+        military              = 0, -- military, duh
+        science               = 0, -- research
+        wildcard              = 0,
+    }
+    local in_play_skill_cards = {
+        diplomacy             = {}, -- influence
+        military              = {}, -- military, duh
+        science               = {}, -- research
+        wildcard              = {},
+    }
+    local nivar_traits        = {
+        vulcan                = 0,
+        ambassador            = 0,
+        romulan               = 0,
+    }
+    -- check zones
+    for i = 1, 5 do
+        for _, object in pairs(checkzones[i].getObjects()) do
+            for k, _ in pairs(in_play_skill_icons) do
+                if object.hasTag('skill_' .. k) then
+                    in_play_skill_icons[k] = in_play_skill_icons[k] + 1
+                    table.insert(in_play_skill_cards[k], object.getName() .. ": 1")
+                elseif object.hasTag('skill_x2_' .. k) then
+                    in_play_skill_icons[k] = in_play_skill_icons[k] + 2
+                    table.insert(in_play_skill_cards[k], object.getName() .. ": 2")
+                elseif object.hasTag('skill_x3_' .. k) then
+                    in_play_skill_icons[k] = in_play_skill_icons[k] + 3
+                    table.insert(in_play_skill_cards[k], object.getName() .. ": 3")
+                end
+            end
+            for k, _ in pairs(nivar_traits) do
+                if object.hasTag('trait_' .. k) then
+                    nivar_traits[k] = nivar_traits[k] + 1
+                end
+            end
+        end
+    end
+    -- check beam bags
+    local beamed_skill_icons = {
+        diplomacy = 0, -- influence
+        military  = 0, -- military, duh
+        science   = 0, -- research
+        wildcard  = 0,
+    }
+    for i = 1, 14 do
+        local bag_objects = checkbags[i].getObjects()
+        for _, bag_object in pairs(bag_objects) do
+            for k, _ in pairs(beamed_skill_icons) do
+                for _, tag in pairs(bag_object.tags) do
+                    if tag == 'skill_' .. k then
+                        beamed_skill_icons[k]  = beamed_skill_icons[k] + 1
+                        table.insert(in_play_skill_cards[k], bag_object.getName() .. ": 1")
+                    end
+                    if tag == 'skill_x2_' .. k then
+                        beamed_skill_icons[k]  = beamed_skill_icons[k] + 2
+                        table.insert(in_play_skill_cards[k], bag_object.getName() .. ": 2")
+                    end
+                    if tag == 'skill_x3_' .. k then
+                        beamed_skill_icons[k]  = beamed_skill_icons[k] + 3
+                        table.insert(in_play_skill_cards[k], bag_object.getName() .. ": 3")
+                    end
+                end
+            end
+        end
+    end
+    local skill_icons = {
+            diplomacy         = 0, -- influence
+            military          = 0, -- military, duh
+            science           = 0, -- research
+            wildcard          = 0,
+    }
+    for k, v in pairs(skill_icons) do
+        skill_icons[k] = in_play_skill_icons[k] + beamed_skill_icons[k]
+    end
+    -- check if nivar_in_play
+    local nivar_in_play = false
+    for i = 1, 5 do
+        for _, object in pairs(checkzones[i].getObjects()) do
+            if object.getName() == "Ni'var" then
+                nivar_in_play = true
+            end
+        end
+    end
+    if nivar_traits['vulcan'] > 0 and nivar_in_play then
+        skill_icons['science'] = skill_icons['science'] + nivar_traits['vulcan']
+    end
+    if nivar_traits['ambassador'] > 0 and nivar_in_play then
+        skill_icons['diplomacy'] = skill_icons['diplomacy'] + nivar_traits['ambassador']
+    end
+    if nivar_traits['romulan'] > 0 and nivar_in_play then
+        skill_icons['military'] = skill_icons['military'] + nivar_traits['romulan']
+    end
+    -- check if keyla detmer in DO slot
+    for _, object in pairs(getObjectFromGUID("a9ca57").getObjects()) do
+        if object.getName() == "Keyla Detmer" then
+            skill_icons['wildcard'] = skill_icons['wildcard'] + 2
+        end
+    end
+    -- broadcast
+    local traits_found = false
+    for k, v in pairs(skill_icons) do
+        if v > 0 then
+            traits_found = true
+        end
+    end
+
+    function rgb_to_hex(color)
+        local r = math.floor(color[1] * 255)
+        local g = math.floor(color[2] * 255)
+        local b = math.floor(color[3] * 255)
+        return string.format("%02X%02X%02X", r, g, b)
+    end
+
+
+
+    if traits_found then
+        if Player[playerarea_color].steam_name ~= nil then
+            broadcastToAll("[" .. Color.fromString(playerarea_color):toHex() .. "]" .. Player[playerarea_color].steam_name .. "[-] - Current In-Play " .. tag_type .. ":", "White")
+        else
+            broadcastToAll("[" .. Color.fromString(playerarea_color):toHex() .. "] Player[-] - Current In-Play " .. tag_type .. ":", "White")
+        end
+        for k, v in pairs(skill_icons) do
+            if v > 0 then
+                local alt_text = ""
+                if k == "diplomacy" then
+                    alt_text = "Influence"
+                    report_color = {212/255, 209/255, 41/255}
+                end
+                if k == "military" then
+                    alt_text  = "Military"
+                    report_color = {193/255, 30/255, 30/255}
+                end
+                if k == "science" then
+                    alt_text   = "Research"
+                    report_color = {21/255, 151/255, 196/255}
+                end
+                if k == "wildcard" then
+                    alt_text  = "Wildcard"
+                    report_color = {128/255, 0, 128/255}
+                end
+                if beamed_skill_icons[k] > 0 then
+                    broadcastToAll("[" .. Color.fromString(playerarea_color):toHex() .. "]* [-][" .. Color.fromString("White"):toHex() .. "]" .. v .. "x [-] " .. alt_text .. "[" .. Color.fromString("White"):toHex() .. "] - (" .. beamed_skill_icons[k] .. " Beamed, " .. in_play_skill_icons[k] .. " Not Beamed)[-]", report_color)
+                elseif beamed_skill_icons[k] == 0 then
+                    broadcastToAll("[" .. Color.fromString(playerarea_color):toHex() .. "]* [-][" .. Color.fromString("White"):toHex() .. "]" .. v .. "x [-] " .. alt_text .. "[" .. Color.fromString("White"):toHex() .. "] - " .. v .. " (Not Beamed)[-]", report_color)
+                end
+                 -- show contributing card names
+                for _, line in ipairs(in_play_skill_cards[k]) do
+                    broadcastToAll("    [" .. rgb_to_hex(report_color) .. "]*[-] " .. line, "White")
+                end
+            end
+        end
+    end
+end -- end report_tags()

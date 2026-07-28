@@ -1,0 +1,297 @@
+card_suit = "Ally"
+card_zone = getObjectFromGUID("2edc6f")
+loc_glory = {x=7.50, y=2.00, z=8.00}
+loc_dil_1  = {x=6.25, y=2.00, z=8.00}
+loc_dil_2  = {x=8.75, y=2.00, z=8.00}
+
+function onLoad()
+    create_button()
+end -- end onLoad()
+
+
+function create_button()
+    self.createButton({
+        click_function = "place_resource",
+        function_owner = self,
+        label          = "",
+        position       = {0, 0.46, -0.01},
+        width          = 450,
+        height         = 450,
+        scale          = {2.3, 2.3, 2.3},
+        color          = {1, 1, 1, 0},
+        hover_color    = {1, 1, 1, .4},
+        tooltip        = "Clicking this button will take a Glory Token from the appropriate location, and then place it (or Dilithium if Burnham) on the above Market Card, and run the 'Refresh For End Of Turn' button action for the clicker's player area.\n\nMake sure to discard all unwanted cards before using this button, as it will assume all cards left in hand are intended to be held for next turn!",
+    })
+end -- end create_button()
+
+
+function place_resource_remote(args)
+    local playercolor = args.playercolor
+    local alt_click   = args.alt_click
+    place_resource(_, playercolor, alt_click)
+end -- end place_resource_remote()
+
+
+function place_resource(_, playercolor, alt_click)
+    Global.call('animate_button', {button=self})
+    -- check for stardate card in either player's area, broadcast & return out if so
+    local blue_zones = {"a9ca57", "2c336e", "fc7f21", "e54fe3"}
+    local red_zones  = {"818a7e", "77d0cb", "5103b2", "586a2e"}
+    local stardate_check_zones = playercolor == "Blue" and blue_zones or red_zones
+    if alt_click and getObjectFromGUID(playercolor == "Blue" and "1a78a6" or "23bed4").getGMNotes() == "solo" then
+        stardate_check_zones = playercolor == "Blue" and red_zones or blue_zones
+    end
+    for i = 1, 4 do
+        for _, object in pairs(getObjectFromGUID(stardate_check_zones[i]).getObjects()) do
+            if string.find(object.getName(), "Stardate") then
+                broadcastToColor("There is a Stardate card in play, it must be resolved before a resource may be placed here.", playercolor, "Orange")
+                return nil
+            end
+        end
+    end
+    -- check for captain card
+    local captain_name   = nil
+    local captain_found  = false
+    local cap_check_zone = getObjectFromGUID(playercolor == "Blue" and "75465f" or "75c041")
+    if alt_click and getObjectFromGUID(playercolor == "Blue" and "1a78a6" or "23bed4").getGMNotes() == "solo" then
+        cap_check_zone   = getObjectFromGUID(playercolor == "Blue" and "75c041" or "75465f")
+    end
+    for _, object in pairs(cap_check_zone.getObjects()) do
+        if string.find(object.getName(), 'Crew Board') then
+            local split_card_name = {}
+            for str in string.gmatch(object.getName(),  "%S+") do
+                table.insert(split_card_name, str)
+            end
+            if split_card_name[1] ~= "Crew" then
+                captain_name  = split_card_name[1]
+                captain_found = true
+                break
+            end
+        end
+    end
+    if captain_name == "Crew" then return nil end
+    -- if alt click and bot, check for stardate card and return out if found
+    if alt_click and getObjectFromGUID(playercolor == "Blue" and "1a78a6" or "23bed4").getGMNotes() == "solo" then
+        local stardate_checkzone = getObjectFromGUID(playercolor == "Blue" and "818a7e" or "a9ca57")
+        for _, object in pairs(stardate_checkzone.getObjects()) do
+            if string.find(object.getName(), "Stardate") then
+                broadcastToAll("There is a Stardate card in Bot play area, it must be resolved before a resource may be placed here.", "Orange")
+                return
+            end
+        end
+        UI.hide('bot_next_action_cleanup')
+        Wait.time(function() UI.show('end_player_turn') end, 1)
+        getObjectFromGUID(playercolor == "Blue" and "1a78a6" or "23bed4").call("refresh_playerarea")
+    end
+    -- check if burnham
+    local is_burnham     = false
+    local captain_zone   = getObjectFromGUID(playercolor == "Blue" and "75465f" or "75c041")
+    if alt_click and getObjectFromGUID(playercolor == "Blue" and "1a78a6" or "23bed4").getGMNotes() == "solo" then
+        captain_zone     = getObjectFromGUID(playercolor == "Blue" and "75c041" or "75465f")
+    end
+    for _, object in pairs(captain_zone.getObjects()) do
+        if string.find(object.getName(), "Burnham Crew Board") then
+            is_burnham = true
+        end
+    end
+    -- pull logic on where to grab glory from, from player counters
+    local glory_found   = false
+    local glory_count   = 0
+    local glory_token   = nil
+    for _, object in pairs(getObjectFromGUID("338aa7").getObjects()) do
+        if object.getName() == "Glory Token" then
+            glory_found = true
+            glory_token = object
+            glory_count = glory_count + 1
+        end
+    end
+    -- take stardate for opposing player
+    if glory_count == 1 then
+        local stardate = nil
+        for _, object in pairs(getObjectFromGUID("090f7a").getObjects()) do
+            if object.tag == "Card" then
+                stardate = object
+                getObjectFromGUID("ab8b38").call('button_stardate_trigger_endgame_remote', {button=stardate})
+            elseif object.tag == "Deck" then
+                local deck_objects = object.getObjects()
+                stardate = object.takeObject()
+                if getObjectFromGUID(playercolor == "Blue" and "1a78a6" or "23bed4").getGMNotes() == "solo" then
+                    stardate.setRotation(playercolor == "Blue" and {0, 270, 0} or {0, 90, 0})
+                else
+                    stardate.setRotation(playercolor == "Blue" and {0, 90, 0} or {0, 270, 0})
+                end
+                if alt_click and getObjectFromGUID(playercolor == "Blue" and "1a78a6" or "23bed4").getGMNotes() == "solo" then
+                    stardate.setPositionSmooth(playercolor == "Blue" and {-30.00, 1.50, 21.94} or {30.00, 1.50, -21.94})
+                else
+                    stardate.setPositionSmooth(playercolor == "Blue" and {30.00, 1.50, -21.94} or {-30.00, 1.50, 21.94})
+                end
+                local oppose_color = playercolor == "Blue" and "Red" or "Blue"
+                if string.find(stardate.getName(), "Cadet") then
+                    stardate.setRotation(playercolor == "Blue" and {0, 270, 0} or {0, 90, 0})
+                    stardate.setPositionSmooth(playercolor == "Blue" and {-30.00, 1.50, 21.94} or {30.00, 1.50, -21.94})
+                    oppose_color = playercolor == "Blue" and "Blue" or "Red"
+                end
+                if Player[oppose_color].steam_name ~= nil then
+                    broadcastToAll("[" .. Color.fromString("Yellow"):toHex() .. "]" .. stardate.getName() .. "[-] has been given to [" .. Color.fromString(oppose_color):toHex() .. "]" .. Player[oppose_color].steam_name .. "[-].", "White")
+                else
+                    local opponent_str = "Player"
+                    if getObjectFromGUID(oppose_color == "Blue" and "23bed4" or "1a78a6").getGMNotes() == "solo" then opponent_str = "Bot" end
+                    broadcastToAll("[" .. Color.fromString("Yellow"):toHex() .. "]" .. stardate.getName() .. "[-] has been given to [" .. Color.fromString(oppose_color):toHex() .. "]" .. oppose_color .. " " .. opponent_str .. "[-].", "White")
+                end
+                Wait.time(function()
+                getObjectFromGUID("e5e2d0").call('run_refresh', {playercolor=playercolor})
+                end, 1)
+            end
+        end
+    end
+    if glory_token == nil then
+        glory_token = getObjectFromGUID("263bae").takeObject()
+    end
+    local glory_loc = {x = loc_glory.x, y = loc_glory.y, z = loc_glory.z}
+    local card_glory_count = 0
+    for _, object in pairs(card_zone.getObjects()) do
+        if object.getName() == "Glory Token" then
+            card_glory_count = card_glory_count + 1
+        end
+    end
+    glory_loc.z = glory_loc.z - (card_glory_count * 0.75)
+    if not is_burnham then
+        if glory_loc.z           < 3.50 then
+            if Player[playercolor] ~= nil then
+                broadcastToColor("Too much Glory on " .. card_suit .. " Card for scripting to place - pull and place manually!", playercolor, "Orange")
+            end
+            return nil
+        end
+        glory_token.setRotation({0.00, 180.00, 180.00})
+        glory_token.setPositionSmooth(glory_loc)
+        glory_token.interactable = true
+    elseif is_burnham then
+        getObjectFromGUID("263bae").putObject(glory_token)
+        local dil_count = 0
+        for _, object in pairs(card_zone.getObjects()) do
+            if object.getName() == "Dilithium Token" then
+                dil_count = dil_count + 1
+            end
+        end
+        local loc_dil_count = math.floor(dil_count / 2)
+        local loc_dil_1_copy = {x = loc_dil_1.x, y = loc_dil_1.y, z = loc_dil_1.z - (loc_dil_count * 1.00)}
+        local loc_dil_2_copy = {x = loc_dil_2.x, y = loc_dil_2.y, z = loc_dil_2.z - (loc_dil_count * 1.00)}
+        for i = 1, 2 do
+            local loc = (i == 1) and loc_dil_1_copy or loc_dil_2_copy
+            if loc_dil_1_copy.z < 4.00 then
+                broadcastToColor("Too much Dilithium on " .. card_suit .. " Card for scripting to place, pull and place manually! (Glory has already been taken from Stardate Card.)", playercolor, "Orange")
+                return nil
+            end
+            local dilithium_token = getObjectFromGUID("6d9eba").takeObject()
+            dilithium_token.setPositionSmooth(loc, false, false)
+        end
+    end
+    -- refresh human playerarea
+    if (alt_click and getObjectFromGUID(playercolor == "Blue" and "1a78a6" or "23bed4").getGMNotes() ~= "solo") or not alt_click then
+        UI.hide('end_player_turn')
+        if getObjectFromGUID(playercolor == "Blue" and "1a78a6" or "23bed4").getGMNotes() == "solo" then getObjectFromGUID("e28824").call('bot_control_step') end
+        getObjectFromGUID(playercolor == "Blue" and "23bed4" or "1a78a6").call('refresh_playerarea')
+        Wait.time(function()
+        -- get current deck dize and max hand size, determine difference, deal back up to max hand size
+        local max_hand_size = getObjectFromGUID(playercolor == "Blue" and "3accb4" or "34adac").call('get_max_hand')
+        local current_hand  = Player[playercolor].getHandObjects()
+        local hand_count    = #current_hand
+        local deal_count    = math.max(0, max_hand_size - hand_count)
+        local deck_zone     = getObjectFromGUID(playercolor == "Blue" and "58f8ce" or "5e07a8")
+
+        local draw_deck, deck_count = nil, 0
+        for _, object in pairs(deck_zone.getObjects()) do
+            if object.type == "Deck" then
+                draw_deck  = object
+                deck_count = #(draw_deck.getObjects())
+                break
+            elseif object.type == "Card" then
+                draw_deck  = object
+                deck_count = 1
+                break
+            end
+        end
+        if draw_deck and deck_count >= deal_count and deal_count > 0 then
+            draw_deck.deal(deal_count, playercolor)
+        elseif deal_count > 0 and deck_count > 0 then
+            local partial = math.min(deck_count, deal_count)
+            draw_deck.deal(partial, playercolor)
+            local pad = getObjectFromGUID(playercolor == "Blue" and "3accb4" or "34adac")
+            Wait.time(function()
+            pad.call('refresh_draw_deck', {color=playercolor, deal_count=(deal_count - partial), alt_click=false, act_hand=false})
+            end, 0.25)
+        elseif deal_count > 0 then
+            local pad = getObjectFromGUID(playercolor == "Blue" and "3accb4" or "34adac")
+            pad.call('refresh_draw_deck', {color=playercolor, deal_count=deal_count, alt_click=false, act_hand=false})
+        end
+        end, 2)        
+    end
+
+    -- check for Cleanup tag cards, broadcast reminder if any found
+    local is_solo          = false
+    if alt_click and getObjectFromGUID(playercolor == "Blue" and "23bed4" or "1a78a6").getGMNotes() == "solo" then
+        is_solo = true
+    end
+    if not alt_click or not is_solo then
+        local check_zones = playercolor == "Blue" and {
+            getObjectFromGUID("a9ca57"),
+            getObjectFromGUID("2c336e"),
+            getObjectFromGUID("fc7f21"),
+            getObjectFromGUID("e54fe3"),
+        } or
+        {
+            getObjectFromGUID("818a7e"),
+            getObjectFromGUID("77d0cb"),
+            getObjectFromGUID("5103b2"),
+            getObjectFromGUID("586a2e"),
+        }
+        local match_cards = {}
+        for i = 1, 4 do
+            for _, object in pairs(check_zones[i].getObjects()) do
+                if object.hasTag('cleanup') then
+                    object.highlightOn(playercolor)
+                    table.insert(match_cards, object)
+                    Wait.time(function() object.highlightOff() end, 5)
+                end
+            end
+        end
+        if #match_cards > 0 then
+            broadcastToAll("[" .. Color.fromString(playercolor):toHex() .. "]" .. playercolor .. " Player[-] Reminder - Current in play Clean-Up Step Cards:", "White")
+            for i = 1, #match_cards do
+                broadcastToAll(match_cards[i].getName(), "White")
+            end
+        end
+    end
+    -- broadcast
+    local card_name                    = nil
+    local resource_string              = "1 Glory"
+    local recipient_color              =  playercolor == "Blue" and "Blue" or "Red"
+    if alt_click and getObjectFromGUID(playercolor == "Blue" and "1a78a6" or "23bed4").getGMNotes() == "solo" then
+        recipient_color                =  playercolor == "Blue" and "Red" or "Blue"
+    end
+    if is_burnham then resource_string = "2 Dilithium" end
+    for _, object in pairs(card_zone.getObjects()) do
+        if object.tag == "Card" then card_name = object.getName() end
+    end
+    if card_name ~= nil then
+        if Player[recipient_color].steam_name ~= nil then
+            broadcastToAll("[" .. Color.fromString(recipient_color):toHex() .. "]" .. Player[recipient_color].steam_name .. "[-] has placed " .. resource_string .. " on " .. card_name .. ".", "White")
+        else
+            broadcastToAll("[" .. Color.fromString(recipient_color):toHex() .. "]" .. captain_name .. "[-] has placed " .. resource_string .. " on " .. card_name .. ".", "White")
+        end
+    else
+        if Player[recipient_color].steam_name ~= nil then
+            broadcastToAll("[" .. Color.fromString(recipient_color):toHex() .. "]" .. Player[recipient_color].steam_name .. "[-] has placed " .. resource_string .. " on the above " .. card_suit .. ".", "White")
+        else
+            broadcastToAll("[" .. Color.fromString(recipient_color):toHex() .. "]" .. captain_name .. "[-] has placed " .. resource_string .. " on the above " .. card_suit .. ".", "White")
+        end
+    end
+    -- if turns enabled, end and pass turn
+    if Turns.enable then
+        local current_color = Turns.turn_color
+        local next_color    = current_color == "Blue" and "Red" or "Blue"
+        Turns.turn_color    = next_color
+    else
+        return
+    end
+end -- end place_resource()

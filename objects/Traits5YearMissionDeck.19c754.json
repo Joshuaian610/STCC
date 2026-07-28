@@ -1,0 +1,74 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "Sisko.f5b434",
+    "Shran.5b7f6c",
+    "Sela.e2a573",
+    "Picard.cb9025",
+    "Koloth.bfd8fd",
+    "Burnham.35ddab"
+  ],
+  "ContainedObjects_path": "Traits5YearMissionDeck.19c754",
+  "CustomDeck": {
+    "176": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181683071539/CF2346FF8F4F825ED9EE360148AD2E8A29675021/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181683070694/F1F0F02F9B50CC9841F4E7B5E0F85A84F278D761/",
+      "NumHeight": 2,
+      "NumWidth": 3,
+      "Type": 0,
+      "UniqueBack": true
+    }
+  },
+  "DeckIDs": [
+    17605,
+    17604,
+    17603,
+    17602,
+    17601,
+    17600
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "19c754",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Traits / 5 Year Mission Deck",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tooltip": true,
+  "Transform": {
+    "posX": 17.84,
+    "posY": 1.747,
+    "posZ": 27.65,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

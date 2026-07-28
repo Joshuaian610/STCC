@@ -1,0 +1,917 @@
+-- **** XML HELPERS ****
+
+function close_ui_blue()
+    UI.hide("blue_andorian_panel")
+    UI.hide("blue_klingon_panel")
+    UI.hide("blue_romulan_panel")
+    UI.hide("blue_starfleet_panel")
+    UI.hide("ui_hide_blue")
+    UI.hide("ui_show_blue")
+    UI.hide("bot_controls")
+end -- close_ui_blue()
+function close_ui_red()
+    UI.hide("red_andorian_panel")
+    UI.hide("red_klingon_panel")
+    UI.hide("red_romulan_panel")
+    UI.hide("red_starfleet_panel")
+    UI.hide("ui_hide_red")
+    UI.hide("ui_show_red")
+    UI.hide("bot_controls")
+end -- close_ui_red()
+
+
+function hide_ui_blue()
+    UI.hide("blue_andorian_panel")
+    UI.hide("blue_klingon_panel")
+    UI.hide("blue_romulan_panel")
+    UI.hide("blue_starfleet_panel")
+    UI.hide("ui_hide_blue")
+    UI.hide("bot_controls")
+    UI.setAttribute("ui_show_blue", "active", "True")
+end -- end hide_ui_blue()
+function hide_ui_red()
+    UI.hide("red_andorian_panel")
+    UI.hide("red_klingon_panel")
+    UI.hide("red_romulan_panel")
+    UI.hide("red_starfleet_panel")
+    UI.hide("ui_hide_red")
+    UI.hide("bot_controls")
+    UI.setAttribute("ui_show_red", "active", "True")
+end -- end hide_ui_red()
+
+
+function show_ui_blue()
+    local captain_zone           = getObjectFromGUID("75465f")
+    local captain_pad            = getObjectFromGUID("997491")
+    for _, object in pairs(captain_zone.getObjects()) do
+        if string.find(object.getName(), "Crew Board") and object ~= captain_pad then
+            captain_card_name    = object.getName()
+        end
+    end
+    local captain_name           = nil
+    local split_name             = {}
+    if captain_card_name        ~= nil then
+        for str in string.gmatch(captain_card_name,  "%S+") do
+            table.insert(split_name, str)
+        end
+    end
+    captain_name = split_name[1]
+    if captain_name == "Burnham" or captain_name == "Picard" or captain_name == "Sisko" then
+        UI.setAttribute("blue_starfleet_panel", "active", "true")
+    elseif captain_name == "Shran" then
+        UI.setAttribute("blue_andorian_panel", "active", "true")
+    elseif captain_name == "Sela" then
+        UI.setAttribute("blue_romulan_panel", "active", "true")
+    elseif captain_name == "Koloth" then
+        UI.setAttribute("blue_klingon_panel", "active", "true")
+    end
+    UI.hide("ui_show_blue")
+    UI.show("ui_hide_blue")
+    if getObjectFromGUID("1a78a6").getGMNotes() == "solo" then
+        UI.show("bot_controls")
+    end
+end -- end show_ui_blue()
+function show_ui_red()
+    local captain_zone           = getObjectFromGUID("75c041")
+    local captain_pad            = getObjectFromGUID("28a24b")
+    for _, object in pairs(captain_zone.getObjects()) do
+        if string.find(object.getName(), "Crew Board") and object ~= captain_pad then
+            captain_card_name    = object.getName()
+        end
+    end
+    local captain_name           = nil
+    local split_name             = {}
+    if captain_card_name        ~= nil then
+        for str in string.gmatch(captain_card_name,  "%S+") do
+            table.insert(split_name, str)
+        end
+    end
+    captain_name = split_name[1]
+    if captain_name == "Burnham" or captain_name == "Picard" or captain_name == "Sisko" then
+        UI.setAttribute("red_starfleet_panel", "active", "true")
+    elseif captain_name == "Shran" then
+        UI.setAttribute("red_andorian_panel", "active", "true")
+    elseif captain_name == "Sela" then
+        UI.setAttribute("red_romulan_panel", "active", "true")
+    elseif captain_name == "Koloth" then
+        UI.setAttribute("red_klingon_panel", "active", "true")
+    end
+    UI.hide("ui_show_red")
+    UI.show("ui_hide_red")
+    if getObjectFromGUID("23bed4").getGMNotes() == "solo" then
+        UI.show("bot_controls")
+    end
+end -- end show_ui_red()
+
+
+function broadcast_playerturn()
+    broadcastToAll("This button is currently inactive, it is simply a reminder that it is your turn. Use the 'Add Resource' buttons in the market row to place a resource and end your turn.", "Orange")
+    return
+end -- end broadcast_playerturn()
+
+
+function discard_hand_blue()
+    UI.hide('discard_hand_blue')
+    Wait.time(function() UI.show('discard_hand_blue') end, 1)
+    discard_hand({color="Blue"})
+end -- end discard_hand_blue()
+
+function discard_hand_red()
+    UI.hide('discard_hand_red')
+    Wait.time(function() UI.show('discard_hand_red') end, 1)
+    discard_hand({color="Red"})
+end -- end discard_hand_red()
+
+function discard_hand(args)
+    local color        = args.color
+    local hand_objects = getObjectFromGUID(color == "Blue" and "73058e" or "72070a").getObjects()
+    for i = 1, #hand_objects do
+        hand_objects[i].setRotation(color == "Blue" and {0.00, 270.00, 0.00} or {0.00, 90.00, 0.00})
+        hand_objects[i].setPosition(color == "Blue" and {-44.57, 1.50, -21.00} or {44.57, 1.50, 21.00}, false, false)
+    end
+end -- end discard_hand()
+
+-- **** STARDATE CARD FUNCTIONS ****
+
+function stardate_card_button_create(args)
+    local card          = args.card
+    local type          = args.type -- types: "Market Only", "Both", "Endgame", "Discard"
+    local color         = args.color
+    local button_color  = color == "Blue" and {31/255, 136/255, 255/255, .8} or {219/255, 26/255, 24/255, .8}
+    local hover_color   = color == "Blue" and {31/255, 136/255, 255/255, .6} or {219/255, 26/255, 24/255, .6}
+    local click_func    = nil
+    local button_pos    = nil
+    local button_width  = 920
+    local button_height = nil
+    local tooltip       = nil
+    if type            == "Market Only" then
+        click_func      = "button_stardate_market_wipe"
+        button_pos      = {0.04, 0.25, -0.24}
+        button_height   = 420
+        tooltip         = "Click this button to perform Stardate Market Wipe, and discard this card."
+    elseif type        == "Both" then
+        click_func      = "button_stardate_both_wipe"
+        button_pos      = {0.04, 0.25, -0.24}
+        button_height   = 560
+        tooltip         = "Click this button to perform Stardate Market and Location Wipe, and discard this card."
+    elseif type        == "Endgame" then
+        click_func      = "button_stardate_trigger_endgame"
+        button_pos      = {0.04, 0.25, -0.24}
+        button_height   = 260
+        tooltip         = "Click this button to trigger End Of Game."
+    elseif type        == "Discard" then
+        click_func      = "button_stardate_discard"
+        button_pos      = {0.04, 0.25, -0.24}
+        button_height   = 560
+        tooltip         = "Click this button to discard this Stardate Card."
+    end
+    if string.find(card.getName(), "Solo Cadet Practice") then
+        button_pos = {0.04, 0.25, -0.34}
+    end
+    card.createButton({
+        click_function  = click_func,
+        function_owner  = self,
+        label           = "",
+        position        = button_pos,
+        rotation        = {0, 180, 0},
+        width           = button_width,
+        height          = button_height,
+        color           = button_color,
+        hover_color     = hover_color,
+        tooltip         = tooltip,
+    })
+end -- end stardate_card_button_create()
+
+
+function button_stardate_both_wipe(button, _, _)
+    stardate_location_wipe()
+    stardate_market_wipe()
+    -- discard stardate card
+    getObjectFromGUID("f6e30d").putObject(button)
+    broadcastToAll("[" .. Color.fromString("Yellow"):toHex() .. "]" .. button.getName() .. "[-] has been discarded!", "White")
+    -- -- get playerarea it's clicked from
+    -- local playerarea   = nil
+    -- for _, object in pairs(getObjectFromGUID("").getObjects()) do
+    --     if object == self then
+    --         playerarea = "Blue"
+    --     end
+    -- end
+    -- for _, object in pairs
+    -- local bot_color, _ = get_colors()
+    -- if bot_color ~= nil then
+    --     if bot_color == "Blue"
+    -- end
+end -- end stardate_both_wipe()
+
+
+function button_stardate_discard(button, _, _)
+    -- discard stardate card
+    getObjectFromGUID("f6e30d").putObject(button)
+    broadcastToAll("[" .. Color.fromString("Yellow"):toHex() .. "]" .. button.getName() .. "[-] has been discarded!", "White")
+end -- end button_stardate_discard()
+
+
+function button_stardate_market_wipe(button, _, _)
+    stardate_market_wipe()
+    -- discard stardate card
+    getObjectFromGUID("f6e30d").putObject(button)
+    broadcastToAll("[" .. Color.fromString("Yellow"):toHex() .. "]" .. button.getName() .. "[-] has been discarded!", "White")
+end -- end button_stardate_market_wipe()
+
+
+function stardate_location_wipe()
+    -- perform stardate location wipe
+    -- will need to check all NZs for tokens present, don't wipe those
+    local checkzones_top    = {getObjectFromGUID("eaec24"), getObjectFromGUID("817308")}
+    local checkzones_middle = {getObjectFromGUID("3c477c"), getObjectFromGUID("a0256f")}
+    local checkzones_bottom = {getObjectFromGUID("ba30f9"), getObjectFromGUID("758ef4")}
+    local zone_loc_top      = getObjectFromGUID("65beaa")
+    local zone_loc_middle   = getObjectFromGUID("429b74")
+    local zone_loc_bottom   = getObjectFromGUID("8e265f")
+    local pos_top           = {0.00, 1.50, -7.00}
+    local pos_middle        = {0.00, 1.50, -14.00}
+    local pos_bottom        = {0.00, 1.50, -21.00}
+    local zone_new_locs     = getObjectFromGUID("97d9f0")
+    for i = 1, 3 do
+        if i == 1 then
+            wait_timer = 0
+        elseif i == 2 then
+            wait_timer = .5
+        elseif i == 3 then
+            wait_timer = 1
+        end
+        Wait.time(function()
+        local checkzones    = nil
+        local zone_loc      = nil
+        local position      = nil
+        local need_replace  = true
+        if i == 1 then
+            checkzones      = checkzones_top
+            zone_loc        = zone_loc_top
+            position        = pos_top
+        elseif i == 2 then
+            checkzones      = checkzones_middle
+            zone_loc        = zone_loc_middle
+            position        = pos_middle
+        elseif i == 3 then
+            checkzones      = checkzones_bottom
+            zone_loc        = zone_loc_bottom
+            position        = pos_bottom
+        end
+        for j = 1, 2 do
+            for _, object in pairs(checkzones[j].getObjects()) do
+                if object.hasTag('snap_ship') or object.hasTag('away_blue') or object.hasTag('away_red') then
+                    need_replace = false
+                end
+            end
+        end
+        if need_replace then
+            local outgoing_card_name = nil
+            local replace_card_name  = nil
+            local replacement_found  = false
+            -- discard outgoing_card
+            for _, object in pairs(zone_loc.getObjects()) do
+                if object.tag == "Card" then
+                    object.setRotation({0.00, 180.00, 0.00})
+                    object.setPositionSmooth({-12.50, 1.50, 12.00}, false, false)
+                    outgoing_card_name = object.getName()
+                end
+            end
+            -- replace if possible
+            for _, object in pairs(zone_new_locs.getObjects()) do
+                if object.tag == "Deck" then
+                    local replace_card = object.takeObject()
+                    replace_card.setRotation({0.00, 180.00, 0.00})
+                    replace_card.setPositionSmooth(position, false, false)
+                    replace_card_name = replace_card.getName()
+                    replacement_found = true
+                    break
+                elseif object.tag == "Card" then
+                    local replace_card = object
+                    replace_card.setRotation({0.00, 180.00, 0.00})
+                    replace_card.setPositionSmooth(position, false, false)
+                    replace_card_name = replace_card.getName()
+                    replacement_found = true
+                    break
+                end
+            end
+            if replacement_found then
+                broadcastToAll("[" .. Color.fromString("Green"):toHex() .. "]Location[-]: " ..outgoing_card_name .. " has been discarded via [" .. Color.fromString("Yellow"):toHex() .. "]Stardate Card[-], and replaced with " .. replace_card_name .. ".", "White")
+            else
+                broadcastToAll("[" .. Color.fromString("Green"):toHex() .. "]Location[-]: " ..outgoing_card_name .. " has been discarded via [" .. Color.fromString("Yellow"):toHex() .. "]Stardate Card[-], there was no replacement Location.", "White")
+            end
+        end
+        end, wait_timer)
+    end
+end -- end stardate_location_wipe()
+
+function stardate_market_wipe()
+    -- perform stardate market wipe
+    local card_zones = {
+        getObjectFromGUID("7d6590"),
+        getObjectFromGUID("ac4301"),
+        getObjectFromGUID("489f00"),
+        getObjectFromGUID("2edc6f"),
+    }
+    local deck_zones = {
+        getObjectFromGUID("99a16f"),
+        getObjectFromGUID("4eadea"),
+        getObjectFromGUID("1a337a"),
+        getObjectFromGUID("68e891"),
+    }
+    -- will need to junk and replace on all 4 simultaneously,
+    for i = 1, 4 do
+        for _, object in pairs(card_zones[i].getObjects()) do
+            if object.tag == "Card" then
+                object.setRotation({0.00, 180.00, 0.00})
+                object.setPositionSmooth({-12.50, 1.50, 12.00})
+            end
+            if string.find(object.getName(), "Token") then
+                object.destruct()
+            end
+        end
+        local position = {-7.50, 1.50, 6.00}
+        if i == 2 then
+            position   = {-2.50, 1.50, 6.00}
+        elseif i == 3 then
+            position   = {2.50, 1.50, 6.00}
+        elseif i == 4 then
+            position = {7.50, 1.50, 6.00}
+        end
+        for _, object in pairs(deck_zones[i].getObjects()) do
+            local replacement = nil
+            if object.tag == "Deck" then
+                replacement = object.takeObject()
+                replacement.setRotation({0.00, 180.00, 0.00})
+                replacement.setPositionSmooth(position, false, false)
+                break
+            elseif object.tag == "Card" then
+                replacement = object
+                replacement.setRotation({0.00, 180.00, 0.00})
+                replacement.setPositionSmooth(position, false, false)
+                break
+            end
+        end
+    end
+    broadcastToAll("The Market has been Wiped according to the [" .. Color.fromString("Yellow"):toHex() .. "]Stardate Card[-]. ", "White")
+end -- end stardate_market_wipe()
+
+
+function button_stardate_trigger_endgame(button, _, _)
+    stardate_trigger_endgame()
+    -- discard stardate card
+    getObjectFromGUID("f6e30d").putObject(button)
+    broadcastToAll("[" .. Color.fromString("Yellow"):toHex() .. "]" .. button.getName() .. "[-] has been discarded!", "White")
+end -- end button_stardate_trigger_endgame()
+
+function button_stardate_trigger_endgame_remote(args)
+    button = args.button
+    stardate_trigger_endgame()
+    -- discard stardate card
+    getObjectFromGUID("f6e30d").putObject(button)
+    broadcastToAll("[" .. Color.fromString("Yellow"):toHex() .. "]" .. button.getName() .. "[-] has been discarded!", "White")
+end -- end button_stardate_trigger_endgame_remote()
+
+
+function stardate_trigger_endgame()
+    -- determine if it's currently 1P's turn or 2P's turn,
+    -- to, determine how many rounds are left
+    -- broadcast that end of game has been triggered, and how many rounds are left for who
+    broadcastToAll("[" .. Color.fromString("Yellow"):toHex() .. "]Final Stardate Card and End of Game[-] have been triggered! Finish remaining rounds, and use the Calcuate Score button under Score Sheets when finished.", "White")
+    -- deploy score sheets & buttons
+    local bag = getObjectFromGUID("f6e30d")
+    local blue_sheet  = bag.takeObject({guid="276508"})
+    blue_sheet.interactable = false
+    blue_sheet.setLock(true)
+    blue_sheet.setRotation({0.00, 270.00, 0.00})
+    blue_sheet.setPosition({-38.50, 1.70, -27.80}, false, false)
+    local blue_button = bag.takeObject({guid="698936"})
+    blue_button.interactable = false
+    blue_button.setLock(true)
+    blue_button.setRotation({0.00, 270.00, 0.00})
+    blue_button.setPosition({-42.65, 1.70, -27.80}, false, false)
+    local red_sheet   = bag.takeObject({guid="6931ee"})
+    red_sheet.interactable = false
+    red_sheet.setLock(true)
+    red_sheet.setRotation({0.00, 90.00, 0.00})
+    red_sheet.setPosition({38.50, 1.70, 27.80}, false, false)
+    local red_button  = bag.takeObject({guid="3c8845"})
+    red_button.interactable = false
+    red_button.setLock(true)
+    red_button.setRotation({0.00, 90.00, 0.00})
+    red_button.setPosition({42.65, 1.70, 27.80}, false, false)
+    local counter     = getObjectFromGUID("b7d51f")
+    local counter_pos = counter.getPosition()
+    counter_pos.y     = -2
+    counter.setPosition(counter_pos)
+    counter.flip()
+end -- end stardate_trigger_endgame()
+
+
+
+-- **** SOLO HELPER FUNCTIONS ****
+
+function bot_deck_draw(args)
+    local bot_color, _ = get_colors()
+    local deal_count = args.deal_count
+    local bot_deck = get_bot_deck()
+    local deal_rotation = bot_color == "Blue" and {0, 90, 180} or {0, 270, 180}
+    local deal_locations = bot_color == "Blue" and {
+        {-44.50, 0.96, 2.80}, {-44.50, 0.96, -1.07}, {-44.50, 0.96, -4.98},
+        {-44.50, 0.96, -8.90}, {-44.50, 0.96, -12.82},
+    } or {
+        {44.50, 0.96, -2.80}, {44.50, 0.96, 1.07}, {44.50, 0.96, 4.98},
+        {44.50, 0.96, 8.90}, {44.50, 0.96, 12.82},
+    }
+
+    local deck_count = bot_deck and (bot_deck.tag == "Deck" and #bot_deck.getObjects() or 1) or 0
+    local to_draw_now = math.min(deal_count, deck_count)
+
+    -- Draw as many as possible from the current deck
+    for i = 1, to_draw_now do
+        local card
+        if bot_deck.tag == "Deck" then
+            card = bot_deck.takeObject({rotation = deal_rotation})
+        else
+            card = bot_deck
+            bot_deck = nil
+        end
+        card.setPositionSmooth(deal_locations[i], false, false)
+    end
+
+    local remaining = deal_count - to_draw_now
+
+    if remaining > 0 then
+        -- Disable UI while refreshing
+        UI.setAttribute("bot_controls", "active", "false")
+        Wait.time(function()
+            bot_deck_refresh(to_draw_now + 1, remaining, deal_rotation, deal_locations, deal_count)
+        end, 0.5)
+    else
+        broadcastToAll("[" .. Color.fromString(bot_color):toHex() .. "]Bot[-] has dealt itself " .. deal_count .. " facedown cards.", "White")
+    end
+end
+
+
+
+function bot_deck_discard()
+    UI.hide('bot_discard')
+
+    local function show_ui_delayed()
+        Wait.time(function() UI.show('bot_discard') end, 1)
+    end
+
+    local bot_color, _    = get_colors()
+    local discard_zone    = getObjectFromGUID(bot_color == "Blue" and "fbfe84" or "b72553")
+    local discard_pad     = getObjectFromGUID(bot_color == "Blue" and "3accb4" or "34adac")
+    local draw_zone       = getObjectFromGUID(bot_color == "Blue" and "58f8ce" or "5e07a8")
+    local supplement_zone = getObjectFromGUID(bot_color == "Blue" and "30a2e2" or "b75338")
+    local discard_card    = nil
+    local draw_deck       = nil
+
+    for _, obj in pairs(draw_zone.getObjects()) do
+        if obj.tag == "Deck" then
+            draw_deck = obj
+            break
+        end
+        if obj.tag == "Card" then
+            draw_deck = obj
+            break
+        end
+    end
+
+    if draw_deck then
+        local deck_count = 0
+        if draw_deck.tag == "Deck" then
+            deck_count = #draw_deck.getObjects()
+        else
+            deck_count = 1
+        end
+
+        if deck_count > 1 then
+            discard_card = draw_deck.takeObject()
+        else
+            for _, obj in pairs(draw_zone.getObjects()) do
+                if obj.tag == "Card" then
+                    discard_card = obj
+                    break
+                end
+            end
+        end
+
+        if discard_card then
+            discard_card.setRotation(bot_color == "Blue" and {0.00, 90.00, 0.00} or {0.00, 270.00, 0.00})
+            discard_card.setPositionSmooth(bot_color == "Blue" and {-44.57, 1.50, -21.00} or {44.57, 1.50, 21.00}, false, false)
+            broadcastToAll("[" .. Color.fromString(bot_color):toHex() .. "]Bot[-] has discarded a card off the top of its deck: " .. discard_card.getName(), "White")
+        end
+
+        show_ui_delayed()
+
+    else
+        discard_pad.call('refresh_draw_deck', {deal_count=0, alt_click=true})
+
+        Wait.time(function()
+        local supplement_deck = nil
+        for _, obj in ipairs(supplement_zone.getObjects()) do
+            if obj.tag == "Deck" then
+                supplement_deck = obj
+                break
+            elseif obj.tag == "Card" then
+                discard_card = obj
+                break
+            end
+        end
+
+        if supplement_deck then
+            discard_card = supplement_deck.takeObject()
+        elseif not discard_card then
+            discard_card = get_bot_deck().takeObject()
+        end
+
+        if discard_card then
+            discard_card.setRotation(bot_color == "Blue" and {0.00, 90.00, 0.00} or {0.00, 270.00, 0.00})
+            discard_card.setPositionSmooth(bot_color == "Blue" and {-44.57, 1.50, -21.00} or {44.57, 1.50, 21.00}, false, false)
+            broadcastToAll("[" .. Color.fromString(bot_color):toHex() .. "]Bot[-] has discarded a card off the top of its deck: " .. discard_card.getName(), "White")
+        end
+
+        show_ui_delayed()
+        end, 0.5)
+    end
+end -- end bot_deck_discard()
+
+
+
+function bot_discard_three()
+    UI.hide('bot_discard_x3')
+
+    local bot_color, _    = get_colors()
+    local discard_zone    = getObjectFromGUID(bot_color == "Blue" and "fbfe84" or "b72553")
+    local discard_pad     = getObjectFromGUID(bot_color == "Blue" and "3accb4" or "34adac")
+    local draw_zone       = getObjectFromGUID(bot_color == "Blue" and "58f8ce" or "5e07a8")
+    local supplement_zone = getObjectFromGUID(bot_color == "Blue" and "30a2e2" or "b75338")
+    local discard_card    = nil
+    local draw_deck       = nil
+
+    local discard_count = 0
+
+    local function show_ui_delayed()
+        Wait.time(function()
+        UI.show('bot_discard_x3')
+        end, 1)
+    end
+
+    local function discard_single_card()
+        local discard_card = nil
+        for _, obj in pairs(draw_zone.getObjects()) do
+            if obj.type == "Deck" then
+                discard_card = obj.takeObject()
+                break
+            elseif obj.type == "Card" then
+                discard_card = obj
+                break
+            end
+        end
+        if discard_card ~= nil then
+            discard_card.setRotation(bot_color == "Blue" and {0.00, 90.00, 0.00} or {0.00, 270.00, 0.00})
+            discard_card.setPositionSmooth(bot_color == "Blue" and {-44.57, 1.50, -21.00} or {44.57, 1.50, 21.00}, false, false)
+            broadcastToAll("[" .. Color.fromString(bot_color):toHex() .. "]Bot[-] has discarded a card: " .. discard_card.getName(), "White")
+        end
+    end
+
+    local function refresh_and_discard_from_supplemental(callback)
+        Wait.time(function()
+        local checkzone  = getObjectFromGUID(bot_color == "Blue" and "fbfe84" or "b72553")
+        local draw_loc   = {44.50, 1.20, -7.00}
+        local deck       = nil
+        local deck_found = false
+        local is_solo    = getObjectFromGUID(bot_color == "Blue" and "23bed4" or "1a78a6").getGMNotes() == "solo"
+        local rotation   = is_solo and {0.00, 270.00, 180.00} or {0.00, 90.00, 180.00}
+
+        for _, object in pairs(checkzone.getObjects()) do
+            if object.tag == "Deck" or object.tag == "Card" then
+                deck = object
+                deck_found = true
+                deck.setName('Draw Deck')
+                deck.setRotationSmooth(rotation, false, false)
+                Wait.time(function()
+                deck.shuffle()
+                deck.setPositionSmooth(draw_loc, false, false)
+                end, 0.5)
+            end
+        end
+
+        Wait.time(function()
+        local supplement_deck = nil
+        for _, obj in ipairs(supplement_zone.getObjects()) do
+            if obj.type == "Deck" then
+                supplement_deck = obj
+                break
+            elseif obj.type == "Card" then
+                discard_card = obj
+                break
+            end
+        end
+
+        if supplement_deck then
+            discard_card = supplement_deck.takeObject()
+        elseif not discard_card then
+            discard_card = get_bot_deck().takeObject()
+        end
+
+        if discard_card then
+            discard_card.setRotation(bot_color == "Blue" and {0.00, 90.00, 0.00} or {0.00, 270.00, 0.00})
+            discard_card.setPositionSmooth(bot_color == "Blue" and {-44.57, 1.50, -21.00} or {44.57, 1.50, 21.00}, false, false)
+            broadcastToAll("[" .. Color.fromString(bot_color):toHex() .. "]Bot[-] has discarded a card from Supplemental Deck: " .. discard_card.getName(), "White")
+        end
+
+        discard_count = discard_count + 1
+        if discard_count < 3 then
+            Wait.time(discard_loop, 1)
+        else
+            show_ui_delayed()
+        end
+        end, 0.5)
+        end, 1)
+    end
+
+    function discard_loop()
+        local draw_deck_empty = true
+        for _, obj in pairs(draw_zone.getObjects()) do
+            if obj.type == "Deck" or obj.type == "Card" then
+                draw_deck_empty = false
+                break
+            end
+        end
+
+        if draw_deck_empty then
+            refresh_and_discard_from_supplemental()
+        else
+            discard_single_card()
+            discard_count = discard_count + 1
+            if discard_count < 3 then
+                Wait.time(discard_loop, 1)
+            else
+                show_ui_delayed()
+            end
+        end
+    end
+
+    discard_loop()
+end -- end bot_discard_three()
+
+
+function bot_deck_log()
+    UI.hide('bot_log')
+    local bot_color, _    = get_colors()
+    local bag_log         = getObjectFromGUID(bot_color == "Blue" and "973d0b" or "3f15f8")
+    local discard_zone    = getObjectFromGUID(bot_color == "Blue" and "fbfe84" or "b72553")
+    local discard_pad     = getObjectFromGUID(bot_color == "Blue" and "3accb4" or "34adac")
+    local draw_zone       = getObjectFromGUID(bot_color == "Blue" and "58f8ce" or "5e07a8")
+    local supplement_zone = getObjectFromGUID(bot_color == "Blue" and "30a2e2" or "b75338")
+    local discard_card    = nil
+    local draw_deck       = nil
+
+    for _, obj in pairs(draw_zone.getObjects()) do
+        if obj.tag == "Deck" or obj.tag == "Card" then
+            draw_deck = obj
+            break
+        end
+    end
+
+    if draw_deck then
+        local deck_count = (draw_deck.tag == "Deck") and #draw_deck.getObjects() or 1
+
+        if deck_count > 1 then
+            discard_card = draw_deck.takeObject()
+        else
+            for _, obj in pairs(draw_zone.getObjects()) do
+                if obj.tag == "Card" then
+                    discard_card = obj
+                    break
+                end
+            end
+        end
+
+        if discard_card and discard_card.hasTag('suit_incident') then
+            discard_card.setRotation({0.00, 180.00, 0.00})
+            discard_card.setPositionSmooth({12.50, 1.50, 4.00}, false, false)
+            broadcastToAll("[" .. Color.fromString(bot_color):toHex() .. "]Bot[-] deck top card is an [" .. Color.fromString("Red"):toHex() .. "]Incident[-] - bot has returned [" .. Color.fromString("Red"):toHex() .. "]Incident: [-] " .. discard_card.getName() .. " instead of logging it.", "White")
+            Wait.time(function() UI.show('bot_log') end, 1)
+            return nil
+        end
+
+        if discard_card then
+            broadcastToAll("[" .. Color.fromString(bot_color):toHex() .. "]Bot[-] Bot has logged a card off the top of its deck: " .. discard_card.getName(), "White")
+            bag_log.putObject(discard_card)
+        end
+
+        Wait.time(function() UI.show('bot_log') end, 1)
+    else
+        discard_pad.call('refresh_draw_deck', {deal_count=0, alt_click=true})
+
+        Wait.time(function()
+        local supplement_deck = nil
+        for _, obj in ipairs(supplement_zone.getObjects()) do
+            if obj.tag == "Deck" then
+                supplement_deck = obj
+                break
+            elseif obj.tag == "Card" then
+                discard_card = obj
+                break
+            end
+        end
+
+        if supplement_deck then
+            discard_card = supplement_deck.takeObject()
+        elseif not discard_card then
+            discard_card = get_bot_deck().takeObject()
+        end
+
+        if discard_card and discard_card.hasTag('suit_incident') then
+            discard_card.setRotation({0.00, 180.00, 0.00})
+            discard_card.setPositionSmooth({12.50, 1.50, 4.00}, false, false)
+            broadcastToAll("[" .. Color.fromString(bot_color):toHex() .. "]Bot[-] deck top card is an [" .. Color.fromString("Red") .. "]Incident[-] - bot has returned [" .. Color.fromString("Red") .. "]Incident[-]: " .. discard_card.getName() .. " instead of logging it.", "White")
+            Wait.time(function() UI.show('bot_log') end, 1)
+            return
+        end
+
+        if discard_card then
+            broadcastToAll("[" .. Color.fromString(bot_color):toHex() .. "]Bot[-] has logged a card off the top of its deck: " .. discard_card.getName(), "White")
+            bag_log.putObject(discard_card)
+        end
+
+        Wait.time(function() UI.show('bot_log') end, 1)
+        end, 0.5)
+    end
+end -- end bot_deck_log()
+
+
+
+function bot_deck_refresh(next_slot, remaining_deal_count, deal_rotation, deal_locations, deal_count)
+    local bot_color, _ = get_colors()
+    local discard_pad = getObjectFromGUID(bot_color == "Blue" and "3accb4" or "34adac")
+    discard_pad.call('refresh_draw_deck', {deal_count=remaining_deal_count, alt_click=true})
+
+    Wait.time(function()
+    local supplement_zone = getObjectFromGUID(bot_color == "Blue" and "30a2e2" or "b75338")
+    local supplement_deck = nil
+
+    if supplement_zone then
+        for _, obj in ipairs(supplement_zone.getObjects()) do
+            if obj.tag == "Deck" or obj.tag == "Card" then
+                supplement_deck = obj
+                break
+            end
+        end
+    end
+
+    if supplement_deck then
+        local card
+        if supplement_deck.tag == "Deck" then
+            card = supplement_deck.takeObject({rotation = deal_rotation})
+        else
+            card = supplement_deck
+        end
+        card.setPositionSmooth(deal_locations[next_slot], false, false)
+        next_slot = next_slot + 1
+        remaining_deal_count = remaining_deal_count - 1
+    end
+    end, 0.5)
+
+    Wait.time(function()
+    local bot_deck = get_bot_deck()
+
+    if bot_deck then
+        if bot_deck.tag == "Card" then
+            bot_deck.setRotation(deal_rotation)
+            bot_deck.setPositionSmooth(deal_locations[next_slot], false, false)
+            remaining_deal_count = remaining_deal_count - 1
+            next_slot = next_slot + 1
+        elseif bot_deck.tag == "Deck" then
+            local deck_count = #bot_deck.getObjects()
+            local to_draw = math.min(deck_count, remaining_deal_count)
+            for i = 0, to_draw - 1 do
+                local card = bot_deck.takeObject({rotation = deal_rotation})
+                card.setPositionSmooth(deal_locations[next_slot + i], false, false)
+            end
+            next_slot = next_slot + to_draw
+            remaining_deal_count = remaining_deal_count - to_draw
+        end
+
+        if remaining_deal_count > 0 then
+            Wait.time(function()
+            bot_deck_refresh(next_slot, remaining_deal_count, deal_rotation, deal_locations, deal_count)
+            end, 0.5)
+        else
+            broadcastToAll("[" .. Color.fromString(bot_color):toHex() .. "]Bot[-] has finished dealing " .. deal_count .. " facedown cards.", "White")
+            UI.setAttribute("bot_controls", "active", "true")
+        end
+    else
+        broadcastToAll("[" .. Color.fromString(bot_color):toHex() .. "]Bot[-] attempted to refresh its deck, but the refreshed draw deck is empty.", "White")
+        UI.setAttribute("bot_controls", "active", "true")
+    end
+    end, 1)
+end
+
+
+
+
+function bot_gain_glory()
+    local bot_color, _ = get_colors()
+    local counter      = getObjectFromGUID(bot_color == "Blue" and "d96ce2" or "9a5066")
+    counter.call('increase')
+end -- end bot_gain_glory()
+
+
+function bot_take_incident()
+    UI.hide('bot_incident')
+    local bot_color, _ = get_colors()
+    local incident_zone = getObjectFromGUID("13c103")
+    local deal_rotation = bot_color == "Blue" and {0.00, 90.00, 180.00} or {0.00, 270.00, 180.00}
+    local deal_position = bot_color == "Blue" and {-44.50, 1.50, 7.00} or {44.50, 1.50, -7.00}
+    for _, object in pairs(incident_zone.getObjects()) do
+        if object.tag == "Deck" then
+            broadcastToAll("[" .. Color.fromString(bot_color):toHex() .. "]Bot[-] has taken an [" .. Color.fromString("Red"):toHex() .. "]Incident[-].", "White")
+            local incident = object.takeObject()
+            incident.setRotation(deal_rotation)
+            incident.setPositionSmooth(deal_position)
+            Wait.time(function() UI.show('bot_incident') end, 1)
+            return
+        end
+        if object.tag == "Card" then
+            broadcastToAll("[" .. Color.fromString(bot_color):toHex() .. "]Bot[-] is taking last Incident - Burn has been triggered! Game over.", "Red")
+            local incident = object
+            incident.setRotation(deal_rotation)
+            incident.setPositionSmooth(deal_position)
+            Wait.time(function() UI.show('bot_incident') end, 1)
+            return
+        end
+    end
+    Wait.time(function() UI.show('bot_incident') end, 1)
+end
+
+
+
+function check_if_duty_officer()
+    local bot_color, human_color = get_colors()
+    local check_zone = getObjectFromGUID(bot_color == "Blue" and "a9ca57" or "818a7e")
+    for _, object in pairs(check_zone.getObjects()) do
+        if object.hasTag('suit_person') then
+            return true
+        end
+    end
+    return false
+end -- end check_if_duty_officer()
+
+
+function get_bot_deck()
+    local bot_color, human_color = get_colors()
+    local bot_deck               = nil
+    local check_zone             = getObjectFromGUID(bot_color == "Blue" and "58f8ce" or "5e07a8")
+    for _, object in pairs(check_zone.getObjects()) do
+        if object.tag == "Deck" or object.tag == "Card" then
+            bot_deck = object
+        end
+    end
+    return bot_deck
+end -- end get_bot_deck()
+
+
+function get_captain_name()
+    local bot_color, human_color = get_colors()
+    local captain_check_zone     = getObjectFromGUID(bot_color == "Blue" and "75465f" or "75c041")
+    local captain_card_name      = nil
+    for _, object in pairs(captain_check_zone.getObjects()) do
+        if string.find(object.getName(), "Crew Board Basic") then
+            captain_card_name    = object.getName()
+        end
+    end
+    local captain_name           = nil
+    local split_name             = {}
+    for str in string.gmatch(captain_card_name,  "%S+") do
+        table.insert(split_name, str)
+    end
+    return split_name[1]
+end -- end get_captain_name()
+
+
+function get_colors()
+    local bot_color   = nil
+    local human_color = nil
+    if getObjectFromGUID("23bed4").getGMNotes() == "solo" then
+        bot_color   = "Blue"
+        human_color = "Red"
+    end
+    if getObjectFromGUID("1a78a6").getGMNotes() == "solo" then
+        bot_color   = "Red"
+        human_color = "Blue"
+    end
+    return bot_color, human_color
+end -- end get_bot_color()
+
+
+function get_mvp(args)
+    local token_ignore = args.token_ignore
+    local type         = args.type -- "Bot", "Human"
+    local cards        = args.cards
+end -- end get_mvp()

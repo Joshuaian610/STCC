@@ -1,0 +1,87 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "PlasmaRifles.61e7cc",
+    "Andoria.0961a9",
+    "Utilize.ca368b",
+    "Tarah.06b2cb",
+    "Talas.bcf40a",
+    "Ushaan-Tor.f12879",
+    "Recruit.a2052c",
+    "Confiscate.7b33c4",
+    "ImperialPride.a57527",
+    "RedAlert.ff3712"
+  ],
+  "ContainedObjects_path": "ShranDrawDeck.9a6808",
+  "CustomDeck": {
+    "156": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181680999184/158FF8CA0608DEA33F6511779E4778CBB160D083/",
+      "NumHeight": 4,
+      "NumWidth": 6,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "DeckIDs": [
+    15622,
+    15621,
+    15620,
+    15619,
+    15618,
+    15617,
+    15616,
+    15615,
+    15614,
+    15613
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "9a6808",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Shran Draw Deck",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "cleanup_target",
+    "snap_card",
+    "trait_andorian"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 65.1,
+    "posY": 1.779,
+    "posZ": -3,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 180,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

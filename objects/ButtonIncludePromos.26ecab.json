@@ -1,0 +1,81 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "AttachedDecals": [
+    {
+      "CustomDecal": {
+        "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25434746178933270/5CE9633B888A43390012EF5948A6D73390F9E57E/",
+        "Name": "table_credit",
+        "Size": 1
+      },
+      "OwnerSteamID": 0,
+      "Transform": {
+        "posX": 0.0539599769,
+        "posY": 0.476918846,
+        "posZ": 1.01594889,
+        "rotX": -1.80118837e-11,
+        "rotY": 180,
+        "rotZ": 359.963257,
+        "scaleX": 7.142621,
+        "scaleY": 0.466507345,
+        "scaleZ": 0.7440231
+      }
+    }
+  ],
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.23524,
+    "g": 0.23524,
+    "r": 0.23524
+  },
+  "CustomImage": {
+    "CustomTile": {
+      "Stackable": false,
+      "Stretch": true,
+      "Thickness": 1,
+      "Type": 3
+    },
+    "ImageScalar": 1,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/25434746178557989/00A2B0D0627929772F74A3C6B7B1DDED6C557B64/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25434746178557989/00A2B0D0627929772F74A3C6B7B1DDED6C557B64/",
+    "WidthScale": 0
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "enabled",
+  "GUID": "26ecab",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScriptState": "",
+  "LuaScript_path": "ButtonIncludePromos.26ecab.ttslua",
+  "MeasureMovement": false,
+  "Name": "Custom_Tile",
+  "Nickname": "Button Include Promos",
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "non_int"
+  ],
+  "Tooltip": false,
+  "Transform": {
+    "posX": -6.499,
+    "posY": 0.75,
+    "posZ": -4.6,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 0.63,
+    "scaleY": 1,
+    "scaleZ": 0.63
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

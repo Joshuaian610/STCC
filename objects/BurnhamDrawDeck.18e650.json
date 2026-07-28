@@ -1,0 +1,88 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "Saru.e1a6da",
+    "PaulStamets.36c505",
+    "ClevelandBooker.aa8b44",
+    "SylviaTilly.8c832a",
+    "JoannOwosekun.f28176",
+    "KeylaDetmer.8568ab",
+    "MaximumWarp.7ce0d5",
+    "StrangeNewWorlds.c1db0d",
+    "Recover.14ad4a",
+    "Inspire.bf32ee"
+  ],
+  "ContainedObjects_path": "BurnhamDrawDeck.18e650",
+  "CustomDeck": {
+    "150": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728965210603/67082C11BB9875BDC021BDC74E916100D51ABD97/",
+      "NumHeight": 4,
+      "NumWidth": 6,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "DeckIDs": [
+    15022,
+    15021,
+    15020,
+    15019,
+    15018,
+    15017,
+    15016,
+    15015,
+    15014,
+    15013
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "18e650",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Burnham Draw Deck",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "cleanup_target",
+    "snap_card",
+    "suit_person",
+    "trait_starfleet"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": -65.105,
+    "posY": 1.779,
+    "posZ": 11.001,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 180,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

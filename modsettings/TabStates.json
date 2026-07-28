@@ -1,0 +1,24 @@
+{
+  "0": {
+    "body": "",
+    "color": "Grey",
+    "id": 0,
+    "title": "Score Breakdown",
+    "visibleColor": {
+      "b": 0.5,
+      "g": 0.5,
+      "r": 0.5
+    }
+  },
+  "1": {
+    "body": "When ending your turn, using the \"Add Resource\" button for the card you wish to place Glory (or Dilithium) onto will perform all end of turn actions for you. It will assume that any cards left in hand at this point are meant to be, and will draw up accordingly. Use the \"Discard Hand\" button to empty your hand (or just manually empty your hand) before using the \"Add Resource\" button to ensure an empty hand / full redraw.\n\n\nThe deck pad \"Refresh\" buttons work differently whether left or right clicked.\nLeft Clicked: Will refresh discard, and, automatically draw back up to current hand size\nRight Clicked: Will simply refresh discard, without any automatic re-draw.\n\n\nThere are pads above or under every type of market card in the row, including Incidents and Encounters. Simply dropping a market card onto the corresponding pad will return the market card to the bottom of it's deck. Useful to return Incidents, after scanning, etc.\n\n\nSpeaking of scanning, there is no scripting currently to handle scanning! To Scan in various situations, it is suggested to:\n\nCount: Right click on the deck, hover over \"Search\", then, hover over to the search count and click it. A search box with the specific count of top deck cards displayed. Simply choose one, place to deck or discard. Remember to pull the scanned and un-selected deck cards, and drop them onto their respective Return pads to send them to the bottom of their respective decks.\n\nTrait: Right click on the deck, select \"Search\". From the top of the search window, visually scan each card (hold ALT to zoom) for the selected trait. Upon finding the first, pull it, and manually place to deck or discard. Then, close the search window and shuffle the deck.\n\n\nThe Market Row buttons behave differently depending on if the current game is a solo or 2p game.\n\nSolo: Left clicking performs action for human, right clicking performs same physical function, but for bot. However, since the bot gains and takes cards differently, make sure to read the tooltips of each button to ensure you are right clicking the correct button for each bot action!\n2p: Buttons do the same thing whether left or right clicked. \n\n\nWhen playing vs a Bot, using the on-screen UI is the preferred method of controlling the bot's turn. Using the big button will cycle as such:\n\n- Player turn (ended with player clicking Add Resource button on market row)\n\n- Bot Control Step (will automatically check for and control any possible locations)\n\n- Bot Action Step (clicking the big button will first deal the bot's facedown cards for it's turn, and then, step through each card flip, announcing the bot actions to be taken. Actual bot actions are performed manually by the player - they are only announced on card flip with no other action taken. Last click of the big button will clean up bot Action Step, and, prep for Bot Cleanup Step.)\n\n- Bot Cleanup Step (Bot will select a market card to place a resource onto, clean up, and then, pass turn back to player.)\n\n\nStardate Card Glory is locked to prevent scripting issues - players should always give themselves glory via their Glory Counter in their playerarea or on screen UI, and players should always add Glory (or Dilithium, automatically, if Burnham) via the corresponding \"Add Resource\" button in the Market Row. Taking Glory from the supply simply means taking a glory token from the supply bag, and dropping it into your Glory counter bag.\n",
+    "color": "Grey",
+    "id": 1,
+    "title": "Hints and Tips",
+    "visibleColor": {
+      "b": 0.5,
+      "g": 0.5,
+      "r": 0.5
+    }
+  }
+}

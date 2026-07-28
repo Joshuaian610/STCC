@@ -1,0 +1,19 @@
+function onLoad()
+    self.createButton({
+        click_function = "open_bag",
+        function_owner = self,
+        label          = "",
+        position       = {0, 0.17, 0.02},
+        rotation       = {0, 180, 0},
+        width          = 450,
+        height         = 450,
+        scale          = {2.3, 2.3, 2.3},
+        color          = {1, 1, 1, .0},
+        hover_color    = {1, 1, 1, .2},
+        tooltip        = "Click to search Space Dock.",
+    })
+end -- end onLoad()
+
+function open_bag(_, playercolor, _)
+    self.Container.search(playercolor)
+end -- end open_bag()

@@ -1,0 +1,86 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "CardID": 15605,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "CustomDeck": {
+    "156": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181680999184/158FF8CA0608DEA33F6511779E4778CBB160D083/",
+      "NumHeight": 4,
+      "NumWidth": 6,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "CustomUIAssets": [
+    {
+      "Name": "Dismiss Ship Red",
+      "Type": 0,
+      "URL": "https://steamusercontent-a.akamaihd.net/ugc/25437998677358871/850E7BC0248AB1C7DF2EDF04E828862585D1CBDA/"
+    },
+    {
+      "Name": "Dismiss Ship Blue",
+      "Type": 0,
+      "URL": "https://steamusercontent-a.akamaihd.net/ugc/25437998677358449/B55638917979DF06CF735E5EC9C2908A11480C0D/"
+    },
+    {
+      "Name": "Deploy Ship Blue",
+      "Type": 0,
+      "URL": "https://steamusercontent-a.akamaihd.net/ugc/25435380746010187/614515234F3B92A1FCCF2DC3DD02A9B0D5A1E74D/"
+    },
+    {
+      "Name": "Deploy Ship Red",
+      "Type": 0,
+      "URL": "https://steamusercontent-a.akamaihd.net/ugc/25435380746009590/4212AD86F0C701E59AA1C2BC0A4D442B5C816091/"
+    }
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "VP=4",
+  "GUID": "0b07c1",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": true,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScriptState": "",
+  "LuaScript_path": "ShranDevelopments.b8dafa/AndorianCruiser.0b07c1.ttslua",
+  "MeasureMovement": false,
+  "Name": "Card",
+  "Nickname": "Andorian Cruiser",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "skill_military",
+    "snap_card",
+    "suit_ship",
+    "trait_andorian"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 85.72,
+    "posY": 1.993,
+    "posZ": 13.561,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI_path": "ShranDevelopments.b8dafa/AndorianCruiser.0b07c1.xml"
+}

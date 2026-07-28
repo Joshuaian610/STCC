@@ -1,0 +1,87 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "CardID": 15821,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "CustomDeck": {
+    "158": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181681028963/CF0064D90B1DF6DB4F1CC4E648C1E9CA12A17943/",
+      "NumHeight": 4,
+      "NumWidth": 6,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "CustomUIAssets": [
+    {
+      "Name": "Dismiss Ship Red",
+      "Type": 0,
+      "URL": "https://steamusercontent-a.akamaihd.net/ugc/25437998677358871/850E7BC0248AB1C7DF2EDF04E828862585D1CBDA/"
+    },
+    {
+      "Name": "Dismiss Ship Blue",
+      "Type": 0,
+      "URL": "https://steamusercontent-a.akamaihd.net/ugc/25437998677358449/B55638917979DF06CF735E5EC9C2908A11480C0D/"
+    },
+    {
+      "Name": "Deploy Ship Blue",
+      "Type": 0,
+      "URL": "https://steamusercontent-a.akamaihd.net/ugc/25435380746010187/614515234F3B92A1FCCF2DC3DD02A9B0D5A1E74D/"
+    },
+    {
+      "Name": "Deploy Ship Red",
+      "Type": 0,
+      "URL": "https://steamusercontent-a.akamaihd.net/ugc/25435380746009590/4212AD86F0C701E59AA1C2BC0A4D442B5C816091/"
+    }
+  ],
+  "Description": "Cloaked",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "4ff3bf",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": true,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScriptState": "",
+  "LuaScript_path": "SelaDiscard.4480c5/IRWTerix.4ff3bf.ttslua",
+  "MeasureMovement": false,
+  "Name": "Card",
+  "Nickname": "I.R.W. Terix",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "skill_science",
+    "snap_card",
+    "suit_ship",
+    "trait_cloak",
+    "trait_romulan"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 79.636,
+    "posY": 1.999,
+    "posZ": 11.976,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI_path": "SelaDiscard.4480c5/IRWTerix.4ff3bf.xml"
+}

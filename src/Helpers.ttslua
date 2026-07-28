@@ -1,0 +1,43 @@
+
+function getObjectbyName(objName)
+  for _, object in pairs(getObjects()) do
+    if object.getName() == objName then
+      return object
+    end
+  end
+  return nil
+end
+
+
+function getObjectbyNameAndNotes(objName, objNotes)
+  for _, object in pairs(getObjects()) do
+    if object.getName() == objName and object.getGMNotes() == objNotes then
+      return object
+    end
+  end
+  return nil
+end
+
+
+function getObjectbyNameAndTag(objName, objTag)
+  for _, object in pairs(getObjects()) do
+    if object.getName() == objName and object.hasTag(objTag) then
+      return object
+    end
+  end
+  return nil
+end
+
+
+function getObjectFromBagbyName(objName, bag, objRot, objPos, moveSmooth)
+  for _, bagObj in pairs(bag.getObjects()) do
+    if bagObj.name == objName then
+      local takeObj = bag.takeObject({ guid = bagObj.guid, rotation = objRot })
+      if moveSmooth then
+        takeObj.setPositionSmooth(objPos, false, true)
+      else
+        takeObj.setPosition(objPos)
+      end
+    end
+  end
+end

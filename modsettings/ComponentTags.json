@@ -1,0 +1,372 @@
+{
+  "labels": [
+    {
+      "displayed": "non_int",
+      "normalized": "non_int"
+    },
+    {
+      "displayed": "away_red",
+      "normalized": "away_red"
+    },
+    {
+      "displayed": "away_blue",
+      "normalized": "away_blue"
+    },
+    {
+      "displayed": "button_faction_setup",
+      "normalized": "button_faction_setup"
+    },
+    {
+      "displayed": "setup_basic",
+      "normalized": "setup_basic"
+    },
+    {
+      "displayed": "setup_advanced",
+      "normalized": "setup_advanced"
+    },
+    {
+      "displayed": "button_solo_setup",
+      "normalized": "button_solo_setup"
+    },
+    {
+      "displayed": "cleanup_target",
+      "normalized": "cleanup_target"
+    },
+    {
+      "displayed": "snap_card",
+      "normalized": "snap_card"
+    },
+    {
+      "displayed": "suit_encounter",
+      "normalized": "suit_encounter"
+    },
+    {
+      "displayed": "trait_anomaly",
+      "normalized": "trait_anomaly"
+    },
+    {
+      "displayed": "trait_augment",
+      "normalized": "trait_augment"
+    },
+    {
+      "displayed": "trait_doctor",
+      "normalized": "trait_doctor"
+    },
+    {
+      "displayed": "trait_telepath",
+      "normalized": "trait_telepath"
+    },
+    {
+      "displayed": "trait_ongoing",
+      "normalized": "trait_ongoing"
+    },
+    {
+      "displayed": "trait_timetravel",
+      "normalized": "trait_timetravel"
+    },
+    {
+      "displayed": "trait_transcendent",
+      "normalized": "trait_transcendent"
+    },
+    {
+      "displayed": "trait_alien",
+      "normalized": "trait_alien"
+    },
+    {
+      "displayed": "trait_imperial",
+      "normalized": "trait_imperial"
+    },
+    {
+      "displayed": "trait_wildcard",
+      "normalized": "trait_wildcard"
+    },
+    {
+      "displayed": "trait_synthetic",
+      "normalized": "trait_synthetic"
+    },
+    {
+      "displayed": "trait_vulcan",
+      "normalized": "trait_vulcan"
+    },
+    {
+      "displayed": "trait_attack",
+      "normalized": "trait_attack"
+    },
+    {
+      "displayed": "trait_scientist",
+      "normalized": "trait_scientist"
+    },
+    {
+      "displayed": "suit_person",
+      "normalized": "suit_person"
+    },
+    {
+      "displayed": "mission_basic_completed",
+      "normalized": "mission_basic_completed"
+    },
+    {
+      "displayed": "trait_ambassador",
+      "normalized": "trait_ambassador"
+    },
+    {
+      "displayed": "trait_kelpian",
+      "normalized": "trait_kelpian"
+    },
+    {
+      "displayed": "trait_shady",
+      "normalized": "trait_shady"
+    },
+    {
+      "displayed": "trait_communication",
+      "normalized": "trait_communication"
+    },
+    {
+      "displayed": "trait_human",
+      "normalized": "trait_human"
+    },
+    {
+      "displayed": "trait_starfleet",
+      "normalized": "trait_starfleet"
+    },
+    {
+      "displayed": "trait_romulan",
+      "normalized": "trait_romulan"
+    },
+    {
+      "displayed": "trait_maquis",
+      "normalized": "trait_maquis"
+    },
+    {
+      "displayed": "suit_ally",
+      "normalized": "suit_ally"
+    },
+    {
+      "displayed": "trait_engineer",
+      "normalized": "trait_engineer"
+    },
+    {
+      "displayed": "trait_business",
+      "normalized": "trait_business"
+    },
+    {
+      "displayed": "suit_directive",
+      "normalized": "suit_directive"
+    },
+    {
+      "displayed": "trait_pilot",
+      "normalized": "trait_pilot"
+    },
+    {
+      "displayed": "trait_klingon",
+      "normalized": "trait_klingon"
+    },
+    {
+      "displayed": "trait_changeling",
+      "normalized": "trait_changeling"
+    },
+    {
+      "displayed": "trait_trill",
+      "normalized": "trait_trill"
+    },
+    {
+      "displayed": "trait_spy",
+      "normalized": "trait_spy"
+    },
+    {
+      "displayed": "trait_cardassian",
+      "normalized": "trait_cardassian"
+    },
+    {
+      "displayed": "trait_android",
+      "normalized": "trait_android"
+    },
+    {
+      "displayed": "trait_hologram",
+      "normalized": "trait_hologram"
+    },
+    {
+      "displayed": "suit_cargo",
+      "normalized": "suit_cargo"
+    },
+    {
+      "displayed": "trait_weapon",
+      "normalized": "trait_weapon"
+    },
+    {
+      "displayed": "trait_bajoran",
+      "normalized": "trait_bajoran"
+    },
+    {
+      "displayed": "trait_beverage",
+      "normalized": "trait_beverage"
+    },
+    {
+      "displayed": "mission_1_completed",
+      "normalized": "mission_1_completed"
+    },
+    {
+      "displayed": "trait_borg",
+      "normalized": "trait_borg"
+    },
+    {
+      "displayed": "trait_cloak",
+      "normalized": "trait_cloak"
+    },
+    {
+      "displayed": "trait_security",
+      "normalized": "trait_security"
+    },
+    {
+      "displayed": "suit_ship",
+      "normalized": "suit_ship"
+    },
+    {
+      "displayed": "trait_dominion",
+      "normalized": "trait_dominion"
+    },
+    {
+      "displayed": "trait_pakled",
+      "normalized": "trait_pakled"
+    },
+    {
+      "displayed": "trait_aenar",
+      "normalized": "trait_aenar"
+    },
+    {
+      "displayed": "trait_xindi",
+      "normalized": "trait_xindi"
+    },
+    {
+      "displayed": "trait_orion",
+      "normalized": "trait_orion"
+    },
+    {
+      "displayed": "trait_andorian",
+      "normalized": "trait_andorian"
+    },
+    {
+      "displayed": "suit_incident",
+      "normalized": "suit_incident"
+    },
+    {
+      "displayed": "suit_location",
+      "normalized": "suit_location"
+    },
+    {
+      "displayed": "trait_ferengi",
+      "normalized": "trait_ferengi"
+    },
+    {
+      "displayed": "skill_diplomacy",
+      "normalized": "skill_diplomacy"
+    },
+    {
+      "displayed": "skill_science",
+      "normalized": "skill_science"
+    },
+    {
+      "displayed": "skill_military",
+      "normalized": "skill_military"
+    },
+    {
+      "displayed": "skill_x2_military",
+      "normalized": "skill_x2_military"
+    },
+    {
+      "displayed": "trait_breen",
+      "normalized": "trait_breen"
+    },
+    {
+      "displayed": "trait_starbase",
+      "normalized": "trait_starbase"
+    },
+    {
+      "displayed": "trait_reman",
+      "normalized": "trait_reman"
+    },
+    {
+      "displayed": "skill_x2_science",
+      "normalized": "skill_x2_science"
+    },
+    {
+      "displayed": "suit_captain",
+      "normalized": "suit_captain"
+    },
+    {
+      "displayed": "trait_ops",
+      "normalized": "trait_ops"
+    },
+    {
+      "displayed": "skill_x2_variable",
+      "normalized": "skill_x2_variable"
+    },
+    {
+      "displayed": "skill_variable",
+      "normalized": "skill_variable"
+    },
+    {
+      "displayed": "skill_x2_wildcard",
+      "normalized": "skill_x2_wildcard"
+    },
+    {
+      "displayed": "snap_ship",
+      "normalized": "snap_ship"
+    },
+    {
+      "displayed": "snap_action",
+      "normalized": "snap_action"
+    },
+    {
+      "displayed": "skill_wildcard",
+      "normalized": "skill_wildcard"
+    },
+    {
+      "displayed": "skill_x2_diplomacy",
+      "normalized": "skill_x2_diplomacy"
+    },
+    {
+      "displayed": "trait_tellarite",
+      "normalized": "trait_tellarite"
+    },
+    {
+      "displayed": "refresh_destruct_blue",
+      "normalized": "refresh_destruct_blue"
+    },
+    {
+      "displayed": "refresh_destruct_red",
+      "normalized": "refresh_destruct_red"
+    },
+    {
+      "displayed": "skill_x3_diplomacy",
+      "normalized": "skill_x3_diplomacy"
+    },
+    {
+      "displayed": "trait_surprise",
+      "normalized": "trait_surprise"
+    },
+    {
+      "displayed": "mission_2_completed",
+      "normalized": "mission_2_completed"
+    },
+    {
+      "displayed": "stardate",
+      "normalized": "stardate"
+    },
+    {
+      "displayed": "resupply",
+      "normalized": "resupply"
+    },
+    {
+      "displayed": "cleanup",
+      "normalized": "cleanup"
+    },
+    {
+      "displayed": "trait_betazoid",
+      "normalized": "trait_betazoid"
+    },
+    {
+      "displayed": "trait_creature",
+      "normalized": "trait_creature"
+    }
+  ]
+}

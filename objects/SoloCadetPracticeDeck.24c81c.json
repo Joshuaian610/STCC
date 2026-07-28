@@ -1,0 +1,70 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "SoloCadetPractice2.be1490",
+    "SoloCadetPractice1.43938e"
+  ],
+  "ContainedObjects_path": "SoloCadetPracticeDeck.24c81c",
+  "CustomDeck": {
+    "181": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25439356657917346/3CB83916C7E62328D3EEE363B0A133DF7E24BDA4/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439356657916153/0C37AC0BF3ECBF8A7DF222CF799CB501C5E55678/",
+      "NumHeight": 4,
+      "NumWidth": 8,
+      "Type": 0,
+      "UniqueBack": true
+    }
+  },
+  "DeckIDs": [
+    18106,
+    18105
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "24c81c",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Solo Cadet Practice Deck",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_card",
+    "stardate"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": -8.929,
+    "posY": 1.728,
+    "posZ": 27.65,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

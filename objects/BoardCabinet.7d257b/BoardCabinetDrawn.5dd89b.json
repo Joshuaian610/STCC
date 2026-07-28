@@ -1,0 +1,65 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": false,
+  "ColorDiffuse": {
+    "b": 0.25,
+    "g": 0.25,
+    "r": 0.25
+  },
+  "CustomAssetbundle": {
+    "AssetbundleSecondaryURL": "",
+    "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/868496425808279018/1BE1733E66A6D19385888B136F4E6DEDFC257969/",
+    "LoopingEffectIndex": 0,
+    "MaterialIndex": 1,
+    "TypeIndex": 4
+  },
+  "Description": "Click on the handle to close.",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "5dd89b",
+  "Grid": false,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScriptState": "[]",
+  "LuaScript_path": "BoardCabinet.7d257b/BoardCabinetDrawn.5dd89b.ttslua",
+  "MeasureMovement": false,
+  "Name": "Custom_Assetbundle",
+  "Nickname": "Board Cabinet (Drawn)",
+  "PhysicsMaterial": {
+    "BounceCombine": 0,
+    "Bounciness": 0,
+    "DynamicFriction": 0.6,
+    "FrictionCombine": 0,
+    "StaticFriction": 0.6
+  },
+  "Rigidbody": {
+    "AngularDrag": 0.1,
+    "Drag": 0.1,
+    "Mass": 1,
+    "UseGravity": false
+  },
+  "Snap": false,
+  "Sticky": true,
+  "Tooltip": false,
+  "Transform": {
+    "posX": 36,
+    "posY": -41.99,
+    "posZ": 0,
+    "rotX": 0,
+    "rotY": 0,
+    "rotZ": 0,
+    "scaleX": 1,
+    "scaleY": 1,
+    "scaleZ": 1
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

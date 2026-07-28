@@ -1,0 +1,80 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "AttachedSnapPoints": [
+    {
+      "Position": {
+        "x": -0.044,
+        "y": 0.953,
+        "z": 5.503
+      }
+    }
+  ],
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.10675,
+    "g": 0.64485,
+    "r": 0.85995
+  },
+  "ContainedObjects_order": [
+    "LatinumToken.abecee"
+  ],
+  "ContainedObjects_path": "LatinumCounterBlue.39e892",
+  "CustomMesh": {
+    "CastShadows": true,
+    "ColliderURL": "",
+    "Convex": true,
+    "CustomShader": {
+      "FresnelStrength": 0,
+      "SpecularColor": {
+        "b": 0.1388889,
+        "g": 0.1388889,
+        "r": 0.1388889
+      },
+      "SpecularIntensity": 0,
+      "SpecularSharpness": 2
+    },
+    "DiffuseURL": "",
+    "MaterialIndex": 3,
+    "MeshURL": "https://steamusercontent-a.akamaihd.net/ugc/1683744853788948370/712260EAD0BD317D8DE46991AEB8D1C3B20E85A0/",
+    "NormalURL": "",
+    "TypeIndex": 7
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "Blue",
+  "GUID": "39e892",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScriptState": "",
+  "LuaScript_path": "LatinumCounterBlue.39e892.ttslua",
+  "MaterialIndex": -1,
+  "MeasureMovement": false,
+  "MeshIndex": -1,
+  "Name": "Custom_Model_Infinite_Bag",
+  "Nickname": "Latinum Counter Blue",
+  "Snap": true,
+  "Sticky": true,
+  "Tooltip": false,
+  "Transform": {
+    "posX": -51.7,
+    "posY": 1.905,
+    "posZ": 7.3,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 0.2,
+    "scaleY": 0.2,
+    "scaleZ": 0.2
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

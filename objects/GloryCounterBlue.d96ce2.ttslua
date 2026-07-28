@@ -1,0 +1,243 @@
+MIN_VALUE = 0
+MAX_VALUE = 999
+player_color = "Blue"
+oppose_color = "Red"
+
+function onload(saved_data)
+    val = 0
+    if saved_data ~= "" then
+        local loaded_data = JSON.decode(saved_data)
+        if loaded_data ~= nil then
+            val = loaded_data[1]
+        end
+    end
+    create_all()
+end -- end function onload()
+
+
+function update_save()
+    local data_to_save = {val}
+    saved_data = JSON.encode(data_to_save)
+    self.script_state = saved_data
+end -- end function update_save()
+
+
+function create_all()
+    h_color = {31/255, 136/255, 255/255, .4}
+    f_color = {1, 1, 1, 255}
+    self.createButton({
+        label          = tostring(val),
+        click_function = "add_glory",
+        function_owner = self,
+        position       = {0.00, -0.09, -4.00},
+        height         = 1000,
+        width          = 1000,
+        font_size      = 1100,
+        scale          = {x=1.8, y=1.8, z=1.8},
+        font_color     = f_color,
+        hover_color    = h_color,
+        color          = {31/255, 136/255, 255/255, 255}
+    })
+end -- end function create_all()
+
+function remove_all()
+    self.removeButton(0)
+end -- end function remove_all()
+
+function reload_all()
+      remove_all()
+      create_all()
+      update_save()
+end -- end function reload_all()
+
+function add_subtract(_obj, _color, alt_click)
+    mod = alt_click and -1 or 1
+    new_value = math.min(math.max(val + mod, MIN_VALUE), MAX_VALUE)
+    if val ~= new_value then
+        val = new_value
+        update_val()
+        update_save()
+    end
+end -- end function add_subtract()
+
+function subtract()
+  new_value = math.min(math.max(val -1, MIN_VALUE), MAX_VALUE)
+  if val ~= new_value then
+      val = new_value
+      update_val()
+      update_save()
+  end
+end -- end function subtract()
+
+function update_val()
+    self.editButton({
+        index = 0,
+        label = tostring(val),
+    })
+end -- end function update_val()
+
+function set_val(value)
+    val = value
+    update_val()
+    update_save()
+end -- send function set_val()
+
+function reset_val()
+    val = 0
+    update_val()
+    update_save()
+end -- end function set_val()
+
+
+function add_glory(_, playercolor, altclick)
+    if altclick then
+        if val == 0 then
+            return nil
+        end
+        val = val - 1
+        set_val(val)
+        if Player[player_color].steam_name ~= nil then
+            broadcastToAll("[" .. Color.fromString(player_color):toHex() .. "]" .. Player[player_color].steam_name .. "[-] has removed -1 Glory - Total: " .. val, "White")
+        else
+            local opponent_str = "Player"
+            if getObjectFromGUID(oppose_color == "Blue" and "23bed4" or "1a78a6").getGMNotes() == "solo" then opponent_str = "Bot" end
+            broadcastToAll("[" .. Color.fromString(player_color):toHex() .. "]" .. player_color .. " " .. opponent_str .. "[-] has removed -1 Glory - Total: " .. val, "White")
+        end
+        Wait.time(function()
+        broadcastToColor("[" .. Color.fromString(player_color):toHex() .. "]*** [-] Removing Glory does not return Glory to the Stardate Card, if that is needed! Do so manually if so.", playercolor, "White")
+        end, 1)
+    else
+        -- if glory on stardate card, add it and return out
+        local send_pos = self.getPosition()
+        send_pos.y = 1.50
+        local glory_found = false
+        local cadet_found = false
+        for _, object in pairs(getObjectFromGUID("090f7a").getObjects()) do
+            if string.find(object.getName(), "Cadet") then cadet_found = true end
+        end
+        if not cadet_found then
+            local glory_count = 0
+            for _, object in pairs(getObjectFromGUID("338aa7").getObjects()) do
+                if object.getName() == "Glory Token" then
+                    glory_found = true
+                    glory_token = object
+                    glory_count = glory_count + 1
+                end
+            end
+            if glory_found then
+                if Player[player_color].steam_name ~= nil then
+                    broadcastToAll("[" .. Color.fromString(player_color):toHex() .. "]" .. Player[player_color].steam_name .. "[-] has gained +1 Glory from the Stardate Card - Total: " .. val + 1, "White")
+                else
+                    local player_str = "Player"
+                    if getObjectFromGUID(oppose_color == "Blue" and "23bed4" or "1a78a6").getGMNotes() == "solo" then player_str = "Bot" end
+                    broadcastToAll("[" .. Color.fromString(player_color):toHex() .. "]" .. player_color .. " " .. player_str .. "[-] has gained +1 Glory from the Stardate Card - Total: " .. val + 1, "White")
+                end
+                glory_token.setRotation({0.00, 270.00, 0.00})
+                getObjectFromGUID(player_color == "Blue" and "cd069a" or "47b4f7").putObject(glory_token)
+            end
+            -- take stardate for opposing player
+            if glory_count == 1 then
+                local stardate = nil
+                for _, object in pairs(getObjectFromGUID("090f7a").getObjects()) do
+                    if object.tag == "Card" then
+                        stardate = object
+                        getObjectFromGUID("ab8b38").call('button_stardate_trigger_endgame_remote', {button=stardate})
+                    elseif object.tag == "Deck" then
+                        local deck_objects = object.getObjects()
+                        stardate = object.takeObject()
+                        if getObjectFromGUID("1a78a6").getGMNotes() == "solo" then
+                            stardate.setRotation({0, 270, 0})
+                        else
+                            stardate.setRotation({0, 90, 0})
+                        end
+                        stardate.setPositionSmooth({30.00, 1.50, -21.94})
+                        if Player[oppose_color].steam_name ~= nil then
+                            broadcastToAll("[" .. Color.fromString("Yellow"):toHex() .. "]" .. stardate.getName() .. "[-] has been given to [" .. Color.fromString(oppose_color):toHex() .. "]" .. Player[oppose_color].steam_name .. "[-].", "White")
+                        else
+                            local opponent_str = "Player"
+                            if getObjectFromGUID(oppose_color == "Blue" and "23bed4" or "1a78a6").getGMNotes() == "solo" then opponent_str = "Bot" end
+                            broadcastToAll("[" .. Color.fromString("Yellow"):toHex() .. "]" .. stardate.getName() .. "[-] has been given to [" .. Color.fromString(oppose_color):toHex() .. "]" .. oppose_color .. " " .. opponent_str .. "[-].", "White")
+                        end
+                        Wait.time(function()
+                        getObjectFromGUID("e5e2d0").call('run_refresh', {playercolor=playercolor})
+                        end, 1)
+                    end
+                end
+            end
+        elseif cadet_found then
+            glory_found = true
+            local glory_token = getObjectFromGUID("263bae").takeObject({rotation={0, 270, 0}})
+            getObjectFromGUID(player_color == "Blue" and "cd069a" or "47b4f7").putObject(glory_token)
+            if Player[player_color].steam_name ~= nil then
+                broadcastToAll("[" .. Color.fromString(player_color):toHex() .. "]" .. Player[player_color].steam_name .. "[-] has gained +1 Glory from the supply. (vs. Cadet) - Total: " .. val +1, "White")
+            else
+                broadcastToAll("[" .. Color.fromString(player_color):toHex() .. "]" .. player_color .. " Player[-] has gained +1 Glory from the supply. (vs. Cadet) - Total: " .. val + 1, "White")
+            end
+        end
+        if not glory_found then
+            local stardate = nil
+            for _, object in pairs(getObjectFromGUID("090f7a").getObjects()) do
+                if object.tag == "Card" then
+                    stardate = object.getName()
+                elseif object.tag == "Deck" then
+                    local deck_objects = object.getObjects()
+                    stardate = deck_objects[#deck_objects].name
+                end
+            end
+            if stardate ~= nil then
+                if string.find(stardate, "Stardate") and not string.find(stardate, "Cadet") then
+                    -- if non final card in slot, broadcast to refresh glory first
+                    broadcastToAll("Please wait for Glory to be refreshed to Stardate Card momentarily before attempting to take more.", "Yellow")
+                elseif string.find(stardate, "Cadet") then
+                    -- just take from glory bag
+                    local glory_token = getObjectFromGUID("263bae").takeObject({rotation={0, 270, 0}})
+                    getObjectFromGUID(player_color == "Blue" and "cd069a" or "47b4f7").putObject(glory_token)
+                end
+            else
+                -- if no card in slot, take from glory bag
+                if Player[player_color].steam_name ~= nil then
+                    broadcastToAll("Final Stardate Card has been taken, [" .. Color.fromString(player_color):toHex() .. "]" .. Player[player_color].steam_name .. "[-] has gained +1 Glory from the Supply - Total: " .. val + 1, "White")
+                else
+                    local player_str = "Player"
+                    if getObjectFromGUID(oppose_color == "Blue" and "23bed4" or "1a78a6").getGMNotes() == "solo" then player_str = "Bot" end
+                    broadcastToAll("Final Stardate Card has been taken, [" .. Color.fromString(player_color):toHex() .. "]" .. player_color .. " " .. player_str .. "[-] has gained +1 Glory from the Supply - Total: " .. val + 1, "White")
+                end
+                local glory_token = getObjectFromGUID("263bae").takeObject({rotation={0, 270, 0}})
+                getObjectFromGUID(player_color == "Blue" and "cd069a" or "47b4f7").putObject(glory_token)
+            end
+        end
+    end
+    local captain_zone           = getObjectFromGUID("75465f")
+    local captain_pad            = getObjectFromGUID("997491")
+    for _, object in pairs(captain_zone.getObjects()) do
+        if string.find(object.getName(), "Crew Board") and object ~= captain_pad then
+            captain_card_name    = object.getName()
+        end
+    end
+    local captain_name           = nil
+    local split_name             = {}
+    if captain_card_name        ~= nil then
+        for str in string.gmatch(captain_card_name,  "%S+") do
+            table.insert(split_name, str)
+        end
+    end
+    captain_name = split_name[1]
+    if captain_name == "Burnham" or captain_name == "Picard" or captain_name == "Sisko" then
+        UI.setAttribute(string.lower(player_color) .. "_hum_glory", "text", val)
+    elseif captain_name == "Shran" then
+        UI.setAttribute(string.lower(player_color) .. "_and_glory", "text", val)
+    elseif captain_name == "Sela" then
+        UI.setAttribute(string.lower(player_color) .. "_rom_glory", "text", val)
+    elseif captain_name == "Koloth" then
+        UI.setAttribute(string.lower(player_color) .. "_kli_glory", "text", val)
+    end
+end -- end add_glory()
+
+
+function increase()
+    add_glory(_, player_color, false)
+end -- end increase()
+
+function decrease()
+    add_glory(_, player_color, true)
+end -- end decrease()
