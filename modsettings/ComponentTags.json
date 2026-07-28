@@ -387,6 +387,10 @@
     {
       "displayed": "trait_andoran",
       "normalized": "trait_andoran"
+    },
+    {
+      "displayed": "suit_status",
+      "normalized": "suit_status"
     }
   ]
 }

@@ -11,16 +11,22 @@
     "r": 0.71324
   },
   "ContainedObjects_order": [
-    "Remans.ce0bb4",
-    "Utilize.9b6276",
-    "IRWTerix.4ff3bf"
+    "CadetUhura.d649e2",
+    "JosephMBenga.feb9f9",
+    "LaAnNoonienSingh.9459c2",
+    "LtSpock.4b4853",
+    "Hemmer.b3942d",
+    "USSEnterprise.5383c5",
+    "StrangeNewWorlds.0805aa",
+    "KnowledgeofaTerribleFate.8b1a00",
+    "HitIt.0e43e7"
   ],
-  "ContainedObjects_path": "SelaDiscard.4480c5",
+  "ContainedObjects_path": "PikeDrawDeck.1365c8",
   "CustomDeck": {
-    "158": {
+    "191": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181681028963/CF0064D90B1DF6DB4F1CC4E648C1E9CA12A17943/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17067362917187969035/8E561693A595A840EFFB85446D852F3FB4107EB2/",
       "NumHeight": 4,
       "NumWidth": 6,
       "Type": 0,
@@ -28,14 +34,20 @@
     }
   },
   "DeckIDs": [
-    15822,
-    15820,
-    15821
+    19121,
+    19120,
+    19119,
+    19118,
+    19117,
+    19116,
+    19115,
+    19114,
+    19113
   ],
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "4480c5",
+  "GUID": "1365c8",
   "Grid": true,
   "GridProjection": false,
   "Hands": false,
@@ -47,19 +59,21 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Deck",
-  "Nickname": "Sela Discard",
+  "Nickname": "Pike Draw Deck",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "cleanup_target",
-    "snap_card"
+    "snap_card",
+    "suit_person",
+    "trait_human",
+    "trait_starfleet"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 79.956,
-    "posY": 1.945,
-    "posZ": 11.908,
+    "posX": -19.227,
+    "posY": 2.899,
+    "posZ": -14.708,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

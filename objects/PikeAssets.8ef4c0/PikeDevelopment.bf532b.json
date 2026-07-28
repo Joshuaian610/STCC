@@ -11,16 +11,20 @@
     "r": 0.71324
   },
   "ContainedObjects_order": [
-    "Remans.ce0bb4",
-    "Utilize.9b6276",
-    "IRWTerix.4ff3bf"
+    "MarieBatel.3936f9",
+    "JamesKirkUnitedEarthFleet.57d9ed",
+    "Pelia.0ecb07",
+    "RigelVII.261392",
+    "Kherkovians.02eae6",
+    "Talosians.6b8129",
+    "LtScott.192a83"
   ],
-  "ContainedObjects_path": "SelaDiscard.4480c5",
+  "ContainedObjects_path": "PikeDevelopment.bf532b",
   "CustomDeck": {
-    "158": {
+    "191": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181681028963/CF0064D90B1DF6DB4F1CC4E648C1E9CA12A17943/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17067362917187969035/8E561693A595A840EFFB85446D852F3FB4107EB2/",
       "NumHeight": 4,
       "NumWidth": 6,
       "Type": 0,
@@ -28,14 +32,18 @@
     }
   },
   "DeckIDs": [
-    15822,
-    15820,
-    15821
+    19107,
+    19106,
+    19105,
+    19104,
+    19103,
+    19102,
+    19101
   ],
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "4480c5",
+  "GUID": "bf532b",
   "Grid": true,
   "GridProjection": false,
   "Hands": false,
@@ -47,19 +55,19 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Deck",
-  "Nickname": "Sela Discard",
+  "Nickname": "Pike Development",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "cleanup_target",
-    "snap_card"
+    "snap_card",
+    "suit_person"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 79.956,
-    "posY": 1.945,
-    "posZ": 11.908,
+    "posX": -20.262,
+    "posY": 2.885,
+    "posZ": -14.987,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

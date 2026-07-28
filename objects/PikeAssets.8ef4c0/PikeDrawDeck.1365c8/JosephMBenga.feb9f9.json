@@ -5,61 +5,55 @@
     "z": 0
   },
   "Autoraise": true,
+  "CardID": 19120,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
-  "ContainedObjects_order": [
-    "Remans.ce0bb4",
-    "Utilize.9b6276",
-    "IRWTerix.4ff3bf"
-  ],
-  "ContainedObjects_path": "SelaDiscard.4480c5",
   "CustomDeck": {
-    "158": {
+    "191": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181681028963/CF0064D90B1DF6DB4F1CC4E648C1E9CA12A17943/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17067362917187969035/8E561693A595A840EFFB85446D852F3FB4107EB2/",
       "NumHeight": 4,
       "NumWidth": 6,
       "Type": 0,
       "UniqueBack": false
     }
   },
-  "DeckIDs": [
-    15822,
-    15820,
-    15821
-  ],
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "4480c5",
+  "GUID": "feb9f9",
   "Grid": true,
   "GridProjection": false,
-  "Hands": false,
+  "Hands": true,
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
   "Locked": false,
   "LuaScript": "",
-  "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "Deck",
-  "Nickname": "Sela Discard",
+  "Name": "Card",
+  "Nickname": "Joseph M'Benga",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "cleanup_target",
-    "snap_card"
+    "skill_military",
+    "snap_card",
+    "suit_person",
+    "trait_doctor",
+    "trait_human",
+    "trait_starfleet",
+    "trait_weapon"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 79.956,
-    "posY": 1.945,
-    "posZ": 11.908,
+    "posX": -23.427,
+    "posY": 1.752,
+    "posZ": -28.45,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

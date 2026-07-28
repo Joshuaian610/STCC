@@ -11,16 +11,18 @@
     "r": 0.71324
   },
   "ContainedObjects_order": [
-    "Remans.ce0bb4",
-    "Utilize.9b6276",
-    "IRWTerix.4ff3bf"
+    "TimeCrystal.874b44",
+    "PoliticalCrisis.5a3f9b",
+    "UnaNumberOneChin-Riley.569ce5",
+    "ChristineChapel.ebc024",
+    "DakRah.c0e415"
   ],
-  "ContainedObjects_path": "SelaDiscard.4480c5",
+  "ContainedObjects_path": "PikeReserves.fdd671",
   "CustomDeck": {
-    "158": {
+    "191": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181681028963/CF0064D90B1DF6DB4F1CC4E648C1E9CA12A17943/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17067362917187969035/8E561693A595A840EFFB85446D852F3FB4107EB2/",
       "NumHeight": 4,
       "NumWidth": 6,
       "Type": 0,
@@ -28,14 +30,16 @@
     }
   },
   "DeckIDs": [
-    15822,
-    15820,
-    15821
+    19112,
+    19111,
+    19110,
+    19109,
+    19108
   ],
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "4480c5",
+  "GUID": "fdd671",
   "Grid": true,
   "GridProjection": false,
   "Hands": false,
@@ -47,19 +51,18 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Deck",
-  "Nickname": "Sela Discard",
+  "Nickname": "Pike Reserves",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "cleanup_target",
     "snap_card"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 79.956,
-    "posY": 1.945,
-    "posZ": 11.908,
+    "posX": -19.546,
+    "posY": 2.881,
+    "posZ": -15.181,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

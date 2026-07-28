@@ -50,7 +50,8 @@
   "Sticky": true,
   "Tags": [
     "cleanup_target",
-    "snap_card"
+    "snap_card",
+    "suit_status"
   ],
   "Tooltip": true,
   "Transform": {

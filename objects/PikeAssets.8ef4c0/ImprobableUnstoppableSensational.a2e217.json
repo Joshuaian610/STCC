@@ -5,40 +5,30 @@
     "z": 0
   },
   "Autoraise": true,
+  "CardID": 19300,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
-  "ContainedObjects_order": [
-    "Remans.ce0bb4",
-    "Utilize.9b6276",
-    "IRWTerix.4ff3bf"
-  ],
-  "ContainedObjects_path": "SelaDiscard.4480c5",
   "CustomDeck": {
-    "158": {
+    "193": {
       "BackIsHidden": true,
-      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181681028963/CF0064D90B1DF6DB4F1CC4E648C1E9CA12A17943/",
-      "NumHeight": 4,
-      "NumWidth": 6,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/16999386180740212368/6E5D48E188ED97D14E43F95675CC1D4A9048490E/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13031117927728227482/43DADFF5154296C0E0D9BBF8CF2AFCFF764FB331/",
+      "NumHeight": 1,
+      "NumWidth": 1,
       "Type": 0,
       "UniqueBack": false
     }
   },
-  "DeckIDs": [
-    15822,
-    15820,
-    15821
-  ],
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "4480c5",
+  "GUID": "a2e217",
   "Grid": true,
   "GridProjection": false,
-  "Hands": false,
+  "Hands": true,
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
@@ -46,20 +36,20 @@
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "Deck",
-  "Nickname": "Sela Discard",
+  "Name": "CardCustom",
+  "Nickname": "Improbable, Unstoppable, Sensational",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "cleanup_target",
-    "snap_card"
+    "snap_card",
+    "suit_status"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 79.956,
-    "posY": 1.945,
-    "posZ": 11.908,
+    "posX": -20.089,
+    "posY": 2.845,
+    "posZ": -14.807,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,
