@@ -5,17 +5,17 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 18400,
+  "CardID": 18900,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "184": {
+    "189": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964908647/8957524A425D1AD5E6856D2DCD9A9AD87B0813BF/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964893765/C1F49A427230F63F836EC30F36487EB3D117952E/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17028380367924222968/FF4FB00063EFD90CA7BA569ACC06E838E78BBC6E/",
       "NumHeight": 1,
       "NumWidth": 1,
       "Type": 0,
@@ -25,7 +25,7 @@
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "cfc6a0",
+  "GUID": "7351fb",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -37,7 +37,7 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "CardCustom",
-  "Nickname": "Jean-Luc Picard",
+  "Nickname": "Phillipa Georgiou",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
@@ -50,9 +50,9 @@
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -79.18,
-    "posY": 1.924,
-    "posZ": -15.853,
+    "posX": -16.29,
+    "posY": 3.791,
+    "posZ": -27.743,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

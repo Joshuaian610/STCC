@@ -1,0 +1,85 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "HostileContact.c7edae",
+    "KamranGant.b494b2",
+    "LtDetmer.af5a00",
+    "DanbyConnor.b98eb9",
+    "VulcanScienceAcademy.5c42bc",
+    "Utlize.5a2576",
+    "StrangeNewWorlds.9a39bc",
+    "Recruit.733856",
+    "Analyze.c76a96",
+    "ClassCShuttlecraft.02d205"
+  ],
+  "ContainedObjects_path": "GeorgiouDrawDeck.5cc546",
+  "CustomDeck": {
+    "190": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12789430557549279074/54778357402CFA1218255070C7DBDF6742E8E39C/",
+      "NumHeight": 4,
+      "NumWidth": 6,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "DeckIDs": [
+    19021,
+    19020,
+    19019,
+    19018,
+    19017,
+    19016,
+    19015,
+    19014,
+    19013,
+    19012
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "5cc546",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Georgiou Draw Deck",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_card"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": -16.254,
+    "posY": 3.847,
+    "posZ": -28.281,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

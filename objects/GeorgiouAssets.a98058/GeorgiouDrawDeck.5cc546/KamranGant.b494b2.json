@@ -5,19 +5,19 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 18400,
+  "CardID": 19020,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "184": {
+    "190": {
       "BackIsHidden": true,
-      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964908647/8957524A425D1AD5E6856D2DCD9A9AD87B0813BF/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964893765/C1F49A427230F63F836EC30F36487EB3D117952E/",
-      "NumHeight": 1,
-      "NumWidth": 1,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12789430557549279074/54778357402CFA1218255070C7DBDF6742E8E39C/",
+      "NumHeight": 4,
+      "NumWidth": 6,
       "Type": 0,
       "UniqueBack": false
     }
@@ -25,7 +25,7 @@
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "cfc6a0",
+  "GUID": "b494b2",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -34,25 +34,26 @@
   "LayoutGroupSortIndex": 0,
   "Locked": false,
   "LuaScript": "",
-  "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "CardCustom",
-  "Nickname": "Jean-Luc Picard",
+  "Name": "Card",
+  "Nickname": "Kamran Gant",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "cleanup_target",
+    "skill_military",
     "snap_card",
-    "suit_captain",
+    "suit_person",
+    "trait_attack",
     "trait_human",
+    "trait_scientist",
     "trait_starfleet"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -79.18,
-    "posY": 1.924,
-    "posZ": -15.853,
+    "posX": -33.636,
+    "posY": 1.752,
+    "posZ": -27.739,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

@@ -5,30 +5,42 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 18400,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
+  "ContainedObjects_order": [
+    "CmdrBurnham.ee9d23",
+    "LtSaru.519e0d",
+    "FirstContact.da0495",
+    "SetACourse.da743e"
+  ],
+  "ContainedObjects_path": "GeorgiouReserves.4ec1eb",
   "CustomDeck": {
-    "184": {
+    "190": {
       "BackIsHidden": true,
-      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964908647/8957524A425D1AD5E6856D2DCD9A9AD87B0813BF/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964893765/C1F49A427230F63F836EC30F36487EB3D117952E/",
-      "NumHeight": 1,
-      "NumWidth": 1,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12789430557549279074/54778357402CFA1218255070C7DBDF6742E8E39C/",
+      "NumHeight": 4,
+      "NumWidth": 6,
       "Type": 0,
       "UniqueBack": false
     }
   },
+  "DeckIDs": [
+    19011,
+    19010,
+    19009,
+    19008
+  ],
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "cfc6a0",
+  "GUID": "4ec1eb",
   "Grid": true,
   "GridProjection": false,
-  "Hands": true,
+  "Hands": false,
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
@@ -36,26 +48,24 @@
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "CardCustom",
-  "Nickname": "Jean-Luc Picard",
+  "Name": "Deck",
+  "Nickname": "Georgiou Reserves",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "cleanup_target",
     "snap_card",
-    "suit_captain",
-    "trait_human",
+    "suit_person",
     "trait_starfleet"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -79.18,
-    "posY": 1.924,
-    "posZ": -15.853,
+    "posX": -16.908,
+    "posY": 3.812,
+    "posZ": -28.321,
     "rotX": 0,
     "rotY": 180,
-    "rotZ": 0,
+    "rotZ": 359,
     "scaleX": 1.75,
     "scaleY": 1,
     "scaleZ": 1.75
