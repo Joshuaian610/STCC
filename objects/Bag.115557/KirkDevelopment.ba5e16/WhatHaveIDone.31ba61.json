@@ -5,27 +5,27 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 14600,
+  "CardID": 19002,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "146": {
+    "190": {
       "BackIsHidden": true,
-      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964908647/8957524A425D1AD5E6856D2DCD9A9AD87B0813BF/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964980524/E3880A06D25CAA4EED5E5C433C3D3659364E017F/",
-      "NumHeight": 1,
-      "NumWidth": 1,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12360013617275162435/E5276705FD0D38636B6C509A0ED68CF70AB1D303/",
+      "NumHeight": 4,
+      "NumWidth": 6,
       "Type": 0,
       "UniqueBack": false
     }
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "mil_multi",
-  "GUID": "01fc64",
+  "GMNotes": "VP=4",
+  "GUID": "31ba61",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -34,25 +34,22 @@
   "LayoutGroupSortIndex": 0,
   "Locked": false,
   "LuaScript": "",
-  "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "CardCustom",
-  "Nickname": "Koloth, The Dahar Master",
+  "Name": "Card",
+  "Nickname": "What Have I Done",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "cleanup_target",
     "snap_card",
-    "suit_captain",
-    "trait_klingon",
-    "trait_weapon"
+    "suit_directive",
+    "trait_attack"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -79.042,
-    "posY": 1.924,
-    "posZ": -2.06,
+    "posX": -20.518,
+    "posY": 0.868,
+    "posZ": -6.643,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

@@ -11,16 +11,23 @@
     "r": 0.71324
   },
   "ContainedObjects_order": [
-    "Remans.ce0bb4",
-    "Utilize.9b6276",
-    "IRWTerix.4ff3bf"
+    "MaximumWarp.63f703",
+    "CaptainSpock.4d79e6",
+    "LeonardMcCoy.00599d",
+    "NyotaUhura.977e08",
+    "StrangeNewWorlds.24d89f",
+    "SetACourse.18937c",
+    "Utilize.521f62",
+    "Recruit.d91fd0",
+    "LevitationBoots.6a950b",
+    "SubspacePhenomenon.be26cb"
   ],
-  "ContainedObjects_path": "SelaDiscard.4480c5",
+  "ContainedObjects_path": "KirkDrawDeck.9c57f3",
   "CustomDeck": {
-    "158": {
+    "190": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181681028963/CF0064D90B1DF6DB4F1CC4E648C1E9CA12A17943/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12360013617275162435/E5276705FD0D38636B6C509A0ED68CF70AB1D303/",
       "NumHeight": 4,
       "NumWidth": 6,
       "Type": 0,
@@ -28,14 +35,21 @@
     }
   },
   "DeckIDs": [
-    15822,
-    15820,
-    15821
+    19023,
+    19022,
+    19021,
+    19020,
+    19019,
+    19018,
+    19017,
+    19016,
+    19015,
+    19014
   ],
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "4480c5",
+  "GUID": "9c57f3",
   "Grid": true,
   "GridProjection": false,
   "Hands": false,
@@ -47,19 +61,18 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Deck",
-  "Nickname": "Sela Discard",
+  "Nickname": "Kirk Draw Deck",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "cleanup_target",
     "snap_card"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 79.956,
-    "posY": 1.945,
-    "posZ": 11.906,
+    "posX": -8.231,
+    "posY": 3.85,
+    "posZ": -28.04,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

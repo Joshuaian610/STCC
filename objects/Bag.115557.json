@@ -5,25 +5,25 @@
     "z": 0
   },
   "Autoraise": true,
+  "Bag": {
+    "Order": 0
+  },
   "ColorDiffuse": {
     "b": 0,
-    "g": 0,
-    "r": 0
+    "g": 0.36652,
+    "r": 0.70588
   },
-  "CustomFigurine": {
-    "MirroredBack": false,
-    "UseMinimalCollider": false
-  },
-  "CustomImage": {
-    "ImageScalar": 2,
-    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/25439815955485149/91D4414BB645F1DD16C2183E5366F798EDDF23FA/",
-    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25439815955484859/9FC9B5397466311B7E9CDD734C9D7D2C20B8C8C0/",
-    "WidthScale": 0
-  },
+  "ContainedObjects_order": [
+    "KirkDevelopment.ba5e16",
+    "KirkReserves.3078fb",
+    "KirkDrawDeck.9c57f3",
+    "JamesTKirk.4a027d"
+  ],
+  "ContainedObjects_path": "Bag.115557",
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "a7de14",
+  "GUID": "115557",
   "Grid": true,
   "GridProjection": false,
   "Hands": false,
@@ -33,20 +33,18 @@
   "Locked": false,
   "LuaScript": "",
   "LuaScriptState": "",
+  "MaterialIndex": -1,
   "MeasureMovement": false,
-  "Name": "Figurine_Custom",
-  "Nickname": "Kumari",
+  "MeshIndex": -1,
+  "Name": "Bag",
+  "Nickname": "",
   "Snap": true,
   "Sticky": true,
-  "Tags": [
-    "cleanup_target",
-    "snap_ship"
-  ],
   "Tooltip": true,
   "Transform": {
-    "posX": 79.39,
-    "posY": 2.076,
-    "posZ": 3.159,
+    "posX": -33.24,
+    "posY": 1.512,
+    "posZ": 26.671,
     "rotX": 0,
     "rotY": 0,
     "rotZ": 0,

@@ -5,17 +5,17 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 14600,
+  "CardID": 18900,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "146": {
+    "189": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964908647/8957524A425D1AD5E6856D2DCD9A9AD87B0813BF/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964980524/E3880A06D25CAA4EED5E5C433C3D3659364E017F/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13334943118120240223/D779B73A14992EE4674222999D435E7A97B57419/",
       "NumHeight": 1,
       "NumWidth": 1,
       "Type": 0,
@@ -24,8 +24,8 @@
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "mil_multi",
-  "GUID": "01fc64",
+  "GMNotes": "",
+  "GUID": "4a027d",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -37,7 +37,7 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "CardCustom",
-  "Nickname": "Koloth, The Dahar Master",
+  "Nickname": "James T. Kirk",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
@@ -45,14 +45,14 @@
     "cleanup_target",
     "snap_card",
     "suit_captain",
-    "trait_klingon",
-    "trait_weapon"
+    "trait_human",
+    "trait_starfleet"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -79.042,
-    "posY": 1.924,
-    "posZ": -2.06,
+    "posX": -9.267,
+    "posY": 3.792,
+    "posZ": -28.157,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,
