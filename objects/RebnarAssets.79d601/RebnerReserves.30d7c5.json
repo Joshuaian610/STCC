@@ -5,30 +5,44 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 15400,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
+  "ContainedObjects_order": [
+    "Reginod.f5e95d",
+    "EvenBiggerHelmet.7abdd6",
+    "TheClumpshipPakled.29fb09",
+    "AmbassadorGrubdin.a43224",
+    "Rumdar.f75312"
+  ],
+  "ContainedObjects_path": "RebnerReserves.30d7c5",
   "CustomDeck": {
-    "154": {
+    "193": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181680995157/69256CAFB518E2352B89C36CD368A14C81E85586/",
-      "NumHeight": 4,
-      "NumWidth": 6,
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13220764602361838146/2C4DCAC8E90F7DF90FDD0C779F33828C4A946D46/",
+      "NumHeight": 3,
+      "NumWidth": 7,
       "Type": 0,
       "UniqueBack": false
     }
   },
+  "DeckIDs": [
+    19311,
+    19310,
+    19309,
+    19308,
+    19307
+  ],
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "18165c",
+  "GUID": "30d7c5",
   "Grid": true,
   "GridProjection": false,
-  "Hands": true,
+  "Hands": false,
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
@@ -36,23 +50,19 @@
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "Card",
-  "Nickname": "Bajor",
+  "Name": "Deck",
+  "Nickname": "Rebner Reserves",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "cleanup_target",
-    "skill_diplomacy",
-    "snap_card",
-    "suit_location",
-    "trait_bajoran"
+    "snap_card"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 80.043,
-    "posY": 1.923,
-    "posZ": -16.222,
+    "posX": -14.636,
+    "posY": 3.827,
+    "posZ": -28.349,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

@@ -411,6 +411,14 @@
     {
       "displayed": "trait_nx01",
       "normalized": "trait_nx01"
+    },
+    {
+      "displayed": "pakled",
+      "normalized": "pakled"
+    },
+    {
+      "displayed": "trait_helmet",
+      "normalized": "trait_helmet"
     }
   ]
 }

@@ -5,19 +5,19 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 15400,
+  "CardID": 19309,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "154": {
+    "193": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181680995157/69256CAFB518E2352B89C36CD368A14C81E85586/",
-      "NumHeight": 4,
-      "NumWidth": 6,
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13220764602361838146/2C4DCAC8E90F7DF90FDD0C779F33828C4A946D46/",
+      "NumHeight": 3,
+      "NumWidth": 7,
       "Type": 0,
       "UniqueBack": false
     }
@@ -25,7 +25,7 @@
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "18165c",
+  "GUID": "29fb09",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -37,22 +37,22 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Card",
-  "Nickname": "Bajor",
+  "Nickname": "The Clumpship Pakled",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "cleanup_target",
-    "skill_diplomacy",
+    "skill_military",
     "snap_card",
-    "suit_location",
-    "trait_bajoran"
+    "suit_ship",
+    "trait_attack",
+    "trait_pakled"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 80.043,
-    "posY": 1.923,
-    "posZ": -16.222,
+    "posX": 3.882,
+    "posY": 1.786,
+    "posZ": -27.717,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,
