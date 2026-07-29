@@ -5,19 +5,19 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 15700,
+  "CardID": 18921,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "157": {
+    "189": {
       "BackIsHidden": true,
-      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964908647/8957524A425D1AD5E6856D2DCD9A9AD87B0813BF/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181681028238/209EECDDAB4C4CC5F058421579729EE6E649127F/",
-      "NumHeight": 1,
-      "NumWidth": 1,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13907225384615601412/89F01F20469099831C8035F4F30CEECF210C171C/",
+      "NumHeight": 4,
+      "NumWidth": 6,
       "Type": 0,
       "UniqueBack": false
     }
@@ -25,7 +25,7 @@
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "dfd726",
+  "GUID": "8c4add",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -34,26 +34,22 @@
   "LayoutGroupSortIndex": 0,
   "Locked": false,
   "LuaScript": "",
-  "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "CardCustom",
-  "Nickname": "Sela",
+  "Name": "Card",
+  "Nickname": "Ti'Mur",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "cleanup_target",
     "snap_card",
-    "suit_captain",
-    "trait_human",
-    "trait_romulan",
-    "trait_shady"
+    "suit_ship",
+    "trait_vulcan"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 70.703,
-    "posY": 1.923,
-    "posZ": 11.91,
+    "posX": -14.548,
+    "posY": 3.796,
+    "posZ": -27.523,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

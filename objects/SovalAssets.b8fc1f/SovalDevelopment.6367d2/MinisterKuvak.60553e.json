@@ -5,27 +5,27 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 15700,
+  "CardID": 18904,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "157": {
+    "189": {
       "BackIsHidden": true,
-      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964908647/8957524A425D1AD5E6856D2DCD9A9AD87B0813BF/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181681028238/209EECDDAB4C4CC5F058421579729EE6E649127F/",
-      "NumHeight": 1,
-      "NumWidth": 1,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13907225384615601412/89F01F20469099831C8035F4F30CEECF210C171C/",
+      "NumHeight": 4,
+      "NumWidth": 6,
       "Type": 0,
       "UniqueBack": false
     }
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "",
-  "GUID": "dfd726",
+  "GMNotes": "dip_multi",
+  "GUID": "60553e",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -34,26 +34,22 @@
   "LayoutGroupSortIndex": 0,
   "Locked": false,
   "LuaScript": "",
-  "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "CardCustom",
-  "Nickname": "Sela",
+  "Name": "Card",
+  "Nickname": "Minister Kuvak",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "cleanup_target",
     "snap_card",
-    "suit_captain",
-    "trait_human",
-    "trait_romulan",
-    "trait_shady"
+    "suit_person",
+    "trait_vulcan"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 70.703,
-    "posY": 1.923,
-    "posZ": 11.91,
+    "posX": -21.89,
+    "posY": 0.838,
+    "posZ": -14.382,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

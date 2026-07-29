@@ -419,6 +419,10 @@
     {
       "displayed": "trait_helmet",
       "normalized": "trait_helmet"
+    },
+    {
+      "displayed": "trait_pathofsurak",
+      "normalized": "trait_pathofsurak"
     }
   ]
 }

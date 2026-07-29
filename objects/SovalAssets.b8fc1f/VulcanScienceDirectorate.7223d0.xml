@@ -1,0 +1,12 @@
+<Panel
+    id                = "recrystallize"
+    active            = "false"
+    height            = "30"
+    width             = "95"
+    position          = "15 -112 -25"
+    rotation          = "0 0 180"
+    showAnimation     = "Grow"
+    hideAnimation     = "Shrink"
+    animationDuration = ".25">
+    <Button onClick   = "a7ecd3/recrystallize()" image="Recrystallize"></Button>
+</Panel>
