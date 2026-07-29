@@ -11,19 +11,10 @@
     "r": 0.71324
   },
   "ContainedObjects_order": [
-    "Card.310b49",
-    "Card.34dfd4",
-    "Card.c18cdf",
-    "Card.e71632",
-    "Card.e23796",
-    "Card.de4f0f",
-    "Card.76dabd",
-    "Card.c8411c",
-    "Card.132b3b",
-    "Card.299d05",
-    "Card.cc3e7f"
+    "Orion.cc3e7f",
+    "Krulmuth-B.11c20d"
   ],
-  "ContainedObjects_path": "Deck.7aaa11",
+  "ContainedObjects_path": "LocationsSecondContactDeck.1d2b55",
   "CustomDeck": {
     "188": {
       "BackIsHidden": true,
@@ -36,22 +27,13 @@
     }
   },
   "DeckIDs": [
-    18810,
-    18811,
-    18812,
-    18813,
-    18814,
-    18815,
-    18816,
-    18817,
-    18818,
-    18819,
-    18821
+    18821,
+    18820
   ],
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "7aaa11",
+  "GUID": "1d2b55",
   "Grid": true,
   "GridProjection": false,
   "Hands": false,
@@ -63,17 +45,20 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Deck",
-  "Nickname": "",
+  "Nickname": "Locations Second Contact Deck",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
+  "Tags": [
+    "suit_location"
+  ],
   "Tooltip": true,
   "Transform": {
-    "posX": 11.972,
-    "posY": 0.824,
-    "posZ": -2.093,
+    "posX": 19.793,
+    "posY": 0.781,
+    "posZ": -2.78,
     "rotX": 0,
-    "rotY": 90,
+    "rotY": 180,
     "rotZ": 180,
     "scaleX": 1.75,
     "scaleY": 1,

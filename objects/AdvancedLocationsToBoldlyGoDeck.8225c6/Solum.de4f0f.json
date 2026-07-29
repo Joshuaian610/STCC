@@ -5,7 +5,7 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 18805,
+  "CardID": 18815,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
@@ -24,8 +24,8 @@
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "",
-  "GUID": "3481f2",
+  "GMNotes": "VP=10",
+  "GUID": "de4f0f",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -36,18 +36,23 @@
   "LuaScript": "",
   "MeasureMovement": false,
   "Name": "Card",
-  "Nickname": "",
+  "Nickname": "Solum",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
+  "Tags": [
+    "snap_card",
+    "suit_location",
+    "trait_vaunakat"
+  ],
   "Tooltip": true,
   "Transform": {
-    "posX": 20.125,
-    "posY": 0.878,
-    "posZ": -1.861,
+    "posX": 41.5,
+    "posY": 1.815,
+    "posZ": -27.365,
     "rotX": 0,
     "rotY": 180,
-    "rotZ": 179,
+    "rotZ": 0,
     "scaleX": 1.75,
     "scaleY": 1,
     "scaleZ": 1.75

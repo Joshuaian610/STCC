@@ -395,6 +395,18 @@
     {
       "displayed": "skill_x3_variable",
       "normalized": "skill_x3_variable"
+    },
+    {
+      "displayed": "trait_vaunakat",
+      "normalized": "trait_vaunakat"
+    },
+    {
+      "displayed": "trait_alient",
+      "normalized": "trait_alient"
+    },
+    {
+      "displayed": "mix_remove",
+      "normalized": "mix_remove"
     }
   ]
 }

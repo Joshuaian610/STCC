@@ -5,12 +5,24 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 18821,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
+  "ContainedObjects_order": [
+    "AncientRelayStation.502ba1",
+    "ArcherIV.22cea1",
+    "ArgusArray.66c8d3",
+    "ColdStation12.04ed51",
+    "DeltaVega.c69ecb",
+    "DenaxiDepot.3481f2",
+    "Dozaria.917dd3",
+    "IndriVIII.0535ff",
+    "Risa.5ad5a5",
+    "Tahal-Meeroj.6d217a"
+  ],
+  "ContainedObjects_path": "StartingLocationsToBoldlyGoDeck.577e63",
   "CustomDeck": {
     "188": {
       "BackIsHidden": true,
@@ -22,29 +34,46 @@
       "UniqueBack": false
     }
   },
+  "DeckIDs": [
+    18800,
+    18801,
+    18802,
+    18803,
+    18804,
+    18805,
+    18806,
+    18807,
+    18808,
+    18809
+  ],
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "cc3e7f",
+  "GUID": "577e63",
   "Grid": true,
   "GridProjection": false,
-  "Hands": true,
+  "Hands": false,
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
   "Locked": false,
   "LuaScript": "",
+  "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "Card",
-  "Nickname": "",
+  "Name": "Deck",
+  "Nickname": "Starting Locations To Boldly Go Deck",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
+  "Tags": [
+    "snap_card",
+    "suit_location"
+  ],
   "Tooltip": true,
   "Transform": {
-    "posX": 19.893,
-    "posY": 0.764,
-    "posZ": -8.116,
+    "posX": 15.488,
+    "posY": 0.819,
+    "posZ": -2.78,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 180,

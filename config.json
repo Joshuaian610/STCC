@@ -386,10 +386,11 @@
     "CommonCardListBaseGame.c8d61e",
     "SecondContactRulebook.54bf9b",
     "SecondContactRulebook.b59c8e",
-    "Deck.7aaa11",
-    "Deck.54c3af",
     "DeckCustom.f6fe3e",
-    "DeckCustom.093f99"
+    "DeckCustom.093f99",
+    "AdvancedLocationsToBoldlyGoDeck.8225c6",
+    "StartingLocationsToBoldlyGoDeck.577e63",
+    "LocationsSecondContactDeck.1d2b55"
   ],
   "PlayArea": 0.5,
   "PlayerCounts": [

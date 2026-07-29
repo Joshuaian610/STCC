@@ -5,61 +5,53 @@
     "z": 0
   },
   "Autoraise": true,
+  "CardID": 18814,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
-  "ContainedObjects_order": [
-    "Remans.ce0bb4",
-    "Utilize.9b6276",
-    "IRWTerix.4ff3bf"
-  ],
-  "ContainedObjects_path": "SelaDiscard.4480c5",
   "CustomDeck": {
-    "158": {
+    "188": {
       "BackIsHidden": true,
-      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181681028963/CF0064D90B1DF6DB4F1CC4E648C1E9CA12A17943/",
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181681058492/1EFB7AA0A7B30903C233851BD6B0E232DD39F10D/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17273685841293238432/1467CDA35A7428F5D8D641E48F7AA81F4632835B/",
       "NumHeight": 4,
       "NumWidth": 6,
       "Type": 0,
       "UniqueBack": false
     }
   },
-  "DeckIDs": [
-    15822,
-    15820,
-    15821
-  ],
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "",
-  "GUID": "4480c5",
+  "GMNotes": "VP=5",
+  "GUID": "e23796",
   "Grid": true,
   "GridProjection": false,
-  "Hands": false,
+  "Hands": true,
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
   "Locked": false,
   "LuaScript": "",
-  "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "Deck",
-  "Nickname": "Sela Discard",
+  "Name": "Card",
+  "Nickname": "Memory Alpha",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "cleanup_target",
-    "snap_card"
+    "mix_remove",
+    "snap_card",
+    "suit_location",
+    "trait_communication",
+    "trait_starfleet"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 79.956,
-    "posY": 1.945,
-    "posZ": 11.907,
+    "posX": 15.233,
+    "posY": 2.721,
+    "posZ": -25.518,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,
