@@ -5,27 +5,27 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 19200,
+  "CardID": 18904,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "192": {
+    "189": {
       "BackIsHidden": true,
-      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728965206880/6E5D48E188ED97D14E43F95675CC1D4A9048490E/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/16997304537763573817/3F005827E9756DBF1BA54628EC84F8EAFA9E5AEB/",
-      "NumHeight": 1,
-      "NumWidth": 1,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12656232885694525951/45AA0D992D09CEDDA008C40F359B98965DB22CF9/",
+      "NumHeight": 3,
+      "NumWidth": 7,
       "Type": 0,
       "UniqueBack": false
     }
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "",
-  "GUID": "1afee7",
+  "GMNotes": "sci_multi",
+  "GUID": "5245c2",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -36,16 +36,24 @@
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "CardCustom",
-  "Nickname": "",
+  "Name": "Card",
+  "Nickname": "Ambassador Soval",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
+  "Tags": [
+    "skill_diplomacy",
+    "snap_card",
+    "suit_person",
+    "trait_ambassador",
+    "trait_telepath",
+    "trait_vulcan"
+  ],
   "Tooltip": true,
   "Transform": {
-    "posX": -22.287,
-    "posY": 1.023,
-    "posZ": 9.443,
+    "posX": -22.192,
+    "posY": 0.845,
+    "posZ": -13.867,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

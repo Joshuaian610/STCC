@@ -5,46 +5,30 @@
     "z": 0
   },
   "Autoraise": true,
+  "CardID": 18911,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
-  "ContainedObjects_order": [
-    "TradeEmbargo.bf1133",
-    "SubspacePhenomenon.726713",
-    "RedAlert.45f7ee",
-    "PoliticalCrisis.36a8ca",
-    "HostileContact.499d9a",
-    "EnergyDrain.938f49"
-  ],
-  "ContainedObjects_path": "IncidentsDeck.d926b6",
   "CustomDeck": {
-    "178": {
+    "189": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181683135300/D24EB60275259316551D69638ED1B2F1B926516D/",
-      "NumHeight": 2,
-      "NumWidth": 3,
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12656232885694525951/45AA0D992D09CEDDA008C40F359B98965DB22CF9/",
+      "NumHeight": 3,
+      "NumWidth": 7,
       "Type": 0,
       "UniqueBack": false
     }
   },
-  "DeckIDs": [
-    17805,
-    17804,
-    17803,
-    17802,
-    17801,
-    17800
-  ],
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "d926b6",
+  "GUID": "b64410",
   "Grid": true,
   "GridProjection": false,
-  "Hands": false,
+  "Hands": true,
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
@@ -52,23 +36,23 @@
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "Deck",
-  "Nickname": "Incidents Deck",
+  "Name": "Card",
+  "Nickname": "First Contact",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
     "snap_card",
-    "suit_incident"
+    "suit_directive"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 12.5,
-    "posY": 1.001,
-    "posZ": 10,
+    "posX": -0.853,
+    "posY": 1.796,
+    "posZ": -27.485,
     "rotX": 0,
     "rotY": 180,
-    "rotZ": 180,
+    "rotZ": 0,
     "scaleX": 1.75,
     "scaleY": 1,
     "scaleZ": 1.75

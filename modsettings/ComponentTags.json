@@ -407,6 +407,10 @@
     {
       "displayed": "mix_remove",
       "normalized": "mix_remove"
+    },
+    {
+      "displayed": "trait_nx01",
+      "normalized": "trait_nx01"
     }
   ]
 }

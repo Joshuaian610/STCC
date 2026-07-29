@@ -303,10 +303,10 @@
     "GloryCounterRed.9a5066",
     "Traits5YearMissionDeck.19c754",
     "SuitsDeck.846ed1",
-    "IncidentsDeck.d926b6",
+    "IncidentsBaseGameDeck.d926b6",
     "StartingLocationsBaseGameDeck.1adf6b",
     "AdvancedLocationsBaseGameDeck.eaec79",
-    "EncountersDeck.5231b6",
+    "EncountersBaseGameDeck.5231b6",
     "CommonCardListBaseGame.608dce",
     "PersonsDeckBaseGame.3dbd70",
     "CargoDeckBaseGame.2479b4",
@@ -386,11 +386,11 @@
     "CommonCardListBaseGame.c8d61e",
     "SecondContactRulebook.54bf9b",
     "SecondContactRulebook.b59c8e",
-    "DeckCustom.f6fe3e",
     "DeckCustom.093f99",
     "AdvancedLocationsToBoldlyGoDeck.8225c6",
     "StartingLocationsToBoldlyGoDeck.577e63",
-    "LocationsSecondContactDeck.1d2b55"
+    "LocationsSecondContactDeck.1d2b55",
+    "ArcherAssets.8c0123"
   ],
   "PlayArea": 0.5,
   "PlayerCounts": [

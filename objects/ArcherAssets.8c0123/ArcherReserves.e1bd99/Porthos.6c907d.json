@@ -5,19 +5,19 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 19000,
+  "CardID": 18914,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "190": {
+    "189": {
       "BackIsHidden": true,
-      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964908647/8957524A425D1AD5E6856D2DCD9A9AD87B0813BF/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18139372984038373831/74286EB93C59178DE1A1932C97C253DD04E37A59/",
-      "NumHeight": 1,
-      "NumWidth": 1,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12656232885694525951/45AA0D992D09CEDDA008C40F359B98965DB22CF9/",
+      "NumHeight": 3,
+      "NumWidth": 7,
       "Type": 0,
       "UniqueBack": false
     }
@@ -25,7 +25,7 @@
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "aac0a0",
+  "GUID": "6c907d",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -36,16 +36,22 @@
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "CardCustom",
-  "Nickname": "",
+  "Name": "Card",
+  "Nickname": "Porthos",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
+  "Tags": [
+    "snap_card",
+    "suit_cargo",
+    "trait_creature",
+    "trait_nx01"
+  ],
   "Tooltip": true,
   "Transform": {
-    "posX": -21.983,
-    "posY": 1.032,
-    "posZ": 9.66,
+    "posX": -0.962,
+    "posY": 1.711,
+    "posZ": -27.675,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,
