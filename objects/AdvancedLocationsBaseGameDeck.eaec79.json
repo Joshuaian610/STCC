@@ -11,18 +11,18 @@
     "r": 0.71324
   },
   "ContainedObjects_order": [
-    "AmargosaObservatory.0251de",
-    "AncientRelayStation.363b60",
-    "ArcherIV.52ac9c",
-    "Betazed.5ad757",
-    "CorvanII.8a3abf",
-    "DeltaVega.42180b",
-    "Dozaria.60a035",
-    "IndriVIII.1f94e6",
-    "Risa.071d9f",
-    "TulganaIV.9e1602"
+    "Baku.3e2fe2",
+    "DeepSpaceK-7.d01fdc",
+    "Derna.09f429",
+    "Freecloud.c5c903",
+    "KelvasDocks.2e9203",
+    "MemoryAlpha.4e40f3",
+    "RegulaI.d7b6f2",
+    "Solum.f91413",
+    "VerexIII.f56945",
+    "Xahea.5734f0"
   ],
-  "ContainedObjects_path": "StartingLocationsDeck.1adf6b",
+  "ContainedObjects_path": "AdvancedLocationsBaseGameDeck.eaec79",
   "CustomDeck": {
     "159": {
       "BackIsHidden": true,
@@ -35,21 +35,21 @@
     }
   },
   "DeckIDs": [
-    15900,
-    15901,
-    15902,
-    15904,
-    15905,
-    15907,
-    15909,
-    15911,
-    15915,
-    15917
+    15903,
+    15906,
+    15908,
+    15910,
+    15912,
+    15913,
+    15914,
+    15916,
+    15918,
+    15919
   ],
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "1adf6b",
+  "GUID": "eaec79",
   "Grid": true,
   "GridProjection": false,
   "Hands": false,
@@ -61,20 +61,19 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Deck",
-  "Nickname": "Starting Locations Deck",
+  "Nickname": "Advanced Locations Base Game Deck",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
     "snap_card",
-    "suit_location",
-    "trait_business"
+    "suit_location"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 5.999,
-    "posY": 0.819,
-    "posZ": -1.998,
+    "posX": 0,
+    "posY": 1.019,
+    "posZ": -2,
     "rotX": 0,
     "rotY": 270,
     "rotZ": 180,

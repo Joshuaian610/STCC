@@ -304,8 +304,8 @@
     "Traits5YearMissionDeck.19c754",
     "SuitsDeck.846ed1",
     "IncidentsDeck.d926b6",
-    "StartingLocationsDeck.1adf6b",
-    "AdvancedLocationsDeck.eaec79",
+    "StartingLocationsBaseGameDeck.1adf6b",
+    "AdvancedLocationsBaseGameDeck.eaec79",
     "EncountersDeck.5231b6",
     "CommonCardListBaseGame.608dce",
     "PersonsDeckBaseGame.3dbd70",
@@ -385,7 +385,11 @@
     "RikerAssets.d23e58",
     "CommonCardListBaseGame.c8d61e",
     "SecondContactRulebook.54bf9b",
-    "SecondContactRulebook.b59c8e"
+    "SecondContactRulebook.b59c8e",
+    "Deck.7aaa11",
+    "Deck.54c3af",
+    "DeckCustom.f6fe3e",
+    "DeckCustom.093f99"
   ],
   "PlayArea": 0.5,
   "PlayerCounts": [
