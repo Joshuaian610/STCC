@@ -5,27 +5,27 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 15903,
+  "CardID": 19100,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "159": {
+    "191": {
       "BackIsHidden": true,
-      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181681058492/1EFB7AA0A7B30903C233851BD6B0E232DD39F10D/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181681058259/09515BAE9B700A9CC5EAEEDFEB4FAE16572A2B19/",
-      "NumHeight": 4,
-      "NumWidth": 5,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/15505471987704147950/DD0346D399BABF3DEB1DA5860C57C2568BC73E98/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/15417638572686411274/2A57756D13336239494A1B4407994DAF209F9DBE/",
+      "NumHeight": 1,
+      "NumWidth": 1,
       "Type": 0,
       "UniqueBack": false
     }
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "VP=1",
-  "GUID": "3e2fe2",
+  "GMNotes": "",
+  "GUID": "241eb8",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -36,24 +36,23 @@
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "Card",
-  "Nickname": "Ba'ku",
+  "Name": "CardCustom",
+  "Nickname": "Ceti Alpha V",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
     "snap_card",
-    "suit_location",
-    "trait_anomaly"
+    "suit_location"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 0,
-    "posY": 1.097,
-    "posZ": -2,
+    "posX": -18.232,
+    "posY": 3.794,
+    "posZ": -28.112,
     "rotX": 0,
-    "rotY": 270,
-    "rotZ": 180,
+    "rotY": 180,
+    "rotZ": 0,
     "scaleX": 1.75,
     "scaleY": 1,
     "scaleZ": 1.75

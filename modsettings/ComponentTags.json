@@ -423,6 +423,10 @@
     {
       "displayed": "trait_pathofsurak",
       "normalized": "trait_pathofsurak"
+    },
+    {
+      "displayed": "trait_mindcontrol",
+      "normalized": "trait_mindcontrol"
     }
   ]
 }

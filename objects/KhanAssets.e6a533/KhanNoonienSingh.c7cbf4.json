@@ -5,27 +5,27 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 15903,
+  "CardID": 19000,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "159": {
+    "190": {
       "BackIsHidden": true,
-      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181681058492/1EFB7AA0A7B30903C233851BD6B0E232DD39F10D/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181681058259/09515BAE9B700A9CC5EAEEDFEB4FAE16572A2B19/",
-      "NumHeight": 4,
-      "NumWidth": 5,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/10964262313655357685/6BC934D8C9A1DBB82806B35AE48B74F1208C4C98/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/10814502565013645800/144E2515E6804CE84351EC276C0765D04A594330/",
+      "NumHeight": 1,
+      "NumWidth": 1,
       "Type": 0,
       "UniqueBack": false
     }
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "VP=1",
-  "GUID": "3e2fe2",
+  "GMNotes": "",
+  "GUID": "c7cbf4",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -36,24 +36,25 @@
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "Card",
-  "Nickname": "Ba'ku",
+  "Name": "CardCustom",
+  "Nickname": "Khan Noonien Singh",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
     "snap_card",
-    "suit_location",
-    "trait_anomaly"
+    "suit_captain",
+    "trait_augment",
+    "trait_human"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 0,
-    "posY": 1.097,
-    "posZ": -2,
+    "posX": -18.204,
+    "posY": 3.796,
+    "posZ": -27.467,
     "rotX": 0,
-    "rotY": 270,
-    "rotZ": 180,
+    "rotY": 180,
+    "rotZ": 0,
     "scaleX": 1.75,
     "scaleY": 1,
     "scaleZ": 1.75
