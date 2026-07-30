@@ -5,30 +5,46 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 15400,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
+  "ContainedObjects_order": [
+    "TradeEmbargo.bde592",
+    "SubspacePhenomenon.641c86",
+    "ReedAlert.12b5bc",
+    "PoliticalCrisis.5560da",
+    "HostileContact.be7099",
+    "DilithiumShockwave.ad8b56"
+  ],
+  "ContainedObjects_path": "IncidentsToBoldlyGoDeck.8b3978",
   "CustomDeck": {
-    "154": {
+    "194": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181680995157/69256CAFB518E2352B89C36CD368A14C81E85586/",
-      "NumHeight": 4,
-      "NumWidth": 6,
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18225221278821754296/C0FE4C6340CA8E86413033535D13456D2E987C9E/",
+      "NumHeight": 2,
+      "NumWidth": 3,
       "Type": 0,
       "UniqueBack": false
     }
   },
+  "DeckIDs": [
+    19405,
+    19404,
+    19403,
+    19402,
+    19401,
+    19400
+  ],
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "18165c",
+  "GUID": "8b3978",
   "Grid": true,
   "GridProjection": false,
-  "Hands": true,
+  "Hands": false,
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
@@ -36,26 +52,23 @@
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "Card",
-  "Nickname": "Bajor",
+  "Name": "Deck",
+  "Nickname": "Incidents To Boldly Go Deck",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "cleanup_target",
-    "skill_diplomacy",
     "snap_card",
-    "suit_location",
-    "trait_bajoran"
+    "suit_incident"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 80.043,
-    "posY": 1.923,
-    "posZ": -16.222,
+    "posX": 21.5,
+    "posY": 0.8,
+    "posZ": 14.94,
     "rotX": 0,
-    "rotY": 180,
-    "rotZ": 0,
+    "rotY": 90,
+    "rotZ": 180,
     "scaleX": 1.75,
     "scaleY": 1,
     "scaleZ": 1.75

@@ -5,27 +5,27 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 15400,
+  "CardID": 19402,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "154": {
+    "194": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181680995157/69256CAFB518E2352B89C36CD368A14C81E85586/",
-      "NumHeight": 4,
-      "NumWidth": 6,
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18225221278821754296/C0FE4C6340CA8E86413033535D13456D2E987C9E/",
+      "NumHeight": 2,
+      "NumWidth": 3,
       "Type": 0,
       "UniqueBack": false
     }
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "",
-  "GUID": "18165c",
+  "GMNotes": "VP=-2",
+  "GUID": "5560da",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -34,25 +34,21 @@
   "LayoutGroupSortIndex": 0,
   "Locked": false,
   "LuaScript": "",
-  "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Card",
-  "Nickname": "Bajor",
+  "Nickname": "Political Crisis",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "cleanup_target",
-    "skill_diplomacy",
     "snap_card",
-    "suit_location",
-    "trait_bajoran"
+    "suit_incident"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 80.043,
-    "posY": 1.923,
-    "posZ": -16.222,
+    "posX": -2.217,
+    "posY": 1.796,
+    "posZ": -26.645,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,
