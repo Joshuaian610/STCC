@@ -254,7 +254,7 @@
     "ButtonReportTraitsSpeciesRed.a67b28",
     "ButtonSetupGame.75ffc5",
     "ButtonIncludePromos.26ecab",
-    "Reinforce.4e8dcb",
+    "TimeIsRunningOut.4e8dcb",
     "Conspiracy.43c807",
     "ResearchCounterBlue.8317bd",
     "InfluenceCounterBlue.9b4f79",
@@ -394,7 +394,8 @@
     "SovalAssets.b8fc1f",
     "GeorgiouAssets.a98058",
     "KirkAssets.115557",
-    "KhanAssets.e6a533"
+    "KhanAssets.e6a533",
+    "Reinforce.6b3ded"
   ],
   "PlayArea": 0.5,
   "PlayerCounts": [
