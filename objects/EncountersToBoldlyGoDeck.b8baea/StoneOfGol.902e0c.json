@@ -5,17 +5,17 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 16807,
+  "CardID": 19306,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "168": {
+    "193": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181682474406/3C4F35FAEFA960A4A50E81B26585FAE2375CC544/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13119371198597679616/8407ECB6E3075E7657ADE53C6753CD7C488D30E2/",
       "NumHeight": 2,
       "NumWidth": 4,
       "Type": 0,
@@ -24,8 +24,8 @@
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "VP=9",
-  "GUID": "78db9b",
+  "GMNotes": "VP=6",
+  "GUID": "902e0c",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -34,26 +34,29 @@
   "LayoutGroupSortIndex": 0,
   "Locked": false,
   "LuaScript": "",
-  "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Card",
-  "Nickname": "V'ger",
+  "Nickname": "Stone Of Gol",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "skill_diplomacy",
     "snap_card",
     "suit_encounter",
-    "trait_synthetic"
+    "trait_ancient",
+    "trait_attack",
+    "trait_vulcan",
+    "trait_weapon"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 24.769,
-    "posY": 9.7,
-    "posZ": 35.001,
+    "posX": -18.257,
+    "posY": 1.752,
+    "posZ": -26.755,
     "rotX": 0,
-    "rotY": 270,
-    "rotZ": 180,
+    "rotY": 180,
+    "rotZ": 0,
     "scaleX": 1.75,
     "scaleY": 1,
     "scaleZ": 1.75

@@ -5,30 +5,50 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 16807,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
+  "ContainedObjects_order": [
+    "Vger.a31b9a",
+    "StoneOfGol.902e0c",
+    "Species10-C.8a07cf",
+    "NewFederationApplicants.727145",
+    "Koala.3615f1",
+    "GuardianOfForever.d87b67",
+    "Gomtuu.c115eb",
+    "DelphicExpanseSphere.9b2346"
+  ],
+  "ContainedObjects_path": "EncountersToBoldlyGoDeck.b8baea",
   "CustomDeck": {
-    "168": {
+    "193": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439181682474406/3C4F35FAEFA960A4A50E81B26585FAE2375CC544/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13119371198597679616/8407ECB6E3075E7657ADE53C6753CD7C488D30E2/",
       "NumHeight": 2,
       "NumWidth": 4,
       "Type": 0,
       "UniqueBack": false
     }
   },
+  "DeckIDs": [
+    19307,
+    19306,
+    19305,
+    19304,
+    19303,
+    19302,
+    19301,
+    19300
+  ],
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "VP=9",
-  "GUID": "78db9b",
+  "GMNotes": "",
+  "GUID": "b8baea",
   "Grid": true,
   "GridProjection": false,
-  "Hands": true,
+  "Hands": false,
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
@@ -36,23 +56,22 @@
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "Card",
-  "Nickname": "V'ger",
+  "Name": "Deck",
+  "Nickname": "Encounters To Boldly Go Deck",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
     "snap_card",
-    "suit_encounter",
-    "trait_synthetic"
+    "suit_encounter"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 24.769,
-    "posY": 9.7,
-    "posZ": 35.001,
+    "posX": 21.5,
+    "posY": 0.81,
+    "posZ": -6,
     "rotX": 0,
-    "rotY": 270,
+    "rotY": 90,
     "rotZ": 180,
     "scaleX": 1.75,
     "scaleY": 1,
