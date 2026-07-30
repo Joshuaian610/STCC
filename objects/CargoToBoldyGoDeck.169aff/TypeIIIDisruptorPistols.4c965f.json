@@ -5,27 +5,27 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 19000,
+  "CardID": 19216,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "190": {
+    "192": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11132630798383640060/1D6A6E657D6B273C5DD9D2793ED567CF729E7DF3/",
-      "NumHeight": 4,
-      "NumWidth": 4,
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17405581180778347679/5A781A65745E820FE710F3949B13BFE984ABDB8B/",
+      "NumHeight": 3,
+      "NumWidth": 6,
       "Type": 0,
       "UniqueBack": false
     }
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "VP=3",
-  "GUID": "e41f26",
+  "GMNotes": "VP=2",
+  "GUID": "4c965f",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -36,20 +36,22 @@
   "LuaScript": "",
   "MeasureMovement": false,
   "Name": "Card",
-  "Nickname": "Arin'sen",
+  "Nickname": "Type III Disruptor Pistols",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "mix_remove",
     "snap_card",
-    "suit_ally",
-    "trait_klingon"
+    "suit_cargo",
+    "trait_attack",
+    "trait_weapon"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -22.98,
-    "posY": 1.912,
-    "posZ": -27.859,
+    "posX": -35.889,
+    "posY": 1.752,
+    "posZ": -26.505,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

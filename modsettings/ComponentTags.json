@@ -427,6 +427,10 @@
     {
       "displayed": "trait_mindcontrol",
       "normalized": "trait_mindcontrol"
+    },
+    {
+      "displayed": "trait_communicator",
+      "normalized": "trait_communicator"
     }
   ]
 }

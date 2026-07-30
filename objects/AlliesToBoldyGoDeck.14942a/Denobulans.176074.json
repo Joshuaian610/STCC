@@ -5,7 +5,7 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 19002,
+  "CardID": 19003,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
@@ -25,7 +25,7 @@
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "VP=3",
-  "GUID": "708e4a",
+  "GUID": "176074",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -36,21 +36,20 @@
   "LuaScript": "",
   "MeasureMovement": false,
   "Name": "Card",
-  "Nickname": "Bynars",
+  "Nickname": "Denobulans",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "mix_remove",
     "snap_card",
-    "suit_ally",
-    "trait_alien",
-    "trait_engineer"
+    "suit_ally"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -21.648,
-    "posY": 1.892,
-    "posZ": -27.398,
+    "posX": 27.622,
+    "posY": 1.985,
+    "posZ": -15.582,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

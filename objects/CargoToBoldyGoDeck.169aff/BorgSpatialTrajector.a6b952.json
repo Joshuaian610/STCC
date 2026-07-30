@@ -5,27 +5,27 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 19006,
+  "CardID": 19201,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "190": {
+    "192": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11132630798383640060/1D6A6E657D6B273C5DD9D2793ED567CF729E7DF3/",
-      "NumHeight": 4,
-      "NumWidth": 4,
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17405581180778347679/5A781A65745E820FE710F3949B13BFE984ABDB8B/",
+      "NumHeight": 3,
+      "NumWidth": 6,
       "Type": 0,
       "UniqueBack": false
     }
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "mil_multi",
-  "GUID": "de52e3",
+  "GMNotes": "VP=2",
+  "GUID": "a6b952",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -36,22 +36,21 @@
   "LuaScript": "",
   "MeasureMovement": false,
   "Name": "Card",
-  "Nickname": "Letheans",
+  "Nickname": "Borg Spatial Trajector",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
     "snap_card",
-    "suit_ally",
-    "trait_attack",
-    "trait_shady",
-    "trait_telepath"
+    "suit_cargo",
+    "trait_borg",
+    "trait_scientist"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -22.852,
-    "posY": 1.854,
-    "posZ": -28.034,
+    "posX": 21.338,
+    "posY": 1.921,
+    "posZ": -27.039,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

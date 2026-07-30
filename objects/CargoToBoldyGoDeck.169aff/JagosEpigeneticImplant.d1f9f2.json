@@ -5,27 +5,27 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 19007,
+  "CardID": 19208,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "190": {
+    "192": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11132630798383640060/1D6A6E657D6B273C5DD9D2793ED567CF729E7DF3/",
-      "NumHeight": 4,
-      "NumWidth": 4,
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17405581180778347679/5A781A65745E820FE710F3949B13BFE984ABDB8B/",
+      "NumHeight": 3,
+      "NumWidth": 6,
       "Type": 0,
       "UniqueBack": false
     }
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "VP=3",
-  "GUID": "700363",
+  "GMNotes": "VP=2",
+  "GUID": "d1f9f2",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -36,21 +36,23 @@
   "LuaScript": "",
   "MeasureMovement": false,
   "Name": "Card",
-  "Nickname": "Organians",
+  "Nickname": "Jago's Epigenetic Implant",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
     "snap_card",
-    "suit_ally",
-    "trait_anomaly",
-    "trait_transcendent"
+    "suit_cargo",
+    "trait_augment",
+    "trait_business",
+    "trait_doctor",
+    "trait_ongoing"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -22.679,
-    "posY": 1.844,
-    "posZ": -27.543,
+    "posX": -2.813,
+    "posY": 1.854,
+    "posZ": -27.326,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

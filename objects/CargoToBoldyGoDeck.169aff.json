@@ -1,0 +1,102 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "UniversalTranslator.f823ce",
+    "TypeIIIDisruptorPistols.4c965f",
+    "SaurianBrandy.6d61f5",
+    "PlasmaManifold.132551",
+    "Phasers.f5a7f0",
+    "OrbOfTime.c241ea",
+    "MedicalDiagnosticHat.1cf7bd",
+    "Lirpa.3e50da",
+    "Kemocite.b136e8",
+    "JagosEpigeneticImplant.d1f9f2",
+    "Horta.f25364",
+    "Holosuite.9ad769",
+    "ForcedSingularity.587c62",
+    "EvaSuits.f04286",
+    "ComputerVirus.9c7986",
+    "CloakingDevice.92547a",
+    "BorgSpatialTrajector.a6b952",
+    "AugmentationPlague.64623b"
+  ],
+  "ContainedObjects_path": "CargoToBoldyGoDeck.169aff",
+  "CustomDeck": {
+    "192": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17405581180778347679/5A781A65745E820FE710F3949B13BFE984ABDB8B/",
+      "NumHeight": 3,
+      "NumWidth": 6,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "DeckIDs": [
+    19217,
+    19216,
+    19215,
+    19214,
+    19213,
+    19212,
+    19211,
+    19210,
+    19209,
+    19208,
+    19207,
+    19206,
+    19205,
+    19204,
+    19203,
+    19202,
+    19201,
+    19200
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "169aff",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Cargo To Boldy Go Deck",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_card",
+    "suit_cargo"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 21.5,
+    "posY": 0.858,
+    "posZ": 2.34,
+    "rotX": 0,
+    "rotY": 90,
+    "rotZ": 180,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

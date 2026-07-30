@@ -5,27 +5,27 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 19005,
+  "CardID": 19206,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "190": {
+    "192": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11132630798383640060/1D6A6E657D6B273C5DD9D2793ED567CF729E7DF3/",
-      "NumHeight": 4,
-      "NumWidth": 4,
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17405581180778347679/5A781A65745E820FE710F3949B13BFE984ABDB8B/",
+      "NumHeight": 3,
+      "NumWidth": 6,
       "Type": 0,
       "UniqueBack": false
     }
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "sci_multi",
-  "GUID": "042648",
+  "GMNotes": "VP=2",
+  "GUID": "9ad769",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -36,20 +36,22 @@
   "LuaScript": "",
   "MeasureMovement": false,
   "Name": "Card",
-  "Nickname": "Kelpians",
+  "Nickname": "Holosuite",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "mix_remove",
     "snap_card",
-    "suit_ally",
-    "trait_kelpian"
+    "suit_cargo",
+    "trait_business",
+    "trait_hologram"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -22.533,
-    "posY": 1.863,
-    "posZ": -28.023,
+    "posX": -2.036,
+    "posY": 1.873,
+    "posZ": -27.101,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,
