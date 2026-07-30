@@ -34,6 +34,7 @@
   "LayoutGroupSortIndex": 0,
   "Locked": false,
   "LuaScript": "",
+  "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Card",
   "Nickname": "Subspace Phenomenon",
@@ -41,17 +42,18 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "mix_remove",
     "snap_card",
     "suit_incident"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -2.092,
-    "posY": 1.752,
-    "posZ": -26.861,
+    "posX": 20.327,
+    "posY": 11.019,
+    "posZ": 35.762,
     "rotX": 0,
-    "rotY": 180,
-    "rotZ": 0,
+    "rotY": 90,
+    "rotZ": 180,
     "scaleX": 1.75,
     "scaleY": 1,
     "scaleZ": 1.75

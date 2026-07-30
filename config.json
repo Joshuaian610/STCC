@@ -308,9 +308,9 @@
     "AdvancedLocationsBaseGameDeck.eaec79",
     "EncountersBaseGameDeck.5231b6",
     "CommonCardListBaseGame.608dce",
-    "PersonsDeckBaseGame.3dbd70",
-    "CargoDeckBaseGame.2479b4",
-    "AlliesDeckBaseGame.f0ec6a",
+    "PersonsBaseGameDeck.3dbd70",
+    "CargoBaseGameDeck.2479b4",
+    "AlliesBaseGameDeck.f0ec6a",
     "USSEnterprise-D.63cb0c",
     "IKSGroth.e559ba",
     "SubspacePhenomenon.78e9cd",
@@ -359,7 +359,7 @@
     "DeepSpace9.82b2ed",
     "ZoneReserves.dc94e0",
     "ZoneReserves.61d439",
-    "ShipsDeckBaseGame.74c701",
+    "ShipsBaseGameDeck.74c701",
     "BurnhamCrewBoardBasic.e1fccf",
     "BurnhamCrewBoardAdvanced.5f3448",
     "KolothCrewBoardBasic.6abe1f",
@@ -399,7 +399,8 @@
     "AlliesToBoldyGoDeck.14942a",
     "CargoToBoldyGoDeck.169aff",
     "EncountersToBoldlyGoDeck.b8baea",
-    "IncidentsToBoldlyGoDeck.8b3978"
+    "IncidentsToBoldlyGoDeck.8b3978",
+    "PersonsToBoldyGoDeck.4bf483"
   ],
   "PlayArea": 0.5,
   "PlayerCounts": [

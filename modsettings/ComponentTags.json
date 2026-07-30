@@ -285,8 +285,8 @@
       "normalized": "trait_reman"
     },
     {
-      "displayed": "skill_x2_science",
-      "normalized": "skill_x2_science"
+      "displayed": "",
+      "normalized": ""
     },
     {
       "displayed": "suit_captain",
@@ -385,8 +385,8 @@
       "normalized": "trai_creature"
     },
     {
-      "displayed": "trait_andoran",
-      "normalized": "trait_andoran"
+      "displayed": "",
+      "normalized": ""
     },
     {
       "displayed": "suit_status",
@@ -431,6 +431,10 @@
     {
       "displayed": "trait_communicator",
       "normalized": "trait_communicator"
+    },
+    {
+      "displayed": "mix_keep",
+      "normalized": "mix_keep"
     }
   ]
 }
