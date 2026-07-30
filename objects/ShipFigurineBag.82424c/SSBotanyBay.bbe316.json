@@ -16,8 +16,8 @@
   },
   "CustomImage": {
     "ImageScalar": 2,
-    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/9310489960676519021/07FA68D8BB2C2C727B2A7B3525F9E9934A51156B/",
-    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/14689717052230363275/F84E774C92010642949E6947B9B24C406588CD32/",
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/18187037950141623705/7C7BEBDFA37AF05ADF82CBADC14DF2446F798D0D/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13727205115059862396/78990947911567ADA06D456A11FE3CF247C30158/",
     "WidthScale": 0
   },
   "Description": "",
@@ -35,7 +35,7 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Figurine_Custom",
-  "Nickname": "A Fleet of 30 California-Class Ships",
+  "Nickname": "S.S. Botany Bay",
   "Snap": true,
   "Sticky": true,
   "Tags": [
@@ -44,9 +44,9 @@
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 12.462,
-    "posY": 1.258,
-    "posZ": 19.329,
+    "posX": 75.617,
+    "posY": 3.114,
+    "posZ": 8.643,
     "rotX": 0,
     "rotY": 0,
     "rotZ": 0,
