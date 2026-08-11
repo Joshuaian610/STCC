@@ -1,0 +1,80 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "ThePakledEmperor.6afa25",
+    "Harpy.00f392",
+    "JackabogsClumpship.15f6cf",
+    "VaruvianBomb.9c93ae",
+    "KarzillVI.b1727a",
+    "BigEnoughHelmet.31d219",
+    "Mondor.b8fb1f"
+  ],
+  "ContainedObjects_path": "RebnerDevelopment.b84c53",
+  "CustomDeck": {
+    "220": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13220764602361838146/2C4DCAC8E90F7DF90FDD0C779F33828C4A946D46/",
+      "NumHeight": 3,
+      "NumWidth": 7,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "DeckIDs": [
+    22006,
+    22005,
+    22004,
+    22003,
+    22002,
+    22001,
+    22000
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "b84c53",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Rebner Development",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_card",
+    "trait_pakled"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 99.12,
+    "posY": 0.695,
+    "posZ": 2.95,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

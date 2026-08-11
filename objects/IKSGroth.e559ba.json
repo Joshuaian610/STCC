@@ -54,7 +54,7 @@
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
-  "Locked": false,
+  "Locked": true,
   "LuaScriptState": "",
   "LuaScript_path": "IKSGroth.e559ba.ttslua",
   "MeasureMovement": false,
@@ -72,7 +72,7 @@
   "Tooltip": true,
   "Transform": {
     "posX": -74.458,
-    "posY": 1.923,
+    "posY": 0.853,
     "posZ": -2.051,
     "rotX": 0,
     "rotY": 180,

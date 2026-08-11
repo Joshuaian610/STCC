@@ -1,0 +1,88 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "ISpitMyBreathAtThee!.c2d1e2",
+    "FromHellsHeartIStabAtThee!.79e412",
+    "TotheLastIWillGrappleWithThee!.e1a8f2",
+    "Joachim.5e468b",
+    "Wajahut.4b8d44",
+    "SSBotanyBay.ee0da6",
+    "Salvage.c6e078",
+    "MutaraNebula.3a061f",
+    "MarlaMcGivers.94e537",
+    "VacatedRegulaI.2bbfa8"
+  ],
+  "ContainedObjects_path": "KhanDrawDeck.fe1745",
+  "CustomDeck": {
+    "213": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14675256846184106014/97DB4EC6F38F7238B4B4B82BDB7AB2E014758768/",
+      "NumHeight": 4,
+      "NumWidth": 5,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "DeckIDs": [
+    21318,
+    21317,
+    21316,
+    21315,
+    21314,
+    21313,
+    21312,
+    21311,
+    21310,
+    21309
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "fe1745",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Khan Draw Deck",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_card",
+    "suit_incident",
+    "trait_attack",
+    "trait_surprise"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 65.1,
+    "posY": 0.709,
+    "posZ": -17,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 180,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

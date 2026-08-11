@@ -39,7 +39,7 @@
   "HideWhenFaceDown": false,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
-  "Locked": false,
+  "Locked": true,
   "LuaScriptState": "",
   "LuaScript_path": "KolothCrewBoardBasic.6abe1f.ttslua",
   "MeasureMovement": false,
@@ -53,7 +53,7 @@
   "Tooltip": true,
   "Transform": {
     "posX": -74.999,
-    "posY": 1.91,
+    "posY": 0.839,
     "posZ": -0.002,
     "rotX": 0,
     "rotY": 180,

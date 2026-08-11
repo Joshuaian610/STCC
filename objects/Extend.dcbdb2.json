@@ -1,0 +1,69 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": false,
+  "ColorDiffuse": {
+    "b": 1,
+    "g": 1,
+    "r": 1
+  },
+  "ContainedObjects_path": "Extend.dcbdb2",
+  "CustomAssetbundle": {
+    "AssetbundleSecondaryURL": "",
+    "AssetbundleURL": "https://steamusercontent-a.akamaihd.net/ugc/868496425808427672/964B4FF361543B63A775D036814154F980F134AF/",
+    "LoopingEffectIndex": 0,
+    "MaterialIndex": 2,
+    "TypeIndex": 4
+  },
+  "Description": "Click to add an extension to the table.",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "dcbdb2",
+  "Grid": false,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScriptState": "",
+  "LuaScript_path": "Extend.dcbdb2.ttslua",
+  "MeasureMovement": false,
+  "Name": "Custom_Assetbundle",
+  "Nickname": "Extend",
+  "PhysicsMaterial": {
+    "BounceCombine": 0,
+    "Bounciness": 0,
+    "DynamicFriction": 0.6,
+    "FrictionCombine": 0,
+    "StaticFriction": 0.6
+  },
+  "Rigidbody": {
+    "AngularDrag": 100000000000000,
+    "Drag": 100000000000000000,
+    "Mass": 100000000000000,
+    "UseGravity": false
+  },
+  "Snap": false,
+  "States_path": {
+    "2": "TableExtension.04c44a"
+  },
+  "Sticky": false,
+  "Tooltip": false,
+  "Transform": {
+    "posX": 0.002,
+    "posY": -41.99,
+    "posZ": 0.001,
+    "rotX": 0,
+    "rotY": 0,
+    "rotZ": 0,
+    "scaleX": 1,
+    "scaleY": 1,
+    "scaleZ": 1
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

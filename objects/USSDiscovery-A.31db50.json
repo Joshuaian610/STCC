@@ -54,7 +54,7 @@
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
-  "Locked": false,
+  "Locked": true,
   "LuaScriptState": "",
   "LuaScript_path": "USSDiscovery-A.31db50.ttslua",
   "MeasureMovement": false,
@@ -75,7 +75,7 @@
   "Tooltip": true,
   "Transform": {
     "posX": -74.621,
-    "posY": 1.918,
+    "posY": 0.853,
     "posZ": 12,
     "rotX": 0,
     "rotY": 180,

@@ -1,0 +1,79 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "Porthos.6c907d",
+    "ReachAnyStar.1831da",
+    "Inspire.b0122d",
+    "FirstContact.b64410",
+    "StrangeNewWorlds.1b04ae",
+    "TPol.39b953",
+    "MajorHayesMACO.fe49ee"
+  ],
+  "ContainedObjects_path": "ArcherReserves.e1bd99",
+  "CustomDeck": {
+    "203": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12656232885694525951/45AA0D992D09CEDDA008C40F359B98965DB22CF9/",
+      "NumHeight": 3,
+      "NumWidth": 7,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "DeckIDs": [
+    20314,
+    20313,
+    20312,
+    20311,
+    20310,
+    20309,
+    20308
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "e1bd99",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Archer Reserves",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_card"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 65.11,
+    "posY": 0.804,
+    "posZ": 17,
+    "rotX": 0,
+    "rotY": 270,
+    "rotZ": 180,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

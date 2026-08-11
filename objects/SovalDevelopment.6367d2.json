@@ -1,0 +1,79 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "VulcanHighCommand.8b09ea",
+    "KirShara.51fe30",
+    "MinisterKuvak.60553e",
+    "TPau.ef9110",
+    "VulcanHello.123b87",
+    "MountSeleya.9f3b11",
+    "Vulcan.35633d"
+  ],
+  "ContainedObjects_path": "SovalDevelopment.6367d2",
+  "CustomDeck": {
+    "232": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13907225384615601412/89F01F20469099831C8035F4F30CEECF210C171C/",
+      "NumHeight": 4,
+      "NumWidth": 6,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "DeckIDs": [
+    23206,
+    23205,
+    23204,
+    23203,
+    23202,
+    23201,
+    23200
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "6367d2",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Soval Development",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_card"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 99.12,
+    "posY": 0.695,
+    "posZ": -11,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

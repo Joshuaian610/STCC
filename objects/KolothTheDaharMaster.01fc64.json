@@ -32,7 +32,7 @@
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
-  "Locked": false,
+  "Locked": true,
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
@@ -51,7 +51,7 @@
   "Tooltip": true,
   "Transform": {
     "posX": -79.043,
-    "posY": 1.923,
+    "posY": 0.853,
     "posZ": -2.06,
     "rotX": 0,
     "rotY": 180,

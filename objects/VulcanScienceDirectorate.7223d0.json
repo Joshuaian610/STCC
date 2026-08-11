@@ -1,0 +1,70 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "CardID": 22800,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "CustomDeck": {
+    "228": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728965206880/6E5D48E188ED97D14E43F95675CC1D4A9048490E/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/10440650914882908664/46FFF6E61DC3680D8F456D387F49198BF9FC5B3C/",
+      "NumHeight": 1,
+      "NumWidth": 1,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "CustomUIAssets": [
+    {
+      "Name": "Recrystallize",
+      "Type": 0,
+      "URL": "https://steamusercontent-a.akamaihd.net/ugc/25439356658951218/D916B77BA5C35248B643CABA9275FF2D5D03E9E3/"
+    }
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "7223d0",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": true,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScriptState": "",
+  "LuaScript_path": "VulcanScienceDirectorate.7223d0.ttslua",
+  "MeasureMovement": false,
+  "Name": "CardCustom",
+  "Nickname": "Vulcan Science Directorate",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "cleanup_target",
+    "snap_card",
+    "suit_status"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 93.83,
+    "posY": 0.753,
+    "posZ": -16.17,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI_path": "VulcanScienceDirectorate.7223d0.xml"
+}

@@ -39,7 +39,7 @@
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
-  "Locked": false,
+  "Locked": true,
   "LuaScriptState": "",
   "LuaScript_path": "InertDilithium.a7ecd3.ttslua",
   "MeasureMovement": false,
@@ -56,7 +56,7 @@
   "Tooltip": true,
   "Transform": {
     "posX": -70.001,
-    "posY": 1.968,
+    "posY": 0.902,
     "posZ": 11.993,
     "rotX": 0,
     "rotY": 180,

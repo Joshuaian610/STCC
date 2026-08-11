@@ -1,0 +1,59 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0,
+    "g": 0,
+    "r": 0
+  },
+  "CustomFigurine": {
+    "MirroredBack": false,
+    "UseMinimalCollider": false
+  },
+  "CustomImage": {
+    "ImageScalar": 2,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/13040720635191931028/A150BA5AA23C28E49A420A0A1517FDCE7FD4B93C/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13825256808390580646/9FE2E30251C1925294759DBDE7CC883C5424EC2F/",
+    "WidthScale": 0
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "bfd17a",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Figurine_Custom",
+  "Nickname": "U.S.S. Shenzhou",
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "cleanup_target",
+    "snap_ship"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 79.96,
+    "posY": 0.907,
+    "posZ": 3.16,
+    "rotX": 0,
+    "rotY": 0,
+    "rotZ": 0,
+    "scaleX": 1,
+    "scaleY": 1,
+    "scaleZ": 1
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

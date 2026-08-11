@@ -1,0 +1,85 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "MaximumWarp.63f703",
+    "CaptainSpock.4d79e6",
+    "LeonardMcCoy.00599d",
+    "NyotaUhura.977e08",
+    "StrangeNewWorlds.24d89f",
+    "SetACourse.18937c",
+    "Utilize.521f62",
+    "Recruit.d91fd0",
+    "LevitationBoots.6a950b",
+    "SubspacePhenomenon.be26cb"
+  ],
+  "ContainedObjects_path": "KirkDrawDeck.9c57f3",
+  "CustomDeck": {
+    "222": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12360013617275162435/E5276705FD0D38636B6C509A0ED68CF70AB1D303/",
+      "NumHeight": 4,
+      "NumWidth": 6,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "DeckIDs": [
+    22223,
+    22222,
+    22221,
+    22220,
+    22219,
+    22218,
+    22217,
+    22216,
+    22215,
+    22214
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "9c57f3",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Kirk Draw Deck",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_card"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 99.12,
+    "posY": 0.709,
+    "posZ": 11,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 180,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

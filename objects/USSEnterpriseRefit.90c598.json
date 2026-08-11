@@ -1,0 +1,59 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0,
+    "g": 0,
+    "r": 0
+  },
+  "CustomFigurine": {
+    "MirroredBack": false,
+    "UseMinimalCollider": false
+  },
+  "CustomImage": {
+    "ImageScalar": 2,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/13684733946868393434/B67BC62C8DCBF2BF144F42DFFAD0FA9ACB6CECA9/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/14130175596133126292/04174B92338BCCAB84EFEDA54AD3F62A7ADFEC73/",
+    "WidthScale": 0
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "90c598",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Figurine_Custom",
+  "Nickname": "U.S.S. Enterprise (Refit)",
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "cleanup_target",
+    "snap_ship"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 94.14,
+    "posY": 0.907,
+    "posZ": 17.15,
+    "rotX": 0,
+    "rotY": 0,
+    "rotZ": 0,
+    "scaleX": 1,
+    "scaleY": 1,
+    "scaleZ": 1
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

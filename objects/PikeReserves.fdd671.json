@@ -1,0 +1,75 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "TimeCrystal.874b44",
+    "PoliticalCrisis.5a3f9b",
+    "UnaNumberOneChin-Riley.569ce5",
+    "ChristineChapel.ebc024",
+    "DakRah.c0e415"
+  ],
+  "ContainedObjects_path": "PikeReserves.fdd671",
+  "CustomDeck": {
+    "245": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17067362917187969035/8E561693A595A840EFFB85446D852F3FB4107EB2/",
+      "NumHeight": 4,
+      "NumWidth": 6,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "DeckIDs": [
+    24512,
+    24511,
+    24510,
+    24509,
+    24508
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "fdd671",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Pike Reserves",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_card"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 121.91,
+    "posY": 0.794,
+    "posZ": 2.95,
+    "rotX": 0,
+    "rotY": 270,
+    "rotZ": 180,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

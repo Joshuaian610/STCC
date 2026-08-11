@@ -1,0 +1,87 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "BeckettMariner.8b1b5d",
+    "BradwardBoimler.512a5b",
+    "JackRansom.86b974",
+    "AnomalyConsolidationDay.73471f",
+    "Dooplers.89ac76",
+    "DouglasStation.84eb58",
+    "Type6AShuttlecraft.d17316",
+    "SetACourse.4318ed",
+    "SecondContact.f60a5f"
+  ],
+  "ContainedObjects_path": "FreemanDrawDeck.741453",
+  "CustomDeck": {
+    "234": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14282704425325042946/36BBC9F63AD92E1211BC5F3FCDFB4C339E48963D/",
+      "NumHeight": 4,
+      "NumWidth": 6,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "DeckIDs": [
+    23422,
+    23421,
+    23420,
+    23419,
+    23418,
+    23417,
+    23416,
+    23415,
+    23414
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "741453",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Freeman Draw Deck",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "snap_card",
+    "suit_person",
+    "trait_human",
+    "trait_lowerdecker",
+    "trait_starfleet"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 121.91,
+    "posY": 0.704,
+    "posZ": 11,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 180,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}
