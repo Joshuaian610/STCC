@@ -1,0 +1,245 @@
+-- functions to support required onLoad functionality, requiring keeps Global tidy
+
+
+function makeNonInteractable(nonInt)
+  -- handles enable or disable of non interactable objects
+  for _, object in pairs(getObjects()) do
+    -- non interactable objects
+    if object.hasTag('non_int') and nonInt then
+      object.interactable = false
+    end
+  end
+end
+
+
+function buttonSoloDifficultyVisibility(botDifficultyButtonVisibility)
+  -- will manually show solo difficulty buttons for debug purposes
+  local botDifficultyButtons = {}
+  for _, object in ipairs(getObjects()) do
+    local name = object.getName()
+    if name:match("^Button Solo .+ Blue$") or name:match("^Button Solo .+ Red$") then
+      table.insert(botDifficultyButtons, object)
+    end
+  end
+  for _, button in ipairs(botDifficultyButtons) do
+    local posButton = button.getPosition()
+    if botDifficultyButtonVisibility then
+      posButton.y = 0.95
+    else
+      posButton.y = -2
+    end
+    button.setPosition(posButton)
+  end
+end
+
+
+function buttonSelectCaptainVisibility(captainSelectButtonVisibility)
+  -- will manually show all captain select buttons for debug purposes
+  local captainSelectButtons = {}
+  for _, object in ipairs(getObjects()) do
+    if object.getName():match("^Button Select .+$") or
+       object.getName() == "Setup Random Basic" or object.getName() == "Setup Random Advanced" or
+       object.getName() == "Setup Random Basic OR Advanced" or object.getName() == "Setup For Solo" then
+      table.insert(captainSelectButtons, object)
+    end
+  end
+  for _, button in ipairs(captainSelectButtons) do
+    if button ~= nil then
+      local posButton = button.getPosition()
+      if not captainSelectButtonVisibility then
+        posButton.y = -2
+      else
+        posButton.y = 0.95
+      end
+      button.setPosition(posButton)
+    end
+  end
+end
+
+
+function gloryStardateCounterVisibility(stardateGloryCounterVisibility)
+  -- will manually show stardate glory counter for debug purposes
+  -- SGC will probably be under main setup button if it still exists
+  local stardateGloryCounter = getObjectbyName("Glory Counter Stardate")
+  local posStardateGloryCounter = stardateGloryCounter.getPosition()
+  if not stardateGloryCounterVisibility then
+    posStardateGloryCounter.y = -2
+  else
+    posStardateGloryCounter.y = .85
+  end
+  stardateGloryCounter.setPosition(posStardateGloryCounter)
+end
+
+
+function showStardateGloryCounter(stardateType)
+  -- this should allow for showing and creation of stardate glory counter
+  local color = { 0, 0, 0, 255 }
+  local hover_color = { 0, 0, 0, .8 }
+  local counterColors = {
+    ["two_player"] = {
+      color        = { 119/255, 179/255, 203/255, 255 },
+      hover_color  = { 119/255, 179/255, 203/255, .8 },
+    },
+    ["cadet"]      = {
+      color        = { 171/255, 107/255, 142/255, 255 },
+      hover_color  = { 171/255, 107/255, 142/255, .8 },
+    },
+    ["ensign"]     = {
+      color        = { 229/255, 133/255, 21/255, 255 },
+      hover_color  = { 229/255, 133/255, 21/255, .8 },
+    },
+    ["captain"]    = {
+      color        = { 229/255, 133/255, 21/255, 255 },
+      hover_color  = { 229/255, 133/255, 21/255, .8 },
+    },
+    ["lieutenant"] = {
+      color        = { 113/255, 170/255, 117/255, 255 },
+      hover_color  = { 113/255, 170/255, 117/255, .8 },
+    },
+    ["commander"]  = {
+      color        = { 198/255, 202/255, 165/255, 255 },
+      hover_color  = { 198/255, 202/255, 165/255, .8 },
+    },
+    ["admiral"]    = {
+      color        = { 173/255, 29/255, 20/255, 255 },
+      hover_color  = { 173/255, 29/255, 20/255, .8 },
+    },
+  }
+  color = counterColors[stardateType].color
+  hover_color = counterColors[stardateType].hover_color
+  local counter = getObjectbyName("Glory Counter Stardate")
+  local posCounter = counter.getPosition()
+  posCounter.y = .85
+  counter.setPosition(posCounter)
+  counter.call('create_all', {color=color, h_color=hover_color})
+end
+
+
+function gloryCounterStardateInProgress()
+  -- this should show and update the stardate glory counter if game is in progress
+  local zoneStardate = getObjectbyName("Zone Stardate")
+  local stardateType = nil
+  for _, object in pairs(zoneStardate.getObjects()) do
+    if object.getName():find("2-Player") then
+      stardateType = "two_player"
+    elseif object.getName():find("Cadet") then
+      stardateType = "cadet"
+    elseif object.getName():find("Ensign") or object.getName():find("Captain") then
+      stardateType = "ensign"
+    elseif object.getName():find("Lieutenant") then
+      stardateType = "lieutenant"
+    elseif object.getName():find("Commander") then
+      stardateType = "commander"
+    elseif object.getName():find("Admiral") then
+      stardateType = "admiral"
+    end
+  end
+
+  -- get glory count in zone, update counter
+  local gloryCount = 0
+  for _, object in pairs(getObjectbyName("Zone Stardate Glory").getObjects()) do
+    if object.getName() == "Glory Token" then
+      gloryCount = gloryCount + 1
+    end
+  end
+  if stardateType ~= nil then -- game is in progress, or, stardate cards no longer in play, either or
+    showStardateGloryCounter(stardateType)
+    getObjectbyName("Glory Counter Stardate").call('set_val', gloryCount)
+  end
+end
+
+
+function onloadXML()
+  -- handles required XML updates in case of a reload or rewind
+  local colors = {"Blue", "Red"}
+  for i = 1, 2 do
+    local playercolor = colors[i]
+    local is_solo = false
+    if getObjectFromGUID(playercolor == "Blue" and "23bed4" or "1a78a6").getGMNotes() == "solo" then is_solo = true end
+    local captain_zone = getObjectFromGUID(playercolor == "Blue" and "75465f" or "75c041")
+    local captain_pad = getObjectFromGUID(playercolor == "Blue" and "997491" or "28a24b")
+    for _, object in pairs(captain_zone.getObjects()) do
+      if string.find(object.getName(), "Crew Board") and object ~= captain_pad then
+        captain_card_name    = object.getName()
+      end
+    end
+    local captain_name = nil
+    local split_name = {}
+    if captain_card_name ~= nil then
+      for str in string.gmatch(captain_card_name,  "%S+") do
+        table.insert(split_name, str)
+      end
+    end
+
+    captain_name = split_name[1]
+    Wait.frames(function()
+
+      if captain_name == "Burnham" or captain_name == "Picard" or captain_name == "Sisko" then
+        UI.setAttribute(string.lower(playercolor) .. "_starfleet_panel", "active", "true")
+        UI.setAttribute(string.lower(playercolor) .. "_hum_glory",       "text",   getObjectFromGUID(playercolor == "Blue" and "d96ce2" or "9a5066").getVar('val'))
+        UI.setAttribute(string.lower(playercolor) .. "_hum_latinum",     "text",   getObjectFromGUID(playercolor == "Blue" and "39e892" or "c2bac2").getVar('val'))
+        UI.setAttribute(string.lower(playercolor) .. "_hum_dilithium",   "text",   getObjectFromGUID(playercolor == "Blue" and "a3ec59" or "f40879").getVar('val'))
+        UI.setAttribute(string.lower(playercolor) .. "_hum_research",    "text",   getObjectFromGUID(playercolor == "Blue" and "8317bd" or "c5021e").getVar('val'))
+        UI.setAttribute(string.lower(playercolor) .. "_hum_influence",   "text",   getObjectFromGUID(playercolor == "Blue" and "9b4f79" or "f3c9be").getVar('val'))
+        UI.setAttribute(string.lower(playercolor) .. "_hum_military",    "text",   getObjectFromGUID(playercolor == "Blue" and "9a7130" or "5564b6").getVar('val'))
+        UI.setAttribute(i == 1 and "ui_hide_blue" or "ui_hide_red", "active", "true")
+
+      elseif captain_name == "Shran" then
+        UI.setAttribute(string.lower(playercolor) .. "_andorian_panel",  "active", "true")
+        UI.setAttribute(string.lower(playercolor) .. "_and_glory",       "text",   getObjectFromGUID(playercolor == "Blue" and "d96ce2" or "9a5066").getVar('val'))
+        UI.setAttribute(string.lower(playercolor) .. "_and_latinum",     "text",   getObjectFromGUID(playercolor == "Blue" and "39e892" or "c2bac2").getVar('val'))
+        UI.setAttribute(string.lower(playercolor) .. "_and_dilithium",   "text",   getObjectFromGUID(playercolor == "Blue" and "a3ec59" or "f40879").getVar('val'))
+        UI.setAttribute(string.lower(playercolor) .. "_and_research",    "text",   getObjectFromGUID(playercolor == "Blue" and "8317bd" or "c5021e").getVar('val'))
+        UI.setAttribute(string.lower(playercolor) .. "_and_influence",   "text",   getObjectFromGUID(playercolor == "Blue" and "9b4f79" or "f3c9be").getVar('val'))
+        UI.setAttribute(string.lower(playercolor) .. "_and_military",    "text",   getObjectFromGUID(playercolor == "Blue" and "9a7130" or "5564b6").getVar('val'))
+        UI.setAttribute(i == 1 and "ui_hide_blue" or "ui_hide_red", "active", "true")
+
+      elseif captain_name == "Sela" then
+        UI.setAttribute(string.lower(playercolor) .. "_romulan_panel",  "active", "true")
+        UI.setAttribute(string.lower(playercolor) .. "_rom_glory",      "text",   getObjectFromGUID(playercolor == "Blue" and "d96ce2" or "9a5066").getVar('val'))
+        UI.setAttribute(string.lower(playercolor) .. "_rom_latinum",    "text",   getObjectFromGUID(playercolor == "Blue" and "39e892" or "c2bac2").getVar('val'))
+        UI.setAttribute(string.lower(playercolor) .. "_rom_dilithium",  "text",   getObjectFromGUID(playercolor == "Blue" and "a3ec59" or "f40879").getVar('val'))
+        UI.setAttribute(string.lower(playercolor) .. "_rom_research",   "text",   getObjectFromGUID(playercolor == "Blue" and "8317bd" or "c5021e").getVar('val'))
+        UI.setAttribute(string.lower(playercolor) .. "_rom_influence",  "text",   getObjectFromGUID(playercolor == "Blue" and "9b4f79" or "f3c9be").getVar('val'))
+        UI.setAttribute(string.lower(playercolor) .. "_rom_military",   "text",   getObjectFromGUID(playercolor == "Blue" and "9a7130" or "5564b6").getVar('val'))
+        UI.setAttribute(i == 1 and "ui_hide_blue" or "ui_hide_red", "active", "true")
+
+      elseif captain_name == "Koloth" then
+        UI.setAttribute(string.lower(playercolor) .. "_klingon_panel", "active", "true")
+        UI.setAttribute(string.lower(playercolor) .. "_kli_glory",     "text",   getObjectFromGUID(playercolor == "Blue" and "d96ce2" or "9a5066").getVar('val'))
+        UI.setAttribute(string.lower(playercolor) .. "_kli_latinum",   "text",   getObjectFromGUID(playercolor == "Blue" and "39e892" or "c2bac2").getVar('val'))
+        UI.setAttribute(string.lower(playercolor) .. "_kli_dilithium", "text",   getObjectFromGUID(playercolor == "Blue" and "a3ec59" or "f40879").getVar('val'))
+        UI.setAttribute(string.lower(playercolor) .. "_kli_research",  "text",   getObjectFromGUID(playercolor == "Blue" and "8317bd" or "c5021e").getVar('val'))
+        UI.setAttribute(string.lower(playercolor) .. "_kli_influence", "text",   getObjectFromGUID(playercolor == "Blue" and "9b4f79" or "f3c9be").getVar('val'))
+        UI.setAttribute(i == 1 and "ui_hide_blue" or "ui_hide_red", "active", "true")
+      end
+
+    end)
+
+    -- show solo control buttons
+    if is_solo then
+      UI.setAttribute("bot_controls", "active", "true")
+      UI.setAttribute('bot_discard', 'active', 'true')
+      UI.setAttribute('bot_discard_x3', 'active', 'true')
+      UI.setAttribute('bot_log', 'active', 'true')
+      UI.setAttribute('bot_incident', 'active', 'true')
+
+      if getObjectFromGUID("e28824").getGMNotes() == "Control" then
+        UI.setAttribute('end_player_turn', 'active', 'true')
+      elseif getObjectFromGUID("e28824").getGMNotes() == "Action" then
+        UI.setAttribute('bot_next_action_action', 'active', 'true')
+      elseif getObjectFromGUID("e28824").getGMNotes() == "Cleanup" then
+        UI.setAttribute('bot_next_action_cleanup', 'active', 'true')
+      end
+    end
+  end
+end
+
+
+function broadcastWelcome()
+  -- handles broadcast of welcome message on load if main setup button still exists
+  if getObjectbyName() ~= nil then
+    local broadcastStr = "Welcome to Star Trek: Captain's Chair! Use the 'Setup Game' button at the center of the table to get started."
+    broadcastToAll(broadcastStr, "White")
+  end
+end
