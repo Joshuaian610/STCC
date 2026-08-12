@@ -8,24 +8,24 @@
   "ColorDiffuse": {
     "b": 1,
     "g": 0.53,
-    "r": 0.11794
+    "r": 0.118
   },
   "CustomImage": {
     "CustomTile": {
       "Stackable": false,
       "Stretch": true,
-      "Thickness": 0.348251373,
+      "Thickness": 0.353925467,
       "Type": 3
     },
     "ImageScalar": 1,
-    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/61462909213387368/B78285058050F6CD55425E277F3AC027EFFE9190/",
-    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/61462909213387368/B78285058050F6CD55425E277F3AC027EFFE9190/",
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/14592237922911697205/3D64E73476C859885684FC7B28029776095023E3/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/14592237922911697205/3D64E73476C859885684FC7B28029776095023E3/",
     "WidthScale": 0
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "",
-  "GUID": "b6e8fe",
+  "GMNotes": "Blue",
+  "GUID": "fc8f5b",
   "Grid": true,
   "GridProjection": false,
   "Hands": false,
@@ -37,25 +37,23 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Custom_Tile",
-  "Nickname": "Setup Picard Advanced",
-  "Snap": false,
+  "Nickname": "Button Select Archer",
+  "Snap": true,
   "Sticky": true,
   "Tags": [
-    "button_faction_setup",
-    "non_int",
-    "setup_advanced"
+    "non_int"
   ],
-  "Tooltip": true,
+  "Tooltip": false,
   "Transform": {
-    "posX": -43.315,
-    "posY": 1.7,
-    "posZ": 26.614,
+    "posX": -39.542,
+    "posY": 0.95,
+    "posZ": 15.96,
     "rotX": 0,
     "rotY": 270,
     "rotZ": 0,
-    "scaleX": 1,
+    "scaleX": 0.78,
     "scaleY": 1,
-    "scaleZ": 1
+    "scaleZ": 0.78
   },
   "Value": 0,
   "XmlUI": ""

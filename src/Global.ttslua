@@ -100,7 +100,7 @@ function onLoad()
             if captain_selection_button_visibility == "hide" then
                 button_pos.y = -2
             else
-                button_pos.y = .95
+                button_pos.y = 1.70
             end
             captain_selection_buttons[i].setPosition(button_pos)
         end
