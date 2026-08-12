@@ -40,6 +40,9 @@
   "Nickname": "Khan Crew Board",
   "Snap": true,
   "Sticky": true,
+  "Tags": [
+    "cleanup_target"
+  ],
   "Tooltip": true,
   "Transform": {
     "posX": 75,

@@ -40,6 +40,9 @@
   "Nickname": "Georgiou Crew Board Basic",
   "Snap": true,
   "Sticky": true,
+  "Tags": [
+    "cleanup_target"
+  ],
   "Tooltip": true,
   "Transform": {
     "posX": 75,

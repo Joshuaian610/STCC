@@ -40,6 +40,9 @@
   "Nickname": "Pike Crew Board Basic",
   "Snap": true,
   "Sticky": true,
+  "Tags": [
+    "cleanup_target"
+  ],
   "Tooltip": true,
   "Transform": {
     "posX": 112.112,

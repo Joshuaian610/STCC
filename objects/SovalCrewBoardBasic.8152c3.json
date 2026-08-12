@@ -40,6 +40,9 @@
   "Nickname": "Soval Crew Board Basic",
   "Snap": true,
   "Sticky": true,
+  "Tags": [
+    "cleanup_target"
+  ],
   "Tooltip": true,
   "Transform": {
     "posX": 89.21,

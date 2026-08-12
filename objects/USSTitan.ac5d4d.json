@@ -42,6 +42,7 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "cleanup_target",
     "skill_military",
     "skill_wildcard",
     "snap_card",

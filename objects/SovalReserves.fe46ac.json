@@ -55,6 +55,9 @@
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
+  "Tags": [
+    "cleanup_target"
+  ],
   "Tooltip": true,
   "Transform": {
     "posX": 99.12,

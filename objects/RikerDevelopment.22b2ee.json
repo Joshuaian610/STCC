@@ -69,6 +69,7 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "cleanup_target",
     "snap_card"
   ],
   "Tooltip": true,

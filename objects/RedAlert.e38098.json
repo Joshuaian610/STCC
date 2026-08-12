@@ -42,6 +42,7 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "cleanup_target",
     "snap_card",
     "suit_incident"
   ],
