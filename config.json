@@ -493,7 +493,10 @@
     "ButtonSelectKhan.4213cf",
     "ButtonSelectSoval.335e18",
     "ButtonSelectFreeman.9f9aff",
-    "ButtonSelectPike.a7c582"
+    "ButtonSelectPike.a7c582",
+    "ButtonMarketBase.0e05ce",
+    "ButtonMarketToBoldyGo.678c35",
+    "ButtonMarketMixed.a44cb5"
   ],
   "PlayArea": 0.7021237,
   "PlayerCounts": [

@@ -6,26 +6,26 @@
   },
   "Autoraise": true,
   "ColorDiffuse": {
-    "b": 0.094,
-    "g": 0.1,
-    "r": 0.856
+    "b": 0.23529,
+    "g": 0.23529,
+    "r": 0.23529
   },
   "CustomImage": {
     "CustomTile": {
       "Stackable": false,
       "Stretch": true,
-      "Thickness": 0.353925467,
+      "Thickness": 1,
       "Type": 3
     },
     "ImageScalar": 1,
-    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/12267665403339655277/37616E48B79E6CB0A2104E6C345CB6652F7328BC/",
-    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/12267665403339655277/37616E48B79E6CB0A2104E6C345CB6652F7328BC/",
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/13388685865402320812/5138A186B2C9EF0DE171FFED9E7485D396D3FC6E/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13388685865402320812/5138A186B2C9EF0DE171FFED9E7485D396D3FC6E/",
     "WidthScale": 0
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "Red",
-  "GUID": "9b28b8",
+  "GMNotes": "enabled",
+  "GUID": "0e05ce",
   "Grid": true,
   "GridProjection": false,
   "Hands": false,
@@ -37,7 +37,7 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Custom_Tile",
-  "Nickname": "Button Select Kirk",
+  "Nickname": "Button Market Base",
   "Snap": true,
   "Sticky": true,
   "Tags": [
@@ -45,15 +45,15 @@
   ],
   "Tooltip": false,
   "Transform": {
-    "posX": 39.445,
-    "posY": -2,
-    "posZ": -13.573,
+    "posX": -7.673,
+    "posY": 0.75,
+    "posZ": -4.76,
     "rotX": 0,
-    "rotY": 90,
+    "rotY": 180,
     "rotZ": 0,
-    "scaleX": 0.78,
+    "scaleX": 0.53,
     "scaleY": 1,
-    "scaleZ": 0.78
+    "scaleZ": 0.53
   },
   "Value": 0,
   "XmlUI": ""
