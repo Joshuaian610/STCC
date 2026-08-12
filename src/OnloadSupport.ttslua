@@ -238,8 +238,8 @@ end
 
 function broadcastWelcome()
   -- handles broadcast of welcome message on load if main setup button still exists
-  if getObjectbyName() ~= nil then
-    local broadcastStr = "Welcome to Star Trek: Captain's Chair! Use the 'Setup Game' button at the center of the table to get started."
+  if getObjectbyName("Button Setup Game") ~= nil then
+    local broadcastStr = "Welcome to Star Trek: Captain's Chair! Select Market & Promo options, then, use the 'Setup Game' button at the center of the table to get started."
     broadcastToAll(broadcastStr, "White")
   end
 end
