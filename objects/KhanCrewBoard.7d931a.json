@@ -18,8 +18,8 @@
       "Type": 3
     },
     "ImageScalar": 1,
-    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/16398286890612604752/EB40D104DD34AA84853F39B1A833574A67110AA8/",
-    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/16398286890612604752/EB40D104DD34AA84853F39B1A833574A67110AA8/",
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/18182645157825400941/1AD5DD75462934FC7A43B02D2456CB64510CE716/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13306188274295096944/6C3F98116DA5E6B8F836AAED09F545B4243A8F48/",
     "WidthScale": 0
   },
   "Description": "",
@@ -37,7 +37,7 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Custom_Tile",
-  "Nickname": "Georgiou Crew Board Basic",
+  "Nickname": "Khan Crew Board",
   "Snap": true,
   "Sticky": true,
   "Tooltip": true,

@@ -410,7 +410,6 @@
     "GeorgiouDrawDeck.5cc546",
     "GeorgiouReserves.4ec1eb",
     "GeorgiouDevelopment.0863e4",
-    "GeorgiouCrewBoardBasic.7d931a",
     "KhanNoonienSingh.c7cbf4",
     "CetiAlphaV.241eb8",
     "CetiAlphaVI.1f85c1",
@@ -463,7 +462,8 @@
     "RikerDrawDeck.3d87b5",
     "RikerReserves.d96f0a",
     "RikerDevelopment.22b2ee",
-    "USSTitan.ec710c"
+    "USSTitan.ec710c",
+    "KhanCrewBoard.7d931a"
   ],
   "PlayArea": 0.7021237,
   "PlayerCounts": [
