@@ -1,0 +1,120 @@
+
+
+
+function onLoad()
+  updateButtons()
+end
+
+
+function openBag(_, _, altClick)
+  -- handles left or right click on beamed bag button
+  -- left click opens beamed bag
+  -- right click sends all beamed contents to discard
+  local playerColor = self.getGMNotes()
+  local rotDiscard = {
+    ["Blue"] = { 0.00, 270.00, 0.00 },
+    ["Red"]  = { 0.00, 90.00, 0.00 },
+  }
+  local posDiscard = {
+    ["Blue"] = { -44.57, 1.50, -21.00 },
+    ["Red"]  = { 44.57, 1.50, 21.00 },
+  }
+  if not altClick then
+    self.Container.search(playerColor)
+  elseif altClick then
+    local bagObjs = self.getObjects()
+    for i = 1, #bagObjs do
+      local object = self.takeObject({ rotation = rotDiscard[playerColor] })
+      object.setPositionSmooth(posDiscard[playerColor], false, true)
+    end
+  end
+end
+
+
+function createSearchButton()
+  -- handles creation of larger beamed bag button
+  -- both this and the counter should perform same functionality
+  self.createButton({
+    click_function = "openBag",
+    function_owner = self,
+    label          = "",
+    position       = { 0, 0.17, 0.70 },
+    rotation       = { 0, 180, 0 },
+    width          = 450,
+    height         = 145,
+    scale          = { 2.3, 2.3, 2.3 },
+    color          = { 1, 1, 1, .2 },
+    hover_color    = { 1, 1, 1, .4 },
+    tooltip        = "Left click to search Beamed Cards, Right click to dismiss all Beamed Cards.",
+  })
+end
+
+
+function createCounterButton(bagCount)
+  local playerColor = self.getGMNotes()
+  self.createButton({
+    click_function = "openBag",
+    function_owner = self,
+    label          = bagCount,
+    position       = { 0, 0.17, -0.35 },
+    width          = 225,
+    height         = 225,
+    font_size      = 180,
+    scale          = { 2.3, 2.3, 2.3 },
+    color          = playerColor,
+    hover_color    = playerColor,
+    font_color     = { 1, 1, 1, 1 },
+    tooltip        = "There are " .. bagCount .. " cards beamed here.\nLeft click to search Beamed Cards, Right click to dismiss all Beamed Cards.",
+  })
+end
+
+
+function updateButtons()
+  -- wrapper to handle creation and update of both buttons on beamed bag - counter, and, search
+
+  -- get card in bag count
+  local bagObjs = self.getObjects()
+  local bagCount = #bagObjs
+
+  -- if bag count == 1, remove buttons & recreate counter button / search button
+  local buttons = self.getButtons()
+  if bagCount > 0 then
+    if buttons ~= nil then
+      self.clearButtons()
+    end
+    createSearchButton()
+    createCounterButton(bagCount)
+  elseif bagCount == 0 then
+    if buttons ~= nil then
+      self.clearButtons()
+    end
+  end
+end
+
+
+function onObjectEnterContainer(container, object)
+  -- on a card being dropped into bag, refresh counter & search buttons
+  if container == self and object.type == "Card" then
+    updateButtons()
+
+  -- otherwise, if not a card being dropped, spit it back out with an error message
+  elseif container == self and object.type ~= "Card" then
+    local broadcastStr = "Beam bags only perform their scripted functionality for single card objects. Removing non-card object."
+    broadcastToAll(broadcastStr, "Orange")
+    local playerColor = self.getGMNotes()
+    local posOutput = (playerColor == "Blue" and { -21.50, 1.50, 2.47 }) or
+                      (playerColor == "Red"  and { 21.50, 1.50, -2.47 })
+    local errantObj = self.takeObject()
+    local posBag = self.getPosition()
+    posBag.y = posBag.y + .76
+    errantObj.setPosition(posBag)
+    errantObj.setPositionSmooth(posOutput, false, false)
+  end
+end
+
+function onObjectLeaveContainer(container, object)
+  -- object leaving will be card, update counter button on card leave
+  if container == self then
+    updateButtons()
+  end
+end

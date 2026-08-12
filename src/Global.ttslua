@@ -1,13 +1,13 @@
 -- Star Trek Captain's Chair
 -- code by Nonprophet, which is why it sucks
 
+require("BeamedBags")
 require("Helpers")
 require("OnloadSupport")
 
 
 
 function onLoad()
-
   -- call this for each existing object since TTS doesn't do it
   for _, obj in ipairs(getObjects()) do
     onObjectSpawn(obj)
@@ -42,6 +42,9 @@ end -- end onLoad()
 
 function onObjectSpawn(obj)
 
+  if obj.getName() == "Beamed Cards" then
+    obj.call("updateButtons")
+  end
 end
 
 

@@ -41,5 +41,3 @@ function getObjectFromBagbyName(objName, bag, objRot, objPos, moveSmooth)
     end
   end
 end
-
-
