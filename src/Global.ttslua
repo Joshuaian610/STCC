@@ -4,7 +4,8 @@
 require("BeamedBags")
 require("Helpers")
 require("OnloadSupport")
-require("SetupGame")
+require("SetupMarket")
+require("SetupSolo")
 
 
 
@@ -20,10 +21,10 @@ function onLoad()
 
   -- manually hide/show blue bot difficulty buttons, create buttons
   local botDifficultyButtonVisibility = false
-  buttonSoloDifficultyVisibility(botDifficultyButtonVisibility)
+  buttonSoloDifficultyVisibility(botDifficultyButtonVisibility, "Both")
 
   -- manually hide/show player area captain selection UI
-  local captainSelectButtonVisibility = false
+  local captainSelectButtonVisibility = true
   buttonSelectCaptainVisibility(captainSelectButtonVisibility)
 
   -- manually hide/show stardate card glory counter (will be under current Main Setup Button)
@@ -68,23 +69,35 @@ function onObjectSpawn(obj)
     initButtonEnableSecondContact(obj)
   end
 
-  -- handle creation of market selection setup button
+  -- handle creation of market selection setup buttons
   if obj.getName() == "Button Market Base Game" and obj.getGMNotes() == "enabled" then
     initButtonDisableMarketBaseGame(obj)
   elseif obj.getName() == "Button Market Base Game" and obj.getGMNotes() == "disabled" then
     initButtonEnableMarketBaseGame(obj)
   end
-
   if obj.getName() == "Button Market To Boldly Go" and obj.getGMNotes() == "enabled" then
     initButtonDisableMarketTBG(obj)
   elseif obj.getName() == "Button Market To Boldly Go" and obj.getGMNotes() == "disabled" then
     initButtonEnableMarketTBG(obj)
   end
-
   if obj.getName() == "Button Market Mixed" and obj.getGMNotes() == "enabled" then
     initButtonDisableMarketMixed(obj)
   elseif obj.getName() == "Button Market Mixed" and obj.getGMNotes() == "disabled" then
     initButtonEnableMarketMixed(obj)
+  end
+
+  -- if solo VS button in position (lifted), handle creation of solo VS buttons
+  if obj.getName():find("Setup For Solo") then
+    local posObj = obj.getPosition()
+    if posObj.y > 0 then
+      initButtonSoloVS(obj)
+
+      -- if solo BS button is enabled, lift and init Solo Difficulty buttons for playerColor
+      if obj.getGMNotes() == "enabled" then
+        local playerColor = obj.getName():find("Blue") and "Blue" or "Red"
+        buttonSoloDifficultyVisibility(true, playerColor)
+      end
+    end
   end
 end
 

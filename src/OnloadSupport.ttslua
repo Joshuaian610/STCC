@@ -12,8 +12,10 @@ function makeNonInteractable(nonInt)
 end
 
 
-function buttonSoloDifficultyVisibility(botDifficultyButtonVisibility)
+function buttonSoloDifficultyVisibility(botDifficultyButtonVisibility, playerColor)
   -- will manually show solo difficulty buttons for debug purposes
+  -- playerColor will be "Blue", "Red", or "Both"
+
   local botDifficultyButtons = {}
   for _, object in ipairs(getObjects()) do
     local name = object.getName()
@@ -21,14 +23,28 @@ function buttonSoloDifficultyVisibility(botDifficultyButtonVisibility)
       table.insert(botDifficultyButtons, object)
     end
   end
+
   for _, button in ipairs(botDifficultyButtons) do
-    local posButton = button.getPosition()
-    if botDifficultyButtonVisibility then
-      posButton.y = 0.95
-    else
-      posButton.y = -2
+    local name = button.getName()
+    local isBlue = name:match("Blue$")
+    local isRed = name:match("Red$")
+
+    if playerColor == "Both" or
+       (playerColor == "Blue" and isBlue) or
+       (playerColor == "Red" and isRed) then
+
+      local posButton = button.getPosition()
+
+      if botDifficultyButtonVisibility then
+        posButton.y = 0.95
+        initButtonSoloDifficulty(button)
+      else
+        posButton.y = -2
+        button.clearButtons()
+      end
+
+      button.setPosition(posButton)
     end
-    button.setPosition(posButton)
   end
 end
 

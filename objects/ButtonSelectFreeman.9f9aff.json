@@ -41,12 +41,13 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "button_faction_setup",
     "non_int"
   ],
   "Tooltip": false,
   "Transform": {
     "posX": -39.542,
-    "posY": -2,
+    "posY": 0.95,
     "posZ": 10.514,
     "rotX": 0,
     "rotY": 270,

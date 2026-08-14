@@ -5,7 +5,7 @@
 function initButtonSetupGame(buttonObj)
   buttonObj.clearButtons()
   buttonObj.createButton({
-    click_function = "setupGame",
+    click_function = "setupMarketAndLocations",
     function_owner = self,
     label          = "",
     position       = { 0, 1.01, 0.00 },
@@ -258,9 +258,10 @@ end
 
 
 
+
 -- MARKET SETUP
 
-function setupGame()
+function setupMarketAndLocations()
   -- determine values for market to use, second contact, promos
   local marketType = (getObjectbyName("Button Market Base Game").getGMNotes() == "enabled" and "baseGame") or
                      (getObjectbyName("Button Market To Boldly Go").getGMNotes() == "enabled" and "toBoldlyGo") or
@@ -588,6 +589,10 @@ function dealInitialMarket()
   end
 end
 
+
+
+
+-- LOCATION SETUP
 
 function setupLocationDecks(marketType, includeSecondContact, includePromos)
   -- handles the positioning of selected location decks per selected marketType

@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Age of Galaxy: Build",
+      "label": "ST CC: Build",
       "type": "shell",
       "command": "python",
       "args": [
@@ -22,7 +22,7 @@
       "problemMatcher": []
     },
     {
-      "label": "Age of Galaxy: Decompose",
+      "label": "ST CC: Decompose",
       "type": "shell",
       "command": "python",
       "args": [

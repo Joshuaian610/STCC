@@ -34,10 +34,10 @@
   "LayoutGroupSortIndex": 0,
   "Locked": true,
   "LuaScriptState": "",
-  "LuaScript_path": "SetupForSolo.0bad8b.ttslua",
+  "LuaScript_path": "SetupForSoloRed.0bad8b.ttslua",
   "MeasureMovement": false,
   "Name": "Custom_Tile",
-  "Nickname": "Setup For Solo",
+  "Nickname": "Setup For Solo Red",
   "Snap": false,
   "Sticky": true,
   "Tags": [
@@ -47,7 +47,7 @@
   "Tooltip": true,
   "Transform": {
     "posX": 45.81,
-    "posY": -2,
+    "posY": 0.95,
     "posZ": -10.77,
     "rotX": 0,
     "rotY": 270,

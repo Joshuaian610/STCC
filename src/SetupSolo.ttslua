@@ -1,0 +1,150 @@
+-- handles solo bot difficulty button setup and functionality
+
+function initButtonSoloVS(buttonObj)
+
+  buttonObj.clearButtons()
+  local soloEnabled = buttonObj.getGMNotes()
+  local playerColor = buttonObj.getName():find("Blue") and "Blue" or "Red"
+  local color = playerColor == "Blue" and { 31/255, 136/255, 255, 255 } or { 219/255, 26/255, 24/255, 255 }
+  local hoverColor = playerColor == "Blue" and { 31/255, 136/255, 255, .8 } or { 219/255, 26/255, 24/255, .8 }
+  if soloEnabled == "disabled" then
+    -- create enable solo button
+    buttonObj.createButton({
+      click_function = "enableSolo",
+      function_owner = self,
+      label          = "",
+      position       = { 0, 0.36, 0.4 },
+      rotation       = { 0, 180, 0 },
+      width          = 250,
+      height         = 250,
+      scale          = { 2.3, 2.3, 2.3 },
+      color          = color,
+      hover_color    = hoverColor,
+      tooltip        = "Click this button to enable solo play, setting up whichever selected captain for the solo bot in the " .. playerColor .. " area.",
+    })
+    buttonSoloDifficultyVisibility(false, playerColor)
+
+  elseif soloEnabled == "enabled" then
+    -- create disable solo button
+    buttonObj.createButton({
+      click_function = "disableSolo",
+      function_owner = self,
+      label          = "✔",
+      position       = { 0, 0.36, 0.4 },
+      width          = 250,
+      height         = 250,
+      font_size      = 200,
+      font_color     = { 1, 1, 1, 1 },
+      scale          = { 2.3, 2.3, 2.3 },
+      color          = color,
+      hover_color    = hoverColor,
+      tooltip        = "Click this button to disable solo play, setting up whichever selected captain for a human player in the " .. playerColor .. " playerarea.",
+    })
+    buttonSoloDifficultyVisibility(true, playerColor)
+  end
+end
+
+
+function initButtonSoloDifficulty(buttonObj)
+  buttonObj.clearButtons()
+  local buttonName = buttonObj.getName()
+  local playerColor = buttonName:find("Blue") and "Blue" or "Red"
+  local splitName = {}
+  for str in string.gmatch(buttonName,  "%S+") do
+    table.insert(splitName, str)
+  end
+  local difficulty = splitName[3]
+  if buttonObj.getGMNotes() == "disabled" then
+    buttonObj.createButton({
+      click_function = "enable" .. difficulty .. "Difficulty",
+      function_owner = self,
+      label          = "",
+      position       = { -0.01, 0.36, 0.00 },
+      rotation       = { 0, 180, 0 },
+      width          = 490,
+      height         = 375,
+      scale          = { 2, 2, 2 },
+      color          = { 1, 1, 1, .0 },
+      hover_color    = { 1, 1, 1, .3 },
+      tooltip        = playerColor .. " side will be set up for " .. difficulty .. " solo bot difficulty.",
+    })
+  else
+    buttonObj.createButton({
+      click_function = "disable" .. difficulty .. "Difficulty",
+      function_owner = self,
+      label          = "",
+      position       = { -0.01, 0.36, 0.00 },
+      rotation       = { 0, 180, 0 },
+      width          = 490,
+      height         = 375,
+      scale          = { 2, 2, 2 },
+      color          = { 1, 1, 1, .0 },
+      hover_color    = { 1, 1, 1, .3 },
+      tooltip        = difficulty .. " solo bot difficulty will be unselected for " .. playerColor .. ".",
+    })
+  end
+end
+
+
+function enableSolo(button, _, _)
+  -- handles the required functionality to enable solo for the playerColor area
+
+  button.setGMNotes('enabled')
+  initButtonSoloVS(button)
+  local playerColor = button.getName():find("Blue") and "Blue" or "Red"
+
+  -- broadcast
+  local broadcastStr = string.format("[%s]%s[-] side will be set up for the solo bot.", Color.fromString(playerColor):toHex(), playerColor)
+  broadcastToAll(broadcastStr, "White")
+
+  -- show bot difficulty button objects
+  buttonSoloDifficultyVisibility(true, playerColor)
+
+  -- flip captain buttons
+  local checkZone = getObjectbyNameAndNotes("Zone Captain Card", playerColor)
+  for _, object in pairs(checkZone.getObjects()) do
+    if object.hasTag('button_faction_setup') then
+      local rotButton = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
+      object.setRotation(rotButton)
+    end
+  end
+
+  -- if other player area is enabled for solo, disable it
+  local otherPlayerColor = playerColor == "Blue" and "Red" or "Blue"
+  local otherSoloButton = getObjectbyName("Setup For Solo " .. otherPlayerColor)
+  if otherSoloButton.getGMNotes() == "enabled" then
+    otherSoloButton.setGMNotes("disabled")
+    initButtonSoloVS(otherSoloButton)
+    local otherCheckZone = getObjectbyNameAndNotes("Zone Captain Card", otherPlayerColor)
+    for _, object in pairs(otherCheckZone.getObjects()) do
+      if object.hasTag('button_faction_setup') then
+        local rotButton = otherPlayerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+        object.setRotation(rotButton)
+      end
+    end
+  end
+end
+
+
+function disableSolo(button, _, _)
+
+  button.setGMNotes('disabled')
+  initButtonSoloVS(button)
+  local playerColor = button.getName():find("Blue") and "Blue" or "Red"
+
+  -- broadcast
+  local broadcastStr = string.format("[%s]%s[-] side will be set up for a human player.", Color.fromString(playerColor):toHex(), playerColor)
+  broadcastToAll(broadcastStr, "White")
+
+  -- hide bot difficulty buttons
+  buttonSoloDifficultyVisibility(false, playerColor)
+
+  -- flip captain buttons
+  local checkZone = getObjectbyNameAndNotes("Zone Captain Card", playerColor)
+  for _, object in pairs(checkZone.getObjects()) do
+    if object.hasTag('button_faction_setup') then
+      local rotButton = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+      object.setRotation(rotButton)
+    end
+  end
+end
