@@ -385,11 +385,11 @@
     "StartingLocationsToBoldlyGoDeck.577e63",
     "LocationsSecondContactDeck.1d2b55",
     "Reinforce.6b3ded",
-    "AlliesToBoldyGoDeck.14942a",
-    "CargoToBoldyGoDeck.169aff",
+    "AlliesToBoldlyGoDeck.14942a",
+    "CargoToBoldlyGoDeck.169aff",
     "EncountersToBoldlyGoDeck.b8baea",
     "IncidentsToBoldlyGoDeck.8b3978",
-    "PersonsToBoldyGoDeck.4bf483",
+    "PersonsToBoldlyGoDeck.4bf483",
     "ShipsToBoldlyGoDeck.3b0965",
     "Extend.dcbdb2",
     "Extend.ac7918",
@@ -494,9 +494,10 @@
     "ButtonSelectSoval.335e18",
     "ButtonSelectFreeman.9f9aff",
     "ButtonSelectPike.a7c582",
-    "ButtonMarketBase.0e05ce",
-    "ButtonMarketToBoldyGo.678c35",
-    "ButtonMarketMixed.a44cb5"
+    "ButtonMarketBaseGame.0e05ce",
+    "ButtonMarketMixed.678c35",
+    "ButtonIncludeSecondContact.d95c7d",
+    "ButtonMarketToBoldlyGo.a44cb5"
   ],
   "PlayArea": 0.7021237,
   "PlayerCounts": [

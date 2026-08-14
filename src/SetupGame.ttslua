@@ -1,0 +1,424 @@
+-- handles Market & Player setup functionality
+
+
+-- MARKET SETUP OPTION AND SETUP BUTTONS
+function initButtonSetupGame(buttonObj)
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "setupGame",
+    function_owner = self,
+    label          = "",
+    position       = { 0, 1.01, 0.00 },
+    width          = 835,
+    height         = 440,
+    scale          = { 2.3, 2.3, 2.3 },
+    color          = { 1, 1, 1, .3 },
+    hover_color    = { 1, 1, 1, .6 },
+    tooltip        = "First select desired Market & Promo options, then, click this button to prepare selected market decks / locations and display player area Captain Selection UI.",
+  })
+end
+
+
+function initButtonEnablePromo(buttonObj)
+  buttonObj.setGMNotes("disabled")
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "initButtonDisablePromo",
+    function_owner = self,
+    label          = "",
+    position       = { 3.40, 1.01, 0.0 },
+    width          = 350,
+    height         = 350,
+    font_size      = 300,
+    font_color     = { 49/255, 76/255, 95/255, 1 },
+    scale          = { 2.3, 2.3, 2.3 },
+    color          = { 1, 1, 1, 1 },
+    hover_color    = { 1, 1, 1, .6 },
+    tooltip        = "Click and check this button to include promotional cards during game setup.",
+  })
+end
+
+function initButtonDisablePromo(buttonObj)
+  buttonObj.setGMNotes("enabled")
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "initButtonEnablePromo",
+    function_owner = self,
+    label          = "✔",
+    position       = { 3.40, 1.01, 0.0 },
+    width          = 350,
+    height         = 350,
+    font_size      = 300,
+    font_color     = { 49/255, 76/255, 95/255, 1 },
+    scale          = { 2.3, 2.3, 2.3 },
+    color          = { 1, 1, 1, 1 },
+    hover_color    = { 1, 1, 1, .6 },
+    tooltip        = "Click and uncheck this button to exclude promotional cards during game setup.",
+  })
+end
+
+
+function initButtonDisableSecondContact(buttonObj)
+  buttonObj.setGMNotes("enabled")
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "initButtonEnableSecondContact",
+    function_owner = self,
+    label = "✔",
+    position = { 3.40, 1.01, 0.0 },
+    width = 350,
+    height = 350,
+    font_size = 300,
+    font_color = { 49/255, 76/255, 95/255, 1 },
+    scale = { 2.3, 2.3, 2.3 },
+    color = { 1, 1, 1, 1 },
+    hover_color = { 1, 1, 1, .6 },
+    tooltip = "Click and uncheck this button to exclude Second Contact Market cards during game setup.",
+  })
+end
+
+
+function initButtonEnableSecondContact(buttonObj)
+  buttonObj.setGMNotes("disabled")
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "initButtonDisableSecondContact",
+    function_owner = self,
+    label = "",
+    position = { 3.40, 1.01, 0.0 },
+    width = 350,
+    height = 350,
+    font_size = 300,
+    font_color = { 49/255, 76/255, 95/255, 1 },
+    scale = { 2.3, 2.3, 2.3 },
+    color = { 1, 1, 1, 1 },
+    hover_color = { 1, 1, 1, .6 },
+    tooltip = "Click and check this button to include Second Contact Market cards during game setup.",
+  })
+end
+
+
+function initButtonEnableMarketBaseGame(buttonObj)
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "selectMarketBaseGame",
+    function_owner = self,
+    label = "",
+    position = { 3.40, 1.01, 0.0 },
+    width = 350,
+    height = 350,
+    font_size = 300,
+    font_color = { 49/255, 76/255, 95/255, 1 },
+    scale = { 2.3, 2.3, 2.3 },
+    color = { 1, 1, 1, 1 },
+    hover_color = { 1, 1, 1, .6 },
+    tooltip = "Click and check this button to use the Base Game Market during game setup.",
+  })
+end
+
+
+function initButtonDisableMarketBaseGame(buttonObj)
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "selectMarketBaseGame",
+    function_owner = self,
+    label = "✔",
+    position = { 3.40, 1.01, 0.0 },
+    width = 350,
+    height = 350,
+    font_size = 300,
+    font_color = { 49/255, 76/255, 95/255, 1 },
+    scale = { 2.3, 2.3, 2.3 },
+    color = { 1, 1, 1, 1 },
+    hover_color = { 1, 1, 1, .6 },
+    tooltip = "Click and select the Base Game Market during game setup.",
+  })
+end
+
+
+function initButtonEnableMarketMixed(buttonObj)
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "selectMarketMixed",
+    function_owner = self,
+    label = "",
+    position = { 3.40, 1.01, 0.0 },
+    width = 350,
+    height = 350,
+    font_size = 300,
+    font_color = { 49/255, 76/255, 95/255, 1 },
+    scale = { 2.3, 2.3, 2.3 },
+    color = { 1, 1, 1, 1 },
+    hover_color = { 1, 1, 1, .6 },
+    tooltip = "Click and check this button to use a Mixed Market during game setup.",
+  })
+end
+
+
+function initButtonDisableMarketMixed(buttonObj)
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "selectMarketMixed",
+    function_owner = self,
+    label = "✔",
+    position = { 3.40, 1.01, 0.0 },
+    width = 350,
+    height = 350,
+    font_size = 300,
+    font_color = { 49/255, 76/255, 95/255, 1 },
+    scale = { 2.3, 2.3, 2.3 },
+    color = { 1, 1, 1, 1 },
+    hover_color = { 1, 1, 1, .6 },
+    tooltip = "Click and select a Mixed Market during game setup.",
+  })
+end
+
+
+function initButtonEnableMarketTBG(buttonObj)
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "selectMarketTBG",
+    function_owner = self,
+    label = "",
+    position = { 3.40, 1.01, 0.0 },
+    width = 350,
+    height = 350,
+    font_size = 300,
+    font_color = { 49/255, 76/255, 95/255, 1 },
+    scale = { 2.3, 2.3, 2.3 },
+    color = { 1, 1, 1, 1 },
+    hover_color = { 1, 1, 1, .6 },
+    tooltip = "Click and check this button to use the To Boldly Go Market during game setup.",
+  })
+end
+
+
+function initButtonDisableMarketTBG(buttonObj)
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "selectMarketTBG",
+    function_owner = self,
+    label = "✔",
+    position = { 3.40, 1.01, 0.0 },
+    width = 350,
+    height = 350,
+    font_size = 300,
+    font_color = { 49/255, 76/255, 95/255, 1 },
+    scale = { 2.3, 2.3, 2.3 },
+    color = { 1, 1, 1, 1 },
+    hover_color = { 1, 1, 1, .6 },
+    tooltip = "Click and select the To Boldly Go Market during game setup.",
+  })
+end
+
+
+function selectMarketBaseGame(_, _, _)
+  local baseGame = getObjectbyName("Button Market Base Game")
+  local mixed = getObjectbyName("Button Market Mixed")
+  local tbg = getObjectbyName("Button Market To Boldly Go")
+
+  baseGame.setGMNotes("enabled")
+  mixed.setGMNotes("disabled")
+  tbg.setGMNotes("disabled")
+
+  initButtonDisableMarketBaseGame(baseGame)
+  initButtonEnableMarketMixed(mixed)
+  initButtonEnableMarketTBG(tbg)
+end
+
+
+function selectMarketMixed(_, _, _)
+  local baseGame = getObjectbyName("Button Market Base Game")
+  local mixed = getObjectbyName("Button Market Mixed")
+  local tbg = getObjectbyName("Button Market To Boldly Go")
+
+  baseGame.setGMNotes("disabled")
+  mixed.setGMNotes("enabled")
+  tbg.setGMNotes("disabled")
+
+  initButtonEnableMarketBaseGame(baseGame)
+  initButtonDisableMarketMixed(mixed)
+  initButtonEnableMarketTBG(tbg)
+end
+
+
+function selectMarketTBG(_, _, _)
+  local baseGame = getObjectbyName("Button Market Base Game")
+  local mixed = getObjectbyName("Button Market Mixed")
+  local tbg = getObjectbyName("Button Market To Boldly Go")
+
+  baseGame.setGMNotes("disabled")
+  mixed.setGMNotes("disabled")
+  tbg.setGMNotes("enabled")
+
+  initButtonEnableMarketBaseGame(baseGame)
+  initButtonEnableMarketMixed(mixed)
+  initButtonDisableMarketTBG(tbg)
+end
+
+
+
+-- MARKET SETUP
+
+function setupGame()
+  -- determine values for market to use, second contact, promos
+  local marketType = (getObjectbyName("Button Market Base Game").getGMNotes() == "enabled" and "baseGame") or
+                     (getObjectbyName("Button Market To Boldly Go").getGMNotes() == "enabled" and "toBoldlyGo") or
+                     (getObjectbyName("Button Market Mixed").getGMNotes() == "enabled" and "mixed")
+  local includeSecondContact = getObjectbyName("Button Include Second Contact").getGMNotes() == "enabled" and true or false
+  local includePromos = getObjectbyName("Button Include Promos").getGMNotes() == "enabled" and true or false
+
+  -- if mixed deck, remove 'remove_target' tagged cards
+  if marketType == "mixed" then mixedRemoveTargets() end
+
+  -- if mixed deck, replace the 9 dagger icon cards *** FIX IN IMAGES
+
+  -- place correct finished decks to market, remove decks if necessary, rename placed decks, shuffle
+  Wait.time(function()
+
+    -- runtime: 1 second, finishes @ 1.5
+    setupMarketDecks(marketType)
+
+  end, 0.5)
+
+  -- if promos enabled, add promo cards to selected market
+  -- junk per selected rules
+  -- cut incidents deck to size if needed
+  -- deal to market
+  -- remove unwanted location decks
+  -- shuffle selected starter/advanced locations, prepare decks  
+  -- deal starting NZ locations
+  -- show captain select UI buttons in player areas
+  -- destruct game setup buttons
+  -- broadcast
+end
+
+
+function mixedRemoveTargets()
+  -- this function handles the removal of cards marked with the remove dot icon in the case of a mixed deck setup
+  local bagUnusedObjs = getObjectbyName("Unused Object Bag")
+  local searchDecks = {
+    getObjectbyName("Incidents To Boldly Go Deck"),
+    getObjectbyName("Allies To Boldly Go Deck"),
+    getObjectbyName("Ships To Boldly Go Deck"),
+    getObjectbyName("Cargo To Boldly Go Deck"),
+    getObjectbyName("Persons To Boldly Go Deck"),
+    getObjectbyName("Encounters To Boldly Go Deck"),
+    getObjectbyName("Advanced Locations To Boldly Go Deck"),
+    getObjectbyName("Starting Locations To Boldly Go Deck"),
+  }
+  for i = 1, #searchDecks do
+    local deck = searchDecks[i]
+    for _, deckObj in ipairs(deck.getObjects()) do
+      local tags = deckObj.tags
+      for _, tag in ipairs(tags) do
+        if tag == "mix_remove" then
+          local removeCard = deck.takeObject({ guid = deckObj.guid })
+          bagUnusedObjs.putObject(removeCard)
+          break
+        end
+      end
+    end
+  end
+end
+
+function setupMarketDecks(marketType)
+  -- handles the positioning of market decks per selected marketType
+
+  local rotFacedown = { 0.00, 180.00, 180.00 }
+  local rotFaceup = { 0.00, 180.00, 0.00 }
+  local rotEncounter = { 0.00, 270.00, 180.00 }
+  local posPadEncounter = { -12.50, 1.25, 19.25 }
+  local posPadJunk = { -12.50, 1.25, 12.00 }
+  local posPadMarketPerson = { -7.50, 1.25, 14.00 }
+  local posPadCurrentPerson = { -7.50, 1.25, 6.00 }
+  local posPadMarketCargo = { -2.50, 1.25, 14.00 }
+  local posPadCurrentCargo = { -2.50, 1.25, 6.00 }
+  local posPadMarketShip = { 2.50, 1.25, 14.00 }
+  local posPadCurrentShip = { 2.50, 1.25, 6.00 }
+  local posPadMarketAlly = { 7.50, 1.25, 14.00 }
+  local posPadCurrentAlly = { 7.50, 1.25, 6.00 }
+  local posPadIncident = { 12.50, 1.25, 10.00 }
+
+  -- place base game decks to pads if base game or mixed marketType
+  local placementDecksBaseGame = {
+    getObjectbyName("Encounters Base Game Deck"),
+    getObjectbyName("Persons Base Game Deck"),
+    getObjectbyName("Cargo Base Game Deck"),
+    getObjectbyName("Ships Base Game Deck"),
+    getObjectbyName("Allies Base Game Deck"),
+    getObjectbyName("Incidents Base Game Deck"),
+  }
+  local placementDecksToBoldlyGo = {
+    getObjectbyName("Encounters To Boldly Go Deck"),
+    getObjectbyName("Persons To Boldly Go Deck"),
+    getObjectbyName("Cargo To Boldly Go Deck"),
+    getObjectbyName("Ships To Boldly Go Deck"),
+    getObjectbyName("Allies To Boldly Go Deck"),
+    getObjectbyName("Incidents To Boldly Go Deck"),
+  }
+  local posPlacementDecks = {
+      posPadEncounter,
+      posPadMarketPerson,
+      posPadMarketCargo,
+      posPadMarketShip,
+      posPadMarketAlly,
+      posPadIncident,
+    }
+  if marketType == "baseGame" or marketType == "mixed" then
+    local placementDecks = placementDecksBaseGame
+    for i = 1, 6 do
+      local rotDeck = i == 1 and rotEncounter or rotFacedown
+      placementDecks[i].setRotation(rotDeck)
+      placementDecks[i].setPosition(posPlacementDecks[i])
+    end
+  end
+
+  -- handle to boldly go decks: mixed or TBG market  
+  Wait.time(function()
+
+    if marketType == "toBoldlyGo" or marketType == "mixed" then
+      local placementDecks = placementDecksToBoldlyGo
+      for i = 1, 6 do
+        local rotDeck = i == 1 and rotEncounter or rotFacedown
+        placementDecks[i].setRotation(rotDeck)
+        placementDecks[i].setPosition(posPlacementDecks[i])
+      end
+    end
+
+  end, 0.5)
+
+  -- rename decks, clean up base game if required
+  Wait.time(function()
+
+    -- fix deck names to be more generic
+    local renameTargets = {
+      "Encounters Deck",
+      "Persons Deck",
+      "Cargo Deck",
+      "Ships Deck",
+      "Allies Deck",
+      "Incidents Deck",
+    }
+    local renameDecks = (marketType == "baseGame" or marketType == "mixed") and placementDecksBaseGame or placementDecksToBoldlyGo
+    for i = 1, 6 do
+      renameDecks[i].setName(renameTargets[i])
+      -- shuffle new decks
+      renameDecks[i].shuffle()
+    end
+
+    -- clean up unused market decks if required
+    local bagUnusedObjs = getObjectbyName("Unused Object Bag")
+    if marketType == "toBoldlyGo" then
+      for i = 1, 6 do
+        bagUnusedObjs.putObject(placementDecksBaseGame[i])
+      end
+    elseif marketType == "baseGame" then
+      for i = 1, 6 do
+        bagUnusedObjs.putObject(placementDecksToBoldlyGo[i])
+      end
+    end
+
+  end, 1)
+
+end

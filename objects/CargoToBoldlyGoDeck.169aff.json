@@ -30,7 +30,7 @@
     "BorgSpatialTrajector.a6b952",
     "AugmentationPlague.64623b"
   ],
-  "ContainedObjects_path": "CargoToBoldyGoDeck.169aff",
+  "ContainedObjects_path": "CargoToBoldlyGoDeck.169aff",
   "CustomDeck": {
     "192": {
       "BackIsHidden": true,
@@ -77,7 +77,7 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Deck",
-  "Nickname": "Cargo To Boldy Go Deck",
+  "Nickname": "Cargo To Boldly Go Deck",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,

@@ -28,7 +28,7 @@
     "Bolians.ff98ec",
     "Arinsen.e41f26"
   ],
-  "ContainedObjects_path": "AlliesToBoldyGoDeck.14942a",
+  "ContainedObjects_path": "AlliesToBoldlyGoDeck.14942a",
   "CustomDeck": {
     "190": {
       "BackIsHidden": true,
@@ -73,7 +73,7 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Deck",
-  "Nickname": "Allies To Boldy Go Deck",
+  "Nickname": "Allies To Boldly Go Deck",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,

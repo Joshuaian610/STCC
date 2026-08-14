@@ -4,6 +4,7 @@
 require("BeamedBags")
 require("Helpers")
 require("OnloadSupport")
+require("SetupGame")
 
 
 
@@ -41,9 +42,49 @@ end -- end onLoad()
 
 
 function onObjectSpawn(obj)
+  -- handles on spawn actions
 
+  -- handle beamed bag button/counter refresh
   if obj.getName() == "Beamed Cards" then
     obj.call("updateButtons")
+  end
+
+  -- handle creation of main setup game button
+  if obj.getName() == "Button Setup Game" then
+    initButtonSetupGame(obj)
+  end
+
+  -- handle creation of include promo setup button
+  if obj.getName() == "Button Include Promos" and obj.getGMNotes() == "enabled" then
+    initButtonDisablePromo(obj)
+  elseif obj.getName() == "Button Include Promos" and obj.getGMNotes() == "disabled" then
+    initButtonEnablePromo(obj)
+  end
+
+  -- handle creation of include second contact setup button
+  if obj.getName() == "Button Include Second Contact" and obj.getGMNotes() == "enabled" then
+    initButtonDisableSecondContact(obj)
+  elseif obj.getName() == "Button Include Second Contact" and obj.getGMNotes() == "disabled" then
+    initButtonEnableSecondContact(obj)
+  end
+
+  -- handle creation of market selection setup button
+  if obj.getName() == "Button Market Base Game" and obj.getGMNotes() == "enabled" then
+    initButtonDisableMarketBaseGame(obj)
+  elseif obj.getName() == "Button Market Base Game" and obj.getGMNotes() == "disabled" then
+    initButtonEnableMarketBaseGame(obj)
+  end
+
+  if obj.getName() == "Button Market To Boldly Go" and obj.getGMNotes() == "enabled" then
+    initButtonDisableMarketTBG(obj)
+  elseif obj.getName() == "Button Market To Boldly Go" and obj.getGMNotes() == "disabled" then
+    initButtonEnableMarketTBG(obj)
+  end
+
+  if obj.getName() == "Button Market Mixed" and obj.getGMNotes() == "enabled" then
+    initButtonDisableMarketMixed(obj)
+  elseif obj.getName() == "Button Market Mixed" and obj.getGMNotes() == "disabled" then
+    initButtonEnableMarketMixed(obj)
   end
 end
 

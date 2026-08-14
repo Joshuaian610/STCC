@@ -38,7 +38,7 @@
     "AmbassadorGral.9cb9da",
     "AdmiralJarok.9ea028"
   ],
-  "ContainedObjects_path": "PersonsToBoldyGoDeck.4bf483",
+  "ContainedObjects_path": "PersonsToBoldlyGoDeck.4bf483",
   "CustomDeck": {
     "195": {
       "BackIsHidden": true,
@@ -93,7 +93,7 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Deck",
-  "Nickname": "Persons To Boldy Go Deck",
+  "Nickname": "Persons To Boldly Go Deck",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
