@@ -5,27 +5,27 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 18004,
+  "CardID": 25506,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "180": {
+    "255": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439356653027703/F83D54512DEC750EB7102BF50638F79EC8DD5E43/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18211335035865780204/03AE2002E27EF2A869FBA168456B0853EEA1812B/",
       "NumHeight": 2,
-      "NumWidth": 3,
+      "NumWidth": 5,
       "Type": 0,
       "UniqueBack": false
     }
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "VP=-2",
-  "GUID": "710f11",
+  "GMNotes": "VP=2",
+  "GUID": "2178e8",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -37,22 +37,22 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Card",
-  "Nickname": "Whale Probe Incursion",
+  "Nickname": "U.S.S. Cabot",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "skill_science",
     "snap_card",
-    "suit_incident",
-    "trait_alien",
-    "trait_attack",
-    "trait_surprise"
+    "suit_ship",
+    "trait_scientist",
+    "trait_starfleet"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -27.532,
+    "posX": 4.621,
     "posY": 1.711,
-    "posZ": 27.81,
+    "posZ": -27.669,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

@@ -14,7 +14,7 @@ function initButtonSetupGame(buttonObj)
     scale          = { 2.3, 2.3, 2.3 },
     color          = { 1, 1, 1, .3 },
     hover_color    = { 1, 1, 1, .6 },
-    tooltip        = "First select desired Market & Promo options, then, click this button to prepare selected market decks / locations and display player area Captain Selection UI.",
+    tooltip        = "First select desired Market & Promo options, then, click this button to prepare selected market decks / locations and display player area Captain Selection UI.\n\n(Tip: If playing a 5YM and need to take Reinforcements, do so manually before using Setup Game button!)",
   })
 end
 
@@ -281,16 +281,60 @@ function setupGame()
 
   end, 0.5)
 
-  -- if promos enabled, add promo cards to selected market
-  -- junk per selected rules
-  -- cut incidents deck to size if needed
-  -- deal to market
-  -- remove unwanted location decks
-  -- shuffle selected starter/advanced locations, prepare decks  
-  -- deal starting NZ locations
+  -- if promos or second contact enabled, add market (not location) decks to selected market
+  Wait.time(function()
+
+    -- if promos, add promo assets, otherwise, leave in bag
+    if includePromos then
+      addMarketPromos()
+    end
+
+    -- if second contact enabled, add second contact assets, otherwise, place to unused objects bag
+    if includeSecondContact then
+      addSecondContact()
+    else
+      cleanupSecondContact()
+    end
+
+  end, 1.75) -- runtime: instant, finishes by 2.0
+
+  -- remove required cards:
+  Wait.time(function()
+
+    -- junk per selected rules
+    junkRequired(marketType, includeSecondContact)
+
+    -- cut incidents deck to size if needed (runs at 2.50 to allow for incidents deck to settle, but does not conflict with anything else)
+    cutIncidents()
+
+  end, 2.0) -- runtime: fast, finishes by 2.50 or so to be safe and allow for smooth movement of any junked cards
+
+  -- shuffle, then deal to market
+  Wait.time(function()
+
+    dealInitialMarket()
+
+  end, 2.50)
+
+  -- shuffle selected starter/advanced locations, prepare decks
+  setupLocationDecks(marketType, includeSecondContact, includePromos) -- runtime: 1.0
+
+  -- prepare final location decks, deal starting NZ locations
+  Wait.time(function()
+
+    finalizeLocations()
+
+  end, 1.50 ) -- runtime: irrelevant outside of dealing to NZ locations at same time as market deal
+
   -- show captain select UI buttons in player areas
+  buttonSelectCaptainVisibility(true)
+
   -- destruct game setup buttons
+  destructSetupButtons()
+
   -- broadcast
+  marketSetupBroadcast(marketType, includeSecondContact, includePromos)
+
 end
 
 
@@ -326,18 +370,12 @@ function setupMarketDecks(marketType)
   -- handles the positioning of market decks per selected marketType
 
   local rotFacedown = { 0.00, 180.00, 180.00 }
-  local rotFaceup = { 0.00, 180.00, 0.00 }
   local rotEncounter = { 0.00, 270.00, 180.00 }
   local posPadEncounter = { -12.50, 1.25, 19.25 }
-  local posPadJunk = { -12.50, 1.25, 12.00 }
   local posPadMarketPerson = { -7.50, 1.25, 14.00 }
-  local posPadCurrentPerson = { -7.50, 1.25, 6.00 }
   local posPadMarketCargo = { -2.50, 1.25, 14.00 }
-  local posPadCurrentCargo = { -2.50, 1.25, 6.00 }
   local posPadMarketShip = { 2.50, 1.25, 14.00 }
-  local posPadCurrentShip = { 2.50, 1.25, 6.00 }
   local posPadMarketAlly = { 7.50, 1.25, 14.00 }
-  local posPadCurrentAlly = { 7.50, 1.25, 6.00 }
   local posPadIncident = { 12.50, 1.25, 10.00 }
 
   -- place base game decks to pads if base game or mixed marketType
@@ -403,8 +441,6 @@ function setupMarketDecks(marketType)
     local renameDecks = (marketType == "baseGame" or marketType == "mixed") and placementDecksBaseGame or placementDecksToBoldlyGo
     for i = 1, 6 do
       renameDecks[i].setName(renameTargets[i])
-      -- shuffle new decks
-      renameDecks[i].shuffle()
     end
 
     -- clean up unused market decks if required
@@ -421,4 +457,304 @@ function setupMarketDecks(marketType)
 
   end, 1)
 
+end
+
+
+function addMarketPromos()
+  -- handles the pull & placement of promo cards into their respective decks (not any of the related required removal)
+  local bagUnusedObjs = getObjectbyName("Unused Object Bag")
+  local rotFacedown = { 0.00, 180.00, 180.00 }
+  local rotEncounters = { 0.00, 270.00, 180.00 }
+  local posEncounters = { -12.50, 1.25, 19.25 }
+  local posCargo = { -2.50, 1.25, 14.00 }
+  local posShips = { 2.50, 1.25, 14.00 }
+  local posIncidents = { 12.50, 1.25, 10.00 }
+
+  -- simple, can use helper to pull from bag & place
+  getObjectFromBagbyName("Wesley Crusher", bagUnusedObjs, rotEncounters, posEncounters, false)
+  getObjectFromBagbyName("Cargo Promos Deck", bagUnusedObjs, rotFacedown, posCargo, false)
+  getObjectFromBagbyName("Ships Promos Deck", bagUnusedObjs, rotFacedown, posShips, false)
+  getObjectFromBagbyName("Incidents Promos Deck", bagUnusedObjs, rotFacedown, posIncidents, false)
+end
+
+
+function addSecondContact()
+  -- handles the addition of second contact assets (not any of the related required removal)
+  local rotFacedown = { 0.00, 180.00, 180.00 }
+  local posPersons = { -7.50, 1.50, 14.00 }
+  local posCargo = { -2.50, 1.50, 14.00 }
+  local posShips = { 2.50, 1.50, 14.00 }
+  local posAllies = { 7.50, 1.50, 14.00 }
+  local deckPersons = getObjectbyName("Persons Second Contact Deck")
+  local deckCargo = getObjectbyName("Cargo Second Contact Deck")
+  local deckShips = getObjectbyName("Ships Second Contact Deck")
+  local deckAllies = getObjectbyName("Allies Second Contact Deck")
+
+  -- decks exist in world. no handler this time :)
+  deckPersons.setRotation(rotFacedown)
+  deckPersons.setPosition(posPersons)
+
+  deckCargo.setRotation(rotFacedown)
+  deckCargo.setPosition(posCargo)
+
+  deckShips.setRotation(rotFacedown)
+  deckShips.setPosition(posShips)
+
+  deckAllies.setRotation(rotFacedown)
+  deckAllies.setPosition(posAllies)
+end
+
+
+function cleanupSecondContact()
+  -- in case of second contact not being selected, handle cleanup of second contact market decks
+  local bagUnusedObjs = getObjectbyName("Unused Object Bag")
+  bagUnusedObjs.putObject(getObjectbyName("Persons Second Contact Deck"))
+  bagUnusedObjs.putObject(getObjectbyName("Cargo Second Contact Deck"))
+  bagUnusedObjs.putObject(getObjectbyName("Ships Second Contact Deck"))
+  bagUnusedObjs.putObject(getObjectbyName("Allies Second Contact Deck"))
+end
+
+
+function junkRequired(marketType, includeSecondContact)
+  -- handles the junking of required cards per selected market options
+  local rotFaceup = { 0.00, 180.00, 0.00 }
+  local posJunk = { -12.50, 1.25, 12.00 }
+  local decks = {
+    getObjectbyName("Persons Deck"),
+    getObjectbyName("Cargo Deck"),
+    getObjectbyName("Ships Deck"),
+    getObjectbyName("Allies Deck"),
+  }
+  local junkCount = 0
+  if includeSecondContact then junkCount = junkCount + 1 end
+  if marketType == "mixed" then junkCount = junkCount + 1 end
+
+  for i = 1, 4 do
+    if junkCount > 0 then
+      for j = 1, junkCount do
+        decks[i].shuffle()
+        local junkCard = decks[i].takeObject()
+        junkCard.setRotation(rotFaceup)
+        junkCard.setPositionSmooth(posJunk, false, true)
+      end
+    end
+  end
+end
+
+
+function cutIncidents()
+  -- handles the cut of the incident deck down to required size of 6 before captain selection
+  local bagUnusedObjs = getObjectbyName("Unused Object Bag")
+  local deckIncidents = getObjectbyName("Incidents Deck")
+
+  Wait.time(function()
+
+    local initialCount = #deckIncidents.getObjects()
+    local toRemoveCount = 0
+    if initialCount > 6 then toRemoveCount = initialCount - 6 end
+    if toRemoveCount > 0 then
+      deckIncidents.shuffle()
+      for i = 1, toRemoveCount do
+        local removeCard = deckIncidents.takeObject()
+        bagUnusedObjs.putObject(removeCard)
+      end
+    end
+
+  end, 0.50)
+end
+
+
+function dealInitialMarket()
+  -- handles the initial market deal after decks have been initialized
+
+  local decks = {
+    getObjectbyName("Persons Deck"),
+    getObjectbyName("Cargo Deck"),
+    getObjectbyName("Ships Deck"),
+    getObjectbyName("Allies Deck"),
+  }
+  local rotFaceup = { 0.00, 180.00, 0.00 }
+  local posDeal = {
+    { -7.50, 1.25, 6.00 },
+    { -2.50, 1.25, 6.00 },
+    { 2.50, 1.25, 6.00 },
+    { 7.50, 1.25, 6.00 },
+  }
+  for i = 1, 4 do
+    decks[i].shuffle()
+    local dealCard = decks[i].takeObject()
+    dealCard.setRotation(rotFaceup)
+    dealCard.setPositionSmooth(posDeal[i], false, true)
+  end
+end
+
+
+function setupLocationDecks(marketType, includeSecondContact, includePromos)
+  -- handles the positioning of selected location decks per selected marketType
+
+  local rotFacedown = { 0.00, 270.00, 180.00 } -- landscape, as location decks sit normally  
+  local posAdvancedDeck = { 0.00, 1.25, -2.00 }
+  local posStartingDeck = { 6.00, 1.25, -2.00 }
+  local bagUnusedObjs = getObjectbyName("Unused Object Bag")
+  local initialDeckAdvancedBaseGame = getObjectbyName("Advanced Locations Base Game Deck")
+  local initialDeckStartingBaseGame = getObjectbyName("Starting Locations Base Game Deck")
+  local initialDeckAdvancedTBG = getObjectbyName("Advanced Locations To Boldly Go Deck")
+  local initialDeckStartingTBG = getObjectbyName("Starting Locations To Boldly Go Deck")
+  local initialDeckSecondContact = getObjectbyName("Locations Second Contact Deck") -- contains 1 advanced, 1 starting
+
+  -- first combine decks as required, and / or remove unwanted decks
+
+  -- if baseGame or mixed, no need to move base game decks, they're in position already
+  -- remove base game decks if TBG market selected
+  if marketType == "toBoldlyGo" then
+    bagUnusedObjs.putObject(initialDeckAdvancedBaseGame)
+    bagUnusedObjs.putObject(initialDeckStartingBaseGame)
+  end
+
+  -- remove TBG decks if base game market selected
+  if marketType == "baseGame" then
+    bagUnusedObjs.putObject(initialDeckAdvancedTBG)
+    bagUnusedObjs.putObject(initialDeckStartingTBG)
+  end
+
+  -- if mixed or TBG markets, place TBG decks
+  if marketType == "mixed" or marketType == "toBoldlyGo" then
+    initialDeckAdvancedTBG.setRotation(rotFacedown)
+    initialDeckAdvancedTBG.setPosition({ 0.00, 1.10, -2.00 }) -- hardcoded pos to ensure deck falls to table first
+
+    initialDeckStartingTBG.setRotation(rotFacedown)
+    initialDeckStartingTBG.setPosition({ 6.00, 1.10, -2.00 }) -- hardcoded pos to ensure deck falls to table first
+  end
+
+  -- if second contact included, split deck and deal to respective deck positions
+  -- top card will be advanced, bottom will be starting
+  if includeSecondContact then
+    local advancedSecondContactCard = initialDeckSecondContact.takeObject()
+    advancedSecondContactCard.setRotation(rotFacedown)
+    advancedSecondContactCard.setPosition(posAdvancedDeck)
+
+    Wait.frames(function()
+
+      local startingSecondContactCard = getObjectbyName("Krulmuth-B")
+      startingSecondContactCard.setRotation(rotFacedown)
+      startingSecondContactCard.setPosition(posStartingDeck)
+
+    end)
+
+  -- if excluding second contact, clean up second contact location deck
+  elseif not includeSecondContact then
+    bagUnusedObjs.putObject(getObjectbyName("Locations Second Contact Deck"))
+  end
+
+  -- if promos included, include promo advanced location starbase 80
+  if includePromos then
+    getObjectFromBagbyName("Starbase 80", bagUnusedObjs, rotFacedown, posAdvancedDeck, false)
+  end
+
+  -- rename & shuffle collected decks, same as market
+  Wait.time(function()
+
+    -- rename base game decks
+    if marketType == "baseGame" or marketType == "mixed" then
+      getObjectbyName("Advanced Locations Base Game Deck").setName("Advanced Locations Deck")
+      getObjectbyName("Starting Locations Base Game Deck").setName("Starting Locations Deck")
+    elseif marketType == "toBoldlyGo" then
+      getObjectbyName("Advanced Locations To Boldly Go Deck").setName("Advanced Locations Deck")
+      getObjectbyName("Starting Locations To Boldly Go Deck").setName("Starting Locations Deck")
+    end
+
+    -- shuffle newly formed decks
+    Wait.frames(function()
+
+      getObjectbyName("Advanced Locations Deck").shuffle()
+      getObjectbyName("Starting Locations Deck").shuffle()
+
+    end)
+
+  end, 1.0)
+end
+
+
+function finalizeLocations()
+  -- when this runs, the combined location decks will be set, shuffled & named, ready to handle final location related setup steps
+
+  local bagUnusedObjs = getObjectbyName("Unused Object Bag")
+  local deckStarting = getObjectbyName("Starting Locations Deck")
+  local rotFacedown = { 0.00, 270.00, 180.00 } -- landscape, as location decks sit normally
+  local rotFaceup = { 0.00, 180.00, 0.00 } -- portrait, as NZ location pads sit normally
+  local posAdvancedDeck = { 0.00, 1.25, -2.00 }
+  local posNZ = {
+    { 0.00, 1.25, -7.00 },
+    { 0.00, 1.25, -14.00 },
+    { 0.00, 1.25, -21.00 },
+  }
+
+  -- top card of starting deck gets placed to top of advanced deck
+  local topCard = deckStarting.takeObject()
+  topCard.setRotation(rotFacedown)
+  topCard.setPositionSmooth(posAdvancedDeck, false, true)
+
+  -- next 3 from starting deck get dealt to NZ locations
+  Wait.time(function() -- time deal to be simultaneous with market card deals
+
+    for i = 1, 3 do
+      local cardNZ = deckStarting.takeObject()
+      cardNZ.setRotation(rotFaceup)
+      cardNZ.setPositionSmooth(posNZ[i], false, true)
+    end
+
+    -- clean up starting deck
+    bagUnusedObjs.putObject(getObjectbyName("Starting Locations Deck"))
+
+    -- wait half a second, then rename advanced locations deck to simply "Locations Deck"
+    Wait.time(function()
+
+      getObjectbyName("Advanced Locations Deck").setName("Locations Deck")
+
+    end, 0.50)
+
+  end, 1.00)
+end
+
+
+function destructSetupButtons()
+  -- handles destruction of setup configuration buttons
+  local destructButtons = {
+    getObjectbyName("Button Setup Game"),
+    getObjectbyName("Button Market Base Game"),
+    getObjectbyName("Button Market To Boldly Go"),
+    getObjectbyName("Button Market Mixed"),
+    getObjectbyName("Button Include Second Contact"),
+    getObjectbyName("Button Include Promos"),
+  }
+  for i = 1, 6 do
+    destructButtons[i].destruct()
+  end
+end
+
+
+function marketSetupBroadcast(marketType, includeSecondContact, includePromos)
+  -- handles confirmation broadcast of initial market & location setup click
+  local marketTypeStrs = {
+    ["baseGame"]   = "Base Game",
+    ["mixed"]      = "Mixed",
+    ["toBoldlyGo"] = "To Boldly Go",
+  }
+  local includedSecondContactStr = includeSecondContact and "Yes" or "No"
+  local includedPromosStr = includePromos and "Yes" or "No"
+
+  broadcastToAll("\nMarket Setup has begun!", "White")
+
+  Wait.time(function()
+
+    local broadcastStr = string.format("\nSelected Options:\nMarket: %s\nSecond Contact Included: %s\nPromos Included: %s\n", marketTypeStrs[marketType], includedSecondContactStr, includedPromosStr)
+    broadcastToAll(broadcastStr, "White")
+
+  end, 1.5)
+
+  Wait.time(function()
+
+    broadcastToAll("Market Setup has completed! Use Captain Selection buttons at the player areas to continue.", "White")
+
+  end, 2.5)
 end

@@ -5,27 +5,27 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 18001,
+  "CardID": 25509,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "180": {
+    "255": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439356653027703/F83D54512DEC750EB7102BF50638F79EC8DD5E43/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18211335035865780204/03AE2002E27EF2A869FBA168456B0853EEA1812B/",
       "NumHeight": 2,
-      "NumWidth": 3,
+      "NumWidth": 5,
       "Type": 0,
       "UniqueBack": false
     }
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "VP=2",
-  "GUID": "907bee",
+  "GMNotes": "VP=-2",
+  "GUID": "82d279",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -37,22 +37,21 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Card",
-  "Nickname": "Sehlat",
+  "Nickname": "Subspace Rhapsody",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
     "snap_card",
-    "suit_cargo",
-    "trait_attack",
-    "trait_creature",
-    "trait_vulcan"
+    "suit_incident",
+    "trait_anomaly",
+    "trait_communication"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 1.357,
-    "posY": 6.937,
-    "posZ": 32.62,
+    "posX": 22.472,
+    "posY": 1.711,
+    "posZ": -27.283,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

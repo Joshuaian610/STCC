@@ -14,7 +14,7 @@
     "RISTalvath.50c6e5",
     "Fesarius.c5926b"
   ],
-  "ContainedObjects_path": "ShipsDeckSecondContact.ceb661",
+  "ContainedObjects_path": "ShipsSecondContactDeck.ceb661",
   "CustomDeck": {
     "187": {
       "BackIsHidden": true,
@@ -45,7 +45,7 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Deck",
-  "Nickname": "Ships Deck Second Contact",
+  "Nickname": "Ships Second Contact Deck",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,

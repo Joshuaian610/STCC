@@ -5,40 +5,30 @@
     "z": 0
   },
   "Autoraise": true,
+  "CardID": 25502,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
-  "ContainedObjects_order": [
-    "Protocol12.a96ecc",
-    "Moopsy.2a315e",
-    "GiftBox.b27c24"
-  ],
-  "ContainedObjects_path": "CargoDeckSecondContact.acd24f",
   "CustomDeck": {
-    "187": {
+    "255": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17222648268448340498/8E47E9D9E5CB53B1C3DF338B45F7ADAB5BC244F7/",
-      "NumHeight": 3,
-      "NumWidth": 7,
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18211335035865780204/03AE2002E27EF2A869FBA168456B0853EEA1812B/",
+      "NumHeight": 2,
+      "NumWidth": 5,
       "Type": 0,
       "UniqueBack": false
     }
   },
-  "DeckIDs": [
-    18705,
-    18704,
-    18703
-  ],
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "",
-  "GUID": "acd24f",
+  "GMNotes": "VP=2",
+  "GUID": "27a46f",
   "Grid": true,
   "GridProjection": false,
-  "Hands": false,
+  "Hands": true,
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
@@ -46,23 +36,26 @@
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "Deck",
-  "Nickname": "Cargo Deck Second Contact",
+  "Name": "Card",
+  "Nickname": "Frank Hollander",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
     "snap_card",
-    "suit_cargo"
+    "suit_cargo",
+    "trait_android",
+    "trait_anomaly",
+    "trait_hologram"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 44.479,
-    "posY": 1.733,
-    "posZ": 27.578,
+    "posX": -14.298,
+    "posY": 1.752,
+    "posZ": -27.45,
     "rotX": 0,
     "rotY": 180,
-    "rotZ": 180,
+    "rotZ": 0,
     "scaleX": 1.75,
     "scaleY": 1,
     "scaleZ": 1.75

@@ -5,30 +5,38 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 18002,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
+  "ContainedObjects_order": [
+    "USSCabot.2178e8",
+    "USSEnterprise-B.21fea5"
+  ],
+  "ContainedObjects_path": "ShipsPromosDeck.69f6b0",
   "CustomDeck": {
-    "180": {
+    "255": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439356653027703/F83D54512DEC750EB7102BF50638F79EC8DD5E43/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18211335035865780204/03AE2002E27EF2A869FBA168456B0853EEA1812B/",
       "NumHeight": 2,
-      "NumWidth": 3,
+      "NumWidth": 5,
       "Type": 0,
       "UniqueBack": false
     }
   },
+  "DeckIDs": [
+    25506,
+    25504
+  ],
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "VP=2",
-  "GUID": "f564ef",
+  "GMNotes": "",
+  "GUID": "69f6b0",
   "Grid": true,
   "GridProjection": false,
-  "Hands": true,
+  "Hands": false,
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
@@ -36,8 +44,8 @@
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "Card",
-  "Nickname": "U.S.S. Enterprise-B",
+  "Name": "Deck",
+  "Nickname": "Ships Promos Deck",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
@@ -48,9 +56,9 @@
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 6.154,
-    "posY": 9.968,
-    "posZ": 34.374,
+    "posX": -11.565,
+    "posY": 2.828,
+    "posZ": 28.563,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

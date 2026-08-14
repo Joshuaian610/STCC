@@ -5,38 +5,30 @@
     "z": 0
   },
   "Autoraise": true,
+  "CardID": 25500,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
-  "ContainedObjects_order": [
-    "WhaleProbeIncursion.710f11",
-    "FlightTrainingAccident.84b6fc"
-  ],
-  "ContainedObjects_path": "PromoIncidents.6e611a",
   "CustomDeck": {
-    "180": {
+    "255": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/25439356653027703/F83D54512DEC750EB7102BF50638F79EC8DD5E43/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18211335035865780204/03AE2002E27EF2A869FBA168456B0853EEA1812B/",
       "NumHeight": 2,
-      "NumWidth": 3,
+      "NumWidth": 5,
       "Type": 0,
       "UniqueBack": false
     }
   },
-  "DeckIDs": [
-    18004,
-    18003
-  ],
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "",
-  "GUID": "6e611a",
+  "GMNotes": "VP=6",
+  "GUID": "edd6ca",
   "Grid": true,
   "GridProjection": false,
-  "Hands": false,
+  "Hands": true,
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
@@ -44,21 +36,25 @@
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "Deck",
-  "Nickname": "Promo Incidents",
+  "Name": "Card",
+  "Nickname": "Wesley Crusher",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "skill_x2_wildcard",
     "snap_card",
-    "suit_incident",
-    "trait_surprise"
+    "suit_encounter",
+    "trait_human",
+    "trait_pilot",
+    "trait_starfleet",
+    "trait_transcendent"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 0.688,
-    "posY": 6.837,
-    "posZ": 32.572,
+    "posX": 30.133,
+    "posY": 1.985,
+    "posZ": -12.125,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

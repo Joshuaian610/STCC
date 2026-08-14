@@ -23,10 +23,11 @@
     "r": 1
   },
   "ContainedObjects_order": [
-    "PromoIncidents.6e611a",
-    "Sehlat.907bee",
-    "USSEnterprise-B.f564ef",
-    "WesleyCrusher.718385",
+    "Starbase80.d6af8b",
+    "ShipsPromosDeck.69f6b0",
+    "IncidentsPromosDeck.30d2bb",
+    "CargoPromosDeck.61d474",
+    "WesleyCrusher.edd6ca",
     "CalculateScoreButtonBlue.698936",
     "CalculateScoreButtonRed.3c8845",
     "ScoreSheetRed.6931ee",

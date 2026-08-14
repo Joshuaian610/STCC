@@ -5,50 +5,30 @@
     "z": 0
   },
   "Autoraise": true,
+  "CardID": 25501,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
-  "ContainedObjects_order": [
-    "TheLivingWitness.dbacd0",
-    "LieutenantDax.05b938",
-    "EnsignMariner.f4af95",
-    "EnsignBoimler.352c21",
-    "ChefRiker.bc1c90",
-    "ChancellorGowron.b61965",
-    "BarryWaddle.dd0b9e",
-    "AmbassadorSpock.f7bf28"
-  ],
-  "ContainedObjects_path": "RewardsDeckSecondContact.efaf0f",
   "CustomDeck": {
-    "187": {
+    "255": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17222648268448340498/8E47E9D9E5CB53B1C3DF338B45F7ADAB5BC244F7/",
-      "NumHeight": 3,
-      "NumWidth": 7,
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18211335035865780204/03AE2002E27EF2A869FBA168456B0853EEA1812B/",
+      "NumHeight": 2,
+      "NumWidth": 5,
       "Type": 0,
       "UniqueBack": false
     }
   },
-  "DeckIDs": [
-    18713,
-    18712,
-    18711,
-    18710,
-    18709,
-    18708,
-    18707,
-    18706
-  ],
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "",
-  "GUID": "efaf0f",
+  "GMNotes": "VP=2",
+  "GUID": "11e034",
   "Grid": true,
   "GridProjection": false,
-  "Hands": false,
+  "Hands": true,
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
@@ -56,25 +36,26 @@
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "Deck",
-  "Nickname": "Rewards Deck Second Contact",
+  "Name": "Card",
+  "Nickname": "Sehlat",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
     "snap_card",
-    "suit_person",
-    "trait_crossover",
-    "trait_starfleet"
+    "suit_cargo",
+    "trait_attack",
+    "trait_creature",
+    "trait_vulcan"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 56.466,
-    "posY": 1.757,
-    "posZ": 27.578,
+    "posX": -14.315,
+    "posY": 1.786,
+    "posZ": -27.373,
     "rotX": 0,
     "rotY": 180,
-    "rotZ": 180,
+    "rotZ": 0,
     "scaleX": 1.75,
     "scaleY": 1,
     "scaleZ": 1.75
