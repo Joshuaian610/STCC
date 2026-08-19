@@ -34,6 +34,8 @@
 </Defaults>
 
 
+
+
 <Panel id="blue_andorian_panel" visibility="Blue" class="resourcePanel" active="false">
     <Image image="Andorian LCARS" width="140%" height="100%" preserveAspect="true" offsetXY="-25 0"/>
     <VerticalLayout class="vlRes">
@@ -81,6 +83,56 @@
         </Panel>
     </VerticalLayout>
 </Panel>
+
+
+<Panel id="blue_khan_panel" visibility="Blue" class="resourcePanel" active="false">
+    <Image image="Khan LCARS" width="110%" height="100%" preserveAspect="true" offsetXY="-25 0"/>
+    <VerticalLayout class="vlRes">
+        <Panel>
+            <HorizontalLayout class="row" padding="0">
+                <Panel><Image image="Blue Glory" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="d96ce2/decrease">−</Button></Panel>
+                <Panel><Text id="blue_kha_glory" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="d96ce2/increase">+</Button></Panel>
+                <Panel width="5" />
+                <!-- <Panel><Image image="Blue Research" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="8317bd/decrease">−</Button></Panel>
+                <Panel><Text id="blue_kha_research" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="8317bd/increase">+</Button></Panel>
+                <Panel width="50" /> -->
+            </HorizontalLayout>
+        </Panel>
+        <Panel>
+            <HorizontalLayout class="row" padding="0">
+                <Panel><Image image="Blue Latinum" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="39e892/decrease">−</Button></Panel>
+                <Panel><Text id="blue_kha_latinum" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="39e892/increase">+</Button></Panel>
+                <Panel width="5" />
+                <!-- <Panel><Image image="Blue Influence" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="9b4f79/decrease">−</Button></Panel>
+                <Panel><Text id="blue_kha_influence" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="9b4f79/increase">+</Button></Panel>
+                <Panel width="50" /> -->
+            </HorizontalLayout>
+        </Panel>
+        <Panel>
+            <HorizontalLayout class="row" padding="0">
+                <Panel><Image image="Blue Dilithium" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="a3ec59/decrease">−</Button></Panel>
+                <Panel><Text id="blue_kha_dilithium" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="a3ec59/increase">+</Button></Panel>
+                <Panel width="5" />
+                <!-- <Panel><Image image="Blue Military" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="9a7130/decrease">−</Button></Panel>
+                <Panel><Text id="blue_kha_military" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="9a7130/increase">+</Button></Panel>
+                <Panel width="50" /> -->
+            </HorizontalLayout>
+        </Panel>
+    </VerticalLayout>
+</Panel>
+
 
 <Panel id="blue_klingon_panel" visibility="Blue" class="resourcePanel" active="false">
     <Image image="Klingon LCARS" width="110%" height="100%" preserveAspect="true" offsetXY="-25 0"/>
@@ -130,6 +182,56 @@
     </VerticalLayout>
 </Panel>
 
+
+<Panel id="blue_pakled_panel" visibility="Blue" class="resourcePanel" active="false">
+    <Image image="Pakled LCARS" width="110%" height="100%" preserveAspect="true" offsetXY="-25 0"/>
+    <VerticalLayout class="vlRes">
+        <Panel>
+            <HorizontalLayout class="row" padding="0">
+                <Panel><Image image="Blue Glory" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="d96ce2/decrease">−</Button></Panel>
+                <Panel><Text id="blue_pak_glory" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="d96ce2/increase">+</Button></Panel>
+                <Panel width="5" />
+                <Panel><Image image="Blue Research" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="8317bd/decrease">−</Button></Panel>
+                <Panel><Text id="blue_pak_research" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="8317bd/increase">+</Button></Panel>
+                <Panel width="50" />
+            </HorizontalLayout>
+        </Panel>
+        <Panel>
+            <HorizontalLayout class="row" padding="0">
+                <Panel><Image image="Blue Latinum" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="39e892/decrease">−</Button></Panel>
+                <Panel><Text id="blue_pak_latinum" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="39e892/increase">+</Button></Panel>
+                <Panel width="5" />
+                <Panel><Image image="Blue Influence" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="9b4f79/decrease">−</Button></Panel>
+                <Panel><Text id="blue_pak_influence" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="9b4f79/increase">+</Button></Panel>
+                <Panel width="50" />
+            </HorizontalLayout>
+        </Panel>
+        <Panel>
+            <HorizontalLayout class="row" padding="0">
+                <Panel><Image image="Blue Dilithium" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="a3ec59/decrease">−</Button></Panel>
+                <Panel><Text id="blue_pak_dilithium" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="a3ec59/increase">+</Button></Panel>
+                <Panel width="5" />
+                <Panel><Image image="Blue Military" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="9a7130/decrease">−</Button></Panel>
+                <Panel><Text id="blue_pak_military" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="9a7130/increase">+</Button></Panel>
+                <Panel width="50" />
+            </HorizontalLayout>
+        </Panel>
+    </VerticalLayout>
+</Panel>
+
+
 <Panel id="blue_romulan_panel" visibility="Blue" class="resourcePanel" active="false">
     <Image image="Romulan LCARS" width="110%" height="100%" preserveAspect="true" offsetXY="-25 0"/>
     <VerticalLayout class="vlRes">
@@ -177,6 +279,7 @@
         </Panel>
     </VerticalLayout>
 </Panel>
+
 
 <Panel id="blue_starfleet_panel" visibility="Blue" class="resourcePanel" active="false">
     <Image image="Starfleet LCARS" width="110%" height="100%" preserveAspect="true" offsetXY="-25 0"/>
@@ -227,6 +330,57 @@
 </Panel>
 
 
+<Panel id="blue_vulcan_panel" visibility="Blue" class="resourcePanel" active="false">
+    <Image image="Vulcan LCARS" width="110%" height="100%" preserveAspect="true" offsetXY="-25 0"/>
+    <VerticalLayout class="vlRes">
+        <Panel>
+            <HorizontalLayout class="row" padding="0">
+                <Panel><Image image="Blue Glory" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="d96ce2/decrease">−</Button></Panel>
+                <Panel><Text id="blue_vul_glory" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="d96ce2/increase">+</Button></Panel>
+                <Panel width="5" />
+                <Panel><Image image="Blue Research" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="8317bd/decrease">−</Button></Panel>
+                <Panel><Text id="blue_vul_research" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="8317bd/increase">+</Button></Panel>
+                <Panel width="50" />
+            </HorizontalLayout>
+        </Panel>
+        <Panel>
+            <HorizontalLayout class="row" padding="0">
+                <Panel><Image image="Blue Latinum" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="39e892/decrease">−</Button></Panel>
+                <Panel><Text id="blue_vul_latinum" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="39e892/increase">+</Button></Panel>
+                <Panel width="5" />
+                <Panel><Image image="Blue Influence" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="9b4f79/decrease">−</Button></Panel>
+                <Panel><Text id="blue_vul_influence" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="9b4f79/increase">+</Button></Panel>
+                <Panel width="50" />
+            </HorizontalLayout>
+        </Panel>
+        <Panel>
+            <HorizontalLayout class="row" padding="0">
+                <Panel><Image image="Blue Dilithium" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="a3ec59/decrease">−</Button></Panel>
+                <Panel><Text id="blue_vul_dilithium" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="a3ec59/increase">+</Button></Panel>
+                <Panel width="5" />
+                <Panel><Image image="Blue Military" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="9a7130/decrease">−</Button></Panel>
+                <Panel><Text id="blue_vul_military" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="9a7130/increase">+</Button></Panel>
+                <Panel width="50" />
+            </HorizontalLayout>
+        </Panel>
+    </VerticalLayout>
+</Panel>
+
+
+
+
 <Panel id="red_andorian_panel" visibility="Red" class="resourcePanel" active="false">
     <Image image="Andorian LCARS" width="140%" height="100%" preserveAspect="true" offsetXY="-25 0"/>
     <VerticalLayout class="vlRes">
@@ -274,6 +428,56 @@
         </Panel>
     </VerticalLayout>
 </Panel>
+
+
+<Panel id="red_khan_panel" visibility="Red" class="resourcePanel" active="false">
+    <Image image="Khan LCARS" width="110%" height="100%" preserveAspect="true" offsetXY="-25 0"/>
+    <VerticalLayout class="vlRes">
+        <Panel>
+            <HorizontalLayout class="row" padding="0">
+                <Panel><Image image="Red Glory" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="d96ce2/decrease">−</Button></Panel>
+                <Panel><Text id="red_kha_glory" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="d96ce2/increase">+</Button></Panel>
+                <Panel width="5" />
+                <!-- <Panel><Image image="Red Research" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="8317bd/decrease">−</Button></Panel>
+                <Panel><Text id="red_kha_research" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="8317bd/increase">+</Button></Panel>
+                <Panel width="50" /> -->
+            </HorizontalLayout>
+        </Panel>
+        <Panel>
+            <HorizontalLayout class="row" padding="0">
+                <Panel><Image image="Red Latinum" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="39e892/decrease">−</Button></Panel>
+                <Panel><Text id="red_kha_latinum" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="39e892/increase">+</Button></Panel>
+                <Panel width="5" />
+                <!-- <Panel><Image image="Red Influence" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="9b4f79/decrease">−</Button></Panel>
+                <Panel><Text id="red_kha_influence" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="9b4f79/increase">+</Button></Panel>
+                <Panel width="50" /> -->
+            </HorizontalLayout>
+        </Panel>
+        <Panel>
+            <HorizontalLayout class="row" padding="0">
+                <Panel><Image image="Red Dilithium" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="a3ec59/decrease">−</Button></Panel>
+                <Panel><Text id="red_kha_dilithium" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="a3ec59/increase">+</Button></Panel>
+                <Panel width="5" />
+                <!-- <Panel><Image image="Red Military" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="9a7130/decrease">−</Button></Panel>
+                <Panel><Text id="red_kha_military" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="9a7130/increase">+</Button></Panel>
+                <Panel width="50" /> -->
+            </HorizontalLayout>
+        </Panel>
+    </VerticalLayout>
+</Panel>
+
 
 <Panel id="red_klingon_panel" visibility="Red" class="resourcePanel" active="false">
     <Image image="Klingon LCARS" width="110%" height="100%" preserveAspect="true" offsetXY="-25 0"/>
@@ -323,6 +527,56 @@
     </VerticalLayout>
 </Panel>
 
+
+<Panel id="red_pakled_panel" visibility="Red" class="resourcePanel" active="false">
+    <Image image="Pakled LCARS" width="110%" height="100%" preserveAspect="true" offsetXY="-25 0"/>
+    <VerticalLayout class="vlRes">
+        <Panel>
+            <HorizontalLayout class="row" padding="0">
+                <Panel><Image image="Red Glory" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="d96ce2/decrease">−</Button></Panel>
+                <Panel><Text id="red_pak_glory" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="d96ce2/increase">+</Button></Panel>
+                <Panel width="5" />
+                <Panel><Image image="Red Research" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="8317bd/decrease">−</Button></Panel>
+                <Panel><Text id="red_pak_research" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="8317bd/increase">+</Button></Panel>
+                <Panel width="50" />
+            </HorizontalLayout>
+        </Panel>
+        <Panel>
+            <HorizontalLayout class="row" padding="0">
+                <Panel><Image image="Red Latinum" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="39e892/decrease">−</Button></Panel>
+                <Panel><Text id="red_pak_latinum" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="39e892/increase">+</Button></Panel>
+                <Panel width="5" />
+                <Panel><Image image="Red Influence" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="9b4f79/decrease">−</Button></Panel>
+                <Panel><Text id="red_pak_influence" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="9b4f79/increase">+</Button></Panel>
+                <Panel width="50" />
+            </HorizontalLayout>
+        </Panel>
+        <Panel>
+            <HorizontalLayout class="row" padding="0">
+                <Panel><Image image="Red Dilithium" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="a3ec59/decrease">−</Button></Panel>
+                <Panel><Text id="red_pak_dilithium" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="a3ec59/increase">+</Button></Panel>
+                <Panel width="5" />
+                <Panel><Image image="Red Military" preserveAspect="true" width="40" height="40" /></Panel>
+                <Panel><Button onClick="9a7130/decrease">−</Button></Panel>
+                <Panel><Text id="red_pak_military" fontSize="24">0</Text></Panel>
+                <Panel><Button onClick="9a7130/increase">+</Button></Panel>
+                <Panel width="50" />
+            </HorizontalLayout>
+        </Panel>
+    </VerticalLayout>
+</Panel>
+
+
 <Panel id="red_romulan_panel" visibility="Red" class="resourcePanel" active="false">
     <Image image="Romulan LCARS" width="110%" height="100%" preserveAspect="true" offsetXY="-25 0"/>
     <VerticalLayout class="vlRes">
@@ -370,6 +624,7 @@
         </Panel>
     </VerticalLayout>
 </Panel>
+
 
 <Panel id="red_starfleet_panel" visibility="Red" class="resourcePanel" active="false">
     <Image image="Starfleet LCARS" width="110%" height="100%" preserveAspect="true" offsetXY="-25, 20"/>
@@ -420,6 +675,60 @@
         </VerticalLayout>
     </VerticalLayout>
 </Panel>
+
+
+<Panel id="red_vulcan_panel" visibility="Red" class="resourcePanel" active="false">
+    <Image image="Vulcan LCARS" width="110%" height="100%" preserveAspect="true" offsetXY="-25, 20"/>
+    <VerticalLayout>
+        <VerticalLayout class="vlRes" FlexibleHeight="1">
+            <Panel>
+                <HorizontalLayout class="row" padding="0">
+                    <Panel><Image image="Red Glory" preserveAspect="true" width="40" height="40" /></Panel>
+                    <Panel><Button onClick="9a5066/decrease">−</Button></Panel>
+                    <Panel><Text id="red_vul_glory" fontSize="24">0</Text></Panel>
+                    <Panel><Button onClick="9a5066/increase">+</Button></Panel>
+                    <Panel width="5" />
+                    <Panel><Image image="Red Research" preserveAspect="true" width="40" height="40" /></Panel>
+                    <Panel><Button onClick="c5021e/decrease">−</Button></Panel>
+                    <Panel><Text id="red_vul_research" fontSize="24">0</Text></Panel>
+                    <Panel><Button onClick="c5021e/increase">+</Button></Panel>
+                    <Panel width="50" />
+                </HorizontalLayout>
+            </Panel>
+            <Panel>
+                <HorizontalLayout class="row" padding="0">
+                    <Panel><Image image="Red Latinum" preserveAspect="true" width="40" height="40" /></Panel>
+                    <Panel><Button onClick="c2bac2/decrease">−</Button></Panel>
+                    <Panel><Text id="red_vul_latinum" fontSize="24">0</Text></Panel>
+                    <Panel><Button onClick="c2bac2/increase">+</Button></Panel>
+                    <Panel width="5" />
+                    <Panel><Image image="Red Influence" preserveAspect="true" width="40" height="40" /></Panel>
+                    <Panel><Button onClick="f3c9be/decrease">−</Button></Panel>
+                    <Panel><Text id="red_vul_influence" fontSize="24">0</Text></Panel>
+                    <Panel><Button onClick="f3c9be/increase">+</Button></Panel>
+                    <Panel width="50" />
+                </HorizontalLayout>
+            </Panel>
+            <Panel>
+                <HorizontalLayout class="row" padding="0">
+                    <Panel><Image image="Red Dilithium" preserveAspect="true" width="40" height="40" /></Panel>
+                    <Panel><Button onClick="f40879/decrease">−</Button></Panel>
+                    <Panel><Text id="red_vul_dilithium" fontSize="24">0</Text></Panel>
+                    <Panel><Button onClick="f40879/increase">+</Button></Panel>
+                    <Panel width="5" />
+                    <Panel><Image image="Red Military" preserveAspect="true" width="40" height="40" /></Panel>
+                    <Panel><Button onClick="5564b6/decrease">−</Button></Panel>
+                    <Panel><Text id="red_vul_military" fontSize="24">0</Text></Panel>
+                    <Panel><Button onClick="5564b6/increase">+</Button></Panel>
+                    <Panel width="50" />
+                </HorizontalLayout>
+            </Panel>
+        </VerticalLayout>
+    </VerticalLayout>
+</Panel>
+
+
+
 
 
 <Panel id="ui_hide_blue" class="manageButton" visibility="Blue" active="false">

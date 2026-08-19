@@ -30,9 +30,11 @@ end
 
 
 function getObjectFromBagbyName(objName, bag, objRot, objPos, moveSmooth)
+  local returnObj = nil
   for _, bagObj in pairs(bag.getObjects()) do
     if bagObj.name == objName then
       local takeObj = bag.takeObject({ guid = bagObj.guid, rotation = objRot })
+      returnObj = takeObj
       if moveSmooth then
         takeObj.setPositionSmooth(objPos, false, true)
       else
@@ -40,4 +42,67 @@ function getObjectFromBagbyName(objName, bag, objRot, objPos, moveSmooth)
       end
     end
   end
+  return returnObj
+end
+
+
+function getObjectbyNameAndType(objName, objType)
+  local returnObj = nil
+  for _, object in pairs(getObjects()) do
+    if object.getName() == objName and object.type == objType then  
+      returnObj = object
+    end
+  end
+  return returnObj
+end
+
+
+function getPlayerStr(playerColor)
+  local playerColorIsSolo = checkPlayerColorIsSolo(playerColor)
+  local playerStr = (Player[playerColor].steam_name ~= nil and not playerColorIsSolo) and string.format("[%s]%s[-]", Color.fromString(playerColor):toHex(), Player[playerColor].steam_name) or
+                    string.format("[%s]%s %s[-]", Color.fromString(playerColor):toHex(), playerColor, playerColorIsSolo and "Bot" or "Player")
+  return playerStr
+end
+
+
+function checkPlayerColorIsSolo(playerColor)
+  -- checks and returns if a specified playerColor is currently in solo bot mode
+  -- captain board pad's gmnotes specifies enabled (this color is a bot) or disabled (this color is human)
+  local playerColorIsSolo = false
+  if getObjectbyName("Pad Crew Board " .. playerColor).getGMNotes() == "enabled" then
+    playerColorIsSolo = true
+  end
+
+  log ("playerColorIsSolo: " .. tostring(playerColorIsSolo))
+
+  return playerColorIsSolo
+end
+
+
+function checkIsSolo()
+  -- checks and returns if there is currently a solo bot in play
+  local isSolo = false
+  if checkPlayerColorIsSolo("Blue") or checkPlayerColorIsSolo("Red") then
+    isSolo = true
+  end
+  return isSolo
+end
+
+
+function animateButton(buttonObj)
+  local downFactor = .30
+  if string.find(buttonObj.getName(), "Button Market Resource") then
+    downFactor = .19
+  end
+  local pos = buttonObj.getPosition()
+  pos.y = pos.y - downFactor
+  buttonObj.clearButtons()
+  buttonObj.setPosition(pos)
+  pos.y = pos.y + downFactor
+  buttonObj.setPositionSmooth(pos, false, true)
+  Wait.time(function()
+
+    buttonObj.call('create_button')
+
+  end, .2)
 end

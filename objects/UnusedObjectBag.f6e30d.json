@@ -23,6 +23,18 @@
     "r": 1
   },
   "ContainedObjects_order": [
+    "KhanTraitTrackerDifferentOpponentCaptain.393ef7",
+    "KhanTraitTrackerOpponentCaptain.aa6e38",
+    "KhanTraitTrackerTelepath.07481b",
+    "KhanTraitTrackerSpy.47405e",
+    "KhanTraitTrackerSynthetic.5b5606",
+    "KhanTraitTrackerScientist.3017d5",
+    "KhanTraitTrackerEngineer.8ecd32",
+    "KhanTraitTrackerDoctor.1062c2",
+    "KhanTraitTrackerCreature.cddb46",
+    "KhanTraitTrackerCloak.d6078a",
+    "KhanTraitTrackerBusiness.cc4359",
+    "KhanTraitTrackerAmbassador.175d2b",
     "Starbase80.d6af8b",
     "ShipsPromosDeck.69f6b0",
     "IncidentsPromosDeck.30d2bb",
@@ -78,7 +90,7 @@
   "Sticky": true,
   "Tooltip": true,
   "Transform": {
-    "posX": -18.5,
+    "posX": -35.078,
     "posY": 1.686,
     "posZ": 27.5,
     "rotX": 0,

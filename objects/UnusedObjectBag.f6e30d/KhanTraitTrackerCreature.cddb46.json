@@ -1,0 +1,60 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.23529,
+    "g": 0.23529,
+    "r": 0.23529
+  },
+  "CustomImage": {
+    "CustomTile": {
+      "Stackable": false,
+      "Stretch": true,
+      "Thickness": 0.2,
+      "Type": 3
+    },
+    "ImageScalar": 1,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/14389443058957528497/1114D62E0F909190930EC8CFCC581E3AE23C5F31/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/9691366467905201867/D376554B053EBBCCF546E4B8DD3C012D3EA4E5EA/",
+    "WidthScale": 0
+  },
+  "Description": "Flip this tracker to mark a Trait as gained or not.\n\nBlack Side = Gained.",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "cddb46",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Custom_Tile",
+  "Nickname": "Khan Trait Tracker Creature",
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "khan_trait_tracker"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 8.753,
+    "posY": 2.707,
+    "posZ": -27.1,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 0.45,
+    "scaleY": 1,
+    "scaleZ": 0.43
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

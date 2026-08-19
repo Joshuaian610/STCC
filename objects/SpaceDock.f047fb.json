@@ -44,7 +44,7 @@
   },
   "Description": "Ships returning from Controlled Neutral Zone locations will go into this bag.\n\nIf ship figures are in this bag while being deployed, they will automatically be pulled from bag.",
   "DragSelectable": true,
-  "GMNotes": "",
+  "GMNotes": "Red",
   "GUID": "f047fb",
   "Grid": true,
   "GridProjection": true,

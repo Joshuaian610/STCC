@@ -4,10 +4,12 @@
 require("BeamedBags")
 require("Helpers")
 require("OnloadSupport")
+require("SetupCaptain")
 require("SetupMarket")
 require("SetupSolo")
+require("StardateArea")
 
-
+math.randomseed(os.time())
 
 function onLoad()
   -- call this for each existing object since TTS doesn't do it
@@ -33,6 +35,9 @@ function onLoad()
 
   -- show & update stardate glory counter onLoad() if game is in progress
   gloryCounterStardateInProgress()
+
+  -- check current turn, if more than 1 players enable turns, set turn to current player
+  onLoadEnableTurns()
 
   -- display XML UI if captain has been selected
   onloadXML()
@@ -99,6 +104,31 @@ function onObjectSpawn(obj)
       end
     end
   end
+
+  -- if captain select buttons in position (lifted), handle creation of captain select buttons
+  if obj.hasTag("button_faction_setup") then
+    local posObj = obj.getPosition()
+    if posObj.y > 0 then
+      initButtonCaptainSelect(obj)
+    end
+  end
+  if obj.getName():find("Button Use Basic") then
+    local posObj = obj.getPosition()
+    if posObj.y > 0 and obj.getGMNotes() == "enabled" then
+      initButtonDisableBasic(obj)
+    elseif posObj.y > 0 and obj.getGMNotes() == "disabled" then
+      initButtonEnableBasic(obj)
+    end
+  elseif obj.getName():find("Button Use Advanced") then
+    local posObj = obj.getPosition()
+    if posObj.y > 0 and obj.getGMNotes() == "enabled" then
+      initButtonDisableAdvanced(obj)
+    elseif posObj.y > 0 and obj.getGMNotes() == "disabled" then
+      initButtonEnableAdvanced(obj)
+    end
+  end
+
+
 end
 
 
@@ -151,23 +181,3 @@ function onPlayerTurn(player, previous_player)
         end
     end
 end -- end onPlayerTurn()
-
-
-function animate_button(params)
-    local button      = params.button
-    local down_factor = .30
-    if string.find(button.getName(), "Button Market Resource") then
-        down_factor   = .19
-    end
-    local pos         = button.getPosition()
-    pos.y             = pos.y - down_factor
-    button.clearButtons()
-    button.setPosition(pos)
-    pos.y             = pos.y + down_factor
-    button.setPositionSmooth(pos, false, false)
-    Wait.time(function() button.call('create_button') end, .4)
-end -- end animate_button(params)
-
-
-
-

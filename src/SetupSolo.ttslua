@@ -54,7 +54,10 @@ function initButtonSoloDifficulty(buttonObj)
     table.insert(splitName, str)
   end
   local difficulty = splitName[3]
+  local hoverColor = playerColor == "Blue" and { 31/255, 136/255, 255, 0.3 } or { 219/255, 26/255, 24/255, 0.3 }
+  local tooltip = string.format("%s side will be set up for %s solo bot difficulty.%s", playerColor, difficulty, difficulty == "Cadet" and "\n\n*\nClicking this button will clean up for Cadet mode without the usual Captain Select Button confirmation of the other Solo Difficulty Select Buttons!" or "")
   if buttonObj.getGMNotes() == "disabled" then
+    local color = playerColor == "Blue" and { 31/255, 136/255, 255, 0 } or { 219/255, 26/255, 24/255, 0 }
     buttonObj.createButton({
       click_function = "enable" .. difficulty .. "Difficulty",
       function_owner = self,
@@ -64,11 +67,13 @@ function initButtonSoloDifficulty(buttonObj)
       width          = 490,
       height         = 375,
       scale          = { 2, 2, 2 },
-      color          = { 1, 1, 1, .0 },
-      hover_color    = { 1, 1, 1, .3 },
-      tooltip        = playerColor .. " side will be set up for " .. difficulty .. " solo bot difficulty.",
+      color          = color,
+      hover_color    = hoverColor,
+      tooltip        = tooltip,
     })
-  else
+
+  elseif buttonObj.getGMNotes() == "enabled" then
+    local color = playerColor == "Blue" and { 31/255, 136/255, 255, 0.8 } or { 219/255, 26/255, 24/255, 0.8 }
     buttonObj.createButton({
       click_function = "disable" .. difficulty .. "Difficulty",
       function_owner = self,
@@ -78,9 +83,9 @@ function initButtonSoloDifficulty(buttonObj)
       width          = 490,
       height         = 375,
       scale          = { 2, 2, 2 },
-      color          = { 1, 1, 1, .0 },
-      hover_color    = { 1, 1, 1, .3 },
-      tooltip        = difficulty .. " solo bot difficulty will be unselected for " .. playerColor .. ".",
+      color          = color,
+      hover_color    = hoverColor,
+      tooltip        = difficulty .. " solo bot difficulty has been de-selected for " .. playerColor .. ".",
     })
   end
 end
@@ -97,13 +102,16 @@ function enableSolo(button, _, _)
   local broadcastStr = string.format("[%s]%s[-] side will be set up for the solo bot.", Color.fromString(playerColor):toHex(), playerColor)
   broadcastToAll(broadcastStr, "White")
 
+  -- mark captain board pad GMNotes to allow helpers to check isSolo or playerColorIsSolo
+  getObjectbyName("Pad Crew Board " .. playerColor).setGMNotes("enabled")
+
   -- show bot difficulty button objects
   buttonSoloDifficultyVisibility(true, playerColor)
 
   -- flip captain buttons
   local checkZone = getObjectbyNameAndNotes("Zone Captain Card", playerColor)
   for _, object in pairs(checkZone.getObjects()) do
-    if object.hasTag('button_faction_setup') then
+    if object.hasTag('button_faction_setup') or object.getName():find("Button Use Basic") or object.getName():find("Button Use Advanced") then
       local rotButton = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
       object.setRotation(rotButton)
     end
@@ -112,17 +120,23 @@ function enableSolo(button, _, _)
   -- if other player area is enabled for solo, disable it
   local otherPlayerColor = playerColor == "Blue" and "Red" or "Blue"
   local otherSoloButton = getObjectbyName("Setup For Solo " .. otherPlayerColor)
-  if otherSoloButton.getGMNotes() == "enabled" then
-    otherSoloButton.setGMNotes("disabled")
-    initButtonSoloVS(otherSoloButton)
-    local otherCheckZone = getObjectbyNameAndNotes("Zone Captain Card", otherPlayerColor)
-    for _, object in pairs(otherCheckZone.getObjects()) do
-      if object.hasTag('button_faction_setup') then
-        local rotButton = otherPlayerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
-        object.setRotation(rotButton)
+  if otherSoloButton ~= nil then
+    if otherSoloButton.getGMNotes() == "enabled" then
+      otherSoloButton.setGMNotes("disabled")
+      initButtonSoloVS(otherSoloButton)
+      local otherCheckZone = getObjectbyNameAndNotes("Zone Captain Card", otherPlayerColor)
+      for _, object in pairs(otherCheckZone.getObjects()) do
+        if object.hasTag('button_faction_setup') then
+          local rotButton = otherPlayerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+          object.setRotation(rotButton)
+        end
       end
     end
   end
+
+  -- force check basic captain select button
+  local basicButton = getObjectbyName("Button Use Basic " .. playerColor)
+  enableButtonBasic(basicButton)
 end
 
 
@@ -136,15 +150,145 @@ function disableSolo(button, _, _)
   local broadcastStr = string.format("[%s]%s[-] side will be set up for a human player.", Color.fromString(playerColor):toHex(), playerColor)
   broadcastToAll(broadcastStr, "White")
 
+  -- mark captain board pad GMNotes to allow helpers to check isSolo or playerColorIsSolo
+  getObjectbyName("Pad Crew Board " .. playerColor).setGMNotes("disabled")
+
   -- hide bot difficulty buttons
   buttonSoloDifficultyVisibility(false, playerColor)
 
   -- flip captain buttons
   local checkZone = getObjectbyNameAndNotes("Zone Captain Card", playerColor)
   for _, object in pairs(checkZone.getObjects()) do
-    if object.hasTag('button_faction_setup') then
+    if object.hasTag('button_faction_setup') or object.getName():find("Button Use Basic") or object.getName():find("Button Use Advanced") then
       local rotButton = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
       object.setRotation(rotButton)
     end
   end
+end
+
+
+function setButtonDifficulty(difficulty, button, isEnabled)
+  -- enables a solo bot button for that difficulty
+
+  local playerColor = button.getName():find("Blue") and "Blue" or "Red"
+  local buttonList = {
+    getObjectbyName("Button Solo Admiral " .. playerColor),
+    getObjectbyName("Button Solo Captain " .. playerColor),
+    getObjectbyName("Button Solo Commander " .. playerColor),
+    getObjectbyName("Button Solo Lieutenant " .. playerColor),
+    getObjectbyName("Button Solo Ensign " .. playerColor),
+    getObjectbyName("Button Solo Cadet " .. playerColor),
+  }
+
+  -- broadcast
+  local diffColorHexes = {
+    ["Cadet"]      = "B96982",
+    ["Ensign"]     = "E58515",
+    ["Lieutenant"] = "71AA75",
+    ["Captain"]    = "E58515",
+    ["Commander"]  = "C6CAA5",
+    ["Admiral"]    = "AD1D14",
+  }
+  local difficultyColorHex = diffColorHexes[difficulty]
+  local broadcastStr = string.format("[%s]%s Bot[-] difficulty %sselected: [%s]%s[-]", Color.fromString(playerColor):toHex(), playerColor, isEnabled and "" or "de-", difficultyColorHex, difficulty)
+  broadcastToAll(broadcastStr, "White")
+
+  -- first set enabled/disabled, then refresh init
+  for _, diffButton in ipairs(buttonList) do
+    if diffButton ~= button then
+      diffButton.setGMNotes("disabled")
+      initButtonSoloDifficulty(diffButton)
+    elseif diffButton == button then
+      diffButton.setGMNotes(isEnabled and "enabled" or "disabled")
+      initButtonSoloDifficulty(diffButton)
+    end
+  end
+end
+
+
+-- handlers for solo difficulty button clicks, most run setButtonDifficulty with various parameters
+function enableCadetDifficulty(button, _, _)
+  local playerColor = button.getName():find("Blue") and "Blue" or "Red"
+  local difficulty = "Cadet"
+  -- need to perform rest of captain setup for this side
+
+  -- deploy cadet stardate cards, refresh glory, show counter, mark stardate pad
+  setupInitialSoloStardate(difficulty)
+
+  -- destruct captain setup buttons
+  destructCaptainSelectUIButtons(playerColor)
+
+  -- broadcast
+  local broadcastStr = "[" .. Color.fromString(playerColor):toHex() .. "]" .. playerColor .. "[-] Side will be cleaned up for Cadet Difficulty."
+  broadcastToAll(broadcastStr, "White")
+
+  -- check if last player set up, if so, finalize captain setup
+  local isLastCaptain = checkIfLastCaptainToSetup(playerColor)
+  if isLastCaptain then finalizeCaptainSetup() end
+
+end
+
+
+function enableEnsignDifficulty(button, _, _)
+  local difficulty = "Ensign"
+  button.setGMNotes("enabled")
+  setButtonDifficulty(difficulty, button, true)
+end
+
+function disableEnsignDifficulty(button, _, _)
+  local difficulty = "Ensign"
+  button.setGMNotes("disabled")
+  setButtonDifficulty(difficulty, button, false)
+end
+
+
+function enableLieutenantDifficulty(button, _, _)
+  local difficulty = "Lieutenant"
+  button.setGMNotes("enabled")
+  setButtonDifficulty(difficulty, button, true)
+end
+
+function disableLieutenantDifficulty(button, _, _)
+  local difficulty = "Lieutenant"
+  button.setGMNotes("disabled")
+  setButtonDifficulty(difficulty, button, false)
+end
+
+
+function enableCommanderDifficulty(button, _, _)
+  local difficulty = "Commander"
+  button.setGMNotes("enabled")
+  setButtonDifficulty(difficulty, button, true)
+end
+
+function disableCommanderDifficulty(button, _, _)
+  local difficulty = "Commander"
+  button.setGMNotes("disabled")
+  setButtonDifficulty(difficulty, button, false)
+end
+
+
+function enableCaptainDifficulty(button, _, _)
+  local difficulty = "Captain"
+  button.setGMNotes("enabled")
+  setButtonDifficulty(difficulty, button, true)
+end
+
+function disableCaptainDifficulty(button, _, _)
+  local difficulty = "Captain"
+  button.setGMNotes("disabled")
+  setButtonDifficulty(difficulty, button, false)
+end
+
+
+function enableAdmiralDifficulty(button, _, _)
+  local difficulty = "Admiral"
+  button.setGMNotes("enabled")
+  setButtonDifficulty(difficulty, button, true)
+end
+
+function disableAdmiralDifficulty(button, _, _)
+  local difficulty = "Admiral"
+  button.setGMNotes("disabled")
+  setButtonDifficulty(difficulty, button, false)
 end

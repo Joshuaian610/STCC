@@ -1,0 +1,92 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "ContainedObjects_order": [
+    "SuitsRiker.0ffff7",
+    "SuitsPike.8c5f09",
+    "SuitsFreeman.eb2334",
+    "SuitsSoval.3379e7",
+    "SuitsRebner.a95707",
+    "SuitsKirk.f209cd",
+    "SuitsKhan.3fb40e",
+    "SuitsGeorgiou.0a0d03",
+    "SuitsArcher.8c48ac",
+    "SuitsSisko.93ac80",
+    "SuitsShran.73f090",
+    "SuitsSela.55e16f",
+    "SuitsPicard.a11bc3",
+    "SuitsKoloth.6f4de7",
+    "SuitsBurnham.c75a48"
+  ],
+  "ContainedObjects_path": "SuitsDeck.98a2d9",
+  "CustomDeck": {
+    "271": {
+      "BackIsHidden": false,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/16418659714317827235/A70B97E0E459A1396915ADD2B21A8A01B6F32C18/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17638178942498129109/E2C1E909BC7BA0BAC85F9874BFAF9745CDEEC214/",
+      "NumHeight": 3,
+      "NumWidth": 5,
+      "Type": 0,
+      "UniqueBack": true
+    }
+  },
+  "DeckIDs": [
+    27114,
+    27113,
+    27112,
+    27111,
+    27110,
+    27109,
+    27108,
+    27107,
+    27106,
+    27105,
+    27104,
+    27103,
+    27102,
+    27101,
+    27100
+  ],
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "98a2d9",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Deck",
+  "Nickname": "Suits Deck",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tooltip": true,
+  "Transform": {
+    "posX": 5.722,
+    "posY": 1.79,
+    "posZ": 27.5,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 1.75,
+    "scaleY": 1,
+    "scaleZ": 1.75
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

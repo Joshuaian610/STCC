@@ -9,7 +9,7 @@ function onCollisionEnter(info)
         for _, zone in pairs(zones) do
             if zone == zone_1 or zone == zone_2 then
                 if enter_object.hasTag('suit_ship') then
-                    if enter_object.hasTag('trait_cloak') then
+                    if enter_object.hasTag('trait_cloak') and not enter_object.type == "Card" then
                         enter_object.highlightOn("Purple")
                         enter_object.setDescription('Cloaked')
                     end

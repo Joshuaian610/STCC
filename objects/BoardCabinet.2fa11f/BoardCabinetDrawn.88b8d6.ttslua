@@ -100,7 +100,7 @@ function HideObjectsAbove( toggle )
 	end
     
     for k,v in pairs( getAllObjects() ) do
-        if v != self then
+        if v ~= self then
             if PointToAABBIntersect( BBMin, BBMax, v.getPosition() ) then
                 if toggle then
                     Store( v )

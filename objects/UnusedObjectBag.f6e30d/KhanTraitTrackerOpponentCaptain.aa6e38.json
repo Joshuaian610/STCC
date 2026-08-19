@@ -1,0 +1,60 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 0.23529,
+    "g": 0.23529,
+    "r": 0.23529
+  },
+  "CustomImage": {
+    "CustomTile": {
+      "Stackable": false,
+      "Stretch": true,
+      "Thickness": 0.2,
+      "Type": 3
+    },
+    "ImageScalar": 1,
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/10784108618077403415/F8DB03E68B49DC53A6FE1F1F9BBB454EF2367EA3/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/9985024340193636261/7BB3012895B074C24C6ADAC8DCE77B12D2E8F584/",
+    "WidthScale": 0
+  },
+  "Description": "Flip this tracker to mark a Trait as gained or not.\n\nBlack Side = Gained.",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "aa6e38",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
+  "Name": "Custom_Tile",
+  "Nickname": "Khan Trait Tracker Opponent Captain",
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "khan_trait_tracker"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 33.957,
+    "posY": 1.971,
+    "posZ": -34.062,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 0.45,
+    "scaleY": 1,
+    "scaleZ": 0.43
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

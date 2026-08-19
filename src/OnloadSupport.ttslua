@@ -55,19 +55,46 @@ function buttonSelectCaptainVisibility(captainSelectButtonVisibility)
   for _, object in ipairs(getObjects()) do
     if object.getName():match("^Button Select .+$") or
        object.getName() == "Setup Random Basic" or object.getName() == "Setup Random Advanced" or
-       object.getName() == "Setup Random Basic OR Advanced" or object.getName() == "Setup For Solo" then
+       object.getName() == "Setup Random Basic OR Advanced" or object.getName():find("Setup For Solo") then
       table.insert(captainSelectButtons, object)
     end
   end
+
+  -- handle captain select buttons
   for _, button in ipairs(captainSelectButtons) do
     if button ~= nil then
       local posButton = button.getPosition()
       if not captainSelectButtonVisibility then
         posButton.y = -2
+        button.clearButtons()
       else
         posButton.y = 0.95
+        initButtonCaptainSelect(button)
       end
       button.setPosition(posButton)
+    end
+  end
+
+  -- handle basic/advanced selection buttons
+  for _, object in pairs(getObjects()) do
+    if object.getName():find("Button Use Basic") or object.getName():find("Button Use Advanced") then
+      local posObj = object.getPosition()
+      if not captainSelectButtonVisibility then
+        posObj.y = -2
+        object.clearButtons()
+      else
+        posObj.y = 0.95
+        if object.getGMNotes() == "enabled" and object.getName():find("Advanced") then
+          initButtonDisableAdvanced(object)
+        elseif object.getGMNotes() == "disabled" and object.getName():find("Advanced") then
+          initButtonEnableAdvanced(object)
+        elseif object.getGMNotes() == "enabled" and object.getName():find("Basic") then
+          initButtonDisableBasic(object)
+        elseif object.getGMNotes() == "disabled" and object.getName():find("Basic") then
+          initButtonEnableBasic(object)
+        end
+      end
+      object.setPosition(posObj)
     end
   end
 end
@@ -90,44 +117,53 @@ end
 function showStardateGloryCounter(stardateType)
   -- this should allow for showing and creation of stardate glory counter
   local color = { 0, 0, 0, 255 }
-  local hover_color = { 0, 0, 0, .8 }
+  local hoverColor = { 0, 0, 0, .8 }
   local counterColors = {
-    ["two_player"] = {
-      color        = { 119/255, 179/255, 203/255, 255 },
-      hover_color  = { 119/255, 179/255, 203/255, .8 },
+    ["twoPlayer"] = {
+      ["Color"]        = { 119/255, 179/255, 203/255, 255 },
+      ["HoverColor"]   = { 119/255, 179/255, 203/255, .8 },
     },
-    ["cadet"]      = {
-      color        = { 171/255, 107/255, 142/255, 255 },
-      hover_color  = { 171/255, 107/255, 142/255, .8 },
+    ["Cadet"]      = {
+      ["Color"]        = { 171/255, 107/255, 142/255, 255 },
+      ["HoverColor"]   = { 171/255, 107/255, 142/255, .8 },
     },
-    ["ensign"]     = {
-      color        = { 229/255, 133/255, 21/255, 255 },
-      hover_color  = { 229/255, 133/255, 21/255, .8 },
+    ["Ensign"]     = {
+      ["Color"]        = { 229/255, 133/255, 21/255, 255 },
+      ["HoverColor"]   = { 229/255, 133/255, 21/255, .8 },
     },
-    ["captain"]    = {
-      color        = { 229/255, 133/255, 21/255, 255 },
-      hover_color  = { 229/255, 133/255, 21/255, .8 },
+    ["Captain"]    = {
+      ["Color"]        = { 229/255, 133/255, 21/255, 255 },
+      ["HoverColor"]   = { 229/255, 133/255, 21/255, .8 },
     },
-    ["lieutenant"] = {
-      color        = { 113/255, 170/255, 117/255, 255 },
-      hover_color  = { 113/255, 170/255, 117/255, .8 },
+    ["Lieutenant"] = {
+      ["Color"]        = { 113/255, 170/255, 117/255, 255 },
+      ["HoverColor"]   = { 113/255, 170/255, 117/255, .8 },
     },
-    ["commander"]  = {
-      color        = { 198/255, 202/255, 165/255, 255 },
-      hover_color  = { 198/255, 202/255, 165/255, .8 },
+    ["Commander"]  = {
+      ["Color"]        = { 198/255, 202/255, 165/255, 255 },
+      ["HoverColor"]   = { 198/255, 202/255, 165/255, .8 },
     },
-    ["admiral"]    = {
-      color        = { 173/255, 29/255, 20/255, 255 },
-      hover_color  = { 173/255, 29/255, 20/255, .8 },
+    ["Admiral"]    = {
+      ["Color"]        = { 173/255, 29/255, 20/255, 255 },
+      ["HoverColor"]   = { 173/255, 29/255, 20/255, .8 },
     },
   }
-  color = counterColors[stardateType].color
-  hover_color = counterColors[stardateType].hover_color
+  color = counterColors[stardateType]["Color"]
+  hoverColor = counterColors[stardateType]["HoverColor"]
   local counter = getObjectbyName("Glory Counter Stardate")
   local posCounter = counter.getPosition()
   posCounter.y = .85
   counter.setPosition(posCounter)
-  counter.call('create_all', {color=color, h_color=hover_color})
+
+
+
+
+  counter.call('create_all', {color=color, h_color=hoverColor})
+
+
+
+
+  
 end
 
 
@@ -165,13 +201,33 @@ function gloryCounterStardateInProgress()
 end
 
 
+function onLoadEnableTurns()
+  -- handles enabling Turns mode & setting turn to correct player onload
+
+  -- first, check if there is a current turn via Junk Pad GMNotes check
+  local padJunk = getObjectbyName("Pad Junk")
+  local currentTurnOwner = "None"
+  if padJunk.getGMNotes() == "None" then
+    return
+  else
+    currentTurnOwner = padJunk.getGMNotes()
+  end
+
+  -- if so, check if playerCount > 1 and set turn owner
+  local seatedPlayers = getSeatedPlayers()
+  if #seatedPlayers > 1 then
+    Turns.enable = true
+    Turns.turn_color = currentTurnOwner
+  end
+end
+
+
 function onloadXML()
   -- handles required XML updates in case of a reload or rewind
   local colors = {"Blue", "Red"}
   for i = 1, 2 do
     local playercolor = colors[i]
-    local is_solo = false
-    if getObjectFromGUID(playercolor == "Blue" and "23bed4" or "1a78a6").getGMNotes() == "solo" then is_solo = true end
+    local is_solo = checkPlayerColorIsSolo(playercolor)
     local captain_zone = getObjectFromGUID(playercolor == "Blue" and "75465f" or "75c041")
     local captain_pad = getObjectFromGUID(playercolor == "Blue" and "997491" or "28a24b")
     for _, object in pairs(captain_zone.getObjects()) do

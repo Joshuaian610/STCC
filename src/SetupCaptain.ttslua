@@ -1,0 +1,1748 @@
+-- handles captain and captain asset setup functionality
+
+
+
+function initButtonEnableBasic(buttonObj)
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "enableButtonBasic",
+    function_owner = self,
+    label          = "",
+    position       = { 3.40, 0.36, 0.0 },
+    width          = 350,
+    height         = 350,
+    font_size      = 300,
+    font_color     = { 49/255, 76/255, 95/255, 1 },
+    scale          = { 2.3, 2.3, 2.3 },
+    color          = { 1, 1, 1, 1 },
+    hover_color    = { 1, 1, 1, .6 },
+    tooltip        = "Click and check this button to use the Basic side of the Captain Board.",
+  })
+end
+
+
+function initButtonDisableBasic(buttonObj)
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "nullFunc",
+    function_owner = self,
+    label          = "✔",
+    position       = { 3.40, 0.36, 0.0 },
+    width          = 350,
+    height         = 350,
+    font_size      = 300,
+    font_color     = { 49/255, 76/255, 95/255, 1 },
+    scale          = { 2.3, 2.3, 2.3 },
+    color          = { 1, 1, 1, 1 },
+    hover_color    = { 1, 1, 1, .6 },
+    tooltip        = "Basic Side of Captain Board will be used to setup Captain. Click Advanced checkbox to use Advanced instead.",
+  })
+end
+
+
+function initButtonEnableAdvanced(buttonObj)
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "enableButtonAdvanced",
+    function_owner = self,
+    label          = "",
+    position       = { 3.40, 0.36, 0.0 },
+    width          = 350,
+    height         = 350,
+    font_size      = 300,
+    font_color     = { 49/255, 76/255, 95/255, 1 },
+    scale          = { 2.3, 2.3, 2.3 },
+    color          = { 1, 1, 1, 1 },
+    hover_color    = { 1, 1, 1, .6 },
+    tooltip        = "Click and check this button to use the Advanced side of the Captain Board.",
+  })
+end
+
+
+function initButtonDisableAdvanced(buttonObj)
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "nullFunc",
+    function_owner = self,
+    label          = "✔",
+    position       = { 3.40, 0.36, 0.0 },
+    width          = 350,
+    height         = 350,
+    font_size      = 300,
+    font_color     = { 49/255, 76/255, 95/255, 1 },
+    scale          = { 2.3, 2.3, 2.3 },
+    color          = { 1, 1, 1, 1 },
+    hover_color    = { 1, 1, 1, .6 },
+    tooltip        = "Advanced Side of Captain Board will be used to setup Captain. Click Basic checkbox to use Basic instead.",
+  })
+end
+
+
+function initButtonCaptainSelect(buttonObj)
+  buttonObj.clearButtons()
+  local buttonName = buttonObj.getName()
+  local splitName = {}
+  for str in string.gmatch(buttonName,  "%S+") do
+    table.insert(splitName, str)
+  end
+  local captainName = nil
+  if #splitName > 0 then
+    captainName = splitName[3]
+  end
+  local tooltip = nil
+  if captainName ~= nil and captainName ~= "Khan"then
+    tooltip = "Select a Captain Board Side (Basic or Advanced), then, click to setup player area for Captain " .. captainName .. "."
+  elseif captainName ~= nil and captainName == "Khan" then
+    tooltip = "Click to setup player area for Captain " .. captainName .. ".\n\n(Will ignore checked Basic/Advanced selection)."
+  end
+  if buttonObj.getName() == "Setup Random Basic" then
+    tooltip = "Click to setup player area for a Random Captain, using Basic Captain Board side.\n\n(Will ignore checked Basic/Advanced selection)"
+  elseif buttonObj.getName() == "Setup Random Advanced" then
+    tooltip = "Click to setup player area for a Random Captain, using Advanced Captain Board side.\n\n(Will ignore checked Basic/Advanced selection)"
+  end
+  if buttonObj.getName() == "Setup Random Basic OR Advanced" then
+    tooltip = "Click to setup player area for a Random Captain, randomly using either side of Captain Board if Khan not randomly selected.\n\n(Will ignore checked Basic/Advanced selection)"
+  end
+  if buttonObj.getName():find("Setup For Solo") then
+    initButtonSoloVS(buttonObj)
+  else
+    buttonObj.createButton({
+      click_function = "setupCaptain",
+      function_owner = self,
+      label          = "",
+      position       = { 0, 0.36, 0.02 },
+      rotation       = { 0, 180, 0 },
+      width          = 600,
+      height         = 450,
+      scale          = { 2.3, 2.3, 2.3 },
+      color          = { 1, 1, 1, .0 },
+      hover_color    = { 1, 1, 1, .4 },
+      tooltip        = tooltip,
+    })
+  end
+end
+
+
+
+function nullFunc()
+  -- handle a click that should not change anything
+  return
+end
+
+
+function enableButtonBasic(buttonObj)
+  local playerColor = buttonObj.getName():find("Blue") and "Blue" or "Red"
+  buttonObj.setGMNotes("enabled")
+  initButtonDisableBasic(buttonObj)
+
+  local otherButton = getObjectbyName("Button Use Advanced " .. playerColor)
+  otherButton.setGMNotes("disabled")
+  initButtonEnableAdvanced(otherButton)
+end
+
+
+function enableButtonAdvanced(buttonObj)
+  local playerColor = buttonObj.getName():find("Blue") and "Blue" or "Red"
+  -- need to first check if solo is currently enabled for playerColor
+  if getObjectbyName("Setup For Solo " .. playerColor).getGMNotes() == "enabled" then
+    broadcastToAll("Solo mode will always use Basic side of Bot Captain Board.", "Orange")
+    return
+  end
+
+  buttonObj.setGMNotes("enabled")
+  initButtonDisableAdvanced(buttonObj)
+
+  local otherButton = getObjectbyName("Button Use Basic " .. playerColor)
+  otherButton.setGMNotes("disabled")
+  initButtonEnableBasic(otherButton)
+end
+
+
+-- wrapper to handle entirety of captain area setup, call by call
+function setupCaptain(button, clickerColor, altClick)
+  -- get buttonName, captainName, playerColor, otherPlayerColor, isSolo
+  local buttonName = button.getName()
+  local playerColor = button.getGMNotes()
+  local otherPlayerColor = playerColor == "Blue" and "Red" or "Blue"
+  local isSolo = false
+  if getObjectbyName("Setup For Solo " .. playerColor) ~= nil then
+    if getObjectbyName("Setup For Solo " .. playerColor).getGMNotes() == "enabled" then isSolo = true end
+  end
+  local captainName = nil
+
+  -- check isSolo. if so, ensure bot difficulty button for playerColor is selected
+  local botDiffSelected = false -- boolean of if a bot difficulty has been selected
+  local selectedBotDifficulty = "None" -- string of the selected difficulty
+  if isSolo then
+    botDiffSelected, selectedBotDifficulty = checkBotDiff(playerColor)
+    if not botDiffSelected then
+      broadcastToAll("Please make sure to select solo bot difficulty before selecting Captain!", "Orange")
+      return
+    end
+  end
+
+  -- handle random captain select buttons
+  local selectedCaptainDifficulty = getSelectedCaptainDifficulty(playerColor)
+  if button.getName():find("Setup Random") then
+    -- if button == random basic, randomly select a non khan basic captain
+    if buttonName == "Setup Random Basic" then
+      captainName = setupRandomBasic(playerColor)
+      selectedCaptainDifficulty = "Basic"
+    end
+
+    -- if button == random advanced, randomly select an advanced captain
+    if buttonName == "Setup Random Advanced" then
+      captainName = setupRandomAdvanced(playerColor)
+      selectedCaptainDifficulty = "Advanced"
+    end
+
+    -- if button == random either, randomly select captain
+    if buttonName == "Setup Random Basic OR Advanced" then
+      captainName, selectedCaptainDifficulty = setupRandomEither(playerColor)
+      if isSolo then
+        selectedCaptainDifficulty = "Basic"
+      end
+    end
+
+  -- handle explicit captain select buttons
+  elseif button.getName():find("Button Select") then
+    captainName = setupExplicitCaptain(buttonName)
+  end
+
+  -- force "Basic" if isSolo
+  if isSolo then
+    selectedCaptainDifficulty = "Basic"
+  end
+
+  -- broadcast captain selection
+  local playerStr = getPlayerStr(playerColor)
+  local broadcastStr = string.format("%s has selected %s Side Captain %s.", playerStr, selectedCaptainDifficulty, captainName)
+  broadcastToAll(broadcastStr, "White")
+
+  -- destruct other player's button to select corresponding captain
+  if getObjectbyNameAndNotes("Button Select " .. captainName, otherPlayerColor) ~= nil then
+    getObjectbyNameAndNotes("Button Select " .. captainName, otherPlayerColor).destruct()
+  end
+
+  -- destruct all captain select, solo VS, and solo difficulty buttons for playerColor
+  destructCaptainSelectUIButtons(playerColor)
+
+  -- if isSolo, destruct all solo VS and solo difficulty buttons for otherPlayerColor
+  if isSolo then destructSoloDiffButtons(otherPlayerColor) end
+
+  -- if bot, setup bot stuff (stardate etc)
+  if isSolo then
+    setupInitialSoloStardate(selectedBotDifficulty)
+  end
+
+  -- -- pull selected captain board, card
+  placeSelectedCaptainBoard(captainName, selectedCaptainDifficulty, playerColor, isSolo)
+
+
+  -- if not khan, pull tracker cubes (check isSolo to use bot or non bot positioning)
+  -- if khan, pull & place trait trackers & remove tracker cubes
+  pullFocusAssets(captainName, playerColor, selectedCaptainDifficulty, isSolo)
+
+  -- if they exist, place captain's draw, reserves, and development decks
+  -- if isSolo, create & name supplement deck instead of reserves/development
+  placeCaptainDecks(captainName, playerColor, isSolo)
+
+  -- place captain card
+  placeCaptainCard(captainName, playerColor, isSolo)
+
+  -- place nonstandard cards/decks 
+  ---- checkIsSolo to perform deploy card actions before placing to top of deck ie: sisko
+  -- deployeds
+  ---- if ship, place deployed figurine, color/add tag to highlight
+  ---- if isSolo, figurine to space dock instead of card
+  -- controlled locations & ships
+  setupCaptainDeployed(captainName, playerColor, isSolo)
+  -- statuses
+  setupCaptainStatus(captainName, playerColor, isSolo)
+  -- incidents
+  setupCaptainIncident(captainName, playerColor, isSolo)
+  -- discards
+  setupCaptainDiscard(captainName, playerColor, isSolo)
+
+  -- remove away teams per captain count, place special ATs if needed (pike, archer)
+  setupAwayTeams(captainName, playerColor, isSolo)
+
+  -- if isSolo, place & scale bot traits, suits cards
+  -- and also flip player area UI elements for bot
+  if isSolo then
+    setupBotInstructionCards(captainName, playerColor)
+    flipBotUI(playerColor)
+  end
+
+  -- if not isSolo, set dil/lat/glory counters to 1 each, init captain board goal buttons (will also need check onSpawn and probably a whole require page lol)
+  if not isSolo then
+    setInitialPlayerCounters(playerColor)
+    -- init captain board goal buttons 
+  end
+
+  -- display on screen XML UI per selected captain
+  displayPlayerControlXML(captainName, playerColor)
+
+  -- **** check if last playerarea to be set up, if so, perform final game setup
+  local isLastCaptain = checkIfLastCaptainToSetup(playerColor)
+  Wait.time(function()
+
+    if isLastCaptain then finalizeCaptainSetup() end
+
+  end, 1.0)
+end
+
+
+function checkBotDiff(playerColor)
+  -- this function handles the check if there is a selected bot difficulty in the case of a solo setup
+  -- returns boolean of if a difficulty is selected, and a string of which difficulty has been selected
+  local botDiffSelected = false
+  local selectedBotDifficulty = "None"
+  for _, object in pairs(getObjects()) do
+    if object.getName():find("Button Solo") and object.getName():find(playerColor) and
+    object.getGMNotes() == "enabled" then
+      botDiffSelected = true
+      local splitName = {}
+      for str in string.gmatch(object.getName(),  "%S+") do
+        table.insert(splitName, str)
+      end
+      selectedBotDifficulty = splitName[3]
+    end
+  end
+  return botDiffSelected, selectedBotDifficulty
+end
+
+
+function getSelectedCaptainDifficulty(playerColor)
+  -- checks player area to determine if basic or advanced is checked
+  local selectedCaptainDifficulty = "Advanced"
+  if getObjectbyName("Button Use Basic " .. playerColor).getGMNotes() == "enabled" then
+    selectedCaptainDifficulty = "Basic"
+  end
+  return selectedCaptainDifficulty
+end
+
+
+-- these functions handle the click of a random captain button, returns captainName
+function setupRandomBasic(playerColor)
+  local checkZone = getObjectbyNameAndNotes("Zone Captain Card", playerColor)
+  local captainPool = {}
+  for _, zoneObj in pairs(checkZone.getObjects()) do
+    if zoneObj.getName():find("Button Select") and zoneObj.getName() ~= "Button Select Khan" then
+      table.insert(captainPool, zoneObj)
+    end
+  end
+  captainButton = captainPool[math.random(1, #captainPool)]
+  local buttonName = captainButton.getName()
+  local splitName = {}
+  for str in string.gmatch(buttonName,  "%S+") do
+    table.insert(splitName, str)
+  end
+  local captainName = nil
+  if #splitName > 0 then
+    captainName = splitName[3]
+  end
+  return captainName
+end
+
+function setupRandomAdvanced(playerColor)
+  local checkZone = getObjectbyNameAndNotes("Zone Captain Card", playerColor)
+  local captainPool = {}
+  for _, zoneObj in pairs(checkZone.getObjects()) do
+    if zoneObj.getName():find("Button Select") then
+      table.insert(captainPool, zoneObj)
+    end
+  end
+  captainButton = captainPool[math.random(1, #captainPool)]
+  local buttonName = captainButton.getName()
+  local splitName = {}
+  for str in string.gmatch(buttonName,  "%S+") do
+    table.insert(splitName, str)
+  end
+  local captainName = nil
+  if #splitName > 0 then
+    captainName = splitName[3]
+  end
+  return captainName
+end
+
+function setupRandomEither(playerColor)
+  local boardSides = {"Basic", "Advanced"}
+  local selectedCaptainDifficulty = boardSides[math.random(1, #boardSides)]
+  local checkZone = getObjectbyNameAndNotes("Zone Captain Card", playerColor)
+  local captainPool = {}
+  for _, zoneObj in pairs(checkZone.getObjects()) do
+    if zoneObj.getName():find("Button Select") and
+    not (selectedCaptainDifficulty == "Basic" and zoneObj.getName() == "Button Select Khan") then
+      table.insert(captainPool, zoneObj)
+    end
+  end
+  captainButton = captainPool[math.random(1, #captainPool)]
+  local buttonName = captainButton.getName()
+  local splitName = {}
+  for str in string.gmatch(buttonName,  "%S+") do
+    table.insert(splitName, str)
+  end
+  local captainName = nil
+  if #splitName > 0 then
+    captainName = splitName[3]
+  end
+  return captainName, selectedCaptainDifficulty
+end
+
+
+function setupExplicitCaptain(buttonName)
+  -- handles the click and return of captainName of an non random captain select button
+  local splitName = {}
+  for str in string.gmatch(buttonName,  "%S+") do
+    table.insert(splitName, str)
+  end
+  local captainName = nil
+  if #splitName > 0 then
+    captainName = splitName[3]
+  end
+  return captainName
+end
+
+
+function destructSoloDiffButtons(playerColor)
+  -- broken into it's own function to be able to destruct these buttons for either side (ie: one side confirming as bot, destruct other side to prevent 2 bots)
+  for _, object in pairs(getObjects()) do
+    if object.getName() == "Setup For Solo " .. playerColor then object.destruct() end
+    if object.getName():find("Button Solo") and object.getName():find(playerColor) then object.destruct() end
+  end
+end
+
+
+function destructCaptainSelectUIButtons(playerColor)
+  -- this handles the destruct of the captain select buttons, solo difficulty buttons, and solo VS button to make room for incoming captain assets
+  for _, object in pairs(getObjects()) do
+    if object.hasTag("button_faction_setup") and object.getGMNotes() == playerColor then object.destruct() end
+    destructSoloDiffButtons(playerColor)
+    if (object.getName():find("Button Use Advanced") or object.getName():find("Button Use Basic")) and object.getName():find(playerColor) then object.destruct() end
+  end
+end
+
+
+function setupInitialSoloStardate(selectedBotDifficulty)
+  -- handles initial setup of stardate area & glory stuff
+
+  -- show stardate counter
+    showStardateGloryCounter(selectedBotDifficulty)
+
+    -- place selected difficulty stardate deck to pad
+    local deckStardate = selectedBotDifficulty ~= "Cadet" and getObjectbyName("Solo vs. " .. selectedBotDifficulty .. " Bot Stardate Deck") or
+                                                              getObjectbyName("Solo Cadet Practice Deck")
+    local rotDeckStardate = { 0.00, 180.00, 0.00 }
+    local posDeckStardate = { -12.50, 1.25, 0.00 }
+    deckStardate.setRotation(rotDeckStardate)
+    deckStardate.setPosition(posDeckStardate)
+
+    -- refresh glory to pull starting glory & initialize counter
+    Wait.time(function() -- wait to allow deck to settle to pad
+
+      refreshGlory()
+
+    end, 0.5)
+    -- mark stardate card pad with bot difficulty, accessed and used after last stardate card goes away
+    getObjectbyName("Pad Stardate").setGMNotes(selectedBotDifficulty)
+end
+
+
+function placeSelectedCaptainBoard(captainName, selectedCaptainDifficulty, playerColor, isSolo)
+
+  -- handles pull and placement of main captain board on setup
+
+  -- DEBUG, REMOVE AFTER ADDING ADVANCED BOARDS
+  selectedCaptainDifficulty = "Basic"
+
+
+  -- check isSolo, place to rotation
+  local captainBoard  = getObjectbyName(captainName == "Khan" and "Khan Crew Board" or
+                        string.format("%s Crew Board %s", captainName, selectedCaptainDifficulty))
+
+  local rotCaptainBoard = playerColor == "Blue" and { 0.00, 270.00, 0.00 }  or { 0.00, 90.00, 0.00 }
+  if isSolo then rotCaptainBoard = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 } end
+  local posCaptainBoard = playerColor == "Blue" and { -42.15, 0.95, 16.00 } or { 42.15, 0.95, -16.00 }
+  captainBoard.setRotation(rotCaptainBoard)
+  captainBoard.setPosition(posCaptainBoard)
+
+  -- lock board, tint to playerColor
+  captainBoard.setLock(true)
+  captainBoard.setColorTint(playerColor)
+end
+
+
+function pullFocusAssets(captainName, playerColor, selectedCaptainDifficulty, isSolo)
+  -- handles pull & placement of tracking cubes for most captains
+  -- khan will pull & place trait trackers instead
+  local trackers = {
+      ["Science"]   = getObjectbyNameAndNotes("Focus Tracker Science", playerColor),
+      ["Diplomacy"] = getObjectbyNameAndNotes("Focus Tracker Diplomacy", playerColor),
+      ["Military"]  = getObjectbyNameAndNotes("Focus Tracker Military", playerColor),
+    }
+  local bagUnusedObjs = getObjectbyName("Unused Object Bag")
+
+  if captainName ~= "Khan" then
+    local rotTrackers = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
+    local posTrackers = not isSolo and {
+      ["Burnham"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.26, 1.19, 21.71},
+          ["Diplomacy"] = { -44.23, 1.19, 21.71},
+          ["Military"]  = { -46.18, 1.19, 21.72},
+        },
+        ["Advanced"] = {
+          ["Science"]   = { -42.06, 1.19, 21.72},
+          ["Diplomacy"] = { -44.03, 1.19, 21.72},
+          ["Military"]  = { -45.98, 1.19, 21.72},
+        },
+      },
+      ["Koloth"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.32, 1.19, 21.70 },
+          ["Diplomacy"] = { -44.28, 1.19, 21.70 },
+          ["Military"]  = { -46.20, 1.19, 21.70 },
+        },
+        ["Advanced"] = {
+          ["Science"]   = { -42.07, 1.19, 21.72 },
+          ["Diplomacy"] = { -44.01, 1.19, 21.72 },
+          ["Military"]  = { -45.97, 1.19, 21.72 },
+        },
+      },
+      ["Picard"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.30, 1.19, 21.75 },
+          ["Diplomacy"] = { -44.27, 1.19, 21.75 },
+          ["Military"]  = { -46.22, 1.19, 21.75 },
+        },
+        ["Advanced"] = {
+          ["Science"]   = { -42.05, 1.19, 21.69 },
+          ["Diplomacy"] = { -44.04, 1.19, 21.69 },
+          ["Military"]  = { -45.97, 1.19, 21.69 },
+        },
+      },
+      ["Sela"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.26, 1.19, 21.73 },
+          ["Diplomacy"] = { -44.22, 1.19, 21.73 },
+          ["Military"]  = { -46.20, 1.19, 21.74 },
+        },
+        ["Advanced"] = {
+          ["Science"]   = { -42.06, 1.19, 21.70 },
+          ["Diplomacy"] = { -44.02, 1.19, 21.70 },
+          ["Military"]  = { -45.98, 1.19, 21.71 },
+        },
+      },
+      ["Shran"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.27, 1.19, 21.72 },
+          ["Diplomacy"] = { -44.23, 1.19, 21.72 },
+          ["Military"]  = { -46.19, 1.19, 21.72 },
+        },
+        ["Advanced"] = {
+          ["Science"]   = { -42.06, 1.19, 21.69 },
+          ["Diplomacy"] = { -44.02, 1.19, 21.69 },
+          ["Military"]  = { -45.99, 1.19, 21.70 },
+        },
+      },
+      ["Sisko"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.29, 1.19, 21.72 },
+          ["Diplomacy"] = { -44.26, 1.19, 21.72 },
+          ["Military"]  = { -46.21, 1.19, 21.73 },
+        },
+        ["Advanced"] = {
+          ["Science"]   = { -42.06, 1.19, 21.71 },
+          ["Diplomacy"] = { -44.05, 1.19, 21.72 },
+          ["Military"]  = { -45.97, 1.19, 21.73 },
+        },
+      },
+
+      -- EXPANSION POSITIONS ARE ONLY PLACEHOLDERS USING SISKO'S INFO UNTIL FILLED IN
+      ["Archer"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.29, 1.19, 21.72 },
+          ["Diplomacy"] = { -44.26, 1.19, 21.72 },
+          ["Military"]  = { -46.21, 1.19, 21.73 },
+        },
+        ["Advanced"] = {
+          ["Science"]   = { -42.06, 1.19, 21.71 },
+          ["Diplomacy"] = { -44.05, 1.19, 21.72 },
+          ["Military"]  = { -45.97, 1.19, 21.73 },
+        },
+      },
+      ["Georgiou"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.29, 1.19, 21.72 },
+          ["Diplomacy"] = { -44.26, 1.19, 21.72 },
+          ["Military"]  = { -46.21, 1.19, 21.73 },
+        },
+        ["Advanced"] = {
+          ["Science"]   = { -42.06, 1.19, 21.71 },
+          ["Diplomacy"] = { -44.05, 1.19, 21.72 },
+          ["Military"]  = { -45.97, 1.19, 21.73 },
+        },
+      },
+      ["Kirk"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.29, 1.19, 21.72 },
+          ["Diplomacy"] = { -44.26, 1.19, 21.72 },
+          ["Military"]  = { -46.21, 1.19, 21.73 },
+        },
+        ["Advanced"] = {
+          ["Science"]   = { -42.06, 1.19, 21.71 },
+          ["Diplomacy"] = { -44.05, 1.19, 21.72 },
+          ["Military"]  = { -45.97, 1.19, 21.73 },
+        },
+      },
+      ["Rebner"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.29, 1.19, 21.72 },
+          ["Diplomacy"] = { -44.26, 1.19, 21.72 },
+          ["Military"]  = { -46.21, 1.19, 21.73 },
+        },
+        ["Advanced"] = {
+          ["Science"]   = { -42.06, 1.19, 21.71 },
+          ["Diplomacy"] = { -44.05, 1.19, 21.72 },
+          ["Military"]  = { -45.97, 1.19, 21.73 },
+        },
+      },
+      ["Soval"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.29, 1.19, 21.72 },
+          ["Diplomacy"] = { -44.26, 1.19, 21.72 },
+          ["Military"]  = { -46.21, 1.19, 21.73 },
+        },
+        ["Advanced"] = {
+          ["Science"]   = { -42.06, 1.19, 21.71 },
+          ["Diplomacy"] = { -44.05, 1.19, 21.72 },
+          ["Military"]  = { -45.97, 1.19, 21.73 },
+        },
+      },
+      ["Freeman"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.29, 1.19, 21.72 },
+          ["Diplomacy"] = { -44.26, 1.19, 21.72 },
+          ["Military"]  = { -46.21, 1.19, 21.73 },
+        },
+        ["Advanced"] = {
+          ["Science"]   = { -42.06, 1.19, 21.71 },
+          ["Diplomacy"] = { -44.05, 1.19, 21.72 },
+          ["Military"]  = { -45.97, 1.19, 21.73 },
+        },
+      },
+      ["Pike"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.29, 1.19, 21.72 },
+          ["Diplomacy"] = { -44.26, 1.19, 21.72 },
+          ["Military"]  = { -46.21, 1.19, 21.73 },
+        },
+        ["Advanced"] = {
+          ["Science"]   = { -42.06, 1.19, 21.71 },
+          ["Diplomacy"] = { -44.05, 1.19, 21.72 },
+          ["Military"]  = { -45.97, 1.19, 21.73 },
+        },
+      },
+      ["Riker"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.29, 1.19, 21.72 },
+          ["Diplomacy"] = { -44.26, 1.19, 21.72 },
+          ["Military"]  = { -46.21, 1.19, 21.73 },
+        },
+        ["Advanced"] = {
+          ["Science"]   = { -42.06, 1.19, 21.71 },
+          ["Diplomacy"] = { -44.05, 1.19, 21.72 },
+          ["Military"]  = { -45.97, 1.19, 21.73 },
+        },
+      },
+    } or {
+      ["Burnham"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.03, 1.19, 10.30 },
+          ["Diplomacy"] = { -40.08, 1.19, 10.30 },
+          ["Military"]  = { -38.13, 1.19, 10.30 },
+        },
+      },
+      ["Koloth"] = {
+        ["Basic"] = {
+          ["Science"]   = { -41.99, 1.19, 10.25 },
+          ["Diplomacy"] = { -40.03, 1.19, 10.25 },
+          ["Military"]  = { -38.04, 1.19, 10.25 },
+        },
+      },
+      ["Picard"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.02, 1.19, 10.25 },
+          ["Diplomacy"] = { -40.04, 1.19, 10.25 },
+          ["Military"]  = { -38.09, 1.19, 10.25 },
+        },
+      },
+      ["Sela"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.03, 1.19, 10.29 },
+          ["Diplomacy"] = { -40.07, 1.19, 10.29 },
+          ["Military"]  = { -38.11, 1.19, 10.28 },
+        },
+      },
+      ["Shran"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.05, 1.19, 10.26 },
+          ["Diplomacy"] = { -40.09, 1.19, 10.26 },
+          ["Military"]  = { -38.12, 1.19, 10.25 },
+        },
+      },
+      ["Sisko"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.01, 1.19, 10.29 },
+          ["Diplomacy"] = { -40.06, 1.19, 10.29 },
+          ["Military"]  = { -38.10, 1.19, 10.29 },
+        },
+      },
+
+      -- EXPANSION POSITIONS ARE ONLY PLACEHOLDERS USING SISKO'S INFO UNTIL FILLED IN
+      ["Archer"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.01, 1.19, 10.29 },
+          ["Diplomacy"] = { -40.06, 1.19, 10.29 },
+          ["Military"]  = { -38.10, 1.19, 10.29 },
+        },
+      },
+      ["Georgiou"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.01, 1.19, 10.29 },
+          ["Diplomacy"] = { -40.06, 1.19, 10.29 },
+          ["Military"]  = { -38.10, 1.19, 10.29 },
+        },
+      },
+      ["Kirk"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.01, 1.19, 10.29 },
+          ["Diplomacy"] = { -40.06, 1.19, 10.29 },
+          ["Military"]  = { -38.10, 1.19, 10.29 },
+        },
+      },
+      ["Rebner"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.01, 1.19, 10.29 },
+          ["Diplomacy"] = { -40.06, 1.19, 10.29 },
+          ["Military"]  = { -38.10, 1.19, 10.29 },
+        },
+      },
+      ["Soval"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.01, 1.19, 10.29 },
+          ["Diplomacy"] = { -40.06, 1.19, 10.29 },
+          ["Military"]  = { -38.10, 1.19, 10.29 },
+        },
+      },
+      ["Freeman"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.01, 1.19, 10.29 },
+          ["Diplomacy"] = { -40.06, 1.19, 10.29 },
+          ["Military"]  = { -38.10, 1.19, 10.29 },
+        },
+      },
+      ["Pike"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.01, 1.19, 10.29 },
+          ["Diplomacy"] = { -40.06, 1.19, 10.29 },
+          ["Military"]  = { -38.10, 1.19, 10.29 },
+        },
+      },
+      ["Riker"] = {
+        ["Basic"] = {
+          ["Science"]   = { -42.01, 1.19, 10.29 },
+          ["Diplomacy"] = { -40.06, 1.19, 10.29 },
+          ["Military"]  = { -38.10, 1.19, 10.29 },
+        },
+      },
+    }
+    for focus, tracker in pairs(trackers) do
+      local posTracker = posTrackers[captainName][selectedCaptainDifficulty][focus]
+      if playerColor == "Red" then
+        posTracker = { -posTracker[1], posTracker[2], -posTracker[3] }
+      end
+      tracker.setRotation(rotTrackers)
+      tracker.setPosition(posTracker)
+    end
+
+  elseif captainName == "Khan" then
+    -- instead of focus markers, pull khan trait trackers & place    
+    local rotTracker = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+    if isSolo then
+      rotTracker = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
+    end
+    local posTrackers = not isSolo and {
+      -- going from left to right, top to bottom
+      ["Blue"] = {
+        { -41.82, 1.05, 20.46 },
+        { -41.82, 1.05, 16.01 },
+        { -41.82, 1.05, 11.57 },
+        { -43.27, 1.05, 20.46 },
+        { -43.27, 1.05, 16.01 },
+        { -43.27, 1.05, 11.57 },
+        { -44.72, 1.05, 20.46 },
+        { -44.72, 1.05, 16.01 },
+        { -44.72, 1.05, 11.57 },
+        { -46.17, 1.05, 20.46 },
+        { -46.17, 1.05, 16.01 },
+        { -46.17, 1.05, 11.57 },
+      },
+      ["Red"] = {
+        { 41.82, 1.05, -20.46 },
+        { 41.82, 1.05, -16.01 },
+        { 41.82, 1.05, -11.57 },
+        { 43.27, 1.05, -20.46 },
+        { 43.27, 1.05, -16.01 },
+        { 43.27, 1.05, -11.57 },
+        { 44.72, 1.05, -20.46 },
+        { 44.72, 1.05, -16.01 },
+        { 44.72, 1.05, -11.57 },
+        { 46.17, 1.05, -20.46 },
+        { 46.17, 1.05, -16.01 },
+        { 46.17, 1.05, -11.57 },
+      },
+    } or {
+      ["Blue"] = {
+        { -42.48, 1.05, 11.54 },
+        { -42.48, 1.05, 15.99 },
+        { -42.48, 1.05, 20.43 },
+        { -41.03, 1.05, 11.54 },
+        { -41.03, 1.05, 15.99 },
+        { -41.03, 1.05, 20.43 },
+        { -39.59, 1.05, 11.54 },
+        { -39.56, 1.05, 15.99 },
+        { -39.59, 1.05, 20.43 },
+        { -38.14, 1.05, 11.54 },
+        { -38.14, 1.05, 15.99 },
+        { -38.14, 1.05, 20.43 },
+      },
+      ["Red"] = {
+        { 42.48, 1.05, -11.54 },
+        { 42.48, 1.05, -15.99 },
+        { 42.48, 1.05, -20.43 },
+        { 41.03, 1.05, -11.54 },
+        { 41.03, 1.05, -15.99 },
+        { 41.03, 1.05, -20.43 },
+        { 39.59, 1.05, -11.54 },
+        { 39.56, 1.05, -15.99 },
+        { 39.59, 1.05, -20.43 },
+        { 38.14, 1.05, -11.54 },
+        { 38.14, 1.05, -15.99 },
+        { 38.14, 1.05, -20.43 },
+      },
+    }
+    trackerNames = {
+      -- going from left to right, top to bottonm
+      "Khan Trait Tracker Ambassador",
+      "Khan Trait Tracker Business",
+      "Khan Trait Tracker Engineer",
+      "Khan Trait Tracker Creature",
+      "Khan Trait Tracker Doctor",
+      "Khan Trait Tracker Synthetic",
+      "Khan Trait Tracker Scientist",
+      "Khan Trait Tracker Spy",
+      "Khan Trait Tracker Opponent Captain",
+      "Khan Trait Tracker Telepath",
+      "Khan Trait Tracker Cloak",
+      "Khan Trait Tracker Different Opponent Captain",
+    }
+    for i = 1, 12 do
+      getObjectFromBagbyName(trackerNames[i], bagUnusedObjs, rotTracker, posTrackers[playerColor][i], false)
+    end
+
+    -- return usual focus markers to the bag
+    for _, tracker in pairs(trackers) do
+      bagUnusedObjs.putObject(tracker)
+    end
+  end
+end
+
+
+function placeCaptainDecks(captainName, playerColor, isSolo)
+  -- handles placement of selected captain's draw deck, reserves, and development if they exist
+
+  -- draw deck will always exist
+  local rotDrawDeck = playerColor == "Blue" and { 0.00, 270.00, 180.00 } or { 0.00, 90.00, 180.00 }
+  if isSolo then rotDrawDeck = playerColor == "Blue" and { 0.00, 90.00, 180.00 } or { 0.00, 270.00, 180.00 } end
+  local posDrawDeck = playerColor == "Blue" and { -44.50, 1.25, 7.00 } or { 44.50, 1.25, -7.00 }
+  local drawDeck = getObjectbyName(captainName .. " Draw Deck")
+  if drawDeck ~= nil then
+    drawDeck.setLock(false)
+    drawDeck.setRotation(rotDrawDeck)
+    drawDeck.setPosition(posDrawDeck)
+    Wait.time(function()
+
+      drawDeck.shuffle()
+
+    end, 0.50)
+  end
+
+  -- create "supplement" deck out of reserves/development decks if bot
+  -- otherwise, simply get and place decks to position
+  if not isSolo then
+    local rotReserveDeck = playerColor == "Blue" and { 0.00, 0.00, 180.00 } or { 0.00, 180.00, 180.00 }
+    local rotDevelopmentDeck = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+    local posDecks = playerColor == "Blue" and { -24.00, 1.25, 20.00 } or { 24.00, 1.25, -20.00 }
+    local developmentDeck = getObjectbyName(captainName .. " Development")
+    if developmentDeck ~= nil then
+      developmentDeck.setLock(false)
+      developmentDeck.setRotation(rotDevelopmentDeck)
+      developmentDeck.setPosition(posDecks)
+      posDecks.y = 1.50
+    end
+    local reserveDeck = getObjectbyName(captainName .. " Reserves")
+    if reserveDeck ~= nil then
+      reserveDeck.setLock(false)
+      reserveDeck.setRotation(rotReserveDeck)
+      reserveDeck.setPosition(posDecks)
+      Wait.time(function()
+
+        reserveDeck.shuffle()
+
+      end, 0.50)
+    end
+
+  elseif isSolo then
+    local rotDecks = playerColor == "Blue" and { 0.00, 90.00, 180.00 } or { 0.00, 270.00, 180.00 }
+    local posDecks = playerColor == "Blue" and { -24.00, 1.25, 20.00 } or { 24.00, 1.25, -20.00 }
+    local developmentDeck = getObjectbyName(captainName .. " Development")
+    if developmentDeck ~= nil then
+      developmentDeck.setLock(false)
+      developmentDeck.shuffle()
+      developmentDeck.setRotation(rotDecks)
+      developmentDeck.setPosition(posDecks)
+      posDecks.y = 1.50
+    end
+    Wait.time(function()
+
+      local reserveDeck = getObjectbyName(captainName .. " Reserves")
+      if reserveDeck ~= nil then
+        reserveDeck.setLock(false)
+        reserveDeck.shuffle()
+        reserveDeck.setRotation(rotDecks)
+        reserveDeck.setPosition(posDecks)
+      end
+
+    end, 0.5)
+    Wait.time(function()
+
+      developmentDeck.setName(captainName .. " Supplement Deck")
+
+      -- if khan bot, place Genesis Device to bottom of Supplement Deck
+      if captainName == "Khan" then
+        developmentDeck.shuffle()
+        for _, deckObj in pairs(developmentDeck.getObjects()) do
+          if deckObj.name == "Genesis Device" then
+            local card = developmentDeck.takeObject({ guid = deckObj.guid })
+            local posDeck = developmentDeck.getPosition()
+            posDeck.y = - 2
+
+            Wait.frames(function()
+              card.setPosition(posDeck)
+              developmentDeck.putObject(card)
+            end)
+
+          end
+        end
+      end
+
+    end, 1)
+  end
+end
+
+
+function placeCaptainCard(captainName, playerColor, isSolo)
+  -- handles placement of captain card
+  local rotCaptainCard = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+  if isSolo then
+    rotCaptainCard = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
+  end
+  local posCaptainCard = playerColor == "Blue" and { -38.50, 1.25, 7.00 } or { 38.50, 1.25, -7.00 }
+  local captainNames = {
+    ["Burnham"]  = "Michael Burnham",
+    ["Koloth"]   = "Koloth, The Dahar Master",
+    ["Picard"]   = "Jean-Luc Picard",
+    ["Sela"]     = "Sela",
+    ["Shran"]    = "Thy'lek Shran",
+    ["Sisko"]    = "Benjamin Sisko",
+    ["Archer"]   = "Jonathan Archer",
+    ["Georgiou"] = "Phillipa Georgiou",
+    ["Khan"]     = "Khan Noonien Singh",
+    ["Kirk"]     = "James T. Kirk",
+    ["Rebner"]   = "Rebner",
+    ["Soval"]    = "Soval",
+    ["Freeman"]  = "Carol Freeman",
+    ["Pike"]     = "Christopher Pike",
+    ["Riker"]    = "William T. Riker",
+  }
+  local captainCard = getObjectbyName(captainNames[captainName])
+  if captainCard ~= nil then
+    captainCard.setLock(false)
+    captainCard.setRotation(rotCaptainCard)
+    captainCard.setPosition(posCaptainCard)
+  end
+end
+
+
+function setupCaptainDeployed(captainName, playerColor, isSolo)
+  -- will handle set up and deployment of initial ships & controlled locations
+
+  -- ships will need placement of initial ship figure, highlight, color tint
+  local rotDeployedCard = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+  if isSolo then rotDeployedCard = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 } end
+  local rotDeployedFigure = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
+  if isSolo then rotDeployedFigure = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 } end
+  local posShipCard = playerColor == "Blue" and { -38.50, 1.25, 2.51 } or { 38.50, 1.25, -2.51 }
+  local posShipFigure = playerColor == "Blue" and { -37.00, 1.50, 2.51 } or { 37.00, 1.50, -2.51 }
+  local deployedShipNames = {
+    ["Burnham"]  = "U.S.S. Discovery-A",
+    ["Koloth"]   = "I.K.S. Gr'oth",
+    ["Picard"]   = "U.S.S. Enterprise-D",
+    ["Sela"]     = "I.R.W. Goraxus",
+    ["Shran"]    = "Kumari",
+    ["Archer"]   = "NX-01 Enterprise",
+    ["Georgiou"] = "U.S.S. Shenzhou",
+    ["Soval"]    = "Ti'Mur",
+    ["Freeman"]  = "U.S.S. Cerritos",
+    ["Riker"]    = "U.S.S. Titan",
+    ["Sisko"]    = "Deep Space 9",
+    ["Kirk"]     = "U.S.S. Enterprise (Refit)",
+  }
+  local deployedLocationNames = {
+    ["Khan"]  = { "Ceti Alpha V", "Ceti Alpha VI" },
+    ["Pike"]  = "Starbase One",
+    ["Sisko"] = "Bajor",
+    ["Kirk"]  = "Starfleet Headquarters"
+  }
+  local posDeployedLocations = playerColor == "Blue" and
+                               { { -30.00, 1.25, 2.51 }, { -30.00, 1.25, -1.41 } } or
+                               { { 30.00, 1.25, -2.51 }, { 30.00, 1.25, 1.41 } }
+
+  -- handle non solo deployments
+  if not isSolo then
+    -- ship only captains (most)
+    if captainName == "Burnham" or captainName == "Koloth" or captainName == "Picard" or captainName == "Sela" or
+       captainName == "Shran" or captainName == "Archer" or captainName == "Georgiou" or captainName == "Soval" or
+       captainName == "Freeman" or captainName == "Riker" then
+      local deployedShipCard = getObjectbyNameAndType(deployedShipNames[captainName], "Card")
+      local deployedShipFigure = getObjectbyNameAndType(deployedShipNames[captainName], "Tileset")
+
+      if deployedShipCard ~= nil then
+        deployedShipCard.setLock(false)
+        deployedShipCard.setRotation(rotDeployedCard)
+        deployedShipCard.setPosition(posShipCard)
+      end
+
+      if deployedShipFigure ~= nil then
+        deployedShipFigure.setLock(false)
+        deployedShipFigure.setRotation(rotDeployedFigure)
+        deployedShipFigure.setPosition(posShipFigure, false, true)
+
+        -- highlight, tint (cloaked ships should be highlighted purple)
+        if deployedShipCard.hasTag("trait_cloak") then
+          deployedShipFigure.highlightOn("Purple")
+        else
+          deployedShipFigure.highlightOn(playerColor)
+        end
+        deployedShipFigure.setColorTint(playerColor)
+      end
+
+    -- controlled location only captains (khan, pike)
+    elseif captainName == "Khan" or captainName == "Pike" then
+      if captainName == "Pike" then
+        local locationCard = getObjectbyName(deployedLocationNames["Pike"])
+        if locationCard then
+          locationCard.setLock(false)
+          locationCard.setRotation(rotDeployedCard)
+          locationCard.setPosition(posDeployedLocations[1])
+        end
+
+      elseif captainName == "Khan" then
+        for i, locationName in ipairs(deployedLocationNames["Khan"]) do
+          local locationCard = getObjectbyName(locationName)
+          if locationCard then
+            locationCard.setLock(false)
+            locationCard.setRotation(rotDeployedCard)
+            locationCard.setPosition(posDeployedLocations[i])
+          end
+        end
+      end
+
+    -- both type captains (sisko, kirk)
+    elseif captainName == "Sisko" or captainName == "Kirk" then
+      local deployedShipCard = getObjectbyNameAndType(deployedShipNames[captainName], "Card")
+      local deployedShipFigure = getObjectbyNameAndType(deployedShipNames[captainName], "Tileset")
+      local locationCard = getObjectbyName(deployedLocationNames[captainName])
+
+      if deployedShipCard ~= nil then
+        deployedShipCard.setLock(false)
+        deployedShipCard.setRotation(rotDeployedCard)
+        deployedShipCard.setPosition(posShipCard)
+      end
+
+      if deployedShipFigure ~= nil then
+        deployedShipFigure.setLock(false)
+        deployedShipFigure.setRotation(rotDeployedFigure)
+        deployedShipFigure.setPosition(posShipFigure, false, true)
+
+        -- highlight, tint (ship won't be cloaked)
+        deployedShipFigure.highlightOn(playerColor)
+        deployedShipFigure.setColorTint(playerColor)
+      end
+
+      if locationCard then
+        locationCard.setLock(false)
+        locationCard.setRotation(rotDeployedCard)
+        locationCard.setPosition(posDeployedLocations[1])
+      end
+    end
+
+  -- if isSolo, need to handle deployment to top draw deck accordingly (ie: sisko or kirk deploying both)
+  elseif isSolo then
+    -- if khan, do khan specific stuff
+    if captainName == "Khan" then
+      -- return ceti alphas to bag
+      local bagUnusedObjs = getObjectbyName("Unused Object Bag")
+      for _, object in pairs(getObjects()) do
+        if object.getName():find("Ceti Alpha V") then
+          bagUnusedObjs.putObject(object)
+        end
+      end
+
+    -- otherwise if not khan, do the non khan stuff
+    elseif captainName ~= "Khan" then
+      local rotFacedown = playerColor == "Blue" and { 0.00, 90.00, 180.00 } or { 0.00, 270.00, 180.00 }
+      local posDeck = playerColor == "Blue" and { -44.50, 1.50, 7.00 } or { 44.50, 1.50, -7.00 }
+      local spaceDock = getObjectbyNameAndNotes("Space Dock", playerColor)
+      local deployedShipCard = getObjectbyNameAndType(deployedShipNames[captainName], "Card")
+      local deployedShipFigure = getObjectbyNameAndType(deployedShipNames[captainName], "Tileset")
+      local locationCard = getObjectbyName(deployedLocationNames[captainName])
+
+      -- handle cases where its a single card location or ship
+      if captainName ~= "Sisko" and captainName ~= "Kirk" then
+
+        Wait.time(function()
+          if deployedShipCard ~= nil then
+            deployedShipCard.setLock(false)
+            deployedShipCard.setRotation(rotFacedown)
+            deployedShipCard.setPosition(posDeck)
+          end
+
+          -- deployed ship needs to go to space dock
+          if deployedShipFigure ~= nil then
+            deployedShipFigure.setLock(false)
+            spaceDock.putObject(deployedShipFigure)
+          end
+
+          if locationCard then
+            locationCard.setLock(false)
+            locationCard.setRotation(rotFacedown)
+            locationCard.setPosition(posDeck)
+          end
+
+        end, 0.5)
+
+      -- in cases of both, need to combine & shuffle before placing to top of deck
+      elseif captainName == "Sisko" or captainName == "Kirk" then
+        -- place next to draw deck, allow settle, shuffle, place
+        local posStage = playerColor == "Blue" and { -44.50, 1.25, 2.80 } or { 44.50, 1.25, -2.80 }
+        local deckCheckZone = getObjectbyNameAndNotes("Zone In Play", playerColor)
+
+        if deployedShipCard ~= nil then
+          deployedShipCard.setLock(false)
+          deployedShipCard.setRotation(rotFacedown)
+          deployedShipCard.setPosition(posStage)
+        end
+
+        -- deployed ship needs to go to space dock
+         if deployedShipFigure ~= nil then
+          deployedShipFigure.setLock(false)
+          spaceDock.putObject(deployedShipFigure)
+        end
+
+        if locationCard then
+          locationCard.setLock(false)
+          locationCard.setRotation(rotFacedown)
+          locationCard.setPosition(posStage)
+        end
+
+        Wait.time(function()
+
+          local shuffleDeck = nil
+          for _, zoneObj in pairs(deckCheckZone.getObjects()) do
+            if zoneObj.type == "Deck" and #zoneObj.getObjects() == 2 then
+              shuffleDeck = zoneObj
+              break
+            end
+          end
+          if shuffleDeck ~= nil then
+            shuffleDeck.shuffle()
+            shuffleDeck.setRotation(rotFacedown)
+            shuffleDeck.setPosition(posDeck)
+          end
+
+        end, 0.5)
+
+      end
+    end
+  end
+end
+
+
+function setupCaptainStatus(captainName, playerColor, isSolo)
+  -- will handle setup of initial captain status cards, if they exist
+
+  if captainName == "Burnham" or captainName == "Archer" or
+  captainName == "Soval" or captainName == "Pike" then
+    local statusNames = {
+      ["Burnham"] = "Inert Dilithium",
+      ["Archer"]  = "Earth",
+      ["Soval"]   = "Vulcan Science Directorate",
+      ["Pike"]    = "Improbable, Unstoppable, Sensational",
+    }
+    local rotStatus = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+    if isSolo then
+      rotStatus = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
+    end
+    local posStatus = playerColor == "Blue" and { -30.00, 1.25, 10.11 } or { 30.00, 1.25, -10.11 }
+    local statusCard = getObjectbyName(statusNames[captainName])
+
+    if statusCard ~= nil then
+      statusCard.setLock(false)
+      statusCard.setRotation(rotStatus)
+      statusCard.setPosition(posStatus)
+    end
+  end
+end
+
+
+function setupCaptainIncident(captainName, playerColor, isSolo)
+  -- will handle setup of initial captain incident cards, if they exist
+
+  if captainName == "Burnham" or captainName == "Khan" or captainName == "Freeman" then
+    local incidentNames = {
+      ["Burnham"] = "Subspace Phenomenon",
+      ["Khan"]    = "Two Dimensional Thinking",
+      ["Freeman"] = "Red Alert",
+    }
+    local rotIncidentDeck = { 0.00, 180.00, 180.00 }
+    local posIncidentDeck = { 12.50, 1.25, 10.00 }
+    local incidentCard = getObjectbyName(incidentNames[captainName])
+
+    -- place card to deck, brief wait, then shuffle
+    if incidentCard ~= nil then
+      incidentCard.setLock(false)
+      incidentCard.setRotation(rotIncidentDeck)
+      incidentCard.setPosition(posIncidentDeck)
+
+      Wait.time(function()
+
+        local incidentDeck = nil
+        local checkZone = getObjectbyName("Zone Incident")
+        for _, zoneObj in pairs(checkZone.getObjects()) do
+          if zoneObj.type == "Deck" then
+            zoneObj.shuffle()
+          end
+        end
+
+      end, 0.5)
+    end
+  end
+end
+
+
+function setupCaptainDiscard(captainName, playerColor, isSolo)
+  -- will handle setup of initial captain incident card or deck, if they exist
+
+  if captainName == "Sela" or captainName == "Archer" or
+  captainName == "Pike" or captainName == "Riker" then
+    local discardNames = {
+      ["Sela"]   = "Sela Discard",
+      ["Archer"] = "Analyze",
+      ["Pike"]   = "Pike Discard",
+      ["Riker"]  = "Riker Discard",
+    }
+    local rotDiscard = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+    if isSolo then
+      rotDiscard = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
+    end
+    local posDiscard = playerColor == "Blue" and { -44.49, 1.25, -21.00 } or { 44.49, 1.25, 21.00 }
+    local discardObj = getObjectbyName(discardNames[captainName])
+
+    if discardObj then
+      discardObj.setLock(false)
+      discardObj.setRotation(rotDiscard)
+      discardObj.setPosition(posDiscard)
+    end
+  end
+end
+
+
+function setupAwayTeams(captainName, playerColor, isSolo)
+  -- handles setup of away teams per captain
+
+  local bagUnusedObjs = getObjectbyName("Unused Object Bag")
+  local awayTeamStack = getObjectbyName("Away Teams " .. playerColor)
+  if awayTeamStack ~= nil then
+    -- if archer or pike, pull & place special away teams
+    if captainName == "Archer" then
+      -- need to set 4 to an aside position (rotation handled at end)
+      local posAside = playerColor == "Blue" and { -30.00, 2.10, 27.75 } or { 30.00, 2.10, -27.75 }
+      for i = 1, 4 do
+        local awayTeam = awayTeamStack.takeObject()
+        awayTeam.setPosition(posAside)
+      end
+
+    elseif captainName == "Pike" and not isSolo then
+      -- need to place 1 to starbase one (rotation handled at end)
+      local posLocation = "Blue" and { -28.45, 1.75, 2.47 } or { -28.45, 1.75, 2.47 }
+      local awayTeam = awayTeamStack.takeObject()
+      awayTeam.setPosition(posLocation)
+    end
+
+    -- then, pull correct count of away teams to unused object bag per captain
+    local removeATCount =  {
+      ["Burnham"]  = 1,
+      ["Koloth"]   = 0,
+      ["Picard"]   = 1,
+      ["Sela"]     = 2,
+      ["Shran"]    = 1,
+      ["Sisko"]    = 0,
+      ["Archer"]   = 0,
+      ["Georgiou"] = 1,
+      ["Khan"]     = 2,
+      ["Kirk"]     = 1,
+      ["Rebner"]   = 0,
+      ["Soval"]    = 2,
+      ["Freeman"]  = 1,
+      ["Pike"]     = isSolo and 2 or 1,
+      ["Riker"]    = 2,
+    }
+    local removeCount = removeATCount[captainName]
+
+    if removeCount > 0 then
+      for _ = 1, removeCount do
+        local removeAT = awayTeamStack.takeObject()
+        bagUnusedObjs.putObject(removeAT)
+      end
+    end
+
+    -- ensure all away teams are rotated properly per solo or not
+    local rotAT = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+    if isSolo then
+      rotAT = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
+    end
+    for _, object in pairs(getObjects()) do
+      if object.getName():find("Away Team") and object.getName():find(playerColor) then
+        object.setRotation(rotAT)
+      end
+    end
+  end
+end
+
+
+function checkIfLastCaptainToSetup(playerColor)
+  -- will handle the check to see if the current playerColor is the last captain to be set up
+  -- if last captain, all otherPlayerColor "Button Select " .. captainName buttons should be destructed by now,
+  -- and any/all of them will have been destructed at once, so a check for any 3 is a check for all
+  local isLastCaptain = false
+  local otherPlayerColor = playerColor == "Blue" and "Red" or "Blue"
+  if getObjectbyNameAndNotes("Button Select Kirk", otherPlayerColor) == nil and
+     getObjectbyNameAndNotes("Button Select Freeman", otherPlayerColor) == nil and
+     getObjectbyNameAndNotes("Button Select Picard", otherPlayerColor) == nil then
+    isLastCaptain = true
+  end
+
+  return isLastCaptain
+end
+
+
+function setupBotInstructionCards(captainName, playerColor)
+  -- handles placement of bot instruction cards, traits & suits no duty side up
+  local deckTraits5YM = getObjectbyName("Traits / 5 Year Mission Deck")
+  local deckSuits = getObjectbyName("Suits Deck")
+  local rotCard = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
+  local posTraitsCard = playerColor == "Blue" and { 20.00, 1.25, 3.00 } or { -20.00, 1.25, -3.00 }
+  local posSuitsCard = playerColor == "Blue" and { 20.00, 1.25, 9.00 } or { -20.00, 1.25, -9.00 }
+  local cardScale = { 3.00, 1.00, 3.00 }
+
+  if captainName ~= "Khan" then
+    -- usual setup - traits & suits no duty
+    for _, deckObj in pairs(deckTraits5YM.getObjects()) do
+      if deckObj.name == "Traits / 5YM " .. captainName then
+        local traitCard = deckTraits5YM.takeObject({ guid = deckObj.guid })
+        traitCard.setRotation(rotCard)
+        traitCard.setScale(cardScale)
+        traitCard.setPosition(posTraitsCard)
+      end
+    end
+    for _, deckObj in pairs(deckSuits.getObjects()) do
+      if deckObj.name == "Suits " .. captainName then
+        local suitCard = deckSuits.takeObject({ guid = deckObj.guid })
+        suitCard.setRotation(rotCard)
+        suitCard.setScale(cardScale)
+        suitCard.setPosition(posSuitsCard)
+      end
+    end
+
+  elseif captainName == "Khan" then
+    -- special setup - regular traits to bottom, suits on top, to suits pos, khan in exile to traits
+    for _, deckObj in pairs(deckTraits5YM.getObjects()) do
+      if deckObj.name == "Traits / 5YM " .. captainName then
+        local traitCard = deckTraits5YM.takeObject({ guid = deckObj.guid })
+        traitCard.setRotation(rotCard)
+        traitCard.setScale(cardScale)
+        traitCard.setPosition(posSuitsCard)
+      end
+    end
+    posSuitsCard.y = 1.50
+    Wait.frames(function()
+
+      for _, deckObj in pairs(deckSuits.getObjects()) do
+        if deckObj.name == "Suits " .. captainName then
+          local suitCard = deckSuits.takeObject({ guid = deckObj.guid })
+          suitCard.setRotation(rotCard)
+          suitCard.setScale(cardScale)
+          suitCard.setPosition(posSuitsCard)
+        end
+      end
+      for _, deckObj in pairs(deckTraits5YM.getObjects()) do
+        if deckObj.name == "Khan In Exile Traits" then
+          local traitCard = deckTraits5YM.takeObject({ guid = deckObj.guid })
+          traitCard.setRotation(rotCard)
+          traitCard.setScale(cardScale)
+          traitCard.setPosition(posTraitsCard)
+        end
+      end
+
+    end)
+  end
+end
+
+
+function flipBotUI(playerColor)
+  -- if isSolo, handles flip of player area UI elements for playerColor
+
+  -- card/deck pads (to properly face snap points)
+  local pads = {
+    getObjectbyNameAndNotes("Pad Draw Deck", playerColor),
+    getObjectbyNameAndNotes("Pad Played", playerColor),
+    getObjectbyNameAndNotes("Pad Discard", playerColor),
+    getObjectbyNameAndNotes("Pad Captain", playerColor),
+    getObjectbyNameAndNotes("Pad Deploy Ship", playerColor),
+    getObjectbyNameAndNotes("Pad Deploy Location", playerColor),
+    getObjectbyNameAndNotes("Pad Duty Officer", playerColor),
+  }
+  for i = 1, 7 do
+    pads[i].setRotation(playerColor == "Blue" and { 0.00, 180.00, 180.00 } or { 0.00, 180.00, 0.00 })
+    if playerColor == "Blue" then
+      local pos = pads[i].getPosition()
+      pos.y = 0.95
+      pads[i].setPosition(pos)
+    end
+  end
+
+  -- beam bags, captain's log, control NZ location buttons, space dock
+  local rotBotBeamBags = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
+  for _, object in pairs(getObjects()) do
+    if object.getName() == "Beamed Cards" and object.getGMNotes() == playerColor then
+      object.setRotation(rotBotBeamBags)
+    end
+    if object.getName() == "Captain's Log" and object.getGMNotes() == playerColor then
+      object.setRotation(rotBotBeamBags)
+    end
+    if object.getName():find("Button Control Location") and object.getGMNotes() == playerColor then
+      object.setRotation(rotBotBeamBags)
+    end
+    if object.getName():find("Space Dock") and object.getGMNotes() == playerColor then
+      object.setRotation(rotBotBeamBags)
+    end
+  end
+
+  -- destruct report etc buttons, action tokens, +action button for bot
+  local destructButtons = {
+    getObjectbyNameAndNotes("Button Report Resupply", playerColor),
+    getObjectbyNameAndNotes("Button Report Cleanup", playerColor),
+    getObjectbyNameAndNotes("Button Discard Hand", playerColor),
+    getObjectbyNameAndNotes("Button Report Skills", playerColor),
+    getObjectbyNameAndNotes("Button Report Suits", playerColor),
+    getObjectbyNameAndNotes("Button Report Traits Species", playerColor),
+    getObjectbyNameAndNotes("Button Report Traits Regular", playerColor),
+    getObjectbyNameAndNotes("Button Report Traits Other", playerColor),
+    getObjectbyNameAndNotes("Button Pull Action Token", playerColor),
+  }
+  for i = 1, #destructButtons do destructButtons[i].destruct() end
+  for _, object in pairs(getObjects()) do
+    if object.getName() == "Action Token" and object.getGMNotes() == playerColor then
+      object.destruct()
+    end
+  end
+
+  -- move / flip counters (dil, lat, glory, gloryBag)
+  local resourceCounterObjs = {
+    getObjectbyNameAndNotes("Dilithium Counter " .. playerColor, playerColor),
+    getObjectbyNameAndNotes("Latinum Counter " .. playerColor, playerColor),
+    getObjectbyNameAndNotes("Glory Counter " .. playerColor, playerColor),
+    getObjectbyNameAndNotes("Glory Token Bag", playerColor),
+  }
+  local rotResourceCounters = {
+    playerColor == "Blue" and "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 },
+    playerColor == "Blue" and { 0.00, 0.00, 0.00 } or { 0.00, 180.00, 0.00 },
+    playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 },
+    playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 },
+  }
+  local posResourceCounters = {
+    playerColor == "Blue" and { -24.45, 0.79, 9.28 }  or { 24.45, 0.79, -9.28 },
+    playerColor == "Blue" and { -24.45, 0.96, 10.52 } or { 24.45, 0.96, -10.52 },
+    playerColor == "Blue" and { -24.45, 0.85, 14.00 } or { 24.45, 0.85, -14.00 },
+    playerColor == "Blue" and { -24.45, 0.85, 14.00 } or { 24.45, 0.85, -14.00 },
+  }
+  for i = 1, 4 do
+    local counterObj = resourceCounterObjs[i]
+    local rotObj = rotResourceCounters[i]
+    local posObj = posResourceCounters[i]
+    counterObj.setRotation(rotObj)
+    counterObj.setPosition(posObj)
+  end
+
+  -- skill counters
+  local skillCounterObjs = {
+    getObjectbyName("Research Counter " .. playerColor),
+    getObjectbyName("Influence Counter " .. playerColor),
+    getObjectbyName("Military Counter " .. playerColor)
+  }
+  local rotSkillCounter = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
+  for i = 1, 3 do
+    skillCounterObjs[i].setRotation(rotSkillCounter)
+    local pos = skillCounterObjs[i].getPosition()
+    pos.x = playerColor == "Blue" and -36.15 or 36.15
+    if i == 1 then
+      pos.z = playerColor == "Blue" and 10.00 or -10.00
+    elseif i == 3 then
+      pos.z = playerColor == "Blue" and 16.00 or -16.00
+    end
+    skillCounterObjs[i].setPosition(pos)
+  end
+
+  -- bot draw deck refresh button
+  local buttonDeckRefresh = getObjectbyName("Button Refresh Draw Deck " .. playerColor)
+  local rotButtonDeckRefresh = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
+  buttonDeckRefresh.setRotation(rotButtonDeckRefresh)
+end
+
+
+function displayPlayerControlXML(captainName, playerColor)
+  -- handles the initial on screen XML player control panel setup
+
+  local dilithiumVal = getObjectbyName("Dilithium Counter " .. playerColor).getVar("val")
+  local latinumVal = getObjectbyName("Latinum Counter " .. playerColor).getVar("val")
+  local gloryVal = getObjectbyName("Glory Counter " .. playerColor).getVar("val")
+
+  if captainName == "Burnham" or captainName == "Picard" or captainName == "Sisko" or
+     captainName == "Archer" or captainName == "Georgiou" or captainName == "Kirk" or
+     captainName == "Freeman" or captainName == "Pike" or captainName == "Riker" then
+    UI.setAttribute(playerColor == "Blue" and "blue_starfleet_panel" or "red_starfleet_panel", "active", "true")
+    UI.setAttribute(playerColor == "Blue" and "blue_hum_glory" or "red_hum_glory", "text", gloryVal)
+    UI.setAttribute(playerColor == "Blue" and "blue_hum_latinum" or "red_hum_latinum", "text", latinumVal)
+    UI.setAttribute(playerColor == "Blue" and "blue_hum_dilithium" or "red_hum_dilithium", "text", dilithiumVal)
+
+  elseif captainName == "Shran" then
+    UI.setAttribute(playerColor == "Blue" and "blue_andorian_panel" or "red_andorian_panel", "active", "true")
+    UI.setAttribute(playerColor == "Blue" and "blue_and_glory" or "red_and_glory", "text", gloryVal)
+    UI.setAttribute(playerColor == "Blue" and "blue_and_latinum" or "red_and_latinum", "text", latinumVal)
+    UI.setAttribute(playerColor == "Blue" and "blue_and_dilithium" or "red_and_dilithium", "text", dilithiumVal)
+
+  elseif captainName == "Sela" then
+    UI.setAttribute(playerColor == "Blue" and "blue_romulan_panel" or "red_romulan_panel", "active", "true")
+    UI.setAttribute(playerColor == "Blue" and "blue_rom_glory" or "red_rom_glory", "text", gloryVal)
+    UI.setAttribute(playerColor == "Blue" and "blue_rom_latinum" or "red_rom_latinum", "text", latinumVal)
+    UI.setAttribute(playerColor == "Blue" and "blue_rom_dilithium" or "red_rom_dilithium", "text", dilithiumVal)
+
+  elseif captainName == "Koloth" then
+    UI.setAttribute(playerColor == "Blue" and "blue_klingon_panel" or "red_klingon_panel", "active", "true")
+    UI.setAttribute(playerColor == "Blue" and "blue_kli_glory" or "red_kli_glory", "text", gloryVal)
+    UI.setAttribute(playerColor == "Blue" and "blue_kli_latinum" or "red_kli_latinum", "text", latinumVal)
+    UI.setAttribute(playerColor == "Blue" and "blue_kli_dilithium" or "red_kli_dilithium", "text", dilithiumVal)
+
+  elseif captainName == "Khan" then
+    UI.setAttribute(playerColor == "Blue" and "blue_khan_panel" or "red_khan_panel", "active", "true")
+    UI.setAttribute(playerColor == "Blue" and "blue_kha_glory" or "red_kha_glory", "text", gloryVal)
+    UI.setAttribute(playerColor == "Blue" and "blue_kha_latinum" or "red_kha_latinum", "text", latinumVal)
+    UI.setAttribute(playerColor == "Blue" and "blue_kha_dilithium" or "red_kha_dilithium", "text", dilithiumVal)
+
+  elseif captainName == "Rebner" then
+    UI.setAttribute(playerColor == "Blue" and "blue_pakled_panel" or "red_pakled_panel", "active", "true")
+    UI.setAttribute(playerColor == "Blue" and "blue_pak_glory" or "red_pak_glory", "text", gloryVal)
+    UI.setAttribute(playerColor == "Blue" and "blue_pak_latinum" or "red_pak_latinum", "text", latinumVal)
+    UI.setAttribute(playerColor == "Blue" and "blue_pak_dilithium" or "red_pak_dilithium", "text", dilithiumVal)
+
+  elseif captainName == "Soval" then
+    UI.setAttribute(playerColor == "Blue" and "blue_vulcan_panel" or "red_vulcan_panel", "active", "true")
+    UI.setAttribute(playerColor == "Blue" and "blue_vul_glory" or "red_vul_glory", "text", gloryVal)
+    UI.setAttribute(playerColor == "Blue" and "blue_vul_latinum" or "red_vul_latinum", "text", latinumVal)
+    UI.setAttribute(playerColor == "Blue" and "blue_vul_dilithium" or "red_vul_dilithium", "text", dilithiumVal)
+  end
+
+  UI.show(playerColor == "Blue" and "ui_hide_blue" or "ui_hide_red")
+end
+
+
+function setInitialPlayerCounters(playerColor)
+  -- handles the initial set of player resources to 1
+  local resourceCounterObjs = {
+    getObjectbyNameAndNotes("Dilithium Counter " .. playerColor, playerColor),
+    getObjectbyNameAndNotes("Latinum Counter " .. playerColor, playerColor),
+    getObjectbyNameAndNotes("Glory Counter " .. playerColor, playerColor),
+  }
+  for i = 1, 3 do
+    resourceCounterObjs[i].call('set_val', 1)
+  end
+end
+
+function finalizeCaptainSetup()
+  -- will handle final cleanup steps required after both sides confirmed
+
+  -- remove unselected captain cleanup_targets, destruct side panels
+  local bagUnusedObjs = getObjectbyName("Unused Object Bag")
+  local checkZones = {
+    getObjectbyName("Zone Captain Select Left"),
+    getObjectbyName("Zone Captain Select Right"),
+  }
+  local panels = {
+    getObjectbyName("Side Panel Left"),
+    getObjectbyName("Side Panel Right"),
+  }
+  for i = 1, 2 do
+    for _, zoneObj in pairs(checkZones[i].getObjects()) do
+      if zoneObj == panels[i] then
+        zoneObj.destruct()
+      elseif zoneObj.hasTag("cleanup_target") then
+        bagUnusedObjs.putObject(zoneObj)
+      end
+    end
+  end
+
+  local soloInGame = checkIsSolo()
+  -- randomize first player, will overwrite to human color if soloInGame
+  local sides = { "Blue", "Red" }
+  local firstPlayerColor = sides[math.random(1, 2)]
+
+  -- if NOT isSolo in game:
+  if not soloInGame then
+
+    -- if more than 1 seated player, enable turns and set to first turn owner
+    local seatedPlayers = getSeatedPlayers()
+    if #seatedPlayers > 1 then
+      Turns.enable = true
+      Turns.turn_color = firstPlayerColor
+    end
+
+    -- junk pad GMNotes will always be playerColor of current turn holder, set initial
+    getObjectbyName("Pad Junk").setGMNotes(firstPlayerColor)
+
+    -- broadcast
+    local playerStr = getPlayerStr(firstPlayerColor)
+    local broadcastStr = playerStr .. " will be First Player!"
+    broadcastToAll(broadcastStr, "White")
+
+    -- check for stardate card, will be empty by now if 2p, perform 2p actions:
+    ---- pull 2p stardate deck if empty, do initial refresh glory
+    ---- return conspiracy/reinforce solo cards
+    local deckFound = false
+    local checkZone = getObjectbyName("Zone Stardate")
+    for _, object in pairs(checkZone.getObjects()) do
+      if object.tag == "Deck" then
+        deckFound = true
+      end
+    end
+    if not deckFound then
+      local deck2p = getObjectbyName("2-Player Stardate Deck")
+      local posDeck2p = { -12.50, 1.50, 0.00 }
+      deck2p.setPositionSmooth(posDeck2p, false, true)
+      showStardateGloryCounter("twoPlayer")
+      Wait.time(function()
+
+        refreshGlory()
+
+      end, 1.0)
+    end
+
+  -- if IS isSolo in game:
+  elseif soloInGame then
+
+    -- place button most value, button next bot action
+    local bagUnusedObjects = getObjectbyName("Unused Object Bag")
+    local botColor = checkPlayerColorIsSolo("Blue") and "Blue" or "Red"
+    local rotButtonMVP = { 0.00, 180.00, 0.00 }
+    local posButtonMVP = { 6.80, 0.75, -2.00 }
+    local rotButtonNextAction = botColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
+    local posButtonNextAction = botColor == "Blue" and { 25.75, 0.75, -6.06 } or { -25.75, 0.75, 6.06 }
+
+    local buttonMVP = getObjectFromBagbyName("Button Most Value", bagUnusedObjects, rotButtonMVP, posButtonMVP, false)
+    local buttonNext = getObjectFromBagbyName("Button Next Bot Action", bagUnusedObjects, rotButtonNextAction, posButtonNextAction, false)
+
+    Wait.frames(function()
+      buttonMVP.setLock(true)
+      buttonNext.setLock(true)
+      buttonMVP.interactable = false
+      buttonNext.interactable = false
+    end)
+
+    -- display bot control on screen XML UI
+    UI.setAttribute("bot_controls", "active", "true")
+    UI.setAttribute('end_player_turn', 'active', 'true')
+    UI.setAttribute('bot_discard', 'active', 'true')
+    UI.setAttribute('bot_discard_x3', 'active', 'true')
+    UI.setAttribute('bot_log', 'active', 'true')
+    UI.setAttribute('bot_incident', 'active', 'true')
+
+    -- first player will always be human player
+    firstPlayerColor = botColor == "Blue" and "Red" or "Blue"
+  end
+
+  -- in EITHER case:
+  -- place first player marker to first player's position
+  local tokenFirstPlayer = getObjectbyName("First Player")
+  local rotToken = firstPlayerColor == "Blue" and { 0.00, 180.00, 0.00 } or { 0.00, 0.00, 0.00 }
+  local posToken = firstPlayerColor == "Blue" and { -46.00, 1.95, 28.00 } or { 46.00, 1.95, -28.00 }
+
+  tokenFirstPlayer.setRotation(rotToken)
+  tokenFirstPlayer.setPositionSmooth(posToken, false, true)
+
+  -- clean up non selected stardate decks, any other required cleanup for top table panel
+  Wait.time(function()
+
+    -- clean up stardate & solo instruction decks
+    local topCheckZone = getObjectbyName("Zone Stardate Select")
+    for _, zoneObj in pairs(topCheckZone.getObjects()) do
+      if zoneObj.getName():find("Stardate") and zoneObj.type == "Deck" or
+      zoneObj.getName() == "Solo Cadet Practice Deck" or
+      zoneObj.getName() == "Traits / 5 Year Mission Deck" or zoneObj.getName() == "Suits Deck" then
+        bagUnusedObjs.putObject(zoneObj)
+      end
+    end
+
+    -- center bag
+    local posBag = bagUnusedObjs.getPosition()
+    posBag.x = 0.00
+    bagUnusedObjs.setPositionSmooth(posBag)
+
+    -- clean up or position remaining cards or decks
+    local cardSC1 = getObjectbyName("Conspiracy")
+    local cardSC2 = getObjectbyName("Time Is Running Out")
+    local cardReinforce = getObjectbyName("Reinforce")
+    local deckSCRewards = getObjectbyName("Rewards Second Contact Deck")
+    local posCardSC1 = soloInGame and { 5.28, 1.71, 27.50 } or { 0.00, 2.00, 27.50 }
+    local posCardSC2 = soloInGame and { 9.85, 1.71, 27.50 } or { 0.00, 2.25, 27.50 }
+    local posCardReinforce = soloInGame and { 14.31, 1.71, 27.53 } or { 0.00, 2.50, 27.50 }
+    local posDeckSCRewards = { -5.45, 1.76, 27.58 }
+
+    if cardSC1 ~= nil then cardSC1.setPositionSmooth(posCardSC1, false, true) end
+    if cardSC2 ~= nil then cardSC2.setPositionSmooth(posCardSC2, false, true) end
+    if cardReinforce ~= nil then cardReinforce.setPositionSmooth(posCardReinforce, false, true) end
+    if deckSCRewards ~= nil then deckSCRewards.setPositionSmooth(posDeckSCRewards, false, true) end
+
+  end, 1.5)
+end

@@ -31,7 +31,7 @@
   "Sticky": true,
   "Tooltip": true,
   "Transform": {
-    "posX": 4.443,
+    "posX": -5.338,
     "posY": 1.71,
     "posZ": 28.132,
     "rotX": 0,
@@ -39,7 +39,7 @@
     "rotZ": 0,
     "scaleX": 3.36,
     "scaleY": 0.5,
-    "scaleZ": 38.69
+    "scaleZ": 52.8
   },
   "Value": 0,
   "XmlUI": ""

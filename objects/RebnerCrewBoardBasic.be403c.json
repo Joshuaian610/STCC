@@ -43,7 +43,7 @@
   "Tags": [
     "cleanup_target"
   ],
-  "Tooltip": true,
+  "Tooltip": false,
   "Transform": {
     "posX": 89.21,
     "posY": 0.64,

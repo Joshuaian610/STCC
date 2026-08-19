@@ -4,6 +4,188 @@
     "y": 0,
     "z": 0
   },
+  "AttachedSnapPoints": [
+    {
+      "Position": {
+        "x": 0.842,
+        "y": 0.1,
+        "z": -0.066
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "Tags": [
+        "khan_trait_tracker"
+      ]
+    },
+    {
+      "Position": {
+        "x": 0.842,
+        "y": 0.1,
+        "z": 0.224
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "Tags": [
+        "khan_trait_tracker"
+      ]
+    },
+    {
+      "Position": {
+        "x": 0.842,
+        "y": 0.1,
+        "z": 0.513
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "Tags": [
+        "khan_trait_tracker"
+      ]
+    },
+    {
+      "Position": {
+        "x": 0.842,
+        "y": 0.1,
+        "z": 0.803
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "Tags": [
+        "khan_trait_tracker"
+      ]
+    },
+    {
+      "Position": {
+        "x": 0.001,
+        "y": 0.1,
+        "z": -0.066
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "Tags": [
+        "khan_trait_tracker"
+      ]
+    },
+    {
+      "Position": {
+        "x": 0.001,
+        "y": 0.1,
+        "z": 0.224
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "Tags": [
+        "khan_trait_tracker"
+      ]
+    },
+    {
+      "Position": {
+        "x": 0.001,
+        "y": 0.1,
+        "z": 0.513
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "Tags": [
+        "khan_trait_tracker"
+      ]
+    },
+    {
+      "Position": {
+        "x": 0.001,
+        "y": 0.1,
+        "z": 0.803
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "Tags": [
+        "khan_trait_tracker"
+      ]
+    },
+    {
+      "Position": {
+        "x": -0.836,
+        "y": 0.1,
+        "z": -0.066
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "Tags": [
+        "khan_trait_tracker"
+      ]
+    },
+    {
+      "Position": {
+        "x": -0.836,
+        "y": 0.1,
+        "z": 0.224
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "Tags": [
+        "khan_trait_tracker"
+      ]
+    },
+    {
+      "Position": {
+        "x": -0.836,
+        "y": 0.1,
+        "z": 0.513
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "Tags": [
+        "khan_trait_tracker"
+      ]
+    },
+    {
+      "Position": {
+        "x": -0.836,
+        "y": 0.1,
+        "z": 0.803
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "Tags": [
+        "khan_trait_tracker"
+      ]
+    }
+  ],
   "Autoraise": true,
   "ColorDiffuse": {
     "b": 0.23529,
@@ -43,7 +225,7 @@
   "Tags": [
     "cleanup_target"
   ],
-  "Tooltip": true,
+  "Tooltip": false,
   "Transform": {
     "posX": 75,
     "posY": 0.64,

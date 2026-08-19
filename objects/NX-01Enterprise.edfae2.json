@@ -10,11 +10,11 @@
     "g": 0,
     "r": 0
   },
-  "CustomFigurine": {
-    "MirroredBack": false,
-    "UseMinimalCollider": false
-  },
   "CustomImage": {
+    "CustomFigurine": {
+      "MirroredBack": false,
+      "UseMinimalCollider": false
+    },
     "ImageScalar": 2,
     "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/14465995782774523414/8EE9AABD7EBAC0130932A86167D7D5D77B9C8E99/",
     "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/16745228387944154890/D040FDAC20EF387D0725D5027E0B796BEC244124/",

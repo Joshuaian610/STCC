@@ -513,6 +513,7 @@ function cleanupSecondContact()
   bagUnusedObjs.putObject(getObjectbyName("Cargo Second Contact Deck"))
   bagUnusedObjs.putObject(getObjectbyName("Ships Second Contact Deck"))
   bagUnusedObjs.putObject(getObjectbyName("Allies Second Contact Deck"))
+  bagUnusedObjs.putObject(getObjectbyName("Rewards Second Contact Deck"))
 end
 
 
@@ -759,7 +760,7 @@ function marketSetupBroadcast(marketType, includeSecondContact, includePromos)
 
   Wait.time(function()
 
-    broadcastToAll("Market Setup has completed! Use Captain Selection buttons at the player areas to continue.", "White")
+    broadcastToAll("Market & Neutral Zone Setup has completed! Use Captain Selection buttons at the player areas to continue.", "White")
 
   end, 2.5)
 end
