@@ -42,7 +42,7 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "mix_keep",
+    "mix_remove",
     "snap_card",
     "suit_person",
     "trait_doctor",
@@ -50,12 +50,12 @@
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -11.899,
-    "posY": 0.931,
-    "posZ": -20.997,
+    "posX": 28.374,
+    "posY": 1.985,
+    "posZ": -11.438,
     "rotX": 0,
-    "rotY": 180,
-    "rotZ": 0,
+    "rotY": 90,
+    "rotZ": 180,
     "scaleX": 1.75,
     "scaleY": 1,
     "scaleZ": 1.75
