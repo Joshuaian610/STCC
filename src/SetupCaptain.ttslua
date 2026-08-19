@@ -1739,10 +1739,14 @@ function finalizeCaptainSetup()
     local posCardReinforce = soloInGame and { 14.31, 1.71, 27.53 } or { 0.00, 2.50, 27.50 }
     local posDeckSCRewards = { -5.45, 1.76, 27.58 }
 
-    if cardSC1 ~= nil then cardSC1.setPositionSmooth(posCardSC1, false, true) end
-    if cardSC2 ~= nil then cardSC2.setPositionSmooth(posCardSC2, false, true) end
-    if cardReinforce ~= nil then cardReinforce.setPositionSmooth(posCardReinforce, false, true) end
-    if deckSCRewards ~= nil then deckSCRewards.setPositionSmooth(posDeckSCRewards, false, true) end
+    Wait.time(function()
+
+      if cardSC1 ~= nil then cardSC1.setPositionSmooth(posCardSC1, false, true) end
+      if cardSC2 ~= nil then cardSC2.setPositionSmooth(posCardSC2, false, true) end
+      if cardReinforce ~= nil then cardReinforce.setPositionSmooth(posCardReinforce, false, true) end
+      if deckSCRewards ~= nil then deckSCRewards.setPositionSmooth(posDeckSCRewards, false, true) end
+
+    end, 1.5)
 
   end, 1.5)
 end

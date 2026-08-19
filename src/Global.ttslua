@@ -26,7 +26,7 @@ function onLoad()
   buttonSoloDifficultyVisibility(botDifficultyButtonVisibility, "Both")
 
   -- manually hide/show player area captain selection UI
-  local captainSelectButtonVisibility = true
+  local captainSelectButtonVisibility = false
   buttonSelectCaptainVisibility(captainSelectButtonVisibility)
 
   -- manually hide/show stardate card glory counter (will be under current Main Setup Button)

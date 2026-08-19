@@ -225,7 +225,6 @@ function enableCadetDifficulty(button, _, _)
   -- check if last player set up, if so, finalize captain setup
   local isLastCaptain = checkIfLastCaptainToSetup(playerColor)
   if isLastCaptain then finalizeCaptainSetup() end
-
 end
 
 
