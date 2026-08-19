@@ -18,14 +18,14 @@
       "Type": 3
     },
     "ImageScalar": 1,
-    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/18273912534188355759/374F810DC5D3754EE6C3FF6EB313C0FF801A2E67/",
-    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/18273912534188355759/374F810DC5D3754EE6C3FF6EB313C0FF801A2E67/",
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/14044715151861679112/13ABD880293AD83583FCA48DFE61719F30D712A0/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/14044715151861679112/13ABD880293AD83583FCA48DFE61719F30D712A0/",
     "WidthScale": 0
   },
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "6ab61e",
+  "GUID": "ddab1f",
   "Grid": true,
   "GridProjection": false,
   "Hands": false,
@@ -37,7 +37,7 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Custom_Tile",
-  "Nickname": "Riker Crew Board Basic",
+  "Nickname": "Riker Crew Board Advanced",
   "Snap": true,
   "Sticky": true,
   "Tags": [
@@ -46,7 +46,7 @@
   "Tooltip": false,
   "Transform": {
     "posX": 112.11,
-    "posY": 0.74,
+    "posY": 0.64,
     "posZ": -14,
     "rotX": 0,
     "rotY": 180,

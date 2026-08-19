@@ -475,7 +475,15 @@
     "ButtonUseBasicRed.c55ab4",
     "ButtonUseAdvancedRed.02d3be",
     "Traits5YearMissionDeck.b2314b",
-    "SuitsDeck.98a2d9"
+    "SuitsDeck.98a2d9",
+    "GeorgiouCrewBoardAdvanced.ce7890",
+    "ArcherCrewBoardAdvanced.c3bbe5",
+    "KirkCrewBoardAdvanced.83c17c",
+    "RebnerCrewBoardAdvanced.a7e5cc",
+    "SovalCrewBoardAdvanced.83560c",
+    "FreemanCrewBoardAdvanced.e4fe18",
+    "PikeCrewBoardAdvanced.376913",
+    "RikerCrewBoardAdvanced.ddab1f"
   ],
   "PlayArea": 0.7021237,
   "PlayerCounts": [

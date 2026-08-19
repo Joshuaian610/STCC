@@ -453,10 +453,6 @@ function placeSelectedCaptainBoard(captainName, selectedCaptainDifficulty, playe
 
   -- handles pull and placement of main captain board on setup
 
-  -- DEBUG, REMOVE AFTER ADDING ADVANCED BOARDS
-  selectedCaptainDifficulty = "Basic"
-
-
   -- check isSolo, place to rotation
   local captainBoard  = getObjectbyName(captainName == "Khan" and "Khan Crew Board" or
                         string.format("%s Crew Board %s", captainName, selectedCaptainDifficulty))

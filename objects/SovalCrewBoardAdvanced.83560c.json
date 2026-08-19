@@ -18,14 +18,14 @@
       "Type": 3
     },
     "ImageScalar": 1,
-    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/18273912534188355759/374F810DC5D3754EE6C3FF6EB313C0FF801A2E67/",
-    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/18273912534188355759/374F810DC5D3754EE6C3FF6EB313C0FF801A2E67/",
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/16603295530535758848/2D50ACF197E1A7FAC35ABC1B0C7E019095C11A57/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/16603295530535758848/2D50ACF197E1A7FAC35ABC1B0C7E019095C11A57/",
     "WidthScale": 0
   },
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "6ab61e",
+  "GUID": "83560c",
   "Grid": true,
   "GridProjection": false,
   "Hands": false,
@@ -37,7 +37,7 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Custom_Tile",
-  "Nickname": "Riker Crew Board Basic",
+  "Nickname": "Soval Crew Board Advanced",
   "Snap": true,
   "Sticky": true,
   "Tags": [
@@ -45,8 +45,8 @@
   ],
   "Tooltip": false,
   "Transform": {
-    "posX": 112.11,
-    "posY": 0.74,
+    "posX": 89.21,
+    "posY": 0.64,
     "posZ": -14,
     "rotX": 0,
     "rotY": 180,
