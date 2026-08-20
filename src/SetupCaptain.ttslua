@@ -1597,6 +1597,7 @@ function setInitialPlayerCounters(playerColor)
   end
 end
 
+
 function finalizeCaptainSetup()
   -- will handle final cleanup steps required after both sides confirmed
 

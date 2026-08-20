@@ -58,10 +58,39 @@ end
 
 
 function getPlayerStr(playerColor)
+  -- handles the creation of playerStr for broadcasts
+
   local playerColorIsSolo = checkPlayerColorIsSolo(playerColor)
   local playerStr = (Player[playerColor].steam_name ~= nil and not playerColorIsSolo) and string.format("[%s]%s[-]", Color.fromString(playerColor):toHex(), Player[playerColor].steam_name) or
                     string.format("[%s]%s %s[-]", Color.fromString(playerColor):toHex(), playerColor, playerColorIsSolo and "Bot" or "Player")
   return playerStr
+end
+
+
+function getPlayerColor(cardObj)
+  -- handles the detection of which side a card is currently on, returns playerColor
+    local playerColor = nil
+    local blueZones = {
+      getObjectbyNameAndNotes("Zone Deploy Ship", "Blue"),
+      getObjectbyNameAndNotes("Zone Deploy Location", "Blue"),
+    }
+    local redZones = {
+      getObjectbyNameAndNotes("Zone Deploy Ship", "Red"),
+      getObjectbyNameAndNotes("Zone Deploy Location", "Red"),
+    }
+    for i = 1, 2 do
+      for _, zoneObj in pairs(blueZones[i].getObjects()) do
+        if cardObj == zoneObj then
+          playerColor = "Blue"
+        end
+      end
+      for _, zoneObj in pairs(redZones[i].getObjects()) do
+        if cardObj == zoneObj then
+          playerColor = "Red"
+        end
+      end
+    end
+    return playerColor
 end
 
 
