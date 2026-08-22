@@ -102,8 +102,6 @@ function checkPlayerColorIsSolo(playerColor)
     playerColorIsSolo = true
   end
 
-  log ("playerColorIsSolo: " .. tostring(playerColorIsSolo))
-
   return playerColorIsSolo
 end
 

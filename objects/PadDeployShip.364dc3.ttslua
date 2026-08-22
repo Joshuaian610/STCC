@@ -1,4 +1,5 @@
 -- object based scripting to handle collision trigger of ship actions
+-- Red Ship Deployment Pad is owner object
 
 function onCollisionEnter(info)
   if info.collision_object.hasTag('suit_ship') then
@@ -12,8 +13,8 @@ function onCollisionEnter(info)
             enterObj.setDescription('Cloaked')
           end
           local bagShipFigures = Global.call("getObjectbyName", "Ship Figurine Bag")
-          bagShipFigures.call("deploy_ship_via_pad", {value=enterObj.getGUID()})
-          enterObj.call('create_dismiss_button')
+          Global.call("deployShipViaPad", enterObj.getGUID())
+          Global.call('createDismissButton', enterObj)
         end
       end
     end
@@ -23,9 +24,19 @@ end
 
 function onObjectLeaveZone(zone, leaveObj)
   local playerColor = self.getGMNotes()
-  if zone.getName() == "Zone Deploy Ship" or zone.getName() == "Zone Deploy Location" then
-    if leaveObj.hasTag('suit_ship') then
-      leaveObj.call('remove_dismiss_button', {playerarea_color=playerarea_color})
+  if (zone == getObjectbyNameAndNotes("Zone Deploy Ship", playerColor) or
+     zone == getObjectbyNameAndNotes("Zone Deploy Location", playerColor)) and
+     leaveObj.hasTag('suit_ship') then
+    Global.call("removeDismissButton", leaveObj)
+  end
+end
+
+
+function getObjectbyNameAndNotes(objName, objNotes)
+  for _, object in pairs(getObjects()) do
+    if object.getName() == objName and object.getGMNotes() == objNotes then
+      return object
     end
   end
+  return nil
 end

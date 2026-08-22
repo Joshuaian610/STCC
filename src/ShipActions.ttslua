@@ -24,228 +24,267 @@
 
 
 -- FROM SHIP BAG
--- function get_playerarea_color(card)
---     local playerarea_color = nil
---     local blue_zones       = {getObjectFromGUID("2c336e"), getObjectFromGUID("fc7f21")}
---     local red_zones        = {getObjectFromGUID("77d0cb"), getObjectFromGUID("5103b2")}
---     for i = 1, 2 do
---         for _, object in pairs(blue_zones[i].getObjects()) do
---             if card == object then
---                 playerarea_color = "Blue"
---             end
---         end
---         for _, object in pairs(red_zones[i].getObjects()) do
---             if card == object then
---                 playerarea_color = "Red"
---             end
---         end
---     end
---     return playerarea_color
--- end -- get_playerearea_color()
 
 
--- function create_deploy_button(params)
---     local card             = params.card
---     local ship_name        = card.getName()
---     local playerarea_color = get_playerarea_color(card)
---     card.UI.show('deploy_ship_button_' .. string.lower(playerarea_color))
--- end -- end create_deploy_button()
+-- DO WE NEED A DEPLOY BUTTON?!
 
+-- function createDeployButton(cardObj)
+--   -- handles XML injection and button creation of Ship Card Deploy buttons
 
--- function remove_deploy_button(params)
---     local card             = params.card
---     local playerarea_color = params.playerarea_color
---     card.UI.hide('deploy_ship_button_' .. string.lower(playerarea_color))
--- end -- end remove_deploy_button()
+--   local playerColor = getPlayerColor(cardObj)
+--   local assetURL = playerColor == "Blue"
+--     and "https://steamusercontent-a.akamaihd.net/ugc/25435380746010187/614515234F3B92A1FCCF2DC3DD02A9B0D5A1E74D/"
+--     or "https://steamusercontent-a.akamaihd.net/ugc/25435380746009590/4212AD86F0C701E59AA1C2BC0A4D442B5C816091/"
 
+--   cardObj.UI.setCustomAsset({
+--     {
+--       name = "Deploy " .. playerColor,
+--       url = assetURL
+--     }
+--   })
 
--- function create_dismiss_button(params)
---     local card             = params.card
---     local ship_name        = card.getName()
---     local playerarea_color = get_playerarea_color(card)
---     card.UI.show('dismiss_ship_button_' .. string.lower(playerarea_color))
--- end -- end create_deploy_button()
-
-
--- function remove_dismiss_button(params)
---     local card             = params.card
---     local playerarea_color = params.playerarea_color
---     card.UI.hide('dismiss_ship_button_' .. string.lower(playerarea_color))
--- end -- end remove_deploy_button()
-
-
--- function deploy_ship_via_pad(args)
---     local value = args.value
---     deploy_ship(_, value, _)
+--   cardObj.UI.setXmlTable({
+--     {
+--       tag = "Panel",
+--       attributes = {
+--         id = "deploy_ship_button",
+--         height = "30",
+--         width = "63",
+--         position = "70 -30 -25",
+--         rotation = "0 0 180",
+--         showAnimation = "Grow",
+--         hideAnimation = "Shrink",
+--         animationDuration = ".25"
+--       },
+--       children = {
+--         {
+--           tag = "Button",
+--           attributes = {
+--             onClick = "deploy_ship(" .. cardObj.getGUID() .. ")",
+--             image = "Deploy " .. playerColor
+--           }
+--         }
+--       }
+--     }
+--   })
 -- end
 
--- function deploy_ship(_, value, _)
---     local ship_card        = getObjectFromGUID(value)
---     local ship_in_bag      = true
---     local card_rotation    = ship_card.getRotation()
---     if card_rotation.y < 271 and card_rotation.y > 269 then
---         card_rotation.y = 90
---     elseif card_rotation.y < 91 and card_rotation.y > 89 then
---         card_rotation.y = 270
---     end
---     local card_position    = ship_card.getPosition()
---     local found_ship       = nil
---     local playerarea_color = get_playerarea_color(ship_card)
-
---     local is_solo          = nil
---     if playerarea_color   == "Blue" and getObjectFromGUID("23bed4").getGMNotes() == "solo" or
---     playerarea_color      == "Red" and getObjectFromGUID("1a78a6").getGMNotes() == "solo" then
---         card_position.x = card_position.x + (playerarea_color == "Blue" and -1.50 or 1.50)
---     else
---         card_position.x = card_position.x + (playerarea_color == "Blue" and 1.50 or -1.50)
---     end
---     local self_objects = self.getObjects()
---     for _, bag_object in pairs(self_objects) do
---         if bag_object.name == ship_card.getName() then
---             found_ship = self.takeObject({index=bag_object.index})
---             break
---         end
---     end
---     if found_ship == nil then
---         local dock_objects = getObjectFromGUID(playerarea_color == "Blue" and "b5c141" or "f047fb").getObjects()
---         for _, dock_object in pairs(dock_objects) do
---             if dock_object.name == ship_card.getName() then
---                 found_ship = getObjectFromGUID(playerarea_color == "Blue" and "b5c141" or "f047fb").takeObject({index=dock_object.index})
---                 break
---             end
---         end
---     end
---     -- if playerarea_color == nil or found_ship == nil then
---     --     broadcastToAll("Unable to determine where ship card is, please deploy ship manually.", "Orange")
---     -- end
---     -- if found_ship == nil and playerarea_color ~= nil then
---     --     broadcastToColor("Unable to determine where ship figurine is, please deploy ship manually.", playerarea_color, "Orange")
---     -- end
---     if found_ship ~= nil and playerarea_color ~= nil then
---         if Player[playerarea_color].steam_name ~= nil then
---             broadcastToAll("[" .. Color.fromString(playerarea_color):toHex() .. "]" .. Player[playerarea_color].steam_name .. "[-] has deployed " .. found_ship.getName() .. ".", "White")
---         else
---             local player_str = "Player"
---             if getObjectFromGUID(player_color == "Blue" and "23bed4" or "1a78a6").getGMNotes() == "solo" then player_str = "Bot" end
---             broadcastToAll("[" .. Color.fromString(playerarea_color):toHex() .. "]" .. playerarea_color .. " " .. player_str .. "[-] has deployed " .. found_ship.getName() .. ".", "White")
---         end
---         found_ship.setRotation(card_rotation)
---         card_position.y = 1.25
---         found_ship.setPositionSmooth(card_position, false, false)
---         local blue_zones     = {getObjectFromGUID("2c336e"), getObjectFromGUID("fc7f21")}
---         local red_zones      = {getObjectFromGUID("77d0cb"), getObjectFromGUID("5103b2")}
---         if ship_card.hasTag('trait_cloak') then
---             found_ship.setDescription('Cloaked')
---             found_ship.highlightOn("Purple")
---             found_ship.setColorTint(playerarea_color)
---         elseif not ship_card.hasTag('trait_cloak') and playerarea_color ~= nil then
---             found_ship.setDescription("")
---             found_ship.highlightOn(playerarea_color)
---             found_ship.setColorTint(playerarea_color)
---         end
---     end
--- end -- end deploy_ship()
+-- function removeDeployButton(cardObj)
+--   local currentXML = cardObj.UI.getXmlTable()
+--   if currentXML ~= {} then
+--     cardObj.UI.hide("deploy_ship_button")
+--   end
+-- end
 
 
--- function dismiss_ship_from_card(_, value, _)
---     local ship_card = getObjectFromGUID(value)
---     local ship_name = ship_card.getName()
---     local ship      = nil
---     for _, object in pairs(getObjects()) do
---         if object.getName() == ship_name and object.hasTag('snap_ship') then
---             ship    = object
---         end
---     end
---     if ship ~= nil then
---         dismiss_ship({ship=ship})
---     else
---         broadcastToAll("Ship is not found in play, please dismiss ship manually.", "Orange")
---     end
--- end -- end dismiss_ship_from_card()
+function createDismissButton(cardObj)
+  -- handles XML injection and button creation of Ship Card Dismiss buttons
 
--- function dismiss_ship(args)
---     local ship           = args.ship
---     local ship_name      = ship.getName()
---     local beam_bag_guids = {
---         ship_blue        = {"f3ac62", "acf736", "f8fc03", "5807b2", "d57c5c", "9d0439", "ff0165"},
---         location_blue    = {"26a5c6", "ca88c0", "40b578", "eeadbe", "7a7548", "397e6d", "ce11ad"},
---         ship_red         = {"95dff1", "30048e", "910a26", "9e394f", "392caa", "c32b20", "b5d6f9"},
---         location_red     = {"7f4770", "577602", "82a5c5", "4f12e8", "351f79", "efdbd0", "cf1df7"},
---     }
---     -- check if ship_card is in play on table
---     local ship_card      = nil
---     for _, object in pairs(getObjects()) do
---         if object.getName() == ship_name and object.tag == "Card" then ship_card = object end
---     end
---     if ship_card == nil then
---         broadcastToAll("Ship card not found for dismissed ship: " .. ship_name .. ", Please perform dismiss actions manually!", "Orange")
---         return nil
---     end
---     local playerarea_color = get_playerarea_color(ship_card)
---     ship_card.call('remove_deploy_button', {playerarea_color=playerarea_color})
---     -- get position of ship card, determine owner_color, row & slot # from it
---     local card_pos       = ship_card.getPosition()
---     local owner_color    = nil
---     local row            = nil -- "ship_blue", "location_blue", "ship_red", "location_red"
---     local slot           = nil -- 1-7
---     if card_pos.x > -39.50 and card_pos.x < -37.50 then
---         owner_color      = "Blue"
---         row              = "ship_blue"
---     elseif card_pos.x > -31.00 and card_pos.x < -29.00 then
---         owner_color      = "Blue"
---         row              = "location_blue"
---     elseif card_pos.x < 39.50 and card_pos.x > 37.50 then
---         owner_color      = "Red"
---         row              = "ship_red"
---     elseif card_pos.x < 31.00 and card_pos.x > 29.00 then
---         owner_color      = "Red"
---         row              = "location_red"
---     end
---     -- determine beam bag
---     if (card_pos.z > 1.47 and card_pos.z < 3.47) or (card_pos.z < -1.47 and card_pos.z > -3.47) then
---         slot = 1
---     elseif (card_pos.z > -2.45 and card_pos.z < -0.45) or (card_pos.z < 2.45 and card_pos.z > 0.45) then
---         slot = 2
---     elseif (card_pos.z > -6.36 and card_pos.z < -4.36) or (card_pos.z < 6.36 and card_pos.z > 4.36) then
---         slot = 3
---     elseif (card_pos.z > -10.28 and card_pos.z < -8.28) or (card_pos.z < 10.28 and card_pos.z > 8.28) then
---         slot = 4
---     elseif (card_pos.z > -14.20 and card_pos.z < -12.20) or (card_pos.z < 14.20 and card_pos.z > 12.20) then
---         slot = 5
---     elseif (card_pos.z > -18.12 and card_pos.z < -16.12) or (card_pos.z < 18.12 and card_pos.z > 16.12) then
---         slot = 6
---     elseif (card_pos.z > -22.00 and card_pos.z < -20.00) or (card_pos.z < 22.00 and card_pos.z > 20.00) then
---         slot = 7
---     end
---     -- send ship figure to space dock bag (remove this functionality when calling this in control location buttons)
---     getObjectFromGUID(owner_color == "Blue" and "b5c141" or "f047fb").putObject(ship)
---     -- broadcast
---     if Player[owner_color].steam_name ~= nil then
---         broadcastToAll("[" .. Color.fromString(owner_color):toHex() .. "]" .. Player[owner_color].steam_name .. "[-] has dismissed " .. ship_card.getName() .. ".", "White")
---     else
---         local player_str = "Player"
---         if getObjectFromGUID(owner_color == "Blue" and "23bed4" or "1a78a6").getGMNotes() == "solo" then player_str = "Bot" end
---         broadcastToAll("[" .. Color.fromString(owner_color):toHex() .. "]" .. owner_color .. " " .. player_str .. "[-] has dismissed " .. ship_card.getName() .. ".", "White")
---     end
---     -- send ship card to discard
---     local ship_card_rot = owner_color == "Blue" and {0.00, 270.00, 0.00} or {0.00, 90.00, 0.00}
---     local discard_pos   = owner_color == "Blue" and {-44.57, 1.50, -21.00} or {44.57, 1.50, 21.00}
---     if owner_color == "Blue" and getObjectFromGUID("1a78a6").getGMNotes() == "solo" then
---         ship_card_rot = {0.00, 90.00, 0.00}
---     end
---     if owner_color == "Red" and getObjectFromGUID("23bed4").getGMNotes() == "solo" then
---         ship_card_rot = {0.00, 270.00, 0.00}
---     end
---     ship_card.setPositionSmooth(discard_pos, false, false)
---     -- trigger beam bag cleanout button
---     if (owner_color == "Blue" and getObjectFromGUID("23bed4").getGMNotes() ~= "solo") or
---     (owner_color == "Red" and getObjectFromGUID("1a78a6").getGMNotes() ~= "solo") then
---         local beam_bag = getObjectFromGUID(beam_bag_guids[row][slot])
---         local bag_objects = beam_bag.getObjects()
---         for i = 1, #bag_objects do
---             local object = beam_bag.takeObject({rotation=ship_card_rot})
---             object.setPositionSmooth(discard_pos, false, false)
---         end
---     end
--- end -- end dismiss_ship()
+  local playerColor = getPlayerColor(cardObj)
 
+  local assetURL = playerColor == "Blue"
+    and "https://steamusercontent-a.akamaihd.net/ugc/25437998677358449/B55638917979DF06CF735E5EC9C2908A11480C0D/"
+    or "https://steamusercontent-a.akamaihd.net/ugc/25437998677358871/850E7BC0248AB1C7DF2EDF04E828862585D1CBDA/"
+
+  cardObj.UI.setCustomAssets({
+    {
+      name = "Dismiss " .. playerColor,
+      url = assetURL
+    }
+  })
+
+  cardObj.UI.setXmlTable({
+    {
+      tag = "Panel",
+      attributes = {
+        id                = "dismiss_ship_button",
+        height            = "30",
+        width             = "63",
+        position          = "70 -30 -25",
+        rotation          = "0 0 180",
+        showAnimation     = "Grow",
+        hideAnimation     = "Shrink",
+        animationDuration = ".25"
+      },
+      children = {
+        {
+          tag = "Button",
+          attributes = {
+            onClick = "Global/dismissShipFromCard(" .. cardObj.getGUID() .. ")",
+            image = "Dismiss " .. playerColor
+          }
+        }
+      }
+    }
+  })
+end
+
+function removeDismissButton(cardObj)
+  local currentXML = cardObj.UI.getXmlTable()
+  if currentXML ~= {} then
+    cardObj.UI.hide("dismiss_ship_button")
+  end
+end
+
+
+function deployShipViaPad(value)
+  deployShip(_, value, _)
+end
+
+function deployShip(_, value, _)
+  -- handles the deployment of Ship Figure via XML on card click
+  local shipCard = getObjectFromGUID(value)
+  local rotShipCard = shipCard.getRotation()
+  if rotShipCard.y < 271 and rotShipCard.y > 269 then
+    rotShipCard.y = 90
+  elseif rotShipCard.y < 91 and rotShipCard.y > 89 then
+    rotShipCard.y = 270
+  end
+  local posCard = shipCard.getPosition()
+  local foundShip = nil
+  local playerColor = getPlayerColor(shipCard)
+  local isSolo = checkPlayerColorIsSolo(playerColor)
+  if (playerColor == "Blue" and isSolo) or (playerColor == "Red" and isSolo) then
+    posCard.x = posCard.x + (playerColor == "Blue" and -1.50 or 1.50)
+  else
+    posCard.x = posCard.x + (playerColor == "Blue" and 1.50 or -1.50)
+  end
+
+  local bagShipFigures = getObjectbyName("Ship Figurine Bag")
+  for _, bagObj in pairs(bagShipFigures.getObjects()) do
+    if bagObj.name == shipCard.getName() then
+      foundShip = bagShipFigures.takeObject({ guid = bagObj.guid })
+      break
+    end
+  end
+
+  if foundShip == nil then
+    local spaceDock = getObjectbyNameAndNotes("Space Dock", playerColor)
+    for _, dockObj in pairs(spaceDock.getObjects()) do
+      if dockObj.name == shipCard.getName() then
+        foundShip = spaceDock.takeObject( { guid = dockObj.guid })
+        break
+      end
+    end
+  end
+
+  if foundShip ~= nil and playerColor ~= nil then
+    -- handle broadcast
+    local playerStr = getPlayerStr(playerColor)
+    local broadcastStr = string.format("%s has deployed %s.", playerStr, foundShip.getName())
+    broadcastToAll(broadcastStr, "White")
+
+    -- place ship figure foundShip
+    foundShip.setRotation(rotShipCard)
+    posCard.y = 1.25
+    foundShip.setPositionSmooth(posCard, false, true)
+
+    -- tint, highlight appropriately for playerColor or if cloaked
+    if shipCard.hasTag('trait_cloak') then
+      foundShip.setDescription('Cloaked')
+      foundShip.highlightOn("Purple")
+      foundShip.setColorTint(playerColor)
+
+    elseif not shipCard.hasTag('trait_cloak') then
+      foundShip.setDescription("")
+      foundShip.highlightOn(playerColor)
+      foundShip.setColorTint(playerColor)
+    end
+  end
+end
+
+
+function dismissShipFromCard(_, value, _)
+  local cardObj = getObjectFromGUID(value)
+
+  log("running dismissShipFromCard() on" .. cardObj.getName())
+
+  local shipName = cardObj.getName()
+  local shipObj = nil
+  for _, object in pairs(getObjects()) do
+    if object.getName() == shipName and object.hasTag('snap_ship') then
+      shipObj = object
+      break
+    end
+  end
+  if shipObj ~= nil then
+    dismissShip(cardObj, shipObj)
+  else
+    broadcastToAll("Ship is not found in play, please dismiss ship manually.", "Orange")
+    return
+  end
+end
+
+function dismissShip(cardObj, shipObj)
+  -- handles the dismissal of a ship and any beamed cards at it's slot
+  local shipName = cardObj.getName()
+  local beamBagGUIDs = {
+    shipBlue     = {"f3ac62", "acf736", "f8fc03", "5807b2", "d57c5c", "9d0439", "ff0165"},
+    locationBlue = {"26a5c6", "ca88c0", "40b578", "eeadbe", "7a7548", "397e6d", "ce11ad"},
+    shipRed      = {"95dff1", "30048e", "910a26", "9e394f", "392caa", "c32b20", "b5d6f9"},
+    locationRed  = {"7f4770", "577602", "82a5c5", "4f12e8", "351f79", "efdbd0", "cf1df7"},
+  }
+
+  removeDismissButton(cardObj)
+
+  -- get position of ship card, determine playerColor, row & slot # from it
+  local posCard = cardObj.getPosition()
+  local playerColor = getPlayerColor(cardObj)
+  local row = nil -- "shipBlue", "locationBlue", "shipRed", "locationRed"
+  local slot = nil -- 1-7
+  if posCard.x > -39.50 and posCard.x < -37.50 then
+    playerColor = "Blue"
+    row = "shipBlue"
+  elseif posCard.x > -31.00 and posCard.x < -29.00 then
+    playerColor = "Blue"
+    row = "locationBlue"
+  elseif posCard.x < 39.50 and posCard.x > 37.50 then
+    playerColor = "Red"
+    row = "shipRed"
+  elseif posCard.x < 31.00 and posCard.x > 29.00 then
+    playerColor = "Red"
+    row = "locationRed"
+  end
+
+  -- determine corresponding beam bag
+  if (posCard.z > 1.47 and posCard.z < 3.47) or (posCard.z < -1.47 and posCard.z > -3.47) then
+    slot = 1
+  elseif (posCard.z > -2.45 and posCard.z < -0.45) or (posCard.z < 2.45 and posCard.z > 0.45) then
+    slot = 2
+  elseif (posCard.z > -6.36 and posCard.z < -4.36) or (posCard.z < 6.36 and posCard.z > 4.36) then
+    slot = 3
+  elseif (posCard.z > -10.28 and posCard.z < -8.28) or (posCard.z < 10.28 and posCard.z > 8.28) then
+    slot = 4
+  elseif (posCard.z > -14.20 and posCard.z < -12.20) or (posCard.z < 14.20 and posCard.z > 12.20) then
+    slot = 5
+  elseif (posCard.z > -18.12 and posCard.z < -16.12) or (posCard.z < 18.12 and posCard.z > 16.12) then
+    slot = 6
+  elseif (posCard.z > -22.00 and posCard.z < -20.00) or (posCard.z < 22.00 and posCard.z > 20.00) then
+    slot = 7
+  end
+
+  -- send ship figure to space dock bag (remove this functionality when calling this in control location buttons)
+  getObjectbyNameAndNotes("Space Dock", playerColor).putObject(shipObj)
+
+  -- broadcast
+  local playerStr = getPlayerStr(playerColor)
+  local broadcastStr = string.format("%s has dismissed %s.", playerStr, cardObj.getName())
+  broadcastToAll(broadcastStr, "White")
+
+  -- send ship card to discard
+  local rotDiscard = playerColor == "Blue" and {0.00, 270.00, 0.00} or {0.00, 90.00, 0.00}
+  if checkPlayerColorIsSolo(playerColor) then
+    rotDiscard = playerColor == "Blue" and {0.00, 90.00, 0.00} or {0.00, 270.00, 0.00}
+  end
+  local posDiscard = playerColor == "Blue" and {-44.57, 1.50, -21.00} or {44.57, 1.50, 21.00}
+
+  cardObj.setRotation(rotDiscard)
+  cardObj.setPositionSmooth(posDiscard, false, true)
+
+  -- trigger beam bag cleanout button
+  local beamBag = getObjectFromGUID(beamBagGUIDs[row][slot])
+  for i = 1, #beamBag.getObjects() do
+    local bagObj = beamBag.takeObject({ rotation = rotDiscard })
+    bagObj.setPositionSmooth(posDiscard, false, true)
+  end
+end

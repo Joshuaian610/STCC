@@ -1,4 +1,4 @@
-{
+ {
   "AltLookAngle": {
     "x": 0,
     "y": 0,
@@ -84,5 +84,5 @@
     "scaleZ": 1.75
   },
   "Value": 0,
-  "XmlUI_path": "SelaDevelopment.ecb28b/IRWValdore.6c3d86.xml"
+  "XmlUI": ""
 }

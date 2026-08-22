@@ -1,32 +1,42 @@
-playerarea_color = "Blue"
-zone_1           = getObjectFromGUID("2c336e")
-zone_2           = getObjectFromGUID("fc7f21")
-
+-- object based scripting to handle collision trigger of ship actions
+-- Blue Location Deployment Pad is owner object
 
 function onCollisionEnter(info)
-    if info.collision_object.hasTag('suit_ship') then
-        local enter_object = info.collision_object
-        local zones        = enter_object.getZones()
-        for _, zone in pairs(zones) do
-            if zone == zone_1 or zone == zone_2 then
-                if enter_object.hasTag('suit_ship') then
-                    if enter_object.hasTag('trait_cloak') then
-                        enter_object.highlightOn("Purple")
-                        enter_object.setDescription('Cloaked')
-                    end
-                    getObjectFromGUID("82424c").call("deploy_ship_via_pad", {value=enter_object.getGUID()})
-                    enter_object.call('create_dismiss_button')
-                end
-            end
+  if info.collision_object.hasTag('suit_ship') then
+    local enterObj = info.collision_object
+    local zones = enterObj.getZones()
+    for _, zone in pairs(zones) do
+      if zone.getName() == "Zone Deploy Ship" or zone.getName() == "Zone Deploy Location" then
+        if enterObj.hasTag('suit_ship') then
+          if enterObj.hasTag('trait_cloak') and not enterObj.type == "Card" then
+            enterObj.highlightOn("Purple")
+            enterObj.setDescription('Cloaked')
+          end
+          local bagShipFigures = Global.call("getObjectbyName", "Ship Figurine Bag")
+          Global.call("deployShipViaPad", enterObj.getGUID())
+          Global.call('createDismissButton', enterObj)
         end
+      end
     end
-end -- end onCollisionEnter()
+  end
+end
 
 
-function onObjectLeaveZone(zone, leave_object)
-    if zone == zone_1 or zone == zone_2 then
-        if leave_object.hasTag('suit_ship') then
-            leave_object.call('remove_dismiss_button', {playerarea_color=playerarea_color})
-        end
+function onObjectLeaveZone(zone, leaveObj)
+  local playerColor = self.getGMNotes()
+  if (zone == getObjectbyNameAndNotes("Zone Deploy Ship", playerColor) or
+     zone == getObjectbyNameAndNotes("Zone Deploy Location", playerColor)) and
+     leaveObj.hasTag('suit_ship') then
+    Global.call("removeDismissButton", leaveObj)
+  end
+end
+
+
+function getObjectbyNameAndNotes(objName, objNotes)
+  for _, object in pairs(getObjects()) do
+    if object.getName() == objName and object.getGMNotes() == objNotes then
+      return object
     end
-end -- end onObjectLeaveZone()
+  end
+  return nil
+end

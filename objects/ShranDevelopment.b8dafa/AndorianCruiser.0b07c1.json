@@ -55,8 +55,8 @@
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
   "Locked": false,
-  "LuaScriptState": "",
-  "LuaScript_path": "ShranDevelopment.b8dafa/AndorianCruiser.0b07c1.ttslua",
+  "LuaScript": "",
+  "LuaScriptState": "",  
   "MeasureMovement": false,
   "Name": "Card",
   "Nickname": "Andorian Cruiser",
@@ -82,5 +82,5 @@
     "scaleZ": 1.75
   },
   "Value": 0,
-  "XmlUI_path": "ShranDevelopment.b8dafa/AndorianCruiser.0b07c1.xml"
+  "XmlUI": ""
 }

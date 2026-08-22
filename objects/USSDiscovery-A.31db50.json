@@ -55,8 +55,8 @@
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
   "Locked": true,
+  "LuaScript": "",
   "LuaScriptState": "",
-  "LuaScript_path": "USSDiscovery-A.31db50.ttslua",
   "MeasureMovement": false,
   "Name": "Card",
   "Nickname": "U.S.S. Discovery-A",
@@ -85,5 +85,5 @@
     "scaleZ": 1.75
   },
   "Value": 0,
-  "XmlUI_path": "USSDiscovery-A.31db50.xml"
+  "XmlUI": ""
 }

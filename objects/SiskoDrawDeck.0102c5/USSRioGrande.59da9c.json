@@ -55,8 +55,8 @@
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
   "Locked": false,
+  "LuaScript": "",
   "LuaScriptState": "",
-  "LuaScript_path": "SiskoDrawDeck.0102c5/USSRioGrande.59da9c.ttslua",
   "MeasureMovement": false,
   "Name": "Card",
   "Nickname": "U.S.S. Rio Grande",
@@ -81,5 +81,5 @@
     "scaleZ": 1.75
   },
   "Value": 0,
-  "XmlUI_path": "SiskoDrawDeck.0102c5/USSRioGrande.59da9c.xml"
+  "XmlUI": ""
 }

@@ -1444,7 +1444,8 @@ function flipBotUI(playerColor)
   local rotBotBeamBags = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
   for _, object in pairs(getObjects()) do
     if object.getName() == "Beamed Cards" and object.getGMNotes() == playerColor then
-      object.setRotation(rotBotBeamBags)
+      -- bots never beam to ship or location
+      object.destruct()
     end
     if object.getName() == "Captain's Log" and object.getGMNotes() == playerColor then
       object.setRotation(rotBotBeamBags)

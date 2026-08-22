@@ -55,8 +55,8 @@
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
   "Locked": false,
+  "LuaScript": "",
   "LuaScriptState": "",
-  "LuaScript_path": "SiskoReserves.80f7a6/USSDefiant.5c1dbc.ttslua",
   "MeasureMovement": false,
   "Name": "Card",
   "Nickname": "U.S.S. Defiant",
@@ -84,5 +84,5 @@
     "scaleZ": 1.75
   },
   "Value": 0,
-  "XmlUI_path": "SiskoReserves.80f7a6/USSDefiant.5c1dbc.xml"
+  "XmlUI": ""
 }
