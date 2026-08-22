@@ -141,6 +141,9 @@ function animateButton(buttonObj)
 
     if buttonObj.getName():find("Button Control Location") then
       initButtonControlNZLocation(buttonObj)
+
+    elseif buttonObj.getName() == "Button Pull Action Token" then
+      initButtonPullActionToken(buttonObj)
     end
 
   end, .2)

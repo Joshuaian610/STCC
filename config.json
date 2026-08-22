@@ -80,9 +80,6 @@
     "NZDivider.76ae39",
     "NZDivider.cecec3",
     "SoloRulebooks.7d7f50",
-    "ActionToken.2122bd",
-    "ActionToken.5aa9e1",
-    "ActionToken.3cbc59",
     "BoardCabinet.e2b080",
     "LatinumCounterRed.c2bac2",
     "DilithiumCounterRed.f40879",
@@ -154,8 +151,8 @@
     "ZoneCaptainSelectRight.20818f",
     "ZoneCaptainSelectLeft.a1c39b",
     "ButtonPullActionToken.093a8c",
-    "Infinite_Bag.2b6501",
-    "Infinite_Bag.71c9a1",
+    "ActionTokenBag.2b6501",
+    "ActionTokenBag.71c9a1",
     "ButtonPullActionToken.312718",
     "ZoneReturnIncident.c66c67",
     "ZoneReturnAlly.0cff6d",
@@ -483,7 +480,10 @@
     "SovalCrewBoardAdvanced.83560c",
     "FreemanCrewBoardAdvanced.e4fe18",
     "PikeCrewBoardAdvanced.376913",
-    "RikerCrewBoardAdvanced.ddab1f"
+    "RikerCrewBoardAdvanced.ddab1f",
+    "ActionToken.fad6b3",
+    "ActionToken.916844",
+    "ActionToken.bf8c02"
   ],
   "PlayArea": 0.7021237,
   "PlayerCounts": [

@@ -123,6 +123,23 @@ function initButtonCaptainSelect(buttonObj)
 end
 
 
+function initButtonPullActionToken(buttonObj)
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "pullActionToken",
+    function_owner = self,
+    label          = "",
+    position       = { 0, 0.36, -0.01 },
+    width          = 480,
+    height         = 480,
+    scale          = { 2.1, 2.1, 2.1 },
+    color          = { 1, 1, 1, .3 },
+    hover_color    = { 1, 1, 1, .6 },
+    tooltip        = "Click to summon an extra action token. The summoned action token will be destroyed on Add Resource (End Turn) button click.",
+  })
+end
+
+
 
 function nullFunc()
   -- handle a click that should not change anything
@@ -159,7 +176,7 @@ end
 
 
 -- wrapper to handle entirety of captain area setup, call by call
-function setupCaptain(button, clickerColor, altClick)
+function setupCaptain(button, _, _)
   -- get buttonName, captainName, playerColor, otherPlayerColor, isBot
   local buttonName = button.getName()
   local playerColor = button.getGMNotes()
@@ -260,7 +277,7 @@ function setupCaptain(button, clickerColor, altClick)
   -- statuses
   setupCaptainStatus(captainName, playerColor, isBot)
   -- incidents
-  setupCaptainIncident(captainName, playerColor, isBot)
+  setupCaptainIncident(captainName)
   -- discards
   setupCaptainDiscard(captainName, playerColor, isBot)
 
@@ -1214,7 +1231,7 @@ function setupCaptainStatus(captainName, playerColor, isBot)
 end
 
 
-function setupCaptainIncident(captainName, playerColor, isBot)
+function setupCaptainIncident(captainName)
   -- will handle setup of initial captain incident cards, if they exist
 
   if captainName == "Burnham" or captainName == "Khan" or captainName == "Freeman" then
@@ -1747,4 +1764,20 @@ function finalizeCaptainSetup()
     end, 1.5)
 
   end, 1.5)
+end
+
+
+function pullActionToken(buttonObj, clickerColor, altClick)
+  animateButton(buttonObj)
+  local posDrop = buttonObj.getPosition()
+  local playerColor = buttonObj.getGMNotes()
+  local rotToken = playerColor == "Blue" and {0.00, 120.00, 0.00} or { 0.00, 300.00, 180.00 }
+  local bagTokens = getObjectbyNameAndNotes("Action Token Bag", playerColor)
+  posDrop.y = 6.00
+  local token = bagTokens.takeObject({ rotation= rotToken })
+  token.setPosition(posDrop)
+  token.addTag("destruct_on_end_turn")
+  local playerStr = getPlayerStr(playerColor)
+  local broadcastStr = string.format("%s has generated +1 Extra Action Token.", playerStr)
+  broadcastToAll(broadcastStr, "White")
 end

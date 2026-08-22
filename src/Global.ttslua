@@ -136,6 +136,11 @@ function onObjectSpawn(obj)
     initButtonControlNZLocation(obj)
   end
 
+  -- handle creation of captain area pull action token buttons
+  if obj.getName() == "Button Pull Action Token" then
+    initButtonPullActionToken(obj)
+  end
+
 end
 
 

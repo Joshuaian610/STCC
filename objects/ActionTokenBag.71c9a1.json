@@ -11,12 +11,12 @@
     "r": 0.44295
   },
   "ContainedObjects_order": [
-    "Custom_Token.0f911c"
+    "ActionToken.550d6a"
   ],
-  "ContainedObjects_path": "Infinite_Bag.71c9a1",
+  "ContainedObjects_path": "ActionTokenBag.71c9a1",
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "",
+  "GMNotes": "Red",
   "GUID": "71c9a1",
   "Grid": true,
   "GridProjection": false,
@@ -31,7 +31,7 @@
   "MeasureMovement": false,
   "MeshIndex": -1,
   "Name": "Infinite_Bag",
-  "Nickname": "",
+  "Nickname": "Action Token Bag",
   "Snap": true,
   "Sticky": true,
   "Tags": [
@@ -40,7 +40,7 @@
   "Tooltip": true,
   "Transform": {
     "posX": 60.36,
-    "posY": -2.99,
+    "posY": -1,
     "posZ": 25.29,
     "rotX": 0,
     "rotY": 0,
