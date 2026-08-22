@@ -2,6 +2,8 @@
 -- code by Nonprophet, which is why it sucks
 
 require("BeamedBags")
+require("ControlMarket")
+require("ControlNZ")
 require("Helpers")
 require("OnloadSupport")
 require("SetupCaptain")
@@ -129,6 +131,10 @@ function onObjectSpawn(obj)
     end
   end
 
+  -- handle creation of NZ Control buttons
+  if obj.getName():find("Button Control Location") then
+    initButtonControlNZLocation(obj)
+  end
 
 end
 

@@ -30,7 +30,7 @@
   ],
   "ContainedObjects_path": "AlliesToBoldlyGoDeck.14942a",
   "CustomDeck": {
-    "190": {
+    "400": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
       "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11132630798383640060/1D6A6E657D6B273C5DD9D2793ED567CF729E7DF3/",
@@ -41,22 +41,22 @@
     }
   },
   "DeckIDs": [
-    19015,
-    19014,
-    19013,
-    19012,
-    19011,
-    19010,
-    19009,
-    19008,
-    19007,
-    19006,
-    19005,
-    19004,
-    19003,
-    19002,
-    19001,
-    19000
+    40015,
+    40014,
+    40013,
+    40012,
+    40011,
+    40010,
+    40009,
+    40008,
+    40007,
+    40006,
+    40005,
+    40004,
+    40003,
+    40002,
+    40001,
+    40000
   ],
   "Description": "",
   "DragSelectable": true,

@@ -120,9 +120,11 @@ function createDismissButton(cardObj)
 end
 
 function removeDismissButton(cardObj)
-  local currentXML = cardObj.UI.getXmlTable()
-  if currentXML ~= {} then
-    cardObj.UI.hide("dismiss_ship_button")
+  if cardObj then
+    local currentXML = cardObj.UI.getXml()
+    if currentXML ~= "" then
+      cardObj.UI.hide("dismiss_ship_button")
+    end
   end
 end
 
@@ -143,8 +145,8 @@ function deployShip(_, value, _)
   local posCard = shipCard.getPosition()
   local foundShip = nil
   local playerColor = getPlayerColor(shipCard)
-  local isSolo = checkPlayerColorIsSolo(playerColor)
-  if (playerColor == "Blue" and isSolo) or (playerColor == "Red" and isSolo) then
+  local isBot = checkPlayerColorIsBot(playerColor)
+  if (playerColor == "Blue" and isBot) or (playerColor == "Red" and isBot) then
     posCard.x = posCard.x + (playerColor == "Blue" and -1.50 or 1.50)
   else
     posCard.x = posCard.x + (playerColor == "Blue" and 1.50 or -1.50)
@@ -273,7 +275,7 @@ function dismissShip(cardObj, shipObj)
 
   -- send ship card to discard
   local rotDiscard = playerColor == "Blue" and {0.00, 270.00, 0.00} or {0.00, 90.00, 0.00}
-  if checkPlayerColorIsSolo(playerColor) then
+  if checkPlayerColorIsBot(playerColor) then
     rotDiscard = playerColor == "Blue" and {0.00, 90.00, 0.00} or {0.00, 270.00, 0.00}
   end
   local posDiscard = playerColor == "Blue" and {-44.57, 1.50, -21.00} or {44.57, 1.50, 21.00}
@@ -283,8 +285,10 @@ function dismissShip(cardObj, shipObj)
 
   -- trigger beam bag cleanout button
   local beamBag = getObjectFromGUID(beamBagGUIDs[row][slot])
-  for i = 1, #beamBag.getObjects() do
-    local bagObj = beamBag.takeObject({ rotation = rotDiscard })
-    bagObj.setPositionSmooth(posDiscard, false, true)
+  if beamBag then -- handle solo not having a beam bag
+    for i = 1, #beamBag.getObjects() do
+      local bagObj = beamBag.takeObject({ rotation = rotDiscard })
+      bagObj.setPositionSmooth(posDiscard, false, true)
+    end
   end
 end

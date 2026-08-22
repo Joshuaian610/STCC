@@ -60,9 +60,9 @@ end
 function getPlayerStr(playerColor)
   -- handles the creation of playerStr for broadcasts
 
-  local playerColorIsSolo = checkPlayerColorIsSolo(playerColor)
-  local playerStr = (Player[playerColor].steam_name ~= nil and not playerColorIsSolo) and string.format("[%s]%s[-]", Color.fromString(playerColor):toHex(), Player[playerColor].steam_name) or
-                    string.format("[%s]%s %s[-]", Color.fromString(playerColor):toHex(), playerColor, playerColorIsSolo and "Bot" or "Player")
+  local playerColorisBot = checkPlayerColorIsBot(playerColor)
+  local playerStr = (Player[playerColor].steam_name ~= nil and not playerColorisBot) and string.format("[%s]%s[-]", Color.fromString(playerColor):toHex(), Player[playerColor].steam_name) or
+                    string.format("[%s]%s %s[-]", Color.fromString(playerColor):toHex(), playerColor, playerColorisBot and "Bot" or "Player")
   return playerStr
 end
 
@@ -94,25 +94,35 @@ function getPlayerColor(cardObj)
 end
 
 
-function checkPlayerColorIsSolo(playerColor)
+function checkPlayerColorIsBot(playerColor)
   -- checks and returns if a specified playerColor is currently in solo bot mode
   -- captain board pad's gmnotes specifies enabled (this color is a bot) or disabled (this color is human)
-  local playerColorIsSolo = false
+  local playerColorisBot = false
   if getObjectbyName("Pad Crew Board " .. playerColor).getGMNotes() == "enabled" then
-    playerColorIsSolo = true
+    playerColorisBot = true
   end
 
-  return playerColorIsSolo
+  return playerColorisBot
 end
 
 
-function checkIsSolo()
+function checkisBot()
   -- checks and returns if there is currently a solo bot in play
-  local isSolo = false
-  if checkPlayerColorIsSolo("Blue") or checkPlayerColorIsSolo("Red") then
-    isSolo = true
+  local isBot = false
+  if checkPlayerColorIsBot("Blue") or checkPlayerColorIsBot("Red") then
+    isBot = true
   end
-  return isSolo
+  return isBot
+end
+
+
+function checkIsCadet()
+  -- handles check if current game mode is Cadet bot, checks stardate pad GMNotes
+
+  local padStardate = getObjectbyName("Pad Stardate")
+  local isCadet = false
+  if padStardate.getGMNotes() == "Cadet" then isCadet = true end
+  return isCadet
 end
 
 
@@ -129,7 +139,9 @@ function animateButton(buttonObj)
   buttonObj.setPositionSmooth(pos, false, true)
   Wait.time(function()
 
-    buttonObj.call('create_button')
+    if buttonObj.getName():find("Button Control Location") then
+      initButtonControlNZLocation(buttonObj)
+    end
 
   end, .2)
 end

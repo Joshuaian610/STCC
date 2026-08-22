@@ -55,8 +55,8 @@
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
   "Locked": true,
-  "LuaScript": "",
   "LuaScriptState": "",
+  "LuaScript_path": "IKSGroth.e559ba.ttslua",
   "MeasureMovement": false,
   "Name": "Card",
   "Nickname": "I.K.S. Gr'oth",
@@ -82,5 +82,5 @@
     "scaleZ": 1.75
   },
   "Value": 0,
-  "XmlUI": ""
+  "XmlUI_path": "IKSGroth.e559ba.xml"
 }

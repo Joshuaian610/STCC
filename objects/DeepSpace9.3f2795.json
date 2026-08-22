@@ -55,8 +55,8 @@
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
   "Locked": true,
-  "LuaScript": "",
   "LuaScriptState": "",
+  "LuaScript_path": "DeepSpace9.3f2795.ttslua",
   "MeasureMovement": false,
   "Name": "Card",
   "Nickname": "Deep Space 9",
@@ -83,5 +83,5 @@
     "scaleZ": 1.75
   },
   "Value": 0,
-  "XmlUI": ""
+  "XmlUI_path": "DeepSpace9.3f2795.xml"
 }

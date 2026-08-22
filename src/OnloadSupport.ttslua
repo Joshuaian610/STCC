@@ -227,7 +227,7 @@ function onloadXML()
   local colors = {"Blue", "Red"}
   for i = 1, 2 do
     local playercolor = colors[i]
-    local is_solo = checkPlayerColorIsSolo(playercolor)
+    local is_solo = checkPlayerColorIsBot(playercolor)
     local captain_zone = getObjectFromGUID(playercolor == "Blue" and "75465f" or "75c041")
     local captain_pad = getObjectFromGUID(playercolor == "Blue" and "997491" or "28a24b")
     for _, object in pairs(captain_zone.getObjects()) do

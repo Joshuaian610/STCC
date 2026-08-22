@@ -102,7 +102,7 @@ function enableSolo(button, _, _)
   local broadcastStr = string.format("[%s]%s[-] side will be set up for the solo bot.", Color.fromString(playerColor):toHex(), playerColor)
   broadcastToAll(broadcastStr, "White")
 
-  -- mark captain board pad GMNotes to allow helpers to check isSolo or playerColorIsSolo
+  -- mark captain board pad GMNotes to allow helpers to check isBot or playerColorisBot
   getObjectbyName("Pad Crew Board " .. playerColor).setGMNotes("enabled")
 
   -- show bot difficulty button objects
@@ -150,7 +150,7 @@ function disableSolo(button, _, _)
   local broadcastStr = string.format("[%s]%s[-] side will be set up for a human player.", Color.fromString(playerColor):toHex(), playerColor)
   broadcastToAll(broadcastStr, "White")
 
-  -- mark captain board pad GMNotes to allow helpers to check isSolo or playerColorIsSolo
+  -- mark captain board pad GMNotes to allow helpers to check isBot or playerColorisBot
   getObjectbyName("Pad Crew Board " .. playerColor).setGMNotes("disabled")
 
   -- hide bot difficulty buttons
