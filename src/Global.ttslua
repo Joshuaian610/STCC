@@ -54,7 +54,7 @@ function onObjectSpawn(obj)
   -- handles on spawn actions
 
   -- handle beamed bag button/counter refresh
-  if obj.getName() == "Beamed Cards" then
+  if obj.getName() == "Beamed Cards" or obj.getName() == "Captain's Log" then
     obj.call("updateButtons")
   end
 

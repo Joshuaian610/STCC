@@ -45,7 +45,7 @@
   "LayoutGroupSortIndex": 0,
   "Locked": true,
   "LuaScriptState": "",
-  "LuaScript_path": "CaptainsLog.973d0b.ttslua",
+  "LuaScript": "require(\"BeamedBags\")",
   "MaterialIndex": -1,
   "MeasureMovement": false,
   "MeshIndex": -1,

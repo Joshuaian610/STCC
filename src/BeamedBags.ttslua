@@ -6,7 +6,7 @@ function onLoad()
 end
 
 
-function openBag(_, _, altClick)
+function openBag(_, clickerColor, altClick)
   -- handles left or right click on beamed bag button
   -- left click opens beamed bag
   -- right click sends all beamed contents to discard
@@ -20,7 +20,7 @@ function openBag(_, _, altClick)
     ["Red"]  = { 44.57, 1.50, 21.00 },
   }
   if not altClick then
-    self.Container.search(playerColor)
+    self.Container.search(clickerColor)
   elseif altClick then
     local bagObjs = self.getObjects()
     for i = 1, #bagObjs do
@@ -34,37 +34,51 @@ end
 function createSearchButton()
   -- handles creation of larger beamed bag button
   -- both this and the counter should perform same functionality
+
+  local position = self.getName() == "Beamed Cards" and { 0, 0.17, 0.70 } or { 0, 0.17, 0.02 }
+  local height = self.getName() == "Beamed Cards" and 145 or 450
+  local tooltip = self.getName() == "Beamed Cards" and
+                  "Left click to search Beamed Cards, Right click to dismiss all Beamed Cards." or
+                  "Click to search Captain's Log."
+
   self.createButton({
     click_function = "openBag",
     function_owner = self,
     label          = "",
-    position       = { 0, 0.17, 0.70 },
+    position       = position,
     rotation       = { 0, 180, 0 },
     width          = 450,
-    height         = 145,
+    height         = height,
     scale          = { 2.3, 2.3, 2.3 },
     color          = { 1, 1, 1, .2 },
     hover_color    = { 1, 1, 1, .4 },
-    tooltip        = "Left click to search Beamed Cards, Right click to dismiss all Beamed Cards.",
+    tooltip        = tooltip,
   })
 end
 
 
 function createCounterButton(bagCount)
   local playerColor = self.getGMNotes()
+  local position = self.getName() == "Beamed Cards" and { 0, 0.17, -0.35 } or { 0.45, 0.17, 0.45 }
+  local width = self.getName() == "Beamed Cards" and 225 or 125
+  local height = self.getName() == "Beamed Cards" and 225 or 125
+  local fontSize = self.getName() == "Beamed Cards" and 180 or 90
+  local tooltip = self.getName() == "Beamed Cards" and
+                  "There are " .. bagCount .. " cards beamed here.\nLeft click to search Beamed Cards, Right click to dismiss all Beamed Cards." or
+                  "There are " .. bagCount .. " cards logged here."
   self.createButton({
     click_function = "openBag",
     function_owner = self,
     label          = bagCount,
-    position       = { 0, 0.17, -0.35 },
-    width          = 225,
-    height         = 225,
-    font_size      = 180,
+    position       = position,
+    width          = width,
+    height         = height,
+    font_size      = fontSize,
     scale          = { 2.3, 2.3, 2.3 },
     color          = playerColor,
     hover_color    = playerColor,
     font_color     = { 1, 1, 1, 1 },
-    tooltip        = "There are " .. bagCount .. " cards beamed here.\nLeft click to search Beamed Cards, Right click to dismiss all Beamed Cards.",
+    tooltip        = tooltip,
   })
 end
 
