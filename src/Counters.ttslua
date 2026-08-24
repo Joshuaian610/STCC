@@ -1,0 +1,188 @@
+-- handles actions for counters:
+-- player resource & skill, and stardate glory
+
+
+
+function onDestroy()
+  updateSave()
+end
+
+
+function updateSave()
+  self.script_state = val
+end
+
+
+function onLoad(savedData)
+
+  val = tonumber(savedData) or 0
+  minVal = 0
+  maxVal = 999
+  Wait.time(function()
+
+    local counterType = (self.getName():find("Dilithium") and not self.getName():find("Inert")) and "Dilithium" or
+                        self.getName():find("Dilithium") and "Latinum" or
+                        (self.getName():find("Glory") and not self.getName():find("Stardate")) and "Glory" or
+                        (self.getName():find("Glory") and self.getName():find("Stardate")) and "Stardate Glory"
+
+    log("Counter - " .. self.getName() .. " type: " .. counterType .. ", val: " .. val)
+
+    if counterType == "Dilithium" then
+      initCounterDilithium(self)
+    end
+
+  end, 0.25)
+end
+
+
+function doInitCounterDilithium()
+  log("do is running")
+  initCounterDilithium(self)
+end
+
+
+function initCounterDilithium(buttonObj)
+  -- handles creation of player dilithium resource counters
+
+  log("initCounterDilithium() running on: " .. buttonObj.getName())
+
+  local counterGUID = self.getGUID()
+
+  local counterSize = "160"
+  local color = buttonObj.getName():find("Red") and "#EA1A1B" or "#1E87FF"
+  local textColor = "#FFFFFF"
+  local fontSize = val < 10 and "120" or "100"
+  local rotation = "0 180 270"
+  local position = "-80 0 5"
+  local xmlTable = {
+  {
+    tag = "Button",
+    attributes = {
+      id = "dilithiumCounter",
+      width = counterSize,
+      height = counterSize,
+      rotation = rotation,
+      position = position,
+      scale = ".5 .5 .5",
+      color = color,
+      text = tostring(val),
+      font = "fontEdgeOfGalaxy",
+      fontSize = fontSize,
+      fontStyle = "Bold",
+      textColor = textColor,
+      onClick = "doAddOrSubtract",
+      textAlignment = "LowerCenter",
+      rectAlignment = "MiddleCenter",
+    }
+  }
+}
+
+  log("setting Counter XML:")
+  log(xmlTable)
+
+  self.UI.setXmlTable(xmlTable)
+end
+
+
+
+
+
+
+
+
+
+
+function updateVal(newVal)
+  newVal = tonumber(newVal)
+  if not newVal then return end
+
+  val = math.max(minVal, math.min(maxVal, newVal))
+
+  local uiElement = (self.getName():find("Dilithium") and not self.getName():find("Inert")) and "dilithiumCounter" or
+                    self.getName():find("Dilithium") and "latinumCounter" or
+                    (self.getName():find("Glory") and not self.getName():find("Stardate")) and "playerGloryCounter" or
+                    (self.getName():find("Glory") and self.getName():find("Stardate")) and "stardateGloryCounter"
+
+  self.UI.setAttribute(uiElement, "text", tostring(val))
+  local fontSize = val < 10 and "120" or "100"
+  self.UI.setAttribute(uiElement, "fontSize", fontSize)
+  local textColor = "#FFFFFF"
+  self.UI.setAttribute(uiElement, "textColor", textColor)
+
+  updateSave()
+end
+
+
+function doAddOrSubtract(player, value, id)
+  local clickerColor = type(player) == "string" and player or player.color
+  local altClick = value == "-2" and true or false
+  local button = self
+  addOrSubtract(button, clickerColor, altClick)
+end
+
+
+function increaseValue(clickerColor)
+  modifyValue(1, clickerColor)
+end
+
+
+function addOrSubtract(button, clickerColor, isRightClick)
+  local playerColor = button.getName():find("Blue") and "Blue" or "Red"
+  modifyValue(isRightClick and -1 or 1, playerColor)
+end
+
+
+function modifyValue(mod, playerColor)
+    mod = tonumber(mod)
+    if not mod then return end
+
+    local oldVal = val
+    val = tonumber(val) or 0
+    minVal = tonumber(minVal) or 0
+    maxVal = tonumber(maxVal) or 999
+
+    val = math.max(minVal, math.min(maxVal, val + mod))
+
+    local uiElement = (self.getName():find("Dilithium") and not self.getName():find("Inert")) and "dilithiumCounter" or
+                      self.getName():find("Dilithium") and "latinumCounter" or
+                      (self.getName():find("Glory") and not self.getName():find("Stardate")) and "playerGloryCounter" or
+                      (self.getName():find("Glory") and self.getName():find("Stardate")) and "stardateGloryCounter"
+    local counterType = (self.getName():find("Dilithium") and not self.getName():find("Inert")) and "Dilithium" or
+                        self.getName():find("Dilithium") and "Latinum" or
+                        (self.getName():find("Glory") and not self.getName():find("Stardate")) and "Glory" or
+                        (self.getName():find("Glory") and self.getName():find("Stardate")) and "Stardate Glory"
+
+    self.UI.setAttribute(uiElement, "text", tostring(val))
+    local fontSize = val < 10 and "120" or "100"
+    self.UI.setAttribute(uiElement, "fontColor", fontSize)
+    local textColor = "#FFFFFF"
+    self.UI.setAttribute(uiElement, "textColor", textColor)
+
+    local playerStr = Global.call("getPlayerStr", playerColor)
+    local action = mod == -1 and "lost" or "gained"
+    local broadcastStr = string.format("%s has manually %s 1 %s (%d > %d).", playerStr, action, counterType, oldVal, val)
+    broadcastToAll(broadcastStr, "White")
+
+    updateSave()
+end
+
+
+function setValue(newVal)
+    newVal = tonumber(newVal)
+    if not newVal then return end
+
+    val = math.max(minVal, math.min(maxVal, newVal))
+
+    local uiElement = (self.getName():find("Dilithium") and not self.getName():find("Inert")) and "dilithiumCounter" or
+                      self.getName():find("Dilithium") and "latinumCounter" or
+                      (self.getName():find("Glory") and not self.getName():find("Stardate")) and "playerGloryCounter" or
+                      (self.getName():find("Glory") and self.getName():find("Stardate")) and "stardateGloryCounter"
+
+    self.UI.setAttribute(uiElement, "text", tostring(val))
+    local fontSize = val < 10 and "120" or "100"
+    self.UI.setAttribute(uiElement, "fontSize", fontSize)
+    local textColor = "#FFFFFF"
+    self.UI.setAttribute(uiElement, "textColor", textColor)
+
+    updateSave()
+end
