@@ -169,17 +169,17 @@ function update_val()
     })
 end -- end function update_val()
 
-function set_val(value)
+function setValue(value)
     val = value
     update_val()
     update_save()
-end -- send function set_val()
+end -- send function setValue()
 
-function reset_val()
+function resetValue()
     val = 0
     update_val()
     update_save()
-end -- end function set_val()
+end -- end function setValue()
 
 function increase()
     add_subtract(_, _, false)

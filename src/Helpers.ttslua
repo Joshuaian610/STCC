@@ -98,8 +98,11 @@ function checkPlayerColorIsBot(playerColor)
   -- checks and returns if a specified playerColor is currently in solo bot mode
   -- captain board pad's gmnotes specifies enabled (this color is a bot) or disabled (this color is human)
   local playerColorisBot = false
-  if getObjectbyName("Pad Crew Board " .. playerColor).getGMNotes() == "enabled" then
-    playerColorisBot = true
+  local padCaptain = getObjectbyName("Pad Crew Board " .. playerColor)
+  if padCaptain ~= nil then
+    if padCaptain.getGMNotes() == "enabled" then
+      playerColorisBot = true
+    end
   end
 
   return playerColorisBot

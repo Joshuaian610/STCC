@@ -197,3 +197,20 @@ function onPlayerTurn(player, previous_player)
         end
     end
 end -- end onPlayerTurn()
+
+
+
+
+-- need to check for stardate glory token entering or leaving zone, update stardate glory counter
+function onObjectEnterZone(zone, enterObj)
+  if zone == getObjectbyName("Zone Stardate Glory") and enterObj.getName() == "Glory Token" then
+    updateStardateGloryCounter()
+  end
+end
+
+
+function onObjectLeaveZone(zone, leaveObj)
+  if zone == getObjectbyName("Zone Stardate Glory") and leaveObj.getName() == "Glory Token" then
+    updateStardateGloryCounter()
+  end
+end

@@ -141,7 +141,7 @@
 --         end
 --         if stardate_type ~= nil then -- game is in progress, or, stardate cards no longer in play, either or
 --             show_stardate_glory_counter({stardate_type=stardate_type})
---             stardate_glory_counter.call('set_val', glory_count)
+--             stardate_glory_counter.call('setValue', glory_count)
 --         end
 --     end
 --     -- display XML UI if captain has been selected

@@ -24,7 +24,7 @@ end
 
 
 -- wrapper to handle all of the actions related to the control of a NZ location
-function controlNZLocation(buttonObj, clickerColor, _)
+function controlNZLocation(buttonObj, _, _)
   -- collect required info
   local playerColor = buttonObj.getGMNotes()
   local otherPlayerColor = playerColor == "Blue" and "Red" or "Blue"
@@ -51,9 +51,17 @@ function controlNZLocation(buttonObj, clickerColor, _)
       local replacementLocation = replaceTakenLocation(buttonArea, playerColor, isBot)
 
       -- handle return & giving glory for otherPlayerColor ships & ATs
-      returnOtherPlayerNZObjects(buttonArea, otherPlayerColor, isBot)
+      local opposeCount = returnOtherPlayerNZObjects(buttonArea, otherPlayerColor, isBot)
 
-      -- broadcast (see what's required)
+      -- broadcast
+      local playerStr = getPlayerStr(playerColor)
+      local broadcastStr = ""
+      if replacementLocation ~= nil then
+        broadcastStr = string.format("%s has taken control of %s, which has been replaced with %s.", playerStr, controlledLocation, replacementLocation)
+      else
+        broadcastStr = string.format("%s has taken control of %s, which was not replaced.", playerStr, controlledLocation)
+      end
+      broadcastToAll(broadcastStr, "White")
 
     end, 0.5)
   else
@@ -118,100 +126,69 @@ function returnOtherPlayerNZObjects(buttonArea, otherPlayerColor, isBot)
   local isCadet = checkIsCadet()
   if opposeCount > 0 and not isCadet then
     local gloryCounter = getObjectbyName("Glory Counter " .. otherPlayerColor)
+
+    -- Get current count of glory on stardate card
+    local gloryOnStardateCount = 0
+    local gloryCheckZone = getObjectbyName("Zone Stardate Glory")
+
+    for _, object in pairs(gloryCheckZone.getObjects()) do
+      if object.getName() == "Glory Token" then
+        gloryOnStardateCount = gloryOnStardateCount + 1
+      end
+    end
+
+    -- Calculate this synchronously, before any Wait.time()
+    local diffCount = math.max(opposeCount - gloryOnStardateCount, 0)
+
     Wait.time(function()
 
-      -- broadcast
       local playerStr = getPlayerStr(otherPlayerColor)
-      local broadcastStr = string.format("%s takes %s Glory, 1 for every dismissed ship or returned away team!.", playerStr, opposeCount)
+      local broadcastStr = string.format(
+        "%s takes %s Glory, 1 for every dismissed ship or returned away team!.",
+        playerStr,
+        opposeCount
+      )
       broadcastToAll(broadcastStr, "White")
 
-      -- get current count of glory on stardate card (above card in this mod)
-      local gloryOnStardateCount = 0
-      local gloryCheckZone = getObjectbyName("Zone Stardate Glory")
-      for _, object in pairs(gloryCheckZone.getObjects()) do
-        if object.getName() == "Glory Token" then
-          gloryOnStardateCount = gloryOnStardateCount + 1
-        end
-      end
-
-      if gloryOnStardateCount >= opposeCount and opposeCount > 0 then
+      if gloryOnStardateCount >= opposeCount then
         for i = 1, opposeCount do
-          local waitTimer = 0
-          if i == 2 and opposeCount > 1 then
-            waitTimer = .25
-          elseif i == 3 and opposeCount > 2 then
-            waitTimer = .50
-          elseif i == 4 and opposeCount > 3 then
-            waitTimer = .75
-          elseif i == 5 and opposeCount > 4 then
-            waitTimer = 1.00
-          elseif i == 6 and opposeCount > 5 then
-            waitTimer = 1.25
-          elseif i == 7 and opposeCount > 6 then
-            waitTimer = 1.50
-          end
+          local waitTimer = (i - 1) * 0.25
+
           Wait.time(function()
-
-            -- gloryCounter.call('add_glory') -- REVISIT ON COUNTERS
-
+            gloryCounter.call('increaseValue')
           end, waitTimer)
         end
-      elseif gloryOnStardateCount < opposeCount then
-        for i = 1, gloryOnStardateCount do
-          local waitTimer = 0
-          if i == 2 then
-            waitTimer = .25
-          elseif i == 3 then
-            waitTimer = .50
-          elseif i == 4 then
-            waitTimer = .75
-          elseif i == 5 then
-            waitTimer = 1.00
-          elseif i == 6 then
-            waitTimer = 1.25
-          elseif i == 7 then
-            waitTimer = 1.50
-          end
-          Wait.time(function()
 
-            -- gloryCounter.call('add_glory') -- REVISIT ON COUNTERS
+      else
+        for i = 1, gloryOnStardateCount do
+          local waitTimer = (i - 1) * 0.25
+
+          Wait.time(function()
+            gloryCounter.call('increaseValue')
 
             if i == gloryOnStardateCount then
-              broadcastToAll("Pausing Glory Allocation to refresh Stardate Card.", "Yellow")
+              broadcastToAll(
+                "Pausing Glory Allocation to refresh Stardate Card.",
+                "Yellow"
+              )
             end
-
           end, waitTimer)
         end
-        local diffCount = opposeCount - gloryOnStardateCount
+
         Wait.time(function()
-
           for i = 1, diffCount do
-              local waitTimer = 0
-              if i == 2 then
-                  waitTimer = .25
-              elseif i == 3 then
-                  waitTimer = .50
-              elseif i == 4 then
-                  waitTimer = .75
-              elseif i == 5 then
-                  waitTimer = 1.00
-              elseif i == 6 then
-                  waitTimer = 1.25
-              elseif i == 7 then
-                  waitTimer = 1.50
-              end
-              Wait.time(function()
+            local waitTimer = (i - 1) * 0.25
 
-                -- gloryCounter.call('add_glory') -- REVISIT ON COUNTERS
-
-              end, waitTimer)
+            Wait.time(function()
+              gloryCounter.call('increaseValue')
+            end, waitTimer)
           end
-
         end, 3)
       end
 
     end, 1)
   end
+  return opposeCount
 end
 
 
@@ -223,64 +200,58 @@ function takeControlledLocation(buttonArea, playerColor, isBot)
   local replacementLocation = nil
   local nzCheckZone = getObjectbyName("Zone NZ Location " .. buttonArea)
   local locationCheckZone = getObjectbyNameAndNotes("Zone Deploy Location", playerColor)
-  local locationSlots = { false, false, false, false, false, false, false }
   local rotReturn = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
   if isBot then
     rotReturn = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
   end
-  local posSlots = playerarea_color == "Blue" and {
-    { -30.00, 0.96, 2.46 },
-    { -30.00, 0.96, -1.46 },
-    { -30.00, 0.96, -5.37 },
-    { -30.00, 0.96, -9.29 },
-    { -30.00, 0.96, -13.21 },
-    { -30.00, 0.96, -17.13 },
-    { -30.00, 0.96, -21.04 },
-  } or
-  {
-    { 30.00, 0.96, -2.46 },
-    { 30.00, 0.96, 1.46 },
-    { 30.00, 0.96, 5.37 },
-    { 30.00, 0.96, 9.29 },
-    { 30.00, 0.96, 13.21 },
-    { 30.00, 0.96, 17.13 },
-    { 30.00, 0.96, 21.04 },
-  }
-  local posSlot = posSlots[7] -- default to last available slot if in question
+  local posSlots = playerColor == "Blue" and {
+  { -30.00, 0.96,  2.46 },
+  { -30.00, 0.96, -1.46 },
+  { -30.00, 0.96, -5.37 },
+  { -30.00, 0.96, -9.29 },
+  { -30.00, 0.96, -13.21 },
+  { -30.00, 0.96, -17.13 },
+  { -30.00, 0.96, -21.04 },
+} or {
+  { 30.00, 0.96, -2.46 },
+  { 30.00, 0.96,  1.46 },
+  { 30.00, 0.96,  5.37 },
+  { 30.00, 0.96,  9.29 },
+  { 30.00, 0.96, 13.21 },
+  { 30.00, 0.96, 17.13 },
+  { 30.00, 0.96, 21.04 },
+}
 
-  -- determine next available slot via table of positional checks
-  for i = 1, 7 do
-    for _, zoneObj in pairs(locationCheckZone.getObjects()) do
-      if zoneObj.tag == "Card" then
-        local posObj = zoneObj.getPosition()
-        if (posObj.z > 1.96 and posObj.z < 2.96) or (posObj.z < -1.96 and posObj.z > -2.96) then
-          locationSlots[1] = true
-        elseif (posObj.z > -1.96 and posObj.z < -0.96) or (posObj.z < 1.96 and posObj.z > 0.96) then
-          locationSlots[2] = true
-        elseif (posObj.z > -5.87 and posObj.z < -4.87) or (posObj.z < 5.87 and posObj.z > 4.87) then
-          locationSlots[3] = true
-        elseif (posObj.z >  -9.79 and posObj.z < -8.79) or (posObj.z < 9.79 and posObj.z > 8.79) then
-          locationSlots[4] = true
-        elseif (posObj.z > -13.71 and posObj.z < -12.71) or (posObj.z < 13.71 and posObj.z > 12.71) then
-          locationSlots[5] = true
-        elseif (posObj.z > -17.63 and posObj.z < -16.63) or (posObj.z < 17.63 and posObj.z > 16.63) then
-          locationSlots[6] = true
-        elseif (posObj.z > -21.54 and posObj.z < -20.54) or (posObj.z < 21.54 and posObj.z > 20.54) then
-          locationSlots[7] = true
-        end
+local locationSlots = {}
+
+for i = 1, 7 do
+  locationSlots[i] = false
+end
+
+for _, zoneObj in pairs(locationCheckZone.getObjects()) do
+  if zoneObj.tag == "Card" then
+    local pos = zoneObj.getPosition()
+
+    for i, slot in ipairs(posSlots) do
+      if math.abs(pos.z - slot[3]) < 0.5 then
+        locationSlots[i] = true
+        break
       end
     end
   end
+end
 
-  local nextFreeSlot = 0
-  for i = 1, 7 do
-    if locationSlots[i] == false then
-      nextFreeSlot = i
-      break
-    end
+local nextFreeSlot = 0
+
+for i = 1, 7 do
+  if not locationSlots[i] then
+    nextFreeSlot = i
+    break
   end
+end
 
   -- overwrite posSlot default if nextFreeSlot is determined
+  local posSlot = 7
   if nextFreeSlot ~= 0 then
     posSlot = posSlots[nextFreeSlot]
   end
@@ -324,6 +295,6 @@ function replaceTakenLocation(buttonArea, playerColor, isBot)
       replacementCard.setPositionSmooth(posReplacement, false, false)
     end
   end
-
-  return replacementCard
+  local replacementCardName = replacementCard ~= nil and replacementCard.getName() or nil
+  return replacementCardName
 end

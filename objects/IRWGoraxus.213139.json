@@ -55,8 +55,8 @@
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
   "Locked": true,
+  "LuaScript": "",
   "LuaScriptState": "",
-  "LuaScript_path": "IRWGoraxus.213139.ttslua",
   "MeasureMovement": false,
   "Name": "Card",
   "Nickname": "I.R.W. Goraxus",
@@ -84,5 +84,5 @@
     "scaleZ": 1.75
   },
   "Value": 0,
-  "XmlUI_path": "IRWGoraxus.213139.xml"
+  "XmlUI": ""
 }

@@ -81,7 +81,6 @@
     "NZDivider.cecec3",
     "SoloRulebooks.7d7f50",
     "BoardCabinet.e2b080",
-    "LatinumCounterRed.c2bac2",
     "DilithiumCounterRed.f40879",
     "ZoneDrawDeck.58f8ce",
     "ZoneInPlay.e54fe3",
@@ -100,7 +99,6 @@
     "ZoneDeployShip.5103b2",
     "ZoneDeployLocation.77d0cb",
     "PadDutyOfficer.54fde1",
-    "LatinumCounterBlue.39e892",
     "ShipFigurineBag.82424c",
     "UnusedObjectBag.f6e30d",
     "BeamedCards.acf736",
@@ -483,7 +481,9 @@
     "RikerCrewBoardAdvanced.ddab1f",
     "ActionToken.fad6b3",
     "ActionToken.916844",
-    "ActionToken.bf8c02"
+    "ActionToken.bf8c02",
+    "LatinumCounterRed.c2bac2",
+    "LatinumCounterBlue.39e892"
   ],
   "PlayArea": 0.7021237,
   "PlayerCounts": [

@@ -54,8 +54,8 @@
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
   "Locked": true,
+  "LuaScript": "",
   "LuaScriptState": "",
-  "LuaScript_path": "GloryTokenBag.cd069a.ttslua",
   "MaterialIndex": -1,
   "MeasureMovement": false,
   "MeshIndex": -1,
@@ -63,7 +63,7 @@
   "Nickname": "Glory Token Bag",
   "Snap": true,
   "Sticky": true,
-  "Tooltip": true,
+  "Tooltip": false,
   "Transform": {
     "posX": -51.699,
     "posY": 1.796,

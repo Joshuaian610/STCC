@@ -6,9 +6,9 @@
   },
   "Autoraise": true,
   "ColorDiffuse": {
-    "b": 1,
-    "g": 0.53,
-    "r": 0.11794
+    "b": 0.25,
+    "g": 0.25,
+    "r": 0.25
   },
   "CustomPDF": {
     "PDFPage": 0,

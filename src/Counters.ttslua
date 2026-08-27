@@ -21,66 +21,201 @@ function onLoad(savedData)
   Wait.time(function()
 
     local counterType = (self.getName():find("Dilithium") and not self.getName():find("Inert")) and "Dilithium" or
-                        self.getName():find("Dilithium") and "Latinum" or
+                        self.getName():find("Latinum") and "Latinum" or
                         (self.getName():find("Glory") and not self.getName():find("Stardate")) and "Glory" or
                         (self.getName():find("Glory") and self.getName():find("Stardate")) and "Stardate Glory"
 
-    log("Counter - " .. self.getName() .. " type: " .. counterType .. ", val: " .. val)
+    -- check to see if stardate glory counter is in play
+    local pos = self.getPosition()
 
     if counterType == "Dilithium" then
       initCounterDilithium(self)
+    elseif counterType == "Latinum" then
+      initCounterLatinum(self)
+    elseif counterType == "Glory" then
+      initCounterPlayerGlory(self)
+    elseif counterType == "Stardate Glory" and pos.x > 0 then
+      initCounterStardateGlory(self)
     end
 
-  end, 0.25)
-end
-
-
-function doInitCounterDilithium()
-  log("do is running")
-  initCounterDilithium(self)
+  end, 0.50)
 end
 
 
 function initCounterDilithium(buttonObj)
   -- handles creation of player dilithium resource counters
 
-  log("initCounterDilithium() running on: " .. buttonObj.getName())
-
-  local counterGUID = self.getGUID()
-
   local counterSize = "160"
   local color = buttonObj.getName():find("Red") and "#EA1A1B" or "#1E87FF"
   local textColor = "#FFFFFF"
-  local fontSize = val < 10 and "120" or "100"
+  local fontSize = (val < 10 and "130") or
+                   ((val > 9 and val < 100) and "120") or
+                   (val > 99 and "110")
+
   local rotation = "0 180 270"
   local position = "-80 0 5"
   local xmlTable = {
-  {
-    tag = "Button",
-    attributes = {
-      id = "dilithiumCounter",
-      width = counterSize,
-      height = counterSize,
-      rotation = rotation,
-      position = position,
-      scale = ".5 .5 .5",
-      color = color,
-      text = tostring(val),
-      font = "fontEdgeOfGalaxy",
-      fontSize = fontSize,
-      fontStyle = "Bold",
-      textColor = textColor,
-      onClick = "doAddOrSubtract",
-      textAlignment = "LowerCenter",
-      rectAlignment = "MiddleCenter",
+    {
+      tag = "Button",
+      attributes = {
+        id            = "dilithiumCounter",
+        width         = counterSize,
+        height        = counterSize,
+        rotation      = rotation,
+        position      = position,
+        scale         = ".5 .5 .5",
+        color         = color,
+        text          = tostring(val),
+        font          = "fontEdgeOfGalaxy",
+        fontSize      = fontSize,
+        fontStyle     = "Bold",
+        textColor     = textColor,
+        onClick       = "doAddOrSubtract",
+        textAlignment = "LowerCenter",
+        rectAlignment = "MiddleCenter",
+      }
     }
   }
-}
-
-  log("setting Counter XML:")
-  log(xmlTable)
-
   self.UI.setXmlTable(xmlTable)
+end
+
+
+function initCounterLatinum(buttonObj)
+  -- handles creation of player latinum resource counters
+
+  local counterSize = "400"
+  local color = buttonObj.getName():find("Red") and "#EA1A1B" or "#1E87FF"
+  local textColor = "#FFFFFF"
+  local fontSize = (val < 10 and "325") or
+                   ((val > 9 and val < 100) and "305") or
+                   (val > 99 and "285")
+
+  local rotation = "0 0 90"
+  local position = "-795 600 60"
+  local xmlTable = {
+    {
+      tag = "Button",
+      attributes = {
+        id            = "latinumCounter",
+        width         = counterSize,
+        height        = counterSize,
+        rotation      = rotation,
+        position      = position,
+        scale         = "2 2 2",
+        color         = color,
+        text          = tostring(val),
+        font          = "fontEdgeOfGalaxy",
+        fontSize      = fontSize,
+        fontStyle     = "Bold",
+        textColor     = textColor,
+        onClick       = "doAddOrSubtract",
+        textAlignment = "LowerCenter",
+        rectAlignment = "MiddleCenter",
+      }
+    }
+  }
+  self.UI.setXmlTable(xmlTable)
+end
+
+
+function initCounterPlayerGlory(buttonObj)
+  -- handles creation of player glory resource counters
+
+  local counterSize = "200"
+  local color = buttonObj.getName():find("Red") and "#EA1A1B" or "#1E87FF"
+  local textColor = "#FFFFFF"
+  local fontSize = (val < 10 and "160") or
+                   ((val > 9 and val < 100) and "140") or
+                   (val > 99 and "120")
+
+  local rotation = "0 0 180"
+  local position = "0 -400 5"
+  local xmlTable = {
+    {
+      tag = "Button",
+      attributes = {
+        id            = "playerGloryCounter",
+        width         = counterSize,
+        height        = counterSize,
+        rotation      = rotation,
+        position      = position,
+        scale         = "2 2 2",
+        color         = color,
+        text          = tostring(val),
+        font          = "fontEdgeOfGalaxy",
+        fontSize      = fontSize,
+        fontStyle     = "Bold",
+        textColor     = textColor,
+        onClick       = "doAddOrSubtract",
+        textAlignment = "LowerCenter",
+        rectAlignment = "MiddleCenter",
+      }
+    }
+  }
+  self.UI.setXmlTable(xmlTable)
+end
+
+
+function initCounterStardateGlory(buttonObj)
+
+  -- handles creation of stardate glory counter
+
+  local stardateCheckZone = Global.call("getObjectbyName", "Zone Stardate")
+  local padStardate = Global.call("getObjectbyName", "Pad Stardate")
+  local stardateType = padStardate.getGMNotes()
+
+  log("stardateType: " .. stardateType)
+
+  -- Default to 60/60/60 grey if stardate type cannot be detected
+  local color = "#3C3C3C"
+
+  local counterColors = {
+    ["twoPlayer"]  = "#77B3CB",
+    ["Cadet"]      = "#AB6B8E",
+    ["Ensign"]     = "#E58515",
+    ["Lieutenant"] = "#71AA75",
+    ["Commander"]  = "#C6CAA5",
+    ["Admiral"]    = "#AD1D14",
+  }
+
+  if stardateType ~= nil and counterColors[stardateType] ~= nil then
+    color = counterColors[stardateType]
+  end
+
+  local counterSize = "200"
+  local textColor = "#FFFFFF"
+
+  local fontSize = (val < 10 and "160") or
+                   ((val > 9 and val < 100) and "140") or
+                   (val > 99 and "120")
+
+  local rotation = "0 0 180"
+  local position = "0 -400 5"
+
+  local xmlTable = {
+    {
+      tag = "Button",
+      attributes = {
+        id            = "stardateGloryCounter",
+        width         = counterSize,
+        height        = counterSize,
+        rotation      = rotation,
+        position      = position,
+        scale         = "2 2 2",
+        color         = color,
+        text          = tostring(val),
+        font          = "fontEdgeOfGalaxy",
+        fontSize      = fontSize,
+        fontStyle     = "Bold",
+        textColor     = textColor,
+        onClick       = "doAddOrSubtract",
+        textAlignment = "LowerCenter",
+        rectAlignment = "MiddleCenter",
+      }
+    }
+  }
+
+  buttonObj.UI.setXmlTable(xmlTable)
 end
 
 
@@ -99,12 +234,30 @@ function updateVal(newVal)
   val = math.max(minVal, math.min(maxVal, newVal))
 
   local uiElement = (self.getName():find("Dilithium") and not self.getName():find("Inert")) and "dilithiumCounter" or
-                    self.getName():find("Dilithium") and "latinumCounter" or
+                    self.getName():find("Latinum") and "latinumCounter" or
                     (self.getName():find("Glory") and not self.getName():find("Stardate")) and "playerGloryCounter" or
                     (self.getName():find("Glory") and self.getName():find("Stardate")) and "stardateGloryCounter"
+  local counterType = (self.getName():find("Dilithium") and not self.getName():find("Inert")) and "Dilithium" or
+                      self.getName():find("Latinum") and "Latinum" or
+                      (self.getName():find("Glory") and not self.getName():find("Stardate")) and "Glory" or
+                      (self.getName():find("Glory") and self.getName():find("Stardate")) and "Stardate Glory"
 
   self.UI.setAttribute(uiElement, "text", tostring(val))
-  local fontSize = val < 10 and "120" or "100"
+  local fontSizes = {
+    ["Dilithium"]      = (val < 10 and "130") or
+                         ((val > 9 and val < 100) and "120") or
+                         (val > 99 and "110"),
+    ["Latinum"]        = (val < 10 and "325") or
+                         ((val > 9 and val < 100) and "305") or
+                         (val > 99 and "285"),
+    ["Glory"]          = (val < 10 and "160") or
+                         ((val > 9 and val < 100) and "150") or
+                         (val > 99 and "140"),
+    ["Stardate Glory"] = (val < 10 and "160") or
+                         ((val > 9 and val < 100) and "150") or
+                         (val > 99 and "140"),
+  }
+  local fontSize = fontSizes[counterType]
   self.UI.setAttribute(uiElement, "fontSize", fontSize)
   local textColor = "#FFFFFF"
   self.UI.setAttribute(uiElement, "textColor", textColor)
@@ -113,76 +266,417 @@ function updateVal(newVal)
 end
 
 
-function doAddOrSubtract(player, value, id)
+function doAddOrSubtract(player, value, _)
   local clickerColor = type(player) == "string" and player or player.color
   local altClick = value == "-2" and true or false
-  local button = self
-  addOrSubtract(button, clickerColor, altClick)
+  local buttonObj = self
+  addOrSubtract(buttonObj, clickerColor, altClick)
 end
 
 
-function increaseValue(clickerColor)
-  modifyValue(1, clickerColor)
+function increaseValue()
+  -- handles a Global call to increase counter by 1
+  -- REVISIT: use increase(), decrease() instead?
+  local playerColor = self.getGMNotes()
+  modifyValue(1, playerColor)
 end
 
 
-function addOrSubtract(button, clickerColor, isRightClick)
-  local playerColor = button.getName():find("Blue") and "Blue" or "Red"
-  modifyValue(isRightClick and -1 or 1, playerColor)
+function addOrSubtract(buttonObj, clickerColor, isRightClick)
+  local playerColor = buttonObj.getName():find("Blue") and "Blue" or "Red"
+  if buttonObj.getName() == "Glory Counter Stardate" then playerColor = "None" end
+  modifyValue(isRightClick and -1 or 1, playerColor, clickerColor)
 end
 
 
-function modifyValue(mod, playerColor)
-    mod = tonumber(mod)
-    if not mod then return end
+function modifyValue(mod, playerColor, clickerColor)
+  -- handles modifying a counter click and move by 1 in either direction, and related actions
+  -- will fire in all counter cases EXCEPT player Glory ADD actions, which will instead simply pull a token and simulate a bag drop visually
+
+  local uiElement = (self.getName():find("Dilithium") and not self.getName():find("Inert")) and "dilithiumCounter" or
+                    self.getName():find("Latinum") and "latinumCounter" or
+                    (self.getName():find("Glory") and not self.getName():find("Stardate")) and "playerGloryCounter" or
+                    (self.getName():find("Glory") and self.getName():find("Stardate")) and "stardateGloryCounter"
+  local counterType = (self.getName():find("Dilithium") and not self.getName():find("Inert")) and "Dilithium" or
+                      self.getName():find("Latinum") and "Latinum" or
+                      (self.getName():find("Glory") and not self.getName():find("Stardate")) and "Glory" or
+                      (self.getName():find("Glory") and self.getName():find("Stardate")) and "Stardate Glory"
+  mod = tonumber(mod)
+  if not mod then return end
+
+  if counterType ~= "Glory" or (counterType == "Glory" and mod == -1) then
 
     local oldVal = val
     val = tonumber(val) or 0
     minVal = tonumber(minVal) or 0
     maxVal = tonumber(maxVal) or 999
+    if self.getName() == "Glory Counter Stardate" then
+      maxVal = 7
+    end
 
     val = math.max(minVal, math.min(maxVal, val + mod))
 
-    local uiElement = (self.getName():find("Dilithium") and not self.getName():find("Inert")) and "dilithiumCounter" or
-                      self.getName():find("Dilithium") and "latinumCounter" or
-                      (self.getName():find("Glory") and not self.getName():find("Stardate")) and "playerGloryCounter" or
-                      (self.getName():find("Glory") and self.getName():find("Stardate")) and "stardateGloryCounter"
-    local counterType = (self.getName():find("Dilithium") and not self.getName():find("Inert")) and "Dilithium" or
-                        self.getName():find("Dilithium") and "Latinum" or
-                        (self.getName():find("Glory") and not self.getName():find("Stardate")) and "Glory" or
-                        (self.getName():find("Glory") and self.getName():find("Stardate")) and "Stardate Glory"
-
     self.UI.setAttribute(uiElement, "text", tostring(val))
-    local fontSize = val < 10 and "120" or "100"
-    self.UI.setAttribute(uiElement, "fontColor", fontSize)
-    local textColor = "#FFFFFF"
-    self.UI.setAttribute(uiElement, "textColor", textColor)
-
-    local playerStr = Global.call("getPlayerStr", playerColor)
-    local action = mod == -1 and "lost" or "gained"
-    local broadcastStr = string.format("%s has manually %s 1 %s (%d > %d).", playerStr, action, counterType, oldVal, val)
-    broadcastToAll(broadcastStr, "White")
-
-    updateSave()
-end
-
-
-function setValue(newVal)
-    newVal = tonumber(newVal)
-    if not newVal then return end
-
-    val = math.max(minVal, math.min(maxVal, newVal))
-
-    local uiElement = (self.getName():find("Dilithium") and not self.getName():find("Inert")) and "dilithiumCounter" or
-                      self.getName():find("Dilithium") and "latinumCounter" or
-                      (self.getName():find("Glory") and not self.getName():find("Stardate")) and "playerGloryCounter" or
-                      (self.getName():find("Glory") and self.getName():find("Stardate")) and "stardateGloryCounter"
-
-    self.UI.setAttribute(uiElement, "text", tostring(val))
-    local fontSize = val < 10 and "120" or "100"
+    local fontSizes = {
+      ["Dilithium"]      = (val < 10 and "130") or
+                           ((val > 9 and val < 100) and "120") or
+                           (val > 99 and "110"),
+      ["Latinum"]        = (val < 10 and "325") or
+                           ((val > 9 and val < 100) and "305") or
+                           (val > 99 and "285"),
+      ["Glory"]          = (val < 10 and "160") or
+                           ((val > 9 and val < 100) and "150") or
+                           (val > 99 and "140"),
+      ["Stardate Glory"] = (val < 10 and "160") or
+                           ((val > 9 and val < 100) and "150") or
+                           (val > 99 and "140"),
+    }
+    local fontSize = fontSizes[counterType]
     self.UI.setAttribute(uiElement, "fontSize", fontSize)
     local textColor = "#FFFFFF"
     self.UI.setAttribute(uiElement, "textColor", textColor)
 
+    local broadcastStr = ""
+    local action = mod == -1 and (counterType == "Stardate Glory" and "removed" or "lost") or "gained"
+    if oldVal ~= val then
+      if counterType ~= "Stardate Glory" then
+        local playerStr = Global.call("getPlayerStr", playerColor)
+        broadcastStr = string.format("%s has %s 1 %s (%d > %d).", playerStr, action, counterType, oldVal, val)
+      elseif counterType == "Stardate Glory" then
+        local clickerStr = Global.call("getPlayerStr", clickerColor)
+        broadcastStr = string.format("%s has %s 1 Stardate Glory (%d > %d).", clickerStr, action, oldVal, val)
+      end
+      broadcastToAll(broadcastStr, "White")
+    end
+
+    if counterType ~= "Stardate Glory" then
+      updateOnScreenXML(counterType, playerColor, val)
+    end
     updateSave()
+
+  -- handle add glory token pull (the above functionality happens on token drop into bag)
+  elseif counterType == "Glory" and mod == 1 then
+    pullStardateGlory(playerColor)
+  end
+
+  -- if stardate glory counter, handle Glory add or remove
+  -- if adding, pull glory from bag and place at first available spot
+  -- if removing, grab highest glory found in zone and return to bag
+
+  local bagGlory = Global.call("getObjectbyName", "Central Glory Token Bag")
+  local gloryCheckZone = Global.call("getObjectbyName", "Zone Stardate Glory")
+  local rotStardateGlory = { 0.00, 180.00, 0.00 }
+  local posStardateGlory = {
+    { -11.00, 0.85, 5.50 },
+    { -11.00, 0.85, 4.00 },
+    { -12.50, 0.85, 5.50 },
+    { -12.50, 0.85, 4.00 },
+    { -14.00, 0.85, 5.50 },
+    { -14.00, 0.85, 4.00 },
+    { -15.50, 0.85, 4.75 },
+  }
+
+  if mod == 1 then
+    for _, slotPos in ipairs(posStardateGlory) do
+      local slotOccupied = false
+      for _, object in pairs(gloryCheckZone.getObjects()) do
+        if object.getName() == "Glory Token" then
+          local objectPos = object.getPosition()
+          if math.abs(objectPos[1] - slotPos[1]) < 0.1
+            and math.abs(objectPos[3] - slotPos[3]) < 0.1 then
+            slotOccupied = true
+            break
+          end
+        end
+      end
+      if not slotOccupied then
+        local newGloryToken = bagGlory.takeObject()
+        newGloryToken.interactable = false
+        newGloryToken.setRotation(rotStardateGlory)
+        newGloryToken.setPosition(slotPos)
+        return
+      end
+    end
+
+  elseif mod == -1 then
+    for slotIndex = #posStardateGlory, 1, -1 do
+      local slotPos = posStardateGlory[slotIndex]
+      for _, object in pairs(gloryCheckZone.getObjects()) do
+        if object.getName() == "Glory Token" then
+          local objectPos = object.getPosition()
+          if math.abs(objectPos[1] - slotPos[1]) < 0.1
+            and math.abs(objectPos[3] - slotPos[3]) < 0.1 then
+            bagGlory.putObject(object)
+            return
+          end
+        end
+      end
+    end
+  end
+end
+
+
+function setValue(newVal)
+  -- handles setting a counter to a particular value
+
+  newVal = tonumber(newVal)
+  if not newVal then return end
+
+  val = math.max(minVal, math.min(maxVal, newVal))
+
+  local uiElement = (self.getName():find("Dilithium") and not self.getName():find("Inert")) and "dilithiumCounter" or
+                    self.getName():find("Latinum") and "latinumCounter" or
+                    (self.getName():find("Glory") and not self.getName():find("Stardate")) and "playerGloryCounter" or
+                    (self.getName():find("Glory") and self.getName():find("Stardate")) and "stardateGloryCounter"
+  local counterType = (self.getName():find("Dilithium") and not self.getName():find("Inert")) and "Dilithium" or
+                      self.getName():find("Latinum") and "Latinum" or
+                      (self.getName():find("Glory") and not self.getName():find("Stardate")) and "Glory" or
+                      (self.getName():find("Glory") and self.getName():find("Stardate")) and "Stardate Glory"
+
+  self.UI.setAttribute(uiElement, "text", tostring(val))
+  local fontSizes = {
+    ["Dilithium"]      = (val < 10 and "130") or
+                         ((val > 9 and val < 100) and "120") or
+                         (val > 99 and "110"),
+    ["Latinum"]        = (val < 10 and "325") or
+                         ((val > 9 and val < 100) and "305") or
+                         (val > 99 and "285"),
+    ["Glory"]          = (val < 10 and "160") or
+                         ((val > 9 and val < 100) and "150") or
+                         (val > 99 and "140"),
+    ["Stardate Glory"] = (val < 10 and "160") or
+                         ((val > 9 and val < 100) and "150") or
+                         (val > 99 and "140"),
+  }
+  local fontSize = fontSizes[counterType]
+  self.UI.setAttribute(uiElement, "fontSize", fontSize)
+  self.UI.setAttribute(uiElement, "fontSize", fontSize)
+  local textColor = "#FFFFFF"
+  self.UI.setAttribute(uiElement, "textColor", textColor)
+
+  updateSave()
+end
+
+
+function updateOnScreenXML(counterType, playerColor, val)
+  -- handles the update of the on screen XML UI counter to match playerCounter
+
+  local zoneCaptainBoard = getObjectbyNameAndNotes("Zone Captain Card", playerColor)
+  local padCaptain = Global.call("getObjectbyName", "Pad Crew Board " .. playerColor)
+  local captainBoardName = nil
+  for _, zoneObj in pairs(zoneCaptainBoard.getObjects()) do
+    if zoneObj.getName():find("Crew Board") and zoneObj ~= padCaptain then
+      captainBoardName = zoneObj.getName()
+    end
+  end
+  local captainName = nil
+  local splitName = {}
+  if captainBoardName ~= nil then
+    for str in string.gmatch(captainBoardName,  "%S+") do
+      table.insert(splitName, str)
+    end
+  end
+  captainName = splitName[1]
+
+  if captainName == "Burnham" or captainName == "Picard" or captainName == "Sisko" or
+     captainName == "Archer" or captainName == "Georgiou" or captainName == "Kirk" or
+     captainName == "Freeman" or captainName == "Pike" or captainName == "Riker" then
+    UI.setAttribute(string.lower(playerColor) .. "_hum_" .. string.lower(counterType), "text", val)
+
+  elseif captainName == "Shran" then
+    UI.setAttribute(string.lower(playerColor) .. "_and_" .. string.lower(counterType), "text", val)
+
+  elseif captainName == "Sela" then
+    UI.setAttribute(string.lower(playerColor) .. "_rom_" .. string.lower(counterType), "text", val)
+
+  elseif captainName == "Koloth" then
+    UI.setAttribute(string.lower(playerColor) .. "_kli_" .. string.lower(counterType), "text", val)
+
+  elseif captainName == "Khan" then
+    UI.setAttribute(string.lower(playerColor) .. "_kha_" .. string.lower(counterType), "text", val)
+
+  elseif captainName == "Rebner" then
+    UI.setAttribute(string.lower(playerColor) .. "_pak_" .. string.lower(counterType), "text", val)
+
+  elseif captainName == "Soval" then
+    UI.setAttribute(string.lower(playerColor) .. "_vul_" .. string.lower(counterType), "text", val)
+  end
+end
+
+
+function getObjectbyNameAndNotes(objName, objNotes)
+  for _, object in pairs(getObjects()) do
+    if object.getName() == objName and object.getGMNotes() == objNotes then
+      return object
+    end
+  end
+  return nil
+end
+
+
+function increase()
+  addOrSubtract(self, _, false)
+  -- add_glory(_, player_color, false)
+end
+
+function decrease()
+  addOrSubtract(self, _, true)
+  -- add_glory(_, player_color, true)
+end
+
+
+function pullStardateGlory(playerColor)
+  -- handles a "simple" single glory token pull from the bag
+  -- determines game state & where to draw glory token from, pulls token, broadcasts
+  -- will also handle the detection and placement of stardate card to opposing player in case of last glory pull from SD card/deck
+  -- the onObjectEnterContainer will handle the code of counter manipulation as glory counters need to add/remove on token bag adds & removals
+
+  -- need to detect how & where to pull glory token from
+  local isBot = Global.call("checkPlayerColorIsBot", playerColor)
+
+  local rotSendGlory = playerColor == "Blue" and { 0, 270, 0 } or { 0, 90, 0 }
+  if isBot then rotSendGlory = playerColor == "Blue" and { 0, 90, 0 } or { 0, 270, 0 } end
+  local posSendGlory = playerColor == "Blue" and { -51.70, 2.00, 8.45 } or { 51.70, 2.00, -8.45 }
+  if isBot then posSendGlory = playerColor == "Blue" and { -24.45, 1.00, 10.44 } or { 24.45, 1.00, -10.44 } end
+  local bagStardateGlory = Global.call("getObjectbyName", "Central Glory Token Bag")
+  local isCadet = Global.call("checkIsCadet")
+
+  local gloryFound = false
+  local stardateCheckZone = Global.call("getObjectbyName", "Zone Stardate")
+  local stardateGloryCheckZone = Global.call("getObjectbyName", "Zone Stardate Glory")
+
+  -- if cadet mode, will just pull from bag always, otherwise, detect where to pull glory from
+  if not isCadet then
+    -- check stardate card glory zone, get count of current glory there
+    local stardateGloryCount = 0
+    local gloryToken = nil
+
+    for _, zoneObj in pairs(stardateGloryCheckZone.getObjects()) do
+      if zoneObj.getName() == "Glory Token" then
+        gloryFound = true
+        gloryToken = zoneObj
+        stardateGloryCount = stardateGloryCount + 1
+      end
+    end
+
+    -- if glory is found in the stardate card zone, broadcast, then place to bag
+    if gloryFound then
+      local playerStr = Global.call("getPlayerStr", playerColor)
+      local oldTotal = val
+      local newTotal = val + 1
+      local broadcastStr = string.format("%s has gained 1 Glory from the Stardate Card (%s > %s).", playerStr, oldTotal, newTotal)
+      broadcastToAll(broadcastStr, "White")
+      Wait.frames(function()
+        gloryToken.setGMNotes("manual")
+        gloryToken.setLock(false)
+        gloryToken.setRotation(rotSendGlory)
+        gloryToken.setPositionSmooth(posSendGlory, false, true)
+        simGloryBagDrop(playerColor)
+        Wait.time(function() gloryToken.destruct() end, .3)
+      end)
+    end
+
+    -- take stardate card for opposing player if last glory is being taken
+    if stardateGloryCount == 1 then
+      local cardStardate = nil
+      for _, zoneObj in pairs(stardateCheckZone.getObjects()) do
+        -- handle single stardate card left
+        if zoneObj.type == "Card" then
+          cardStardate = zoneObj
+          -- getObjectFromGUID("ab8b38").call('button_stardate_trigger_endgame_remote', {button=stardate}) ** REVISIT creation of stardate card button
+
+        -- handle pulling card from located deck if deck located
+        elseif zoneObj.type == "Deck" then
+          local deckStardate = zoneObj
+          cardStardate = zoneObj.takeObject()
+          local otherPlayerColor = playerColor == "Blue" and "Red" or "Blue"
+          local rotStardateCard = isBot and { 0, 270, 0 } or { 0, 90, 0 }
+          local posStardateCard = otherPlayerColor == "Blue" and { -24.00, 0.76, 15.00 } or { 24.00, 0.76, -15.00 }
+          cardStardate.setRotation(rotStardateCard)
+          cardStardate.setPositionSmooth(posStardateCard, false, true)
+
+          -- broadcast
+          Wait.time(function()
+
+            local playerStr = Global.call("getPlayerStr", playerColor)
+            local otherPlayerStr = Global.call("getPlayerStr", otherPlayerColor)
+            local stardateName = cardStardate.getName()
+            local broadcastStr = string.format("%s has given %s to %s.", playerStr, stardateName, otherPlayerStr)
+            broadcastToAll(broadcastStr, "White")
+
+          end, 0.5)
+
+          Wait.time(function()
+
+            Global.call("refreshGlory")
+
+          end, 1)
+        end
+      end
+    end
+
+  -- if cadet mode, glory comes direct from bag, not card
+  elseif isCadet then
+    gloryFound = true
+    local gloryToken = bagStardateGlory.takeObject()
+    Wait.frames(function()
+      gloryToken.setGMNotes("manual")
+      gloryToken.setLock(false)
+      gloryToken.setRotation(rotSendGlory)
+      gloryToken.setPositionSmooth(posSendGlory, false, true)
+      simGloryBagDrop(playerColor)
+      Wait.time(function() gloryToken.destruct() end, .3)
+    end)
+    local playerStr = Global.call("getPlayerStr")
+    local oldTotal = val
+    local newTotal = val + 1
+    local broadcastStr = string.format("%s has gained 1 Glory from the supply vs. Cadet (%s > %s).", playerStr, oldTotal, newTotal)
+    broadcastToAll(broadcastStr, "White")
+    return
+  end
+
+  -- DO I NEED A CHECK FOR CARD/DECK IN SLOT? NO SD CARD SHOULD BE EMPTY AND LEFT ON PAD W/O BEING HANDLED & REFRESHED
+  if not gloryFound then
+    local playerStr = Global.call("getPlayerStr", playerColor)
+    local oldTotal = val
+    local newTotal = val + 1
+    local broadcastStr = string.format("Final Stardate Card has been taken, %s has gained 1 Glory from the Supply (%s > %s).", playerStr, oldTotal, newTotal)
+    broadcastToAll(broadcastStr, "White")
+
+    local gloryToken = bagStardateGlory.takeObject()
+    Wait.frames(function()
+      gloryToken.setGMNotes("manual")
+      gloryToken.setLock(false)
+      gloryToken.setRotation(rotSendGlory)
+      gloryToken.setPositionSmooth(posSendGlory, false, true)
+      simGloryBagDrop(playerColor)
+      Wait.time(function() gloryToken.destruct() end, .3)
+    end)
+  end
+end
+
+
+function simGloryBagDrop(playerColor, isManual)
+  -- handles the counter manipulation related specifically to a glory token "dropping into a player bag"
+  -- token is actually being destructed
+
+  local oldVal = tonumber(val)
+  val = tonumber(val) or 0
+  minVal = tonumber(minVal) or 0
+  maxVal = tonumber(maxVal) or 999
+
+  val = math.max(minVal, math.min(maxVal, val + 1))
+
+  self.UI.setAttribute("playerGloryCounter", "text", tostring(val))
+  local fontSize = (val < 10 and "160") or
+    ((val > 9 and val < 100) and "150") or
+    (val > 99 and "140")
+
+  self.UI.setAttribute("playerGloryCounter", "fontSize", fontSize)
+  local textColor = "#FFFFFF"
+  self.UI.setAttribute("playerGloryCounter", "textColor", textColor)
+
+  updateOnScreenXML("Glory", playerColor, val)
+
+  updateSave()
 end

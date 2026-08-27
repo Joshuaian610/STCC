@@ -43,12 +43,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Glory" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="d96ce2/decrease">−</Button></Panel>
-                <Panel><Text id="blue_and_glory" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_and_glory" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="d96ce2/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Blue Research" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="8317bd/decrease">−</Button></Panel>
-                <Panel><Text id="blue_and_research" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_and_research" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="8317bd/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -57,12 +57,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Latinum" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="39e892/decrease">−</Button></Panel>
-                <Panel><Text id="blue_and_latinum" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_and_latinum" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="39e892/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Blue Influence" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9b4f79/decrease">−</Button></Panel>
-                <Panel><Text id="blue_and_influence" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_and_influence" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9b4f79/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -71,12 +71,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Dilithium" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="a3ec59/decrease">−</Button></Panel>
-                <Panel><Text id="blue_and_dilithium" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_and_dilithium" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="a3ec59/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Blue Military" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9a7130/decrease">−</Button></Panel>
-                <Panel><Text id="blue_and_military" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_and_military" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9a7130/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -92,12 +92,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Glory" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="d96ce2/decrease">−</Button></Panel>
-                <Panel><Text id="blue_kha_glory" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_kha_glory" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="d96ce2/increase">+</Button></Panel>
                 <Panel width="5" />
                 <!-- <Panel><Image image="Blue Research" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="8317bd/decrease">−</Button></Panel>
-                <Panel><Text id="blue_kha_research" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_kha_research" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="8317bd/increase">+</Button></Panel>
                 <Panel width="50" /> -->
             </HorizontalLayout>
@@ -106,12 +106,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Latinum" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="39e892/decrease">−</Button></Panel>
-                <Panel><Text id="blue_kha_latinum" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_kha_latinum" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="39e892/increase">+</Button></Panel>
                 <Panel width="5" />
                 <!-- <Panel><Image image="Blue Influence" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9b4f79/decrease">−</Button></Panel>
-                <Panel><Text id="blue_kha_influence" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_kha_influence" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9b4f79/increase">+</Button></Panel>
                 <Panel width="50" /> -->
             </HorizontalLayout>
@@ -120,12 +120,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Dilithium" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="a3ec59/decrease">−</Button></Panel>
-                <Panel><Text id="blue_kha_dilithium" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_kha_dilithium" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="a3ec59/increase">+</Button></Panel>
                 <Panel width="5" />
                 <!-- <Panel><Image image="Blue Military" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9a7130/decrease">−</Button></Panel>
-                <Panel><Text id="blue_kha_military" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_kha_military" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9a7130/increase">+</Button></Panel>
                 <Panel width="50" /> -->
             </HorizontalLayout>
@@ -141,12 +141,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Glory" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="d96ce2/decrease">−</Button></Panel>
-                <Panel><Text id="blue_kli_glory" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_kli_glory" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="d96ce2/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Blue Research" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="8317bd/decrease">−</Button></Panel>
-                <Panel><Text id="blue_kli_research" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_kli_research" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="8317bd/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -155,12 +155,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Latinum" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="39e892/decrease">−</Button></Panel>
-                <Panel><Text id="blue_kli_latinum" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_kli_latinum" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="39e892/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Blue Influence" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9b4f79/decrease">−</Button></Panel>
-                <Panel><Text id="blue_kli_influence" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_kli_influence" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9b4f79/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -169,12 +169,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Dilithium" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="a3ec59/decrease">−</Button></Panel>
-                <Panel><Text id="blue_kli_dilithium" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_kli_dilithium" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="a3ec59/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Blue Military" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9a7130/decrease">−</Button></Panel>
-                <Panel><Text id="blue_kli_military" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_kli_military" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9a7130/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -190,12 +190,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Glory" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="d96ce2/decrease">−</Button></Panel>
-                <Panel><Text id="blue_pak_glory" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_pak_glory" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="d96ce2/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Blue Research" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="8317bd/decrease">−</Button></Panel>
-                <Panel><Text id="blue_pak_research" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_pak_research" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="8317bd/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -204,12 +204,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Latinum" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="39e892/decrease">−</Button></Panel>
-                <Panel><Text id="blue_pak_latinum" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_pak_latinum" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="39e892/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Blue Influence" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9b4f79/decrease">−</Button></Panel>
-                <Panel><Text id="blue_pak_influence" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_pak_influence" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9b4f79/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -218,12 +218,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Dilithium" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="a3ec59/decrease">−</Button></Panel>
-                <Panel><Text id="blue_pak_dilithium" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_pak_dilithium" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="a3ec59/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Blue Military" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9a7130/decrease">−</Button></Panel>
-                <Panel><Text id="blue_pak_military" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_pak_military" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9a7130/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -239,12 +239,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Glory" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="d96ce2/decrease">−</Button></Panel>
-                <Panel><Text id="blue_rom_glory" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_rom_glory" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="d96ce2/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Blue Research" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="8317bd/decrease">−</Button></Panel>
-                <Panel><Text id="blue_rom_research" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_rom_research" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="8317bd/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -253,12 +253,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Latinum" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="39e892/decrease">−</Button></Panel>
-                <Panel><Text id="blue_rom_latinum" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_rom_latinum" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="39e892/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Blue Influence" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9b4f79/decrease">−</Button></Panel>
-                <Panel><Text id="blue_rom_influence" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_rom_influence" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9b4f79/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -267,12 +267,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Dilithium" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="a3ec59/decrease">−</Button></Panel>
-                <Panel><Text id="blue_rom_dilithium" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_rom_dilithium" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="a3ec59/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Blue Military" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9a7130/decrease">−</Button></Panel>
-                <Panel><Text id="blue_rom_military" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_rom_military" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9a7130/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -288,12 +288,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Glory" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="d96ce2/decrease">−</Button></Panel>
-                <Panel><Text id="blue_hum_glory" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_hum_glory" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="d96ce2/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Blue Research" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="8317bd/decrease">−</Button></Panel>
-                <Panel><Text id="blue_hum_research" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_hum_research" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="8317bd/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -302,12 +302,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Latinum" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="39e892/decrease">−</Button></Panel>
-                <Panel><Text id="blue_hum_latinum" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_hum_latinum" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="39e892/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Blue Influence" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9b4f79/decrease">−</Button></Panel>
-                <Panel><Text id="blue_hum_influence" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_hum_influence" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9b4f79/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -316,12 +316,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Dilithium" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="a3ec59/decrease">−</Button></Panel>
-                <Panel><Text id="blue_hum_dilithium" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_hum_dilithium" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="a3ec59/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Blue Military" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9a7130/decrease">−</Button></Panel>
-                <Panel><Text id="blue_hum_military" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_hum_military" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9a7130/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -337,12 +337,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Glory" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="d96ce2/decrease">−</Button></Panel>
-                <Panel><Text id="blue_vul_glory" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_vul_glory" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="d96ce2/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Blue Research" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="8317bd/decrease">−</Button></Panel>
-                <Panel><Text id="blue_vul_research" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_vul_research" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="8317bd/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -351,12 +351,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Latinum" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="39e892/decrease">−</Button></Panel>
-                <Panel><Text id="blue_vul_latinum" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_vul_latinum" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="39e892/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Blue Influence" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9b4f79/decrease">−</Button></Panel>
-                <Panel><Text id="blue_vul_influence" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_vul_influence" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9b4f79/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -365,12 +365,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Blue Dilithium" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="a3ec59/decrease">−</Button></Panel>
-                <Panel><Text id="blue_vul_dilithium" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_vul_dilithium" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="a3ec59/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Blue Military" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9a7130/decrease">−</Button></Panel>
-                <Panel><Text id="blue_vul_military" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="blue_vul_military" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9a7130/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -388,12 +388,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Red Glory" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9a5066/decrease">−</Button></Panel>
-                <Panel><Text id="red_and_glory" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_and_glory" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9a5066/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Red Research" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="c5021e/decrease">−</Button></Panel>
-                <Panel><Text id="red_and_research" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_and_research" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="c5021e/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -402,12 +402,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Red Latinum" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="c2bac2/decrease">−</Button></Panel>
-                <Panel><Text id="red_and_latinum" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_and_latinum" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="c2bac2/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Red Influence" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="f3c9be/decrease">−</Button></Panel>
-                <Panel><Text id="red_and_influence" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_and_influence" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="f3c9be/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -416,12 +416,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Red Dilithium" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="f40879/decrease">−</Button></Panel>
-                <Panel><Text id="red_and_dilithium" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_and_dilithium" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="f40879/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Red Military" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="5564b6/decrease">−</Button></Panel>
-                <Panel><Text id="red_and_military" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_and_military" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="5564b6/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -437,12 +437,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Red Glory" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="d96ce2/decrease">−</Button></Panel>
-                <Panel><Text id="red_kha_glory" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_kha_glory" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="d96ce2/increase">+</Button></Panel>
                 <Panel width="5" />
                 <!-- <Panel><Image image="Red Research" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="8317bd/decrease">−</Button></Panel>
-                <Panel><Text id="red_kha_research" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_kha_research" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="8317bd/increase">+</Button></Panel>
                 <Panel width="50" /> -->
             </HorizontalLayout>
@@ -451,12 +451,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Red Latinum" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="39e892/decrease">−</Button></Panel>
-                <Panel><Text id="red_kha_latinum" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_kha_latinum" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="39e892/increase">+</Button></Panel>
                 <Panel width="5" />
                 <!-- <Panel><Image image="Red Influence" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9b4f79/decrease">−</Button></Panel>
-                <Panel><Text id="red_kha_influence" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_kha_influence" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9b4f79/increase">+</Button></Panel>
                 <Panel width="50" /> -->
             </HorizontalLayout>
@@ -465,12 +465,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Red Dilithium" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="a3ec59/decrease">−</Button></Panel>
-                <Panel><Text id="red_kha_dilithium" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_kha_dilithium" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="a3ec59/increase">+</Button></Panel>
                 <Panel width="5" />
                 <!-- <Panel><Image image="Red Military" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9a7130/decrease">−</Button></Panel>
-                <Panel><Text id="red_kha_military" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_kha_military" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9a7130/increase">+</Button></Panel>
                 <Panel width="50" /> -->
             </HorizontalLayout>
@@ -486,12 +486,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Red Glory" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9a5066/decrease">−</Button></Panel>
-                <Panel><Text id="red_kli_glory" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_kli_glory" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9a5066/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Red Research" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="c5021e/decrease">−</Button></Panel>
-                <Panel><Text id="red_kli_research" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_kli_research" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="c5021e/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -500,12 +500,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Red Latinum" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="c2bac2/decrease">−</Button></Panel>
-                <Panel><Text id="red_kli_latinum" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_kli_latinum" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="c2bac2/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Red Influence" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="f3c9be/decrease">−</Button></Panel>
-                <Panel><Text id="red_kli_influence" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_kli_influence" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="f3c9be/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -514,12 +514,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Red Dilithium" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="f40879/decrease">−</Button></Panel>
-                <Panel><Text id="red_kli_dilithium" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_kli_dilithium" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="f40879/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Red Military" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="5564b6/decrease">−</Button></Panel>
-                <Panel><Text id="red_kli_military" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_kli_military" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="5564b6/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -535,12 +535,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Red Glory" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="d96ce2/decrease">−</Button></Panel>
-                <Panel><Text id="red_pak_glory" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_pak_glory" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="d96ce2/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Red Research" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="8317bd/decrease">−</Button></Panel>
-                <Panel><Text id="red_pak_research" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_pak_research" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="8317bd/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -549,12 +549,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Red Latinum" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="39e892/decrease">−</Button></Panel>
-                <Panel><Text id="red_pak_latinum" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_pak_latinum" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="39e892/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Red Influence" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9b4f79/decrease">−</Button></Panel>
-                <Panel><Text id="red_pak_influence" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_pak_influence" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9b4f79/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -563,12 +563,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Red Dilithium" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="a3ec59/decrease">−</Button></Panel>
-                <Panel><Text id="red_pak_dilithium" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_pak_dilithium" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="a3ec59/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Red Military" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9a7130/decrease">−</Button></Panel>
-                <Panel><Text id="red_pak_military" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_pak_military" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9a7130/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -584,12 +584,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Red Glory" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="9a5066/decrease">−</Button></Panel>
-                <Panel><Text id="red_rom_glory" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_rom_glory" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="9a5066/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Red Research" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="c5021e/decrease">−</Button></Panel>
-                <Panel><Text id="red_rom_research" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_rom_research" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="c5021e/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -598,12 +598,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Red Latinum" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="c2bac2/decrease">−</Button></Panel>
-                <Panel><Text id="red_rom_latinum" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_rom_latinum" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="c2bac2/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Red Influence" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="f3c9be/decrease">−</Button></Panel>
-                <Panel><Text id="red_rom_influence" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_rom_influence" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="f3c9be/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -612,12 +612,12 @@
             <HorizontalLayout class="row" padding="0">
                 <Panel><Image image="Red Dilithium" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="f40879/decrease">−</Button></Panel>
-                <Panel><Text id="red_rom_dilithium" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_rom_dilithium" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="f40879/increase">+</Button></Panel>
                 <Panel width="5" />
                 <Panel><Image image="Red Military" preserveAspect="true" width="40" height="40" /></Panel>
                 <Panel><Button onClick="5564b6/decrease">−</Button></Panel>
-                <Panel><Text id="red_rom_military" fontSize="24">0</Text></Panel>
+                <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_rom_military" fontSize="24">0</Text></Panel>
                 <Panel><Button onClick="5564b6/increase">+</Button></Panel>
                 <Panel width="50" />
             </HorizontalLayout>
@@ -634,12 +634,12 @@
                 <HorizontalLayout class="row" padding="0">
                     <Panel><Image image="Red Glory" preserveAspect="true" width="40" height="40" /></Panel>
                     <Panel><Button onClick="9a5066/decrease">−</Button></Panel>
-                    <Panel><Text id="red_hum_glory" fontSize="24">0</Text></Panel>
+                    <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_hum_glory" fontSize="24">0</Text></Panel>
                     <Panel><Button onClick="9a5066/increase">+</Button></Panel>
                     <Panel width="5" />
                     <Panel><Image image="Red Research" preserveAspect="true" width="40" height="40" /></Panel>
                     <Panel><Button onClick="c5021e/decrease">−</Button></Panel>
-                    <Panel><Text id="red_hum_research" fontSize="24">0</Text></Panel>
+                    <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_hum_research" fontSize="24">0</Text></Panel>
                     <Panel><Button onClick="c5021e/increase">+</Button></Panel>
                     <Panel width="50" />
                 </HorizontalLayout>
@@ -648,12 +648,12 @@
                 <HorizontalLayout class="row" padding="0">
                     <Panel><Image image="Red Latinum" preserveAspect="true" width="40" height="40" /></Panel>
                     <Panel><Button onClick="c2bac2/decrease">−</Button></Panel>
-                    <Panel><Text id="red_hum_latinum" fontSize="24">0</Text></Panel>
+                    <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_hum_latinum" fontSize="24">0</Text></Panel>
                     <Panel><Button onClick="c2bac2/increase">+</Button></Panel>
                     <Panel width="5" />
                     <Panel><Image image="Red Influence" preserveAspect="true" width="40" height="40" /></Panel>
                     <Panel><Button onClick="f3c9be/decrease">−</Button></Panel>
-                    <Panel><Text id="red_hum_influence" fontSize="24">0</Text></Panel>
+                    <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_hum_influence" fontSize="24">0</Text></Panel>
                     <Panel><Button onClick="f3c9be/increase">+</Button></Panel>
                     <Panel width="50" />
                 </HorizontalLayout>
@@ -662,12 +662,12 @@
                 <HorizontalLayout class="row" padding="0">
                     <Panel><Image image="Red Dilithium" preserveAspect="true" width="40" height="40" /></Panel>
                     <Panel><Button onClick="f40879/decrease">−</Button></Panel>
-                    <Panel><Text id="red_hum_dilithium" fontSize="24">0</Text></Panel>
+                    <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_hum_dilithium" fontSize="24">0</Text></Panel>
                     <Panel><Button onClick="f40879/increase">+</Button></Panel>
                     <Panel width="5" />
                     <Panel><Image image="Red Military" preserveAspect="true" width="40" height="40" /></Panel>
                     <Panel><Button onClick="5564b6/decrease">−</Button></Panel>
-                    <Panel><Text id="red_hum_military" fontSize="24">0</Text></Panel>
+                    <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_hum_military" fontSize="24">0</Text></Panel>
                     <Panel><Button onClick="5564b6/increase">+</Button></Panel>
                     <Panel width="50" />
                 </HorizontalLayout>
@@ -685,12 +685,12 @@
                 <HorizontalLayout class="row" padding="0">
                     <Panel><Image image="Red Glory" preserveAspect="true" width="40" height="40" /></Panel>
                     <Panel><Button onClick="9a5066/decrease">−</Button></Panel>
-                    <Panel><Text id="red_vul_glory" fontSize="24">0</Text></Panel>
+                    <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_vul_glory" fontSize="24">0</Text></Panel>
                     <Panel><Button onClick="9a5066/increase">+</Button></Panel>
                     <Panel width="5" />
                     <Panel><Image image="Red Research" preserveAspect="true" width="40" height="40" /></Panel>
                     <Panel><Button onClick="c5021e/decrease">−</Button></Panel>
-                    <Panel><Text id="red_vul_research" fontSize="24">0</Text></Panel>
+                    <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_vul_research" fontSize="24">0</Text></Panel>
                     <Panel><Button onClick="c5021e/increase">+</Button></Panel>
                     <Panel width="50" />
                 </HorizontalLayout>
@@ -699,12 +699,12 @@
                 <HorizontalLayout class="row" padding="0">
                     <Panel><Image image="Red Latinum" preserveAspect="true" width="40" height="40" /></Panel>
                     <Panel><Button onClick="c2bac2/decrease">−</Button></Panel>
-                    <Panel><Text id="red_vul_latinum" fontSize="24">0</Text></Panel>
+                    <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_vul_latinum" fontSize="24">0</Text></Panel>
                     <Panel><Button onClick="c2bac2/increase">+</Button></Panel>
                     <Panel width="5" />
                     <Panel><Image image="Red Influence" preserveAspect="true" width="40" height="40" /></Panel>
                     <Panel><Button onClick="f3c9be/decrease">−</Button></Panel>
-                    <Panel><Text id="red_vul_influence" fontSize="24">0</Text></Panel>
+                    <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_vul_influence" fontSize="24">0</Text></Panel>
                     <Panel><Button onClick="f3c9be/increase">+</Button></Panel>
                     <Panel width="50" />
                 </HorizontalLayout>
@@ -713,12 +713,12 @@
                 <HorizontalLayout class="row" padding="0">
                     <Panel><Image image="Red Dilithium" preserveAspect="true" width="40" height="40" /></Panel>
                     <Panel><Button onClick="f40879/decrease">−</Button></Panel>
-                    <Panel><Text id="red_vul_dilithium" fontSize="24">0</Text></Panel>
+                    <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_vul_dilithium" fontSize="24">0</Text></Panel>
                     <Panel><Button onClick="f40879/increase">+</Button></Panel>
                     <Panel width="5" />
                     <Panel><Image image="Red Military" preserveAspect="true" width="40" height="40" /></Panel>
                     <Panel><Button onClick="5564b6/decrease">−</Button></Panel>
-                    <Panel><Text id="red_vul_military" fontSize="24">0</Text></Panel>
+                    <Panel><Text font="fontEdgeOfGalaxy" textAlignment="MiddleCenter" id="red_vul_military" fontSize="24">0</Text></Panel>
                     <Panel><Button onClick="5564b6/increase">+</Button></Panel>
                     <Panel width="50" />
                 </HorizontalLayout>

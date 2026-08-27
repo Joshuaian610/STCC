@@ -116,54 +116,15 @@ end
 
 function showStardateGloryCounter(stardateType)
   -- this should allow for showing and creation of stardate glory counter
-  local color = { 0, 0, 0, 255 }
-  local hoverColor = { 0, 0, 0, .8 }
-  local counterColors = {
-    ["twoPlayer"] = {
-      ["Color"]        = { 119/255, 179/255, 203/255, 255 },
-      ["HoverColor"]   = { 119/255, 179/255, 203/255, .8 },
-    },
-    ["Cadet"]      = {
-      ["Color"]        = { 171/255, 107/255, 142/255, 255 },
-      ["HoverColor"]   = { 171/255, 107/255, 142/255, .8 },
-    },
-    ["Ensign"]     = {
-      ["Color"]        = { 229/255, 133/255, 21/255, 255 },
-      ["HoverColor"]   = { 229/255, 133/255, 21/255, .8 },
-    },
-    ["Captain"]    = {
-      ["Color"]        = { 229/255, 133/255, 21/255, 255 },
-      ["HoverColor"]   = { 229/255, 133/255, 21/255, .8 },
-    },
-    ["Lieutenant"] = {
-      ["Color"]        = { 113/255, 170/255, 117/255, 255 },
-      ["HoverColor"]   = { 113/255, 170/255, 117/255, .8 },
-    },
-    ["Commander"]  = {
-      ["Color"]        = { 198/255, 202/255, 165/255, 255 },
-      ["HoverColor"]   = { 198/255, 202/255, 165/255, .8 },
-    },
-    ["Admiral"]    = {
-      ["Color"]        = { 173/255, 29/255, 20/255, 255 },
-      ["HoverColor"]   = { 173/255, 29/255, 20/255, .8 },
-    },
-  }
-  color = counterColors[stardateType]["Color"]
-  hoverColor = counterColors[stardateType]["HoverColor"]
   local counter = getObjectbyName("Glory Counter Stardate")
   local posCounter = counter.getPosition()
   posCounter.y = .85
   counter.setPosition(posCounter)
+  Wait.time(function()
 
+    counter.call("initCounterStardateGlory", counter)
 
-
-
-  counter.call('create_all', {color=color, h_color=hoverColor})
-
-
-
-
-  
+  end, 1)
 end
 
 
@@ -196,7 +157,7 @@ function gloryCounterStardateInProgress()
   end
   if stardateType ~= nil then -- game is in progress, or, stardate cards no longer in play, either or
     showStardateGloryCounter(stardateType)
-    getObjectbyName("Glory Counter Stardate").call('set_val', gloryCount)
+    getObjectbyName("Glory Counter Stardate").call('setValue', gloryCount)
   end
 end
 

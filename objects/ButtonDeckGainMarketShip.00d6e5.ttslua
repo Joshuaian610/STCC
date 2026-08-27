@@ -107,7 +107,7 @@ function gain_card(_, playercolor, alt_click)
                 end
             end
             local current_glory = glory_counter.getVar('val')
-            glory_counter.call('set_val', current_glory + glory_count)
+            glory_counter.call('setValue', current_glory + glory_count)
             if captain_name == "Burnham" or captain_name == "Picard" or captain_name == "Sisko" then
                 UI.setAttribute(string.lower(playercolor) .. "_hum_glory", "text",  current_glory + glory_count)
             elseif captain_name == "Shran" then
@@ -131,8 +131,8 @@ function gain_card(_, playercolor, alt_click)
             end
             local current_glory = glory_counter.getVar('val')
             local current_dil   = dil_counter.getVar('val')
-            glory_counter.call('set_val', current_glory + glory_count)
-            dil_counter.call('set_val', current_dil + dilithium_count)
+            glory_counter.call('setValue', current_glory + glory_count)
+            dil_counter.call('setValue', current_dil + dilithium_count)
             if captain_name == "Burnham" or captain_name == "Picard" or captain_name == "Sisko" then
                 UI.setAttribute(string.lower(playercolor) .. "_hum_glory", "text",  current_glory + glory_count)
                 UI.setAttribute(string.lower(playercolor) .. "_hum_dilithium", "text", current_dil + dilithium_count)
@@ -160,8 +160,8 @@ function gain_card(_, playercolor, alt_click)
             end
             local current_glory = glory_counter.getVar('val')
             local current_lat   = lat_counter.getVar('val')
-            glory_counter.call('set_val', current_glory + glory_count)
-            lat_counter.call('set_val', current_lat + latinum_count)
+            glory_counter.call('setValue', current_glory + glory_count)
+            lat_counter.call('setValue', current_lat + latinum_count)
             if captain_name == "Burnham" or captain_name == "Picard" or captain_name == "Sisko" then
                 UI.setAttribute(string.lower(playercolor) .. "_hum_glory", "text", current_glory + glory_count)
                 UI.setAttribute(string.lower(playercolor) .. "_hum_latinum", "text", current_lat + latinum_count)
@@ -190,9 +190,9 @@ function gain_card(_, playercolor, alt_click)
             local current_glory = glory_counter.getVar('val')
             local current_dil   = dil_counter.getVar('val')
             local current_lat   = lat_counter.getVar('val')
-            glory_counter.call('set_val', current_glory + glory_count)
-            dil_counter.call('set_val', current_dil + dilithium_count)
-            lat_counter.call('set_val', current_lat + latinum_count)
+            glory_counter.call('setValue', current_glory + glory_count)
+            dil_counter.call('setValue', current_dil + dilithium_count)
+            lat_counter.call('setValue', current_lat + latinum_count)
             if captain_name == "Burnham" or captain_name == "Picard" or captain_name == "Sisko" then
                 UI.setAttribute(string.lower(playercolor) .. "_hum_glory", "text", current_glory + glory_count)
                 UI.setAttribute(string.lower(playercolor) .. "_hum_dilithium", "text", current_dil + dilithium_count)
@@ -223,7 +223,7 @@ function gain_card(_, playercolor, alt_click)
                 end
             end
             local current_dil   = dil_counter.getVar('val')
-            dilithium_counter.call('set_val', current_dil + dilithium_count)
+            dilithium_counter.call('setValue', current_dil + dilithium_count)
             if captain_name == "Burnham" or captain_name == "Picard" or captain_name == "Sisko" then
                 UI.setAttribute(string.lower(playercolor) .. "_hum_dilithium", "text", current_dil + dilithium_count)
             elseif captain_name == "Shran" then
@@ -247,8 +247,8 @@ function gain_card(_, playercolor, alt_click)
             end
             local current_dil = dil_counter.getVar('val')
             local current_lat   = lat_counter.getVar('val')
-            dil_counter.call('set_val', current_dil + dilithium_count)
-            lat_counter.call('set_val', current_lat + latinum_count)
+            dil_counter.call('setValue', current_dil + dilithium_count)
+            lat_counter.call('setValue', current_lat + latinum_count)
             if captain_name == "Burnham" or captain_name == "Picard" or captain_name == "Sisko" then
                 UI.setAttribute(string.lower(playercolor) .. "_hum_dilithium", "text", current_dil + dilithium_count)
                 UI.setAttribute(string.lower(playercolor) .. "_hum_latinum", "text", current_lat + latinum_count)
@@ -275,7 +275,7 @@ function gain_card(_, playercolor, alt_click)
                 end
             end
             local current_lat   = lat_counter.getVar('val')
-            lat_counter.call('set_val', current_lat + latinum_count)
+            lat_counter.call('setValue', current_lat + latinum_count)
             if captain_name == "Burnham" or captain_name == "Picard" or captain_name == "Sisko" then
                 UI.setAttribute(string.lower(playercolor) .. "_hum_latinum", "text", current_lat + latinum_count)
             elseif captain_name == "Shran" then
