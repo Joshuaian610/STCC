@@ -42,6 +42,8 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "cleanup",
+    "resupply",
     "snap_card",
     "suit_person",
     "trait_human",

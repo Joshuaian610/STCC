@@ -42,6 +42,7 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "resupply",
     "snap_card",
     "suit_cargo",
     "trait_augment",

@@ -42,6 +42,7 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "cleanup",
     "skill_wildcard",
     "snap_card",
     "suit_person",

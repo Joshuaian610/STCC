@@ -2,6 +2,7 @@
 -- code by Nonprophet, which is why it sucks
 
 require("BeamedBags")
+require("ButtonsCaptain")
 require("ControlMarket")
 require("ControlNZ")
 require("Helpers")
