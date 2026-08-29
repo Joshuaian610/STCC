@@ -106,7 +106,11 @@ function updateStardateGloryCounter()
   local buttonObj = getObjectbyName("Glory Counter Stardate")
   local padStardate = getObjectbyName("Pad Stardate")
   if padStardate.getGMNotes() ~= "None" then
-    buttonObj.call("setValue", gloryCount)
+    Wait.time(function()
+
+     buttonObj.call("setValue", gloryCount)
+
+    end, 0.5)
   end
 end
 

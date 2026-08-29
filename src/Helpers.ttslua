@@ -109,6 +109,17 @@ function checkPlayerColorIsBot(playerColor)
 end
 
 
+function checkIsAdvanced(playerColor)
+  -- checks a particular playerColor to see if an advanced board is in position there
+  local checkZone = getObjectbyNameAndNotes("Zone Captain Card", playerColor)
+  local isAdvanced = false
+  for _, zoneObj in pairs(checkZone.getObjects()) do
+    if zoneObj.getName():find("Advanced") then isAdvanced = true end
+  end
+  return isAdvanced
+end
+
+
 function checkisBot()
   -- checks and returns if there is currently a solo bot in play
   local isBot = false

@@ -490,9 +490,9 @@ function pullFocusAssets(captainName, playerColor, selectedCaptainDifficulty, is
   -- handles pull & placement of tracking cubes for most captains
   -- khan will pull & place trait trackers instead
   local trackers = {
-      ["Science"]   = getObjectbyNameAndNotes("Focus Tracker Science", playerColor),
-      ["Diplomacy"] = getObjectbyNameAndNotes("Focus Tracker Diplomacy", playerColor),
-      ["Military"]  = getObjectbyNameAndNotes("Focus Tracker Military", playerColor),
+      ["Research"]  = getObjectbyName("Focus Tracker Research " .. playerColor),
+      ["Influence"] = getObjectbyName("Focus Tracker Influence " .. playerColor),
+      ["Military"]  = getObjectbyName("Focus Tracker Military " .. playerColor),
     }
   local bagUnusedObjs = getObjectbyName("Unused Object Bag")
 
@@ -501,73 +501,73 @@ function pullFocusAssets(captainName, playerColor, selectedCaptainDifficulty, is
     local posTrackers = not isBot and {
       ["Burnham"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.26, 1.19, 21.71},
-          ["Diplomacy"] = { -44.23, 1.19, 21.71},
+          ["Research"]  = { -42.26, 1.19, 21.71},
+          ["Influence"] = { -44.23, 1.19, 21.71},
           ["Military"]  = { -46.18, 1.19, 21.72},
         },
         ["Advanced"] = {
-          ["Science"]   = { -42.06, 1.19, 21.72},
-          ["Diplomacy"] = { -44.03, 1.19, 21.72},
+          ["Research"]  = { -42.06, 1.19, 21.72},
+          ["Influence"] = { -44.03, 1.19, 21.72},
           ["Military"]  = { -45.98, 1.19, 21.72},
         },
       },
       ["Koloth"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.32, 1.19, 21.70 },
-          ["Diplomacy"] = { -44.28, 1.19, 21.70 },
+          ["Research"]  = { -42.32, 1.19, 21.70 },
+          ["Influence"] = { -44.28, 1.19, 21.70 },
           ["Military"]  = { -46.20, 1.19, 21.70 },
         },
         ["Advanced"] = {
-          ["Science"]   = { -42.07, 1.19, 21.72 },
-          ["Diplomacy"] = { -44.01, 1.19, 21.72 },
+          ["Research"]  = { -42.07, 1.19, 21.72 },
+          ["Influence"] = { -44.01, 1.19, 21.72 },
           ["Military"]  = { -45.97, 1.19, 21.72 },
         },
       },
       ["Picard"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.30, 1.19, 21.75 },
-          ["Diplomacy"] = { -44.27, 1.19, 21.75 },
+          ["Research"]  = { -42.30, 1.19, 21.75 },
+          ["Influence"] = { -44.27, 1.19, 21.75 },
           ["Military"]  = { -46.22, 1.19, 21.75 },
         },
         ["Advanced"] = {
-          ["Science"]   = { -42.05, 1.19, 21.69 },
-          ["Diplomacy"] = { -44.04, 1.19, 21.69 },
+          ["Research"]  = { -42.05, 1.19, 21.69 },
+          ["Influence"] = { -44.04, 1.19, 21.69 },
           ["Military"]  = { -45.97, 1.19, 21.69 },
         },
       },
       ["Sela"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.26, 1.19, 21.73 },
-          ["Diplomacy"] = { -44.22, 1.19, 21.73 },
+          ["Research"]  = { -42.26, 1.19, 21.73 },
+          ["Influence"] = { -44.22, 1.19, 21.73 },
           ["Military"]  = { -46.20, 1.19, 21.74 },
         },
         ["Advanced"] = {
-          ["Science"]   = { -42.06, 1.19, 21.70 },
-          ["Diplomacy"] = { -44.02, 1.19, 21.70 },
+          ["Research"]  = { -42.06, 1.19, 21.70 },
+          ["Influence"] = { -44.02, 1.19, 21.70 },
           ["Military"]  = { -45.98, 1.19, 21.71 },
         },
       },
       ["Shran"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.27, 1.19, 21.72 },
-          ["Diplomacy"] = { -44.23, 1.19, 21.72 },
+          ["Research"]  = { -42.27, 1.19, 21.72 },
+          ["Influence"] = { -44.23, 1.19, 21.72 },
           ["Military"]  = { -46.19, 1.19, 21.72 },
         },
         ["Advanced"] = {
-          ["Science"]   = { -42.06, 1.19, 21.69 },
-          ["Diplomacy"] = { -44.02, 1.19, 21.69 },
+          ["Research"]  = { -42.06, 1.19, 21.69 },
+          ["Influence"] = { -44.02, 1.19, 21.69 },
           ["Military"]  = { -45.99, 1.19, 21.70 },
         },
       },
       ["Sisko"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.29, 1.19, 21.72 },
-          ["Diplomacy"] = { -44.26, 1.19, 21.72 },
+          ["Research"]  = { -42.29, 1.19, 21.72 },
+          ["Influence"] = { -44.26, 1.19, 21.72 },
           ["Military"]  = { -46.21, 1.19, 21.73 },
         },
         ["Advanced"] = {
-          ["Science"]   = { -42.06, 1.19, 21.71 },
-          ["Diplomacy"] = { -44.05, 1.19, 21.72 },
+          ["Research"]  = { -42.06, 1.19, 21.71 },
+          ["Influence"] = { -44.05, 1.19, 21.72 },
           ["Military"]  = { -45.97, 1.19, 21.73 },
         },
       },
@@ -575,140 +575,140 @@ function pullFocusAssets(captainName, playerColor, selectedCaptainDifficulty, is
       -- EXPANSION POSITIONS ARE ONLY PLACEHOLDERS USING SISKO'S INFO UNTIL FILLED IN
       ["Archer"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.29, 1.19, 21.72 },
-          ["Diplomacy"] = { -44.26, 1.19, 21.72 },
+          ["Research"]  = { -42.29, 1.19, 21.72 },
+          ["Influence"] = { -44.26, 1.19, 21.72 },
           ["Military"]  = { -46.21, 1.19, 21.73 },
         },
         ["Advanced"] = {
-          ["Science"]   = { -42.06, 1.19, 21.71 },
-          ["Diplomacy"] = { -44.05, 1.19, 21.72 },
+          ["Research"]  = { -42.06, 1.19, 21.71 },
+          ["Influence"] = { -44.05, 1.19, 21.72 },
           ["Military"]  = { -45.97, 1.19, 21.73 },
         },
       },
       ["Georgiou"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.29, 1.19, 21.72 },
-          ["Diplomacy"] = { -44.26, 1.19, 21.72 },
+          ["Research"]  = { -42.29, 1.19, 21.72 },
+          ["Influence"] = { -44.26, 1.19, 21.72 },
           ["Military"]  = { -46.21, 1.19, 21.73 },
         },
         ["Advanced"] = {
-          ["Science"]   = { -42.06, 1.19, 21.71 },
-          ["Diplomacy"] = { -44.05, 1.19, 21.72 },
+          ["Research"]  = { -42.06, 1.19, 21.71 },
+          ["Influence"] = { -44.05, 1.19, 21.72 },
           ["Military"]  = { -45.97, 1.19, 21.73 },
         },
       },
       ["Kirk"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.29, 1.19, 21.72 },
-          ["Diplomacy"] = { -44.26, 1.19, 21.72 },
+          ["Research"]  = { -42.29, 1.19, 21.72 },
+          ["Influence"] = { -44.26, 1.19, 21.72 },
           ["Military"]  = { -46.21, 1.19, 21.73 },
         },
         ["Advanced"] = {
-          ["Science"]   = { -42.06, 1.19, 21.71 },
-          ["Diplomacy"] = { -44.05, 1.19, 21.72 },
+          ["Research"]  = { -42.06, 1.19, 21.71 },
+          ["Influence"] = { -44.05, 1.19, 21.72 },
           ["Military"]  = { -45.97, 1.19, 21.73 },
         },
       },
       ["Rebner"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.29, 1.19, 21.72 },
-          ["Diplomacy"] = { -44.26, 1.19, 21.72 },
+          ["Research"]  = { -42.29, 1.19, 21.72 },
+          ["Influence"] = { -44.26, 1.19, 21.72 },
           ["Military"]  = { -46.21, 1.19, 21.73 },
         },
         ["Advanced"] = {
-          ["Science"]   = { -42.06, 1.19, 21.71 },
-          ["Diplomacy"] = { -44.05, 1.19, 21.72 },
+          ["Research"]  = { -42.06, 1.19, 21.71 },
+          ["Influence"] = { -44.05, 1.19, 21.72 },
           ["Military"]  = { -45.97, 1.19, 21.73 },
         },
       },
       ["Soval"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.29, 1.19, 21.72 },
-          ["Diplomacy"] = { -44.26, 1.19, 21.72 },
+          ["Research"]  = { -42.29, 1.19, 21.72 },
+          ["Influence"] = { -44.26, 1.19, 21.72 },
           ["Military"]  = { -46.21, 1.19, 21.73 },
         },
         ["Advanced"] = {
-          ["Science"]   = { -42.06, 1.19, 21.71 },
-          ["Diplomacy"] = { -44.05, 1.19, 21.72 },
+          ["Research"]  = { -42.06, 1.19, 21.71 },
+          ["Influence"] = { -44.05, 1.19, 21.72 },
           ["Military"]  = { -45.97, 1.19, 21.73 },
         },
       },
       ["Freeman"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.29, 1.19, 21.72 },
-          ["Diplomacy"] = { -44.26, 1.19, 21.72 },
+          ["Research"]  = { -42.29, 1.19, 21.72 },
+          ["Influence"] = { -44.26, 1.19, 21.72 },
           ["Military"]  = { -46.21, 1.19, 21.73 },
         },
         ["Advanced"] = {
-          ["Science"]   = { -42.06, 1.19, 21.71 },
-          ["Diplomacy"] = { -44.05, 1.19, 21.72 },
+          ["Research"]  = { -42.06, 1.19, 21.71 },
+          ["Influence"] = { -44.05, 1.19, 21.72 },
           ["Military"]  = { -45.97, 1.19, 21.73 },
         },
       },
       ["Pike"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.29, 1.19, 21.72 },
-          ["Diplomacy"] = { -44.26, 1.19, 21.72 },
+          ["Research"]  = { -42.29, 1.19, 21.72 },
+          ["Influence"] = { -44.26, 1.19, 21.72 },
           ["Military"]  = { -46.21, 1.19, 21.73 },
         },
         ["Advanced"] = {
-          ["Science"]   = { -42.06, 1.19, 21.71 },
-          ["Diplomacy"] = { -44.05, 1.19, 21.72 },
+          ["Research"]  = { -42.06, 1.19, 21.71 },
+          ["Influence"] = { -44.05, 1.19, 21.72 },
           ["Military"]  = { -45.97, 1.19, 21.73 },
         },
       },
       ["Riker"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.29, 1.19, 21.72 },
-          ["Diplomacy"] = { -44.26, 1.19, 21.72 },
+          ["Research"]  = { -42.29, 1.19, 21.72 },
+          ["Influence"] = { -44.26, 1.19, 21.72 },
           ["Military"]  = { -46.21, 1.19, 21.73 },
         },
         ["Advanced"] = {
-          ["Science"]   = { -42.06, 1.19, 21.71 },
-          ["Diplomacy"] = { -44.05, 1.19, 21.72 },
+          ["Research"]  = { -42.06, 1.19, 21.71 },
+          ["Influence"] = { -44.05, 1.19, 21.72 },
           ["Military"]  = { -45.97, 1.19, 21.73 },
         },
       },
     } or {
       ["Burnham"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.03, 1.19, 10.30 },
-          ["Diplomacy"] = { -40.08, 1.19, 10.30 },
+          ["Research"]  = { -42.03, 1.19, 10.30 },
+          ["Influence"] = { -40.08, 1.19, 10.30 },
           ["Military"]  = { -38.13, 1.19, 10.30 },
         },
       },
       ["Koloth"] = {
         ["Basic"] = {
-          ["Science"]   = { -41.99, 1.19, 10.25 },
-          ["Diplomacy"] = { -40.03, 1.19, 10.25 },
+          ["Research"]  = { -41.99, 1.19, 10.25 },
+          ["Influence"] = { -40.03, 1.19, 10.25 },
           ["Military"]  = { -38.04, 1.19, 10.25 },
         },
       },
       ["Picard"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.02, 1.19, 10.25 },
-          ["Diplomacy"] = { -40.04, 1.19, 10.25 },
+          ["Research"]  = { -42.02, 1.19, 10.25 },
+          ["Influence"] = { -40.04, 1.19, 10.25 },
           ["Military"]  = { -38.09, 1.19, 10.25 },
         },
       },
       ["Sela"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.03, 1.19, 10.29 },
-          ["Diplomacy"] = { -40.07, 1.19, 10.29 },
+          ["Research"]  = { -42.03, 1.19, 10.29 },
+          ["Influence"] = { -40.07, 1.19, 10.29 },
           ["Military"]  = { -38.11, 1.19, 10.28 },
         },
       },
       ["Shran"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.05, 1.19, 10.26 },
-          ["Diplomacy"] = { -40.09, 1.19, 10.26 },
+          ["Research"]  = { -42.05, 1.19, 10.26 },
+          ["Influence"] = { -40.09, 1.19, 10.26 },
           ["Military"]  = { -38.12, 1.19, 10.25 },
         },
       },
       ["Sisko"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.01, 1.19, 10.29 },
-          ["Diplomacy"] = { -40.06, 1.19, 10.29 },
+          ["Research"]  = { -42.01, 1.19, 10.29 },
+          ["Influence"] = { -40.06, 1.19, 10.29 },
           ["Military"]  = { -38.10, 1.19, 10.29 },
         },
       },
@@ -716,57 +716,57 @@ function pullFocusAssets(captainName, playerColor, selectedCaptainDifficulty, is
       -- EXPANSION POSITIONS ARE ONLY PLACEHOLDERS USING SISKO'S INFO UNTIL FILLED IN
       ["Archer"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.01, 1.19, 10.29 },
-          ["Diplomacy"] = { -40.06, 1.19, 10.29 },
+          ["Research"]  = { -42.01, 1.19, 10.29 },
+          ["Influence"] = { -40.06, 1.19, 10.29 },
           ["Military"]  = { -38.10, 1.19, 10.29 },
         },
       },
       ["Georgiou"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.01, 1.19, 10.29 },
-          ["Diplomacy"] = { -40.06, 1.19, 10.29 },
+          ["Research"]  = { -42.01, 1.19, 10.29 },
+          ["Influence"] = { -40.06, 1.19, 10.29 },
           ["Military"]  = { -38.10, 1.19, 10.29 },
         },
       },
       ["Kirk"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.01, 1.19, 10.29 },
-          ["Diplomacy"] = { -40.06, 1.19, 10.29 },
+          ["Research"]  = { -42.01, 1.19, 10.29 },
+          ["Influence"] = { -40.06, 1.19, 10.29 },
           ["Military"]  = { -38.10, 1.19, 10.29 },
         },
       },
       ["Rebner"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.01, 1.19, 10.29 },
-          ["Diplomacy"] = { -40.06, 1.19, 10.29 },
+          ["Research"]  = { -42.01, 1.19, 10.29 },
+          ["Influence"] = { -40.06, 1.19, 10.29 },
           ["Military"]  = { -38.10, 1.19, 10.29 },
         },
       },
       ["Soval"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.01, 1.19, 10.29 },
-          ["Diplomacy"] = { -40.06, 1.19, 10.29 },
+          ["Research"]  = { -42.01, 1.19, 10.29 },
+          ["Influence"] = { -40.06, 1.19, 10.29 },
           ["Military"]  = { -38.10, 1.19, 10.29 },
         },
       },
       ["Freeman"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.01, 1.19, 10.29 },
-          ["Diplomacy"] = { -40.06, 1.19, 10.29 },
+          ["Research"]  = { -42.01, 1.19, 10.29 },
+          ["Influence"] = { -40.06, 1.19, 10.29 },
           ["Military"]  = { -38.10, 1.19, 10.29 },
         },
       },
       ["Pike"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.01, 1.19, 10.29 },
-          ["Diplomacy"] = { -40.06, 1.19, 10.29 },
+          ["Research"]  = { -42.01, 1.19, 10.29 },
+          ["Influence"] = { -40.06, 1.19, 10.29 },
           ["Military"]  = { -38.10, 1.19, 10.29 },
         },
       },
       ["Riker"] = {
         ["Basic"] = {
-          ["Science"]   = { -42.01, 1.19, 10.29 },
-          ["Diplomacy"] = { -40.06, 1.19, 10.29 },
+          ["Research"]  = { -42.01, 1.19, 10.29 },
+          ["Influence"] = { -40.06, 1.19, 10.29 },
           ["Military"]  = { -38.10, 1.19, 10.29 },
         },
       },
@@ -775,6 +775,13 @@ function pullFocusAssets(captainName, playerColor, selectedCaptainDifficulty, is
       local posTracker = posTrackers[captainName][selectedCaptainDifficulty][focus]
       if playerColor == "Red" then
         posTracker = { -posTracker[1], posTracker[2], -posTracker[3] }
+      end
+
+      -- set notes on tracker to designate which "row" it's in on it's track, top or bottom
+      if selectedCaptainDifficulty == "Basic" then
+        tracker.setGMNotes("bottom")
+      elseif selectedCaptainDifficulty ~= "Basic" then
+        tracker.setGMNotes("top")
       end
       tracker.setRotation(rotTrackers)
       tracker.setPosition(posTracker)
@@ -869,6 +876,14 @@ function pullFocusAssets(captainName, playerColor, selectedCaptainDifficulty, is
     for _, tracker in pairs(trackers) do
       bagUnusedObjs.putObject(tracker)
     end
+
+    -- destruct focus counters
+    local counters = {
+      getObjectbyName("Influence Counter " .. playerColor),
+      getObjectbyName("Military Counter " .. playerColor),
+      getObjectbyName("Research Counter " .. playerColor),
+    }
+    for i = 1, 3 do counters[i].destruct() end
   end
 end
 
@@ -1529,15 +1544,17 @@ function flipBotUI(playerColor)
   }
   local rotSkillCounter = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
   for i = 1, 3 do
-    skillCounterObjs[i].setRotation(rotSkillCounter)
-    local pos = skillCounterObjs[i].getPosition()
-    pos.x = playerColor == "Blue" and -36.15 or 36.15
-    if i == 1 then
-      pos.z = playerColor == "Blue" and 10.00 or -10.00
-    elseif i == 3 then
-      pos.z = playerColor == "Blue" and 16.00 or -16.00
+    if skillCounterObjs[i] ~= nil then
+      skillCounterObjs[i].setRotation(rotSkillCounter)
+      local pos = skillCounterObjs[i].getPosition()
+      pos.x = playerColor == "Blue" and -36.15 or 36.15
+      if i == 1 then
+        pos.z = playerColor == "Blue" and 10.00 or -10.00
+      elseif i == 3 then
+        pos.z = playerColor == "Blue" and 16.00 or -16.00
+      end
+      skillCounterObjs[i].setPosition(pos)
     end
-    skillCounterObjs[i].setPosition(pos)
   end
 
   -- bot draw deck refresh button

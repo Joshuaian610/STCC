@@ -134,17 +134,17 @@ function gloryCounterStardateInProgress()
   local stardateType = nil
   for _, object in pairs(zoneStardate.getObjects()) do
     if object.getName():find("2-Player") then
-      stardateType = "two_player"
+      stardateType = "twoPlayer"
     elseif object.getName():find("Cadet") then
-      stardateType = "cadet"
+      stardateType = "Cadet"
     elseif object.getName():find("Ensign") or object.getName():find("Captain") then
-      stardateType = "ensign"
+      stardateType = "Ensign"
     elseif object.getName():find("Lieutenant") then
-      stardateType = "lieutenant"
+      stardateType = "Lieutenant"
     elseif object.getName():find("Commander") then
-      stardateType = "commander"
+      stardateType = "Commander"
     elseif object.getName():find("Admiral") then
-      stardateType = "admiral"
+      stardateType = "Admiral"
     end
   end
 
