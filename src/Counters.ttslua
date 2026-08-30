@@ -789,8 +789,6 @@ function moveFocusMarker(playerColor, oldValue, value, trackType)
   local isBot = Global.call("checkPlayerColorIsBot", playerColor)
   local tracker = Global.call("getObjectbyName", "Focus Tracker " .. trackType .. " " .. playerColor)
 
-  log(string.format("%s side isBot: %s", playerColor, tostring(isBot)))
-
   if tracker == nil then
     return
   end

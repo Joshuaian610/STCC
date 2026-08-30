@@ -59,10 +59,12 @@ end
 
 function getPlayerStr(playerColor)
   -- handles the creation of playerStr for broadcasts
+  if playerColor == nil then return "Player" end
 
-  local playerColorisBot = checkPlayerColorIsBot(playerColor)
-  local playerStr = (Player[playerColor].steam_name ~= nil and not playerColorisBot) and string.format("[%s]%s[-]", Color.fromString(playerColor):toHex(), Player[playerColor].steam_name) or
-                    string.format("[%s]%s %s[-]", Color.fromString(playerColor):toHex(), playerColor, playerColorisBot and "Bot" or "Player")
+  local playerColorIsBot = checkPlayerColorIsBot(playerColor)
+
+  local playerStr = (Player[playerColor].steam_name ~= nil and not playerColorIsBot) and string.format("[%s]%s[-]", Color.fromString(playerColor):toHex(), Player[playerColor].steam_name) or
+                    string.format("[%s]%s %s[-]", Color.fromString(playerColor):toHex(), playerColor, playerColorIsBot and "Bot" or "Player")
   return playerStr
 end
 
@@ -97,15 +99,15 @@ end
 function checkPlayerColorIsBot(playerColor)
   -- checks and returns if a specified playerColor is currently in solo bot mode
   -- captain board pad's gmnotes specifies enabled (this color is a bot) or disabled (this color is human)
-  local playerColorisBot = false
-  local padCaptain = getObjectbyName("Pad Crew Board " .. playerColor)
+  local playerColorIsBot = false
+  local padCaptain = playerColor and getObjectbyName("Pad Crew Board " .. playerColor) or nil
   if padCaptain ~= nil then
     if padCaptain.getGMNotes() == "enabled" then
-      playerColorisBot = true
+      playerColorIsBot = true
     end
   end
 
-  return playerColorisBot
+  return playerColorIsBot
 end
 
 
@@ -120,7 +122,7 @@ function checkIsAdvanced(playerColor)
 end
 
 
-function checkisBot()
+function checkIsBot()
   -- checks and returns if there is currently a solo bot in play
   local isBot = false
   if checkPlayerColorIsBot("Blue") or checkPlayerColorIsBot("Red") then

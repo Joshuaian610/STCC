@@ -187,81 +187,117 @@ function onloadXML()
   -- handles required XML updates in case of a reload or rewind
   local colors = {"Blue", "Red"}
   for i = 1, 2 do
-    local playercolor = colors[i]
-    local is_solo = checkPlayerColorIsBot(playercolor)
-    local captain_zone = getObjectFromGUID(playercolor == "Blue" and "75465f" or "75c041")
-    local captain_pad = getObjectFromGUID(playercolor == "Blue" and "997491" or "28a24b")
-    for _, object in pairs(captain_zone.getObjects()) do
-      if string.find(object.getName(), "Crew Board") and object ~= captain_pad then
-        captain_card_name    = object.getName()
+    local playerColor = colors[i]
+    local isBot = checkIsBot()
+    local captainCheckZone = getObjectbyNameAndNotes("Zone Captain Card", playerColor)
+    local padCaptain = getObjectbyName("Pad Crew Board " .. playerColor)
+    local captainBoardName = nil
+    for _, zoneObj in pairs(captainCheckZone.getObjects()) do
+      if zoneObj.getName():find("Crew Board") and zoneObj ~= padCaptain then
+        captainBoardName = zoneObj.getName
       end
     end
-    local captain_name = nil
-    local split_name = {}
-    if captain_card_name ~= nil then
-      for str in string.gmatch(captain_card_name,  "%S+") do
-        table.insert(split_name, str)
+    local captainName = nil
+    local splitName = {}
+    if captainBoardName ~= nil then
+      if captainBoardName ~= nil then
+        for str in string.gmatch(captainBoardName,  "%S+") do
+          table.insert(splitName, str)
+        end
       end
     end
+    captainName = splitName[1]
 
-    captain_name = split_name[1]
+    local dilithiumVal = getObjectbyName("Dilithium Counter " .. playerColor).getVar("val")
+    local latinumVal = getObjectbyName("Latinum Counter " .. playerColor).getVar("val")
+    local gloryVal = getObjectbyName("Glory Counter " .. playerColor).getVar("val")
+    local influenceVal = getObjectbyName("Influence Counter " .. playerColor).getVar("val")
+    local militaryVal = getObjectbyName("Military Counter " .. playerColor).getVar("val")
+    local researchVal = getObjectbyName("Research Counter " .. playerColor).getVar("val")
+
     Wait.frames(function()
 
-      if captain_name == "Burnham" or captain_name == "Picard" or captain_name == "Sisko" then
-        UI.setAttribute(string.lower(playercolor) .. "_starfleet_panel", "active", "true")
-        UI.setAttribute(string.lower(playercolor) .. "_hum_glory",       "text",   getObjectFromGUID(playercolor == "Blue" and "d96ce2" or "9a5066").getVar('val'))
-        UI.setAttribute(string.lower(playercolor) .. "_hum_latinum",     "text",   getObjectFromGUID(playercolor == "Blue" and "39e892" or "c2bac2").getVar('val'))
-        UI.setAttribute(string.lower(playercolor) .. "_hum_dilithium",   "text",   getObjectFromGUID(playercolor == "Blue" and "a3ec59" or "f40879").getVar('val'))
-        UI.setAttribute(string.lower(playercolor) .. "_hum_research",    "text",   getObjectFromGUID(playercolor == "Blue" and "8317bd" or "c5021e").getVar('val'))
-        UI.setAttribute(string.lower(playercolor) .. "_hum_influence",   "text",   getObjectFromGUID(playercolor == "Blue" and "9b4f79" or "f3c9be").getVar('val'))
-        UI.setAttribute(string.lower(playercolor) .. "_hum_military",    "text",   getObjectFromGUID(playercolor == "Blue" and "9a7130" or "5564b6").getVar('val'))
-        UI.setAttribute(i == 1 and "ui_hide_blue" or "ui_hide_red", "active", "true")
+       if captainName == "Burnham" or captainName == "Picard" or captainName == "Sisko" or
+          captainName == "Archer" or captainName == "Georgiou" or captainName == "Kirk" or
+          captainName == "Freeman" or captainName == "Pike" or captainName == "Riker" then
+        UI.setAttribute(playerColor == "Blue" and "blue_starfleet_panel" or "red_starfleet_panel", "active", "true")
+        UI.setAttribute(playerColor == "Blue" and "blue_hum_glory" or "red_hum_glory", "text", gloryVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_hum_latinum" or "red_hum_latinum", "text", latinumVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_hum_dilithium" or "red_hum_dilithium", "text", dilithiumVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_hum_influence" or "red_hum_influence", "text", influenceVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_hum_military" or "red_hum_military", "text", militaryVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_hum_research" or "red_hum_research", "text", researchVal)
 
-      elseif captain_name == "Shran" then
-        UI.setAttribute(string.lower(playercolor) .. "_andorian_panel",  "active", "true")
-        UI.setAttribute(string.lower(playercolor) .. "_and_glory",       "text",   getObjectFromGUID(playercolor == "Blue" and "d96ce2" or "9a5066").getVar('val'))
-        UI.setAttribute(string.lower(playercolor) .. "_and_latinum",     "text",   getObjectFromGUID(playercolor == "Blue" and "39e892" or "c2bac2").getVar('val'))
-        UI.setAttribute(string.lower(playercolor) .. "_and_dilithium",   "text",   getObjectFromGUID(playercolor == "Blue" and "a3ec59" or "f40879").getVar('val'))
-        UI.setAttribute(string.lower(playercolor) .. "_and_research",    "text",   getObjectFromGUID(playercolor == "Blue" and "8317bd" or "c5021e").getVar('val'))
-        UI.setAttribute(string.lower(playercolor) .. "_and_influence",   "text",   getObjectFromGUID(playercolor == "Blue" and "9b4f79" or "f3c9be").getVar('val'))
-        UI.setAttribute(string.lower(playercolor) .. "_and_military",    "text",   getObjectFromGUID(playercolor == "Blue" and "9a7130" or "5564b6").getVar('val'))
-        UI.setAttribute(i == 1 and "ui_hide_blue" or "ui_hide_red", "active", "true")
+      elseif captainName == "Shran" then
+        UI.setAttribute(playerColor == "Blue" and "blue_andorian_panel" or "red_andorian_panel", "active", "true")
+        UI.setAttribute(playerColor == "Blue" and "blue_and_glory" or "red_and_glory", "text", gloryVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_and_latinum" or "red_and_latinum", "text", latinumVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_and_dilithium" or "red_and_dilithium", "text", dilithiumVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_and_influence" or "red_and_influence", "text", influenceVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_and_military" or "red_and_military", "text", militaryVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_and_research" or "red_and_research", "text", researchVal)
 
-      elseif captain_name == "Sela" then
-        UI.setAttribute(string.lower(playercolor) .. "_romulan_panel",  "active", "true")
-        UI.setAttribute(string.lower(playercolor) .. "_rom_glory",      "text",   getObjectFromGUID(playercolor == "Blue" and "d96ce2" or "9a5066").getVar('val'))
-        UI.setAttribute(string.lower(playercolor) .. "_rom_latinum",    "text",   getObjectFromGUID(playercolor == "Blue" and "39e892" or "c2bac2").getVar('val'))
-        UI.setAttribute(string.lower(playercolor) .. "_rom_dilithium",  "text",   getObjectFromGUID(playercolor == "Blue" and "a3ec59" or "f40879").getVar('val'))
-        UI.setAttribute(string.lower(playercolor) .. "_rom_research",   "text",   getObjectFromGUID(playercolor == "Blue" and "8317bd" or "c5021e").getVar('val'))
-        UI.setAttribute(string.lower(playercolor) .. "_rom_influence",  "text",   getObjectFromGUID(playercolor == "Blue" and "9b4f79" or "f3c9be").getVar('val'))
-        UI.setAttribute(string.lower(playercolor) .. "_rom_military",   "text",   getObjectFromGUID(playercolor == "Blue" and "9a7130" or "5564b6").getVar('val'))
-        UI.setAttribute(i == 1 and "ui_hide_blue" or "ui_hide_red", "active", "true")
+      elseif captainName == "Sela" then
+        UI.setAttribute(playerColor == "Blue" and "blue_romulan_panel" or "red_romulan_panel", "active", "true")
+        UI.setAttribute(playerColor == "Blue" and "blue_rom_glory" or "red_rom_glory", "text", gloryVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_rom_latinum" or "red_rom_latinum", "text", latinumVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_rom_dilithium" or "red_rom_dilithium", "text", dilithiumVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_rom_influence" or "red_rom_influence", "text", influenceVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_rom_military" or "red_rom_military", "text", militaryVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_rom_research" or "red_rom_research", "text", researchVal)
 
-      elseif captain_name == "Koloth" then
-        UI.setAttribute(string.lower(playercolor) .. "_klingon_panel", "active", "true")
-        UI.setAttribute(string.lower(playercolor) .. "_kli_glory",     "text",   getObjectFromGUID(playercolor == "Blue" and "d96ce2" or "9a5066").getVar('val'))
-        UI.setAttribute(string.lower(playercolor) .. "_kli_latinum",   "text",   getObjectFromGUID(playercolor == "Blue" and "39e892" or "c2bac2").getVar('val'))
-        UI.setAttribute(string.lower(playercolor) .. "_kli_dilithium", "text",   getObjectFromGUID(playercolor == "Blue" and "a3ec59" or "f40879").getVar('val'))
-        UI.setAttribute(string.lower(playercolor) .. "_kli_research",  "text",   getObjectFromGUID(playercolor == "Blue" and "8317bd" or "c5021e").getVar('val'))
-        UI.setAttribute(string.lower(playercolor) .. "_kli_influence", "text",   getObjectFromGUID(playercolor == "Blue" and "9b4f79" or "f3c9be").getVar('val'))
-        UI.setAttribute(i == 1 and "ui_hide_blue" or "ui_hide_red", "active", "true")
+      elseif captainName == "Koloth" then
+        UI.setAttribute(playerColor == "Blue" and "blue_klingon_panel" or "red_klingon_panel", "active", "true")
+        UI.setAttribute(playerColor == "Blue" and "blue_kli_glory" or "red_kli_glory", "text", gloryVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_kli_latinum" or "red_kli_latinum", "text", latinumVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_kli_dilithium" or "red_kli_dilithium", "text", dilithiumVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_kli_influence" or "red_kli_influence", "text", influenceVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_kli_military" or "red_kli_military", "text", militaryVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_kli_research" or "red_kli_research", "text", researchVal)
+
+      elseif captainName == "Khan" then
+        UI.setAttribute(playerColor == "Blue" and "blue_khan_panel" or "red_khan_panel", "active", "true")
+        UI.setAttribute(playerColor == "Blue" and "blue_kha_glory" or "red_kha_glory", "text", gloryVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_kha_latinum" or "red_kha_latinum", "text", latinumVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_kha_dilithium" or "red_kha_dilithium", "text", dilithiumVal)
+
+      elseif captainName == "Rebner" then
+        UI.setAttribute(playerColor == "Blue" and "blue_pakled_panel" or "red_pakled_panel", "active", "true")
+        UI.setAttribute(playerColor == "Blue" and "blue_pak_glory" or "red_pak_glory", "text", gloryVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_pak_latinum" or "red_pak_latinum", "text", latinumVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_pak_dilithium" or "red_pak_dilithium", "text", dilithiumVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_pak_influence" or "red_pak_influence", "text", influenceVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_pak_military" or "red_pak_military", "text", militaryVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_pak_research" or "red_pak_research", "text", researchVal)
+
+      elseif captainName == "Soval" then
+        UI.setAttribute(playerColor == "Blue" and "blue_vulcan_panel" or "red_vulcan_panel", "active", "true")
+        UI.setAttribute(playerColor == "Blue" and "blue_vul_glory" or "red_vul_glory", "text", gloryVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_vul_latinum" or "red_vul_latinum", "text", latinumVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_vul_dilithium" or "red_vul_dilithium", "text", dilithiumVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_vul_influence" or "red_vul_influence", "text", influenceVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_vul_military" or "red_vul_military", "text", militaryVal)
+        UI.setAttribute(playerColor == "Blue" and "blue_vul_research" or "red_vul_research", "text", researchVal)
       end
+
+      UI.show(playerColor == "Blue" and "ui_hide_blue" or "ui_hide_red")
 
     end)
 
     -- show solo control buttons
-    if is_solo then
+    if isBot then
       UI.setAttribute("bot_controls", "active", "true")
       UI.setAttribute('bot_discard', 'active', 'true')
       UI.setAttribute('bot_discard_x3', 'active', 'true')
       UI.setAttribute('bot_log', 'active', 'true')
       UI.setAttribute('bot_incident', 'active', 'true')
 
-      if getObjectFromGUID("e28824").getGMNotes() == "Control" then
+      local buttonNextAction = getObjectbyName("Button Next Bot Action")
+      if buttonNextAction.getGMNotes() == "Control" then
         UI.setAttribute('end_player_turn', 'active', 'true')
-      elseif getObjectFromGUID("e28824").getGMNotes() == "Action" then
+      elseif buttonNextAction.getGMNotes() == "Action" then
         UI.setAttribute('bot_next_action_action', 'active', 'true')
-      elseif getObjectFromGUID("e28824").getGMNotes() == "Cleanup" then
+      elseif buttonNextAction.getGMNotes() == "Cleanup" then
         UI.setAttribute('bot_next_action_cleanup', 'active', 'true')
       end
     end

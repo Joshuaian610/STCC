@@ -142,10 +142,10 @@ function onObjectSpawn(obj)
     initButtonPullActionToken(obj)
   end
 
-  -- handle creation of player area dilithium counters
-  -- if obj.getName():find("Dilithium Counter Blue") and not obj.getName():find("Inert") then
-  --   obj.call("doInitCounterDilithium")
-  -- end
+  -- handle creation of Report Resupply buttons
+  if obj.getName() == "Button Report Resupply" then
+    initButtonReportResupply(obj)
+  end
 end
 
 

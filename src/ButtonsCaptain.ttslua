@@ -7,6 +7,7 @@
 
 
 function initButtonReportResupply(buttonObj)
+  local playerColor = buttonObj.getGMNotes()
   buttonObj.clearButtons()
   buttonObj.createButton({
     click_function = "reportResupply",
@@ -18,7 +19,7 @@ function initButtonReportResupply(buttonObj)
     scale          = {2.3, 2.3, 2.3},
     color          = {1, 1, 1, .3},
     hover_color    = {1, 1, 1, .6},
-    tooltip        = "Clicking this button will report all currently in play Resupply Step cards for the " .. playerarea_color .. " player.\n\nRight clicking will momentarily highlight Resupply Step cards in play without broadcasting.",
+    tooltip        = "Clicking this button will report all currently in play Resupply Step cards for the " .. playerColor .. " player.\n\nRight clicking will momentarily highlight Resupply Step cards in play without broadcasting.",
   })
 end
 
@@ -46,6 +47,43 @@ function reportResupply(buttonObj, _, altClick)
     getObjectbyNameAndNotes("Zone Captain", playerColor),
     getObjectbyNameAndNotes("Zone Duty Officer", playerColor),
   }
-  
 
+  -- gather resupply cards, highlight for 5 seconds
+  local resupplyCards = {}
+  for i = 1, 4 do
+    for _, zoneObj in pairs(checkZones[i].getObjects()) do
+      if zoneObj.hasTag("resupply") then
+        table.insert(resupplyCards, zoneObj)
+
+        -- briefly highlight found resupply card, 5 seconds
+        if zoneObj then
+          zoneObj.highlightOn(playerColor)
+        end
+        Wait.time(function()
+
+          if zoneObj then
+            zoneObj.highlightOff()
+          end
+
+         end, 5)
+      end
+    end
+  end
+
+  -- broadcast if not right clicked (altClick will only highlight)
+  if not altClick and #resupplyCards > 0 then
+    local playerStr = getPlayerStr(playerColor)
+    local headlineStr = string.format("%s - Current in play Resupply Step Cards:", playerStr)
+    local bulletStr = string.format("[%s]* [-]", Color.fromString(playerColor):toHex())
+    broadcastToAll(headlineStr, "White")
+    Wait.time(function()
+
+      for i = 1, #resupplyCards do
+        local cardName = resupplyCards[i].getName()
+        local listStr = string.format("%s %s", bulletStr, cardName)
+        broadcastToAll(listStr, "White")
+      end
+
+    end, 0.5)
+  end
 end

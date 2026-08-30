@@ -268,7 +268,7 @@ function setupCaptain(button, _, _)
   placeCaptainCard(captainName, playerColor, isBot)
 
   -- place nonstandard cards/decks 
-  ---- checkisBot to perform deploy card actions before placing to top of deck ie: sisko
+  ---- checkIsBot to perform deploy card actions before placing to top of deck ie: sisko
   -- deployeds
   ---- if ship, place deployed figurine, color/add tag to highlight
   ---- if isBot, figurine to space dock instead of card
@@ -1656,7 +1656,7 @@ function finalizeCaptainSetup()
     end
   end
 
-  local soloInGame = checkisBot()
+  local soloInGame = checkIsBot()
   -- randomize first player, will overwrite to human color if soloInGame
   local sides = { "Blue", "Red" }
   local firstPlayerColor = sides[math.random(1, 2)]

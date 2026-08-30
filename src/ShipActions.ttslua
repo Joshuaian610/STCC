@@ -199,8 +199,6 @@ end
 function dismissShipFromCard(_, value, _)
   local cardObj = getObjectFromGUID(value)
 
-  log("running dismissShipFromCard() on" .. cardObj.getName())
-
   local shipName = cardObj.getName()
   local shipObj = nil
   for _, object in pairs(getObjects()) do
