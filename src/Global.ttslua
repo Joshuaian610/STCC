@@ -142,9 +142,9 @@ function onObjectSpawn(obj)
     initButtonPullActionToken(obj)
   end
 
-  -- handle creation of Report Resupply buttons
-  if obj.getName() == "Button Report Resupply" then
-    initButtonReportResupply(obj)
+  -- handle creation of Report Resupply or Report Cleanup buttons
+  if obj.getName() == "Button Report Resupply" or obj.getName() == "Button Report Cleanup" then
+    initButtonReportResupplyCleanup(obj)
   end
 end
 

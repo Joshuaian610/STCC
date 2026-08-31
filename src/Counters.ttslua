@@ -35,8 +35,8 @@ function onLoad(savedData)
       initCounterLatinum(self)
     elseif counterType == "Glory" then
       initCounterPlayerGlory(self)
-    elseif counterType == "Stardate Glory" and pos.x > 0 then
-      initCounterStardateGlory(self)
+    -- elseif counterType == "Stardate Glory" and pos.y > 0 then
+    --   Global.call("showStardateGloryCounter")
     elseif counterType == "Focus" then
       initCounterFocus(self)
       maxVal = 15
@@ -275,6 +275,12 @@ function updateVal(newVal)
   newVal = tonumber(newVal)
   if not newVal then return end
 
+  minVal = minVal or 0
+  maxVal = maxVal or 999
+  if self.getName() == "Glory Counter Stardate" then
+    maxVal = 7
+  end
+
   val = math.max(minVal, math.min(maxVal, newVal))
 
   local uiElement = (self.getName():find("Dilithium") and not self.getName():find("Inert")) and "dilithiumCounter" or
@@ -288,30 +294,40 @@ function updateVal(newVal)
                       (self.getName():find("Glory") and self.getName():find("Stardate")) and "Stardate Glory" or
                       (self.getName():find("Research") or self.getName():find("Influence") or self.getName():find("Military")) and "Focus"
 
-  self.UI.setAttribute(uiElement, "text", tostring(val))
-  local fontSizes = {
-    ["Dilithium"]      = (val < 10 and "130") or
-                         ((val > 9 and val < 100) and "120") or
-                         (val > 99 and "110"),
-    ["Latinum"]        = (val < 10 and "325") or
-                         ((val > 9 and val < 100) and "305") or
-                         (val > 99 and "285"),
-    ["Glory"]          = (val < 10 and "160") or
-                         ((val > 9 and val < 100) and "150") or
-                         (val > 99 and "140"),
-    ["Stardate Glory"] = (val < 10 and "160") or
-                         ((val > 9 and val < 100) and "150") or
-                         (val > 99 and "140"),
-    ["Focus"]          = (val < 10 and "90") or
-                         ((val > 9 and val < 100) and "80") or
-                         (val > 99 and "70"),
-  }
-  local fontSize = fontSizes[counterType]
-  self.UI.setAttribute(uiElement, "fontSize", fontSize)
-  local textColor = "#FFFFFF"
-  self.UI.setAttribute(uiElement, "textColor", textColor)
+  local objXML = self.UI.getXmlTable()
+  if #objXML == 0 then return end
 
-  updateSave()
+  Wait.time(function()
+
+    self.UI.setAttribute(uiElement, "text", tostring(val))
+
+    local fontSizes = {
+      ["Dilithium"]      = (val < 10 and "130") or
+                          ((val > 9 and val < 100) and "120") or
+                          (val > 99 and "110"),
+      ["Latinum"]        = (val < 10 and "325") or
+                          ((val > 9 and val < 100) and "305") or
+                          (val > 99 and "285"),
+      ["Glory"]          = (val < 10 and "160") or
+                          ((val > 9 and val < 100) and "150") or
+                          (val > 99 and "140"),
+      ["Stardate Glory"] = (val < 10 and "160") or
+                          ((val > 9 and val < 100) and "150") or
+                          (val > 99 and "140"),
+      ["Focus"]          = (val < 10 and "90") or
+                          ((val > 9 and val < 100) and "80") or
+                          (val > 99 and "70"),
+    }
+
+    local fontSize = fontSizes[counterType]
+
+    self.UI.setAttribute(uiElement, "fontSize", fontSize)
+    local textColor = "#FFFFFF"
+    self.UI.setAttribute(uiElement, "textColor", textColor)
+
+    updateSave()
+
+  end, 0.5)
 end
 
 
@@ -455,6 +471,13 @@ function setValue(newVal)
   newVal = tonumber(newVal)
   if not newVal then return end
 
+  val = tonumber(val) or 0
+  minVal = tonumber(minVal) or 0
+  maxVal = tonumber(maxVal) or 999
+  if self.getName() == "Glory Counter Stardate" then
+    maxVal = 7
+  end
+
   val = math.max(minVal, math.min(maxVal, newVal))
 
   local uiElement = (self.getName():find("Dilithium") and not self.getName():find("Inert")) and "dilithiumCounter" or
@@ -468,7 +491,11 @@ function setValue(newVal)
                       (self.getName():find("Glory") and self.getName():find("Stardate")) and "Stardate Glory" or
                       (self.getName():find("Research") or self.getName():find("Influence") or self.getName():find("Military")) and "Focus"
 
+  local currentXML = self.UI.getXmlTable()
+  if #objXML == 0 then return end
+
   self.UI.setAttribute(uiElement, "text", tostring(val))
+
   local fontSizes = {
     ["Dilithium"]      = (val < 10 and "130") or
                          ((val > 9 and val < 100) and "120") or

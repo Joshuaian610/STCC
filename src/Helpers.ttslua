@@ -161,8 +161,9 @@ function animateButton(buttonObj)
     elseif buttonObj.getName() == "Button Pull Action Token" then
       initButtonPullActionToken(buttonObj)
 
-    elseif buttonObj.getName() == "Button Report Resupply" then
-      initButtonReportResupply(buttonObj)
+    elseif buttonObj.getName() == "Button Report Resupply" or
+           buttonObj.getName() == "Button Report Cleanup" then
+      initButtonReportResupplyCleanup(buttonObj)
     end
 
   end, .2)

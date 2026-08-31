@@ -1,123 +1,123 @@
-function onLoad()
-    local create_buttons = false
-    local zones          = {getObjectFromGUID("75465f"), getObjectFromGUID("75c041")}
-    for i = 1, 2 do
-        for _, object in pairs(zones[i].getObjects()) do
-            if object   == self then create_buttons = true end
-        end
-    end
-    local is_solo        = false
-    for _, object in pairs(getObjectFromGUID("75465f").getObjects()) do
-        if (object  == self and getObjectFromGUID("23bed4").getGMNotes() == "solo") or
-        (object  == self and getObjectFromGUID("1a78a6").getGMNotes() == "solo") then
-            is_solo = true
-        end
-    end
-    if create_buttons and not is_solo then
-        if self.hasTag('mission_basic_completed') then
-            create_completed_mission_button()
-            self.UI.show('completed_mission')
-        else
-            create_uncompleted_mission_button()
-            self.UI.hide('completed_mission')
-        end
-    end
-end -- end onLoad()
+-- function onLoad()
+--     local create_buttons = false
+--     local zones          = {getObjectFromGUID("75465f"), getObjectFromGUID("75c041")}
+--     for i = 1, 2 do
+--         for _, object in pairs(zones[i].getObjects()) do
+--             if object   == self then create_buttons = true end
+--         end
+--     end
+--     local is_solo        = false
+--     for _, object in pairs(getObjectFromGUID("75465f").getObjects()) do
+--         if (object  == self and getObjectFromGUID("23bed4").getGMNotes() == "solo") or
+--         (object  == self and getObjectFromGUID("1a78a6").getGMNotes() == "solo") then
+--             is_solo = true
+--         end
+--     end
+--     if create_buttons and not is_solo then
+--         if self.hasTag('mission_basic_completed') then
+--             create_completed_mission_button()
+--             self.UI.show('completed_mission')
+--         else
+--             create_uncompleted_mission_button()
+--             self.UI.hide('completed_mission')
+--         end
+--     end
+-- end -- end onLoad()
 
 
-function get_color()
-    local color     = nil
-    local h_color   = nil
-    local s_color   = nil
-    for _, object in pairs(getObjectFromGUID("75465f").getObjects()) do
-        if object  == self then
-            color   = {31/255, 136/255, 255/255, .7}
-            h_color = {31/255, 136/255, 255/255, .5}
-            s_color = "Blue"
-        end
-    end
-    for _, object in pairs(getObjectFromGUID("75c041").getObjects()) do
-        if object  == self then
-            color   = {219/255, 26/255, 24/255, .7}
-            h_color = {219/255, 26/255, 24/255, .5}
-            s_color = "Red"
-        end
-    end
-    return color, h_color, s_color
-end -- end get_color()
+-- function get_color()
+--     local color     = nil
+--     local h_color   = nil
+--     local s_color   = nil
+--     for _, object in pairs(getObjectFromGUID("75465f").getObjects()) do
+--         if object  == self then
+--             color   = {31/255, 136/255, 255/255, .7}
+--             h_color = {31/255, 136/255, 255/255, .5}
+--             s_color = "Blue"
+--         end
+--     end
+--     for _, object in pairs(getObjectFromGUID("75c041").getObjects()) do
+--         if object  == self then
+--             color   = {219/255, 26/255, 24/255, .7}
+--             h_color = {219/255, 26/255, 24/255, .5}
+--             s_color = "Red"
+--         end
+--     end
+--     return color, h_color, s_color
+-- end -- end get_color()
 
 
-function refresh_buttons()
-    self.clearButtons()
-    Wait.time(function()
-    if self.hasTag('mission_basic_completed') then
-        create_completed_mission_button()
-        self.UI.show('completed_mission')
-    else
-        create_uncompleted_mission_button()
-        self.UI.hide('completed_mission')
-    end
-    end, .1)
-end -- end refresh_buttons()
+-- function refresh_buttons()
+--     self.clearButtons()
+--     Wait.time(function()
+--     if self.hasTag('mission_basic_completed') then
+--         create_completed_mission_button()
+--         self.UI.show('completed_mission')
+--     else
+--         create_uncompleted_mission_button()
+--         self.UI.hide('completed_mission')
+--     end
+--     end, .1)
+-- end -- end refresh_buttons()
 
 
-function create_uncompleted_mission_button()
-    local color, h_color, _ = get_color()
-    self.createButton({
-        click_function = "check_mission_complete",
-        function_owner = self,
-        label          = "",
-        position       = {0.167, 0.00, -0.80},
-        rotation       = {0, 0, 180},
-        width          = 1675,
-        height         = 50,
-        scale          = {.3, .3, .3},
-        color          = color,
-        hover_color    = h_color,
-        tooltip        = "Take your reward, then click this button to mark this Captain Goal as Completed.",
-    })
-end -- end create_uncompleted_mission_button()
+-- function create_uncompleted_mission_button()
+--     local color, h_color, _ = get_color()
+--     self.createButton({
+--         click_function = "check_mission_complete",
+--         function_owner = self,
+--         label          = "",
+--         position       = {0.167, 0.00, -0.80},
+--         rotation       = {0, 0, 180},
+--         width          = 1675,
+--         height         = 50,
+--         scale          = {.3, .3, .3},
+--         color          = color,
+--         hover_color    = h_color,
+--         tooltip        = "Take your reward, then click this button to mark this Captain Goal as Completed.",
+--     })
+-- end -- end create_uncompleted_mission_button()
 
-function create_completed_mission_button()
-    self.createButton({
-        click_function = "uncheck_mission_complete",
-        function_owner = self,
-        label          = "",
-        position       = {0.167, 0.00, -0.80},
-        rotation       = {0, 0, 180},
-        width          = 1675,
-        height         = 50,
-        scale          = {.3, .3, .3},
-        color          = {1, 1, 1, .2},
-        hover_color    = {1, 1, 1, .6},
-        tooltip        = "Click this button to mark this Captain Mission as Uncompleted.",
-    })
-end -- end create_completed_mission_button()
-
-
-function check_mission_complete()
-    self.addTag('mission_basic_completed')
-    refresh_buttons()
-    broadcast_goal("Completed")
-end -- end check_mission_complete()
+-- function create_completed_mission_button()
+--     self.createButton({
+--         click_function = "uncheck_mission_complete",
+--         function_owner = self,
+--         label          = "",
+--         position       = {0.167, 0.00, -0.80},
+--         rotation       = {0, 0, 180},
+--         width          = 1675,
+--         height         = 50,
+--         scale          = {.3, .3, .3},
+--         color          = {1, 1, 1, .2},
+--         hover_color    = {1, 1, 1, .6},
+--         tooltip        = "Click this button to mark this Captain Mission as Uncompleted.",
+--     })
+-- end -- end create_completed_mission_button()
 
 
-function uncheck_mission_complete()
-    self.removeTag('mission_basic_completed')
-    refresh_buttons()
-    broadcast_goal("Uncompleted")
-end -- end uncheck_mission_complete()
+-- function check_mission_complete()
+--     self.addTag('mission_basic_completed')
+--     refresh_buttons()
+--     broadcast_goal("Completed")
+-- end -- end check_mission_complete()
 
 
-function broadcast_goal(type) -- type: "Completed", "Uncompleted"
-    local captain   = "Sisko"
-    local goal_name = "A Call To Arms"
-    local _, _, s_color = get_color()
-    if s_color ~= nil then
-        if Player[s_color].steam_name ~= nil then
-            broadcastToAll("[" .. Color.fromString(s_color):toHex() .. "]" .. Player[s_color].steam_name .. "[-] marked Captain " .. captain .. " Goal; " .. goal_name .. ": " .. type, "White")
-        else
-            broadcastToAll("[" .. Color.fromString(s_color):toHex() .. "]" .. s_color .. " Player[-] has marked Captain " .. captain .. " Goal; " .. goal_name .. ": " .. type, "White")
-        end
-    end
-end -- end broadcast_completed_goal()
+-- function uncheck_mission_complete()
+--     self.removeTag('mission_basic_completed')
+--     refresh_buttons()
+--     broadcast_goal("Uncompleted")
+-- end -- end uncheck_mission_complete()
+
+
+-- function broadcast_goal(type) -- type: "Completed", "Uncompleted"
+--     local captain   = "Sisko"
+--     local goal_name = "A Call To Arms"
+--     local _, _, s_color = get_color()
+--     if s_color ~= nil then
+--         if Player[s_color].steam_name ~= nil then
+--             broadcastToAll("[" .. Color.fromString(s_color):toHex() .. "]" .. Player[s_color].steam_name .. "[-] marked Captain " .. captain .. " Goal; " .. goal_name .. ": " .. type, "White")
+--         else
+--             broadcastToAll("[" .. Color.fromString(s_color):toHex() .. "]" .. s_color .. " Player[-] has marked Captain " .. captain .. " Goal; " .. goal_name .. ": " .. type, "White")
+--         end
+--     end
+-- end -- end broadcast_completed_goal()
