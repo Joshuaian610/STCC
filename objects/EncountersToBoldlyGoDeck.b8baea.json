@@ -22,7 +22,7 @@
   ],
   "ContainedObjects_path": "EncountersToBoldlyGoDeck.b8baea",
   "CustomDeck": {
-    "193": {
+    "577": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
       "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13119371198597679616/8407ECB6E3075E7657ADE53C6753CD7C488D30E2/",
@@ -33,14 +33,14 @@
     }
   },
   "DeckIDs": [
-    19307,
-    19306,
-    19305,
-    19304,
-    19303,
-    19302,
-    19301,
-    19300
+    57707,
+    57706,
+    57705,
+    57704,
+    57703,
+    57702,
+    57701,
+    57700
   ],
   "Description": "",
   "DragSelectable": true,

@@ -492,7 +492,7 @@ function setValue(newVal)
                       (self.getName():find("Research") or self.getName():find("Influence") or self.getName():find("Military")) and "Focus"
 
   local currentXML = self.UI.getXmlTable()
-  if #objXML == 0 then return end
+  if #currentXML == 0 then return end
 
   self.UI.setAttribute(uiElement, "text", tostring(val))
 

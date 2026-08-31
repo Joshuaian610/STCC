@@ -257,12 +257,12 @@
       "normalized": "trait_ferengi"
     },
     {
-      "displayed": "skill_diplomacy",
-      "normalized": "skill_diplomacy"
+      "displayed": "skill_influence",
+      "normalized": "skill_influence"
     },
     {
-      "displayed": "skill_science",
-      "normalized": "skill_science"
+      "displayed": "skill_research",
+      "normalized": "skill_research"
     },
     {
       "displayed": "skill_military",
@@ -321,8 +321,8 @@
       "normalized": "skill_wildcard"
     },
     {
-      "displayed": "skill_x2_diplomacy",
-      "normalized": "skill_x2_diplomacy"
+      "displayed": "skill_x2_influence",
+      "normalized": "skill_x2_influence"
     },
     {
       "displayed": "trait_tellarite",
@@ -337,8 +337,8 @@
       "normalized": "refresh_destruct_red"
     },
     {
-      "displayed": "skill_x3_diplomacy",
-      "normalized": "skill_x3_diplomacy"
+      "displayed": "skill_x3_influence",
+      "normalized": "skill_x3_influence"
     },
     {
       "displayed": "trait_surprise",
@@ -433,8 +433,8 @@
       "normalized": "trait_communicator"
     },
     {
-      "displayed": "skill_x2_science",
-      "normalized": "skill_x2_science"
+      "displayed": "skill_x2_research",
+      "normalized": "skill_x2_research"
     }
   ]
 }

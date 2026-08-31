@@ -42,8 +42,8 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "skill_diplomacy",
-    "skill_science",
+    "skill_influence",
+    "skill_research",
     "snap_card",
     "suit_location",
     "trait_anomaly"

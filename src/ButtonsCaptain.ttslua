@@ -26,9 +26,32 @@ function initButtonReportResupplyCleanup(buttonObj)
 end
 
 
-
-
-
+function initButtonReportCurrentTraits(buttonObj)
+  local playerColor = buttonObj.getGMNotes()
+  local buttonName = buttonObj.getName()
+  local buttonType = (buttonName:find("Skills") and "Skills") or
+                     (buttonName:find("Suits") and "Suits") or
+                     (buttonName:find("Species") and "Species") or
+                     (buttonName:find("Regular") and "Regular") or
+                     (buttonName:find("Other") and "Other") or "None"
+  local typeStr = (buttonType == "Skills" and "Skill Icons") or
+                  (buttonType == "Suits" and "Card Suits") or
+                  string.format("'%s' Traits", buttonType)
+  local tooltip = string.format("Clicking this button will report all currently in play %s for the %s player.", typeStr, playerColor)
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "reportTraits",
+    function_owner = self,
+    label          = "",
+    position       = {0, 0.36, -0.01},
+    width          = 865,
+    height         = 435,
+    scale          = {2.3, 2.3, 2.3},
+    color          = {1, 1, 1, .3},
+    hover_color    = {1, 1, 1, .6},
+    tooltip        = tooltip,
+  })
+end
 
 
 
@@ -93,4 +116,258 @@ function reportResupplyCleanup(buttonObj, _, altClick)
 
     end, 0.5)
   end
+end
+
+
+function reportTraits(buttonObj, _, _)
+  -- wrapper that handles the report of any in play cards for skill icons, suits, and traits
+
+  animateButton(buttonObj)
+
+  local playerColor = buttonObj.getGMNotes()
+  local buttonName = buttonObj.getName()
+  local buttonType = (buttonName:find("Skills") and "Skills") or
+                     (buttonName:find("Suits") and "Suits") or
+                     (buttonName:find("Species") and "Species") or
+                     (buttonName:find("Regular") and "Regular") or
+                     (buttonName:find("Other") and "Other") or "None"
+  if buttonType == "Skills" then
+    reportCurrentSkills(playerColor)
+  elseif buttonType == "Suits" then
+    reportCurrentSuits(playerColor)
+  elseif buttonType == "Species" or buttonType == "Regular" or buttonType == "Other" then
+    reportCurrentTraits(playerColor, buttonType)
+  end
+end
+
+
+function reportCurrentSkills(playerColor)
+  -- handles the reporting of current skill icon count for playerColor
+
+  local inPlaySkillIcons = {
+    influence = 0,
+    military  = 0,
+    research  = 0,
+    wildcard  = 0,
+  }
+  local inPlaySkillCards = {
+    influence = {},
+    military  = {},
+    research = {},
+    wildcard = {},
+  }
+  local nivarTraits = {
+    vulcan     = 0,
+    ambassador = 0,
+    romulan    = 0,
+  }
+  local checkZones = {
+    getObjectbyNameAndNotes("Zone Captain", playerColor),
+    getObjectbyNameAndNotes("Zone In Play", playerColor),
+    getObjectbyNameAndNotes("Zone Deploy Ship", playerColor),
+    getObjectbyNameAndNotes("Zone Deploy Location", playerColor),
+    getObjectbyNameAndNotes("Zone Duty Officer", playerColor),
+  }
+
+  for i = 1, #checkZones do
+    -- check i zone for in play skill icons
+    for _, zoneObj in pairs(checkZones[i].getObjects()) do
+      for k, _ in pairs(inPlaySkillIcons) do
+        if zoneObj.hasTag("skill_" .. k) then
+          inPlaySkillIcons[k] = inPlaySkillIcons[k] + 1
+          table.insert(inPlaySkillCards[k], zoneObj.getName() .. ": 1")
+        elseif zoneObj.hasTag("skill_x2_" .. k) then
+          inPlaySkillIcons[k] = inPlaySkillIcons[k] + 2
+          table.insert(inPlaySkillCards[k], zoneObj.getName() .. ": 2")
+        elseif zoneObj.hasTag("skill_x3_" .. k) then
+          inPlaySkillIcons[k] = inPlaySkillIcons[k] + 3
+          table.insert(inPlaySkillCards[k], zoneObj.getName() .. ": 3")
+        end
+      end
+
+      -- check i zone for in play ni'var match traits
+      for k, _ in pairs(nivarTraits) do
+        if zoneObj.hasTag("trait_" .. k) then
+          nivarTraits[k] = nivarTraits[k] + 1
+        end
+      end
+    end
+  end
+
+  -- check beam bags
+  local checkBeamBagObjs = {}
+  for _, obj in pairs(getObjects()) do
+    if obj.getName() == "Beamed Cards" and obj.getGMNotes() == playerColor then
+      table.insert(checkBeamBagObjs, obj)
+    end
+  end
+
+  local beamedSkillIcons = {
+    influence = 0,
+    military  = 0,
+    research  = 0,
+    wildcard  = 0,
+  }
+
+  if #checkBeamBagObjs > 0 then
+    for i = 1, #checkBeamBagObjs do
+      local checkBag = checkBeamBagObjs[i]
+
+      for _, bagObj in pairs(checkBag.getObjects()) do
+        for k, _ in pairs(beamedSkillIcons) do
+          for _, tag in pairs(bagObj.tags) do
+            if tag == "skill_" .. k then
+              beamedSkillIcons[k] = beamedSkillIcons[k] + 1
+              table.insert(inPlaySkillCards[k], bagObj.name .. ": 1")
+            end
+
+            if tag == "skill_x2_" .. k then
+              beamedSkillIcons[k] = beamedSkillIcons[k] + 2
+              table.insert(inPlaySkillCards[k], bagObj.name .. ": 2")
+            end
+
+            if tag == "skill_x3_" .. k then
+              beamedSkillIcons[k] = beamedSkillIcons[k] + 3
+              table.insert(inPlaySkillCards[k], bagObj.name .. ": 3")
+            end
+          end
+        end
+      end
+    end
+  end
+
+  -- make total count, including handling all the special cases
+  local skillIcons = {
+    influence = 0,
+    military  = 0,
+    research  = 0,
+    wildcard  = 0,
+  }
+
+  for k, v in pairs(skillIcons) do
+    skillIcons[k] = inPlaySkillIcons[k] + beamedSkillIcons[k]
+  end
+
+  -- check if ni'var is currently in play
+  local nivarInPlay = false
+  for i = 1, #checkZones do
+    for _, zoneObj in pairs(checkZones[i].getObjects()) do
+      if zoneObj.getName() == "Ni'var" then
+        nivarInPlay = true
+        break
+      end
+
+      if nivarInPlay then
+        break
+      end
+    end
+  end
+
+  if nivarInPlay then
+    if nivarTraits["vulcan"] > 0 then
+      skillIcons["research"] = skillIcons["research"] + nivarTraits["vulcan"]
+      table.insert(inPlaySkillCards["research"], "Ni'var: " .. nivarTraits["vulcan"])
+    end
+
+    if nivarTraits["ambassador"] > 0 then
+      skillIcons["influence"] = skillIcons["influence"] + nivarTraits["ambassador"]
+      table.insert(inPlaySkillCards["influence"], "Ni'var: " .. nivarTraits["ambassador"])
+    end
+
+    if nivarTraits["romulan"] > 0 then
+      skillIcons["military"] = skillIcons["military"] + nivarTraits["romulan"]
+      table.insert(inPlaySkillCards["military"], "Ni'var: " .. nivarTraits["romulan"])
+    end
+  end
+
+  -- check if keyla detmer (burnham deck) is currently in DO slot
+  local checkZoneDO = getObjectbyNameAndNotes("Zone Duty Officer", playerColor)
+
+  for _, zoneObj in pairs(checkZoneDO.getObjects()) do
+    if zoneObj.getName() == "Keyla Detmer" then
+      skillIcons["wildcard"] = skillIcons["wildcard"] + 2
+      table.insert(inPlaySkillCards["wildcard"], "Keyla Detmer: 2")
+    end
+  end
+
+  -- put the broadcast together
+  local traitsFound = false
+  for k, v in pairs(skillIcons) do
+    if v > 0 then
+      traitsFound = true
+    end
+  end
+
+  local function rgbToHex(color)
+    local r = math.floor(color[1] * 255)
+    local g = math.floor(color[2] * 255)
+    local b = math.floor(color[3] * 255)
+
+    return string.format("%02X%02X%02X", r, g, b)
+  end
+
+  if traitsFound then
+    local playerStr = getPlayerStr(playerColor)
+    local headlineStr = string.format("%s - Current In-Play Skill Icons:", playerStr)
+    broadcastToAll(headlineStr, "White")
+
+    local reportColors = {
+      influence = { 212/255, 209/255, 41/255 },
+      military = { 193/255, 30/255, 30/255 },
+      research = { 21/255, 151/255, 196/255 },
+      wildcard = { 128/255, 0, 128/255 },
+    }
+
+    for k, v in pairs(skillIcons) do
+      if v > 0 then
+        local altText = k:sub(1, 1):upper() .. k:sub(2)
+        local reportColor = reportColors[k]
+
+        if beamedSkillIcons[k] > 0 then
+          local broadcastStr = string.format(
+            "[%s]*[-] [%s]%dx [-][%s]%s[-] - (%d Beamed, %d Not Beamed)",
+            Color.fromString(playerColor):toHex(),
+            Color.fromString("White"):toHex(),
+            v,
+            rgbToHex(reportColor),
+            altText,
+            beamedSkillIcons[k],
+            inPlaySkillIcons[k]
+          )
+          broadcastToAll(broadcastStr, "White")
+        else
+          local broadcastStr = string.format(
+            "[%s]*[-] [%s]%dx [-][%s]%s[-] - %d (Not Beamed)",
+            Color.fromString(playerColor):toHex(),
+            Color.fromString("White"):toHex(),
+            v,
+            rgbToHex(reportColor),
+            altText,
+            v
+          )
+          broadcastToAll(broadcastStr, "White")
+        end
+
+        -- show contributing card names
+        for _, line in ipairs(inPlaySkillCards[k]) do
+          local broadcastStr = string.format(
+            "    [%s]*[-] %s",
+            rgbToHex(reportColor),
+            line
+          )
+          broadcastToAll(broadcastStr, "White")
+        end
+      end
+    end
+  end
+end
+
+
+function reportCurrentSuits(playerColor)
+  -- handles the reporting of current card suit count for playerColor
+end
+
+
+function reportCurrentTraits(playerColor, buttonType)
+  -- handles the reporting of current in play buttonType traits for playerColor
 end

@@ -5,7 +5,7 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 19306,
+  "CardID": 57706,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
@@ -42,7 +42,7 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "skill_diplomacy",
+    "skill_influence",
     "snap_card",
     "suit_encounter",
     "trait_ancient",

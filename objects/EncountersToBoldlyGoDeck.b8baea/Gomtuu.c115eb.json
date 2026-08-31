@@ -5,7 +5,7 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 19301,
+  "CardID": 57701,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
@@ -42,7 +42,7 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "skill_science",
+    "skill_research",
     "snap_card",
     "suit_encounter",
     "trait_alien",

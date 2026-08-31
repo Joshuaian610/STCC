@@ -146,6 +146,11 @@ function onObjectSpawn(obj)
   if obj.getName() == "Button Report Resupply" or obj.getName() == "Button Report Cleanup" then
     initButtonReportResupplyCleanup(obj)
   end
+
+  -- handle creation of Report Skill Icons, Card Suits, and Traits buttons
+  if obj.getName():find("Button Report") and (obj.getName() ~= "Button Report Resupply" and obj.getName() ~= "Button Report Cleanup") then
+    initButtonReportCurrentTraits(obj)
+  end
 end
 
 

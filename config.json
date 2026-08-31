@@ -151,7 +151,6 @@
     "ButtonPullActionToken.093a8c",
     "ActionTokenBag.2b6501",
     "ActionTokenBag.71c9a1",
-    "ButtonPullActionToken.312718",
     "ZoneReturnIncident.c66c67",
     "ZoneReturnAlly.0cff6d",
     "ZoneReturnShip.ae6503",
@@ -483,7 +482,8 @@
     "ActionToken.916844",
     "ActionToken.bf8c02",
     "LatinumCounterRed.c2bac2",
-    "LatinumCounterBlue.39e892"
+    "LatinumCounterBlue.39e892",
+    "ButtonPullActionToken.312718"
   ],
   "PlayArea": 0.7021237,
   "PlayerCounts": [

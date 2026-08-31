@@ -164,6 +164,8 @@ function animateButton(buttonObj)
     elseif buttonObj.getName() == "Button Report Resupply" or
            buttonObj.getName() == "Button Report Cleanup" then
       initButtonReportResupplyCleanup(buttonObj)
+    elseif buttonObj.getName():find("Button Report") and (buttonObj.getName() ~= "Button Report Resupply" and buttonObj.getName() ~= "Button Report Cleanup") then
+      initButtonReportCurrentTraits(buttonObj)
     end
 
   end, .2)

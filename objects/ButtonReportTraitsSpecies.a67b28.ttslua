@@ -1,129 +1,129 @@
-playerarea_color = "Red"
-tag_type         = "'Species' Traits"
+-- playerarea_color = "Red"
+-- tag_type         = "'Species' Traits"
 
-checkzones = {
-    getObjectFromGUID("bf1e62"), -- captain
-    getObjectFromGUID("586a2e"), -- staging
-    getObjectFromGUID("5103b2"), -- ships
-    getObjectFromGUID("77d0cb"), -- locations
-    getObjectFromGUID("818a7e"), -- duty officers
-}
-
-
-checkbags = {
-    -- from top left. clockwise
-    getObjectFromGUID("7f4770"),
-    getObjectFromGUID("577602"),
-    getObjectFromGUID("82a5c5"),
-    getObjectFromGUID("4f12e8"),
-    getObjectFromGUID("351f79"),
-    getObjectFromGUID("efdbd0"),
-    getObjectFromGUID("cf1df7"),
-    getObjectFromGUID("95dff1"),
-    getObjectFromGUID("30048e"),
-    getObjectFromGUID("910a26"),
-    getObjectFromGUID("9e394f"),
-    getObjectFromGUID("392caa"),
-    getObjectFromGUID("c32b20"),
-    getObjectFromGUID("b5d6f9"),
-}
-
-function onLoad()
-    create_button()
-end -- end onLoad()
+-- checkzones = {
+--     getObjectFromGUID("bf1e62"), -- captain
+--     getObjectFromGUID("586a2e"), -- staging
+--     getObjectFromGUID("5103b2"), -- ships
+--     getObjectFromGUID("77d0cb"), -- locations
+--     getObjectFromGUID("818a7e"), -- duty officers
+-- }
 
 
-function create_button()
-    self.createButton({
-        click_function = "report_tags",
-        function_owner = self,
-        label          = "",
-        position       = {0, 0.36, -0.01},
-        width          = 865,
-        height         = 435,
-        scale          = {2.3, 2.3, 2.3},
-        color          = {1, 1, 1, .3},
-        hover_color    = {1, 1, 1, .6},
-        tooltip        = "Clicking this button will report all currently in play " .. tag_type .. " for the " .. playerarea_color .. " player.",
-    })
-end -- end create_button()
+-- checkbags = {
+--     -- from top left. clockwise
+--     getObjectFromGUID("7f4770"),
+--     getObjectFromGUID("577602"),
+--     getObjectFromGUID("82a5c5"),
+--     getObjectFromGUID("4f12e8"),
+--     getObjectFromGUID("351f79"),
+--     getObjectFromGUID("efdbd0"),
+--     getObjectFromGUID("cf1df7"),
+--     getObjectFromGUID("95dff1"),
+--     getObjectFromGUID("30048e"),
+--     getObjectFromGUID("910a26"),
+--     getObjectFromGUID("9e394f"),
+--     getObjectFromGUID("392caa"),
+--     getObjectFromGUID("c32b20"),
+--     getObjectFromGUID("b5d6f9"),
+-- }
+
+-- function onLoad()
+--     create_button()
+-- end -- end onLoad()
 
 
-function report_tags()
-    Global.call('animate_button', {button=self})
-    local species_traits = {
-        alien         = 0,
-        aenar         = 0,
-        andorian      = 0,
-        android       = 0,
-        bajoran       = 0,
-        betazoid      = 0,
-        borg          = 0,
-        breen         = 0,
-        cardassian    = 0,
-        changeling    = 0,
-        ferengi       = 0,
-        human         = 0,
-        jemhadar      = 0,
-        kelpian       = 0,
-        klingon       = 0,
-        orion         = 0,
-        pakled        = 0,
-        reman         = 0,
-        romulan       = 0,
-        synthetic     = 0,
-        tellarite     = 0,
-        transcendent  = 0,
-        trill         = 0,
-        vorta         = 0,
-        vulcan        = 0,
-        xb            = 0,
-        xindi         = 0,
-    }
-    -- check zones
-    for i = 1, 5 do
-        for _, object in pairs(checkzones[i].getObjects()) do
-            for k, _ in pairs(species_traits) do
-                if object.hasTag('trait_' .. k) then
-                    species_traits[k] = species_traits[k] + 1
-                end
-            end
-        end
-    end
-    -- check beam bags
-    for i = 1, 14 do
-        local bag_objects = checkbags[i].getObjects()
-        for _, bag_object in pairs(bag_objects) do
-            for k, _ in pairs(species_traits) do
-                for _, tag in pairs(bag_object.tags) do
-                    if tag == 'trait_' .. k then
-                        species_traits[k] = species_traits[k] + 1
-                    end
-                end
-            end
-        end
+-- function create_button()
+--     self.createButton({
+--         click_function = "report_tags",
+--         function_owner = self,
+--         label          = "",
+--         position       = {0, 0.36, -0.01},
+--         width          = 865,
+--         height         = 435,
+--         scale          = {2.3, 2.3, 2.3},
+--         color          = {1, 1, 1, .3},
+--         hover_color    = {1, 1, 1, .6},
+--         tooltip        = "Clicking this button will report all currently in play " .. tag_type .. " for the " .. playerarea_color .. " player.",
+--     })
+-- end -- end create_button()
+
+
+-- function report_tags()
+--     Global.call('animate_button', {button=self})
+--     local species_traits = {
+--         alien         = 0,
+--         aenar         = 0,
+--         andorian      = 0,
+--         android       = 0,
+--         bajoran       = 0,
+--         betazoid      = 0,
+--         borg          = 0,
+--         breen         = 0,
+--         cardassian    = 0,
+--         changeling    = 0,
+--         ferengi       = 0,
+--         human         = 0,
+--         jemhadar      = 0,
+--         kelpian       = 0,
+--         klingon       = 0,
+--         orion         = 0,
+--         pakled        = 0,
+--         reman         = 0,
+--         romulan       = 0,
+--         synthetic     = 0,
+--         tellarite     = 0,
+--         transcendent  = 0,
+--         trill         = 0,
+--         vorta         = 0,
+--         vulcan        = 0,
+--         xb            = 0,
+--         xindi         = 0,
+--     }
+--     -- check zones
+--     for i = 1, 5 do
+--         for _, object in pairs(checkzones[i].getObjects()) do
+--             for k, _ in pairs(species_traits) do
+--                 if object.hasTag('trait_' .. k) then
+--                     species_traits[k] = species_traits[k] + 1
+--                 end
+--             end
+--         end
+--     end
+--     -- check beam bags
+--     for i = 1, 14 do
+--         local bag_objects = checkbags[i].getObjects()
+--         for _, bag_object in pairs(bag_objects) do
+--             for k, _ in pairs(species_traits) do
+--                 for _, tag in pairs(bag_object.tags) do
+--                     if tag == 'trait_' .. k then
+--                         species_traits[k] = species_traits[k] + 1
+--                     end
+--                 end
+--             end
+--         end
 
 
 
-    end
-    -- broadcast
-    local traits_found = false
-    for k, v in pairs(species_traits) do
-        if v > 0 then
-            traits_found = true
-        end
-    end
-    if traits_found then
-        if Player[playerarea_color].steam_name ~= nil then
-            broadcastToAll("[" .. Color.fromString(playerarea_color):toHex() .. "]" .. Player[playerarea_color].steam_name .. "[-] - Current In-Play " .. tag_type .. ":", "White")
-        else
+--     end
+--     -- broadcast
+--     local traits_found = false
+--     for k, v in pairs(species_traits) do
+--         if v > 0 then
+--             traits_found = true
+--         end
+--     end
+--     if traits_found then
+--         if Player[playerarea_color].steam_name ~= nil then
+--             broadcastToAll("[" .. Color.fromString(playerarea_color):toHex() .. "]" .. Player[playerarea_color].steam_name .. "[-] - Current In-Play " .. tag_type .. ":", "White")
+--         else
 
-            broadcastToAll("[" .. Color.fromString(playerarea_color):toHex() .. "] Player[-] - Current In-Play " .. tag_type .. ":", "White")
-        end
-        for k, v in pairs(species_traits) do
-            if v > 0 then
-                broadcastToAll("[" .. Color.fromString(playerarea_color):toHex() .. "]* [-] " .. v .. "x " .. k:gsub("^%l", string.upper), "White")
-            end
-        end
-    end
-end -- end report_tags()
+--             broadcastToAll("[" .. Color.fromString(playerarea_color):toHex() .. "] Player[-] - Current In-Play " .. tag_type .. ":", "White")
+--         end
+--         for k, v in pairs(species_traits) do
+--             if v > 0 then
+--                 broadcastToAll("[" .. Color.fromString(playerarea_color):toHex() .. "]* [-] " .. v .. "x " .. k:gsub("^%l", string.upper), "White")
+--             end
+--         end
+--     end
+-- end -- end report_tags()
