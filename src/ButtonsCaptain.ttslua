@@ -365,6 +365,64 @@ end
 
 function reportCurrentSuits(playerColor)
   -- handles the reporting of current card suit count for playerColor
+
+  local cardSuits      = {
+    ally      = 0,
+    captain   = 0,
+    cargo     = 0,
+    directive = 0,
+    encounter = 0,
+    incident  = 0,
+    mission   = 0,
+    location  = 0,
+    person    = 0,
+    ship      = 0,
+  }
+  local checkZones = {
+    getObjectbyNameAndNotes("Zone Captain", playerColor),
+    getObjectbyNameAndNotes("Zone In Play", playerColor),
+    getObjectbyNameAndNotes("Zone Deploy Ship", playerColor),
+    getObjectbyNameAndNotes("Zone Deploy Location", playerColor),
+    getObjectbyNameAndNotes("Zone Duty Officer", playerColor),
+  }
+
+  -- check zones
+  for i = 1, #checkZones do
+    for _, zoneObj in pairs(checkZones[i].getObjects()) do
+      for k, _ in pairs(cardSuits) do
+        if zoneObj.hasTag("suit_" .. k) then
+          cardSuits[k] = cardSuits[k] + 1
+        end
+      end
+    end
+  end
+
+  -- put the broadcast together
+  local traitsFound = false
+  for k, v in pairs(cardSuits) do
+    if v > 0 then
+      traitsFound = true
+    end
+  end
+
+  if traitsFound then
+    local playerStr = getPlayerStr(playerColor)
+    local headlineStr = string.format("%s - Current In-Play Card Suits:", playerStr)
+    broadcastToAll(headlineStr, "White")
+
+    for k, v in pairs(cardSuits) do
+      if v > 0 then
+        local altText = k:sub(1, 1):upper() .. k:sub(2)
+        local listStr = string.format(
+          "[%s]*[-] %dx %s",
+          Color.fromString(playerColor):toHex(),
+          v,
+          altText
+        )
+        broadcastToAll(listStr, "White")
+      end
+    end
+  end
 end
 
 
