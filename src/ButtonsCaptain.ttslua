@@ -989,3 +989,37 @@ function continueDrawing(remainingToDraw, reservesZone, devZone, handZone, playe
 end
 
 
+function handleTurnResupplyBroadcast(playerColor)
+  -- handle broadcast of resupply cards onPlayerTurn
+
+  local checkZones = {
+    getObjectbyNameAndNotes("Zone Duty Officer", playerColor),
+    getObjectbyNameAndNotes("Zone Deploy Location", playerColor),
+    getObjectbyNameAndNotes("Zone Deploy Ship", playerColor),
+    getObjectbyNameAndNotes("Zone Captain", playerColor),
+  }
+  local matchCards = {}
+  for i = 1, #checkZones do
+    for _, object in pairs(checkZones[i].getObjects()) do
+      if object.hasTag('resupply') then
+        object.highlightOn(playerColor)
+        table.insert(matchCards, object)
+        Wait.time(function() object.highlightOff() end, 5)
+      end
+    end
+  end
+
+  -- broadcast if resupply cards found
+  if #matchCards > 0 then
+    local playerStr = getPlayerStr(playerColor)
+    local headlineStr = string.format("[%s]Reminder[-] - Current in play Resupply Step Cards for %s:", Color.fromString(playerColor):toHex(), playerStr)
+    broadcastToAll(headlineStr, "White")
+    Wait.time(function()
+
+      for i = 1, #matchCards do
+        broadcastToAll(matchCards[i].getName(), "White")
+      end
+
+    end, 0.5)
+  end
+end

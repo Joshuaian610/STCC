@@ -185,45 +185,18 @@ function onObjectEnterContainer(container, object)
 end -- end onObjectEnterContainer()
 
 
-function onPlayerTurn(player, previous_player)
-    if Turns.enable then
-        local current_player = player.color
-        local check_zones = current_player == "Blue" and {
-            getObjectFromGUID("a9ca57"),
-            getObjectFromGUID("2c336e"),
-            getObjectFromGUID("fc7f21"),
-            getObjectFromGUID("596317"),
-        } or
-        {
-            getObjectFromGUID("818a7e"),
-            getObjectFromGUID("77d0cb"),
-            getObjectFromGUID("5103b2"),
-            getObjectFromGUID("bf1e62"),
-        }
-        local match_cards = {}
-        for i = 1, 4 do
-            for _, object in pairs(check_zones[i].getObjects()) do
-                if object.hasTag('resupply') then
-                    object.highlightOn(current_player)
-                    table.insert(match_cards, object)
-                    Wait.time(function() object.highlightOff() end, 5)
-                end
-            end
-        end
-        if #match_cards > 0 then
-            broadcastToAll("Reminder - Current in play Resupply Step Cards for " .. current_player .. " Player.", current_player)
-            for i = 1, #match_cards do
-                broadcastToAll(match_cards[i].getName(), "White")
-            end
-        end
-    end
-end -- end onPlayerTurn()
+function onPlayerTurn(player, _)
+  -- handle broadcast of resupply cards onPlayerTurn
+  local playerColor = player.color
+  local isBot = checkPlayerColorIsBot(playerColor)
+  if Turns.enable and not isBot then
+    handleTurnResupplyBroadcast(playerColor) -- in ButtonsCaptain.ttslua (didn't know where else to put it)
+  end
+end
 
 
-
-
--- need to check for stardate glory token entering or leaving zone, update stardate glory counter
 function onObjectEnterZone(zone, enterObj)
+  -- need to check for stardate glory token entering or leaving zone, update stardate glory counter
   if zone == getObjectbyName("Zone Stardate Glory") and enterObj.getName() == "Glory Token" then
     updateStardateGloryCounter()
   end
