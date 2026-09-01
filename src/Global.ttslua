@@ -151,6 +151,21 @@ function onObjectSpawn(obj)
   if obj.getName():find("Button Report") and (obj.getName() ~= "Button Report Resupply" and obj.getName() ~= "Button Report Cleanup") then
     initButtonReportCurrentTraits(obj)
   end
+
+  -- handle creation of space dock search buttons
+  if obj.getName() == "Space Dock" then
+    initButtonSearchSpaceDock(obj)
+  end
+
+  -- handle creation of player discard hand buttons
+  if obj.getName() == "Button Discard Hand" then
+    initButtonDiscardHand(obj)
+  end
+
+  -- handle creation of player draw deck refresh buttons
+  if obj.getName():find("Button Refresh Draw Deck") then
+    initButtonRefreshDrawDeck(obj)
+  end
 end
 
 

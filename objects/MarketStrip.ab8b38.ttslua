@@ -110,28 +110,6 @@ function broadcast_playerturn()
 end -- end broadcast_playerturn()
 
 
-function discard_hand_blue()
-    UI.hide('discard_hand_blue')
-    Wait.time(function() UI.show('discard_hand_blue') end, 1)
-    discard_hand({color="Blue"})
-end -- end discard_hand_blue()
-
-function discard_hand_red()
-    UI.hide('discard_hand_red')
-    Wait.time(function() UI.show('discard_hand_red') end, 1)
-    discard_hand({color="Red"})
-end -- end discard_hand_red()
-
-function discard_hand(args)
-    local color        = args.color
-    local hand_objects = getObjectFromGUID(color == "Blue" and "73058e" or "72070a").getObjects()
-    for i = 1, #hand_objects do
-        hand_objects[i].setRotation(color == "Blue" and {0.00, 270.00, 0.00} or {0.00, 90.00, 0.00})
-        hand_objects[i].setPosition(color == "Blue" and {-44.57, 1.50, -21.00} or {44.57, 1.50, 21.00}, false, false)
-    end
-end -- end discard_hand()
-
-
 
 
 

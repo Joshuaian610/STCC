@@ -96,6 +96,26 @@ function getPlayerColor(cardObj)
 end
 
 
+function getCaptainName(playerColor)
+  -- checks and returns currently seated captain name at playerColor
+  local captainCheckZone = getObjectbyNameAndNotes("Zone Captain Card", playerColor)
+  local padCaptain = getObjectbyName("Pad Crew Board " .. playerColor)
+  local captainBoardName = "None"
+  for _, zoneObj in pairs(captainCheckZone.getObjects()) do
+    if zoneObj.getName():find("Crew Board") and zoneObj ~= padCaptain then
+      captainBoardName = zoneObj.getName()
+    end
+  end
+  local splitName = {}
+  if captainBoardName ~= "None" then
+    for str in string.gmatch(captainBoardName,  "%S+") do
+      table.insert(splitName, str)
+    end
+  end
+  return captainBoardName
+end
+
+
 function checkPlayerColorIsBot(playerColor)
   -- checks and returns if a specified playerColor is currently in solo bot mode
   -- captain board pad's gmnotes specifies enabled (this color is a bot) or disabled (this color is human)
@@ -166,7 +186,17 @@ function animateButton(buttonObj)
       initButtonReportResupplyCleanup(buttonObj)
     elseif buttonObj.getName():find("Button Report") and (buttonObj.getName() ~= "Button Report Resupply" and buttonObj.getName() ~= "Button Report Cleanup") then
       initButtonReportCurrentTraits(buttonObj)
+    elseif buttonObj.getName() == "Button Discard Hand" then
+      initButtonDiscardHand(buttonObj)
     end
 
   end, .2)
+
+  Wait.time(function()
+    -- refresh button requires extended refresh timing
+    if buttonObj.getName():find("Button Refresh Draw Deck") then
+      initButtonRefreshDrawDeck(buttonObj)
+    end
+
+  end, 5)
 end

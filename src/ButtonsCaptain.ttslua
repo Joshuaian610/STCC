@@ -15,12 +15,12 @@ function initButtonReportResupplyCleanup(buttonObj)
     click_function = "reportResupplyCleanup",
     function_owner = self,
     label          = "",
-    position       = {0, 0.36, -0.01},
+    position       = { 0, 0.36, -0.01 },
     width          = 865,
     height         = 435,
-    scale          = {2.3, 2.3, 2.3},
-    color          = {1, 1, 1, .3},
-    hover_color    = {1, 1, 1, .6},
+    scale          = { 2.3, 2.3, 2.3 },
+    color          = { 1, 1, 1, .3 },
+    hover_color    = { 1, 1, 1, .6 },
     tooltip        = tooltip,
   })
 end
@@ -43,13 +43,82 @@ function initButtonReportCurrentTraits(buttonObj)
     click_function = "reportTraits",
     function_owner = self,
     label          = "",
-    position       = {0, 0.36, -0.01},
+    position       = { 0, 0.36, -0.01 },
     width          = 865,
     height         = 435,
-    scale          = {2.3, 2.3, 2.3},
-    color          = {1, 1, 1, .3},
-    hover_color    = {1, 1, 1, .6},
+    scale          = { 2.3, 2.3, 2.3 },
+    color          = { 1, 1, 1, .3 },
+    hover_color    = { 1, 1, 1, .6 },
     tooltip        = tooltip,
+  })
+end
+
+
+function initButtonSearchSpaceDock(buttonObj)
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "searchSpaceDock",
+    function_owner = self,
+    label          = "",
+    position       = { 0, 0.17, 0.02 },
+    rotation       = {0, 180, 0 },
+    width          = 450,
+    height         = 450,
+    scale          = { 2.3, 2.3, 2.3 },
+    color          = { 1, 1, 1, .0 },
+    hover_color    = { 1, 1, 1, .2 },
+    tooltip        = "Click to search Space Dock.",
+  })
+end
+
+
+function initButtonDiscardHand(obj)
+  obj.clearButtons()
+  obj.createButton({
+    click_function = "discardHand",
+    function_owner = self,
+    label          = "",
+    position       = { 0, 0.36, -0.01 },
+    width          = 865,
+    height         = 435,
+    scale          = { 2.3, 2.3, 2.3 },
+    color          = { 1, 1, 1, .3 },
+    hover_color    = { 1, 1, 1, .6 },
+    tooltip        = "Clicking this button will discard all cards in hand. (Usually used on turn end)",
+})
+end
+
+
+function initButtonPullActionToken(buttonObj)
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "pullActionToken",
+    function_owner = self,
+    label          = "",
+    position       = { 0, 0.36, -0.01 },
+    width          = 480,
+    height         = 480,
+    scale          = { 2.1, 2.1, 2.1 },
+    color          = { 1, 1, 1, .3 },
+    hover_color    = { 1, 1, 1, .6 },
+    tooltip        = "Click to summon an extra action token. The summoned action token will be destroyed on Add Resource (End Turn) button click.",
+  })
+end
+
+
+function initButtonRefreshDrawDeck(buttonObj)
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "refreshDrawDeck",
+    function_owner = self,
+    label          = "",
+    position       = { 0, 0.11, -0.01 },
+    width          = 950,
+    height         = 480,
+    scale          = { 2.1, 2.1, 2.1 },
+    color          = { 1, 1, 1, .3 },
+    hover_color    = { 1, 1, 1, .6 },
+    tooltip        = "Shuffle discard pile, refresh draw deck.\n\nLeft Click: Automatically draw back up to hand size, including automatic Enlisting.\n\nRight click: Refresh the discard pile into a draw deck, without drawing back up to Hand Size.\n(Good for cases where you're cycling the deck while drawing 1 to a few cards during your turn. [b]Enlist manually in this case[/b]).",
   })
 end
 
@@ -366,7 +435,7 @@ end
 function reportCurrentSuits(playerColor)
   -- handles the reporting of current card suit count for playerColor
 
-  local cardSuits      = {
+  local cardSuits = {
     ally      = 0,
     captain   = 0,
     cargo     = 0,
@@ -427,5 +496,496 @@ end
 
 
 function reportCurrentTraits(playerColor, buttonType)
-  -- handles the reporting of current in play buttonType traits for playerColor
+  -- handles the reporting of current trait count for playerColor
+
+  local traitMaps = {
+    Species = {
+      alien        = 0,
+      aenar        = 0,
+      andorian     = 0,
+      android      = 0,
+      bajoran      = 0,
+      betazoid     = 0,
+      borg         = 0,
+      breen        = 0,
+      cardassian   = 0,
+      changeling   = 0,
+      ferengi      = 0,
+      human        = 0,
+      jemhadar     = 0,
+      kazon        = 0,
+      kelpian      = 0,
+      klingon      = 0,
+      orion        = 0,
+      pakled       = 0,
+      reman        = 0,
+      romulan      = 0,
+      synthetic    = 0,
+      tellarite    = 0,
+      transcendent = 0,
+      trill        = 0,
+      vaunakat     = 0,
+      vorta        = 0,
+      vulcan       = 0,
+      xb           = 0,
+      xindi        = 0,
+    },
+    Regular = {
+      ambassador    = 0,
+      ancient       = 0,
+      anomaly       = 0,
+      augment       = 0,
+      beverage      = 0,
+      business      = 0,
+      cloak         = 0,
+      communication = 0,
+      creature      = 0,
+      crossover     = 0,
+      doctor        = 0,
+      dominion      = 0,
+      engineer      = 0,
+      helmet        = 0,
+      hologram      = 0,
+      imperial      = 0,
+      maquis        = 0,
+      mindcontrol   = 0,
+      nx01          = 0,
+      ops           = 0,
+      pathofsurak   = 0,
+      pilot         = 0,
+      scientist     = 0,
+      security      = 0,
+      shady         = 0,
+      spy           = 0,
+      starbase      = 0,
+      starfleet     = 0,
+      telepath      = 0,
+      timetravel    = 0,
+      weapon        = 0,
+    },
+    Other = {
+      attack      = 0,
+      lowerdecker = 0,
+      ongoing     = 0,
+      surprise    = 0,
+      wildcard    = 0,
+    },
+  }
+
+  local traitCounts = traitMaps[buttonType]
+
+  if not traitCounts then
+    return
+  end
+
+  local checkZones = {
+    getObjectbyNameAndNotes("Zone Captain", playerColor),
+    getObjectbyNameAndNotes("Zone In Play", playerColor),
+    getObjectbyNameAndNotes("Zone Deploy Ship", playerColor),
+    getObjectbyNameAndNotes("Zone Deploy Location", playerColor),
+    getObjectbyNameAndNotes("Zone Duty Officer", playerColor),
+  }
+
+  -- check zones
+  for i = 1, #checkZones do
+    for _, zoneObj in pairs(checkZones[i].getObjects()) do
+      for k, _ in pairs(traitCounts) do
+        if zoneObj.hasTag("trait_" .. k) then
+          traitCounts[k] = traitCounts[k] + 1
+        end
+      end
+    end
+  end
+
+  -- put the broadcast together
+  local traitsFound = false
+  for k, v in pairs(traitCounts) do
+    if v > 0 then
+      traitsFound = true
+    end
+  end
+
+  if traitsFound then
+    local playerStr = getPlayerStr(playerColor)
+    local headlineStr = string.format(
+      "%s - Current In-Play %s Traits:",
+      playerStr,
+      buttonType
+    )
+    broadcastToAll(headlineStr, "White")
+
+    for k, v in pairs(traitCounts) do
+      if v > 0 then
+        local altText = k:sub(1, 1):upper() .. k:sub(2)
+        local listStr = string.format(
+          "[%s]*[-] %dx %s",
+          Color.fromString(playerColor):toHex(),
+          v,
+          altText
+        )
+        broadcastToAll(listStr, "White")
+      end
+    end
+  end
 end
+
+
+function searchSpaceDock(buttonObj, clickerColor, _)
+  -- handles on click search of player area's space dock
+
+  buttonObj.Container.search(clickerColor)
+end
+
+
+function discardHand(buttonObj, _, _)
+  -- handles the discard of all cards from a player's handzone
+
+  animateButton(buttonObj)
+
+  local playerColor = buttonObj.getGMNotes()
+
+  -- briefly disable then re-enable on screen XML discard hand button if it's active
+  local XmlIsActive = self.UI.getAttribute("discard_hand_" .. string.lower(playerColor), "active")
+  if XmlIsActive then
+    UI.hide("discard_hand_" .. string.lower(playerColor))
+    Wait.time(function()
+
+      UI.show("discard_hand_" .. string.lower(playerColor))
+
+    end, 1)
+  end
+
+  -- discard all hand objects
+  local isBot = checkPlayerColorIsBot(playerColor)
+  local rotDiscard = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+  if isBot then rotDiscard = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 } end
+  local posDiscard = playerColor == "Blue" and { -44.57, 1.50, -21.00 } or { 44.57, 1.50, 21.00 }
+  local handZone = getObjectbyNameAndNotes("Handzone", playerColor)
+
+  for _, handZoneObj in pairs(handZone.getObjects()) do
+    if handZoneObj.type == "Card" then
+      -- need to clear hand zone first, then can move smooth
+      local posCard = handZoneObj.getPosition()
+      posCard.x = playerColor == "Blue" and -50 or 50
+      handZoneObj.setRotation(rotDiscard)
+      handZoneObj.setPosition(posCard)
+      handZoneObj.setPositionSmooth(posDiscard, false, true)
+    end
+  end
+
+  -- broadcast
+  local playerStr = getPlayerStr(playerColor)
+  local broadcastStr = string.format("%s has discarded their hand.", playerStr)
+  broadcastToAll(broadcastStr, "White")
+end
+
+
+function pullActionToken(buttonObj, _, _)
+  animateButton(buttonObj)
+  local posDrop = buttonObj.getPosition()
+  local playerColor = buttonObj.getGMNotes()
+  local rotToken = playerColor == "Blue" and {0.00, 120.00, 0.00} or { 0.00, 300.00, 180.00 }
+  local bagTokens = getObjectbyNameAndNotes("Action Token Bag", playerColor)
+  posDrop.y = 6.00
+  local token = bagTokens.takeObject({ rotation= rotToken })
+  token.setPosition(posDrop)
+  token.addTag("destruct_on_end_turn")
+  local playerStr = getPlayerStr(playerColor)
+  local broadcastStr = string.format("%s has generated +1 Extra Action Token.", playerStr)
+  broadcastToAll(broadcastStr, "White")
+end
+
+
+function refreshDrawDeck(buttonObj, _, altClick)
+
+  -- wrapper function to handle the refresh draw deck button functionality
+
+  animateButton(buttonObj)
+
+  local playerColor = buttonObj.getName():find("Blue") and "Blue" or "Red"
+  local isBot = checkPlayerColorIsBot(playerColor)
+
+  -- find card or deck in discard, return out if none found
+  local discardObj = getDiscardObject(playerColor)
+  if discardObj == nil then
+    broadcastToAll("Discard is currently empty!" , "Orange")
+    return
+  end
+
+  -- manipulate the found discardObj (move to draw deck pad, shuffle, rename if deck, etc)
+  refreshDiscardObject(discardObj, playerColor, isBot)
+
+  -- return out here if isBot or altClick, before code that enlists & draws up to hand size
+  if altClick or isBot then return end
+
+  -- determine the maximum hand count for given playerColor
+  local maxHandCount = getMaxHand(playerColor)
+  local initialHandCount = Player[playerColor].getHandObjects()
+  local currentHandCount = #initialHandCount
+
+  log("maxHandCount: " .. maxHandCount)
+  log("initialHandCount: " .. #initialHandCount)
+  log("currentHandCount: " .. currentHandCount)
+
+  local remainingToDraw = math.max(0, maxHandCount - currentHandCount)
+
+  if remainingToDraw <= 0 then return end
+
+  local reservesZone = getObjectbyNameAndNotes("Zone Reserves", playerColor)
+  local devZone = getObjectbyNameAndNotes("Zone Development", playerColor)
+  local handZone = getObjectbyNameAndNotes("Handzone", playerColor)
+
+  -- always enlist 1 from Reserves if available, else Development
+  local reserveObj = getReserveObject(reservesZone)
+
+  if reserveObj ~= nil then
+    enlistReserveCard(reserveObj, handZone, playerColor)
+    remainingToDraw = remainingToDraw - 1
+  else
+    enlistDevelopmentCard(devZone, playerColor, remainingToDraw, maxHandCount)
+    return
+  end
+
+  if remainingToDraw <= 0 then return end
+
+  -- attempt to deal from refreshed deck
+  remainingToDraw = drawFromRefreshedDeck(discardObj, remainingToDraw, playerColor)
+
+  -- all done? all done.
+  if remainingToDraw <= 0 then return end
+
+  -- recursive fallback to Reserves or Development
+  continueDrawing(remainingToDraw, reservesZone, devZone, handZone, playerColor, maxHandCount)
+end
+
+
+function getMaxHand(playerColor)
+  -- handles detection of current captain & conditions to determine and return max hand size
+
+  local maxHand = 5 -- default is usually 5 - REVISIT add special hand size cases below
+
+  local dutyCheckZone = getObjectbyNameAndNotes("Zone Duty Officer", playerColor)
+  local deployCheckZones = {
+    getObjectbyNameAndNotes("Zone Deploy Ship", playerColor),
+    getObjectbyNameAndNotes("Zone Deploy Location", playerColor),
+  }
+
+  -- check deploy zones for hand size increasing cards
+  for i = 1, 2 do
+    for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+      if zoneObj.getName() == "Guardian Of Forever" then
+        maxHand = maxHand + 1
+      end
+    end
+  end
+
+  -- check duty officer zone for hand size increasing cards
+  for _, zoneObj in pairs(dutyCheckZone.getObjects()) do
+    if zoneObj.type == "Card" then
+
+      -- +1 duty officer cards
+      if zoneObj.getName() == "Arne Darvin" or zoneObj.getName() == "T'Pel" or
+      zoneObj.getName() == "Talok" or zoneObj.getName() == "Joret Dal" then
+        maxHand = maxHand + 1
+      end
+
+      -- +2 duty officer cards
+      if zoneObj.getName() == "Garak" then
+        maxHand = maxHand + 2
+      end
+
+      -- handle dr kovich (+ hand size based on focus count)
+      if zoneObj.getName() == "Doctor Kovich" then
+        local counters = {
+          getObjectbyName("Influence Counter " .. playerColor),
+          getObjectbyName("Military Counter " .. playerColor),
+          getObjectbyName("Research Counter " .. playerColor),
+        }
+        for i = 1, 3 do
+          if counters[i].getVar("val") > 4 then
+            maxHand = maxHand + 1
+          end
+        end
+      end
+    end
+  end
+  return maxHand
+end
+
+
+function getDiscardObject(playerColor)
+  -- handles detection & return of deck or card object in playerColor discard zone
+
+  local discardCheckZone = getObjectbyNameAndNotes("Zone Discard", playerColor)
+  for _, zoneObj in pairs(discardCheckZone.getObjects()) do
+    if zoneObj.type == "Card" or zoneObj.type == "Deck" then
+      return zoneObj
+    end
+  end
+  return nil
+end
+
+
+function refreshDiscardObject(discardObj, playerColor, isBot)
+  -- handles placement of discardObj to draw deck pad, and shuffle/naming if deck
+
+  local rotDrawDeck = playerColor == "Blue" and { 0.00, 270.00, 180.00 } or { 0.00, 90.00, 180.00 }
+  if isBot then rotDrawDeck = playerColor == "Blue" and { 0.00, 90.00, 180.00 } or { 0.00, 270.00, 180.00 } end
+  local posDrawDeck = playerColor == "Blue" and { -44.50, 1.20, 7.00 } or { 44.50, 1.20, -7.00 }
+
+  if discardObj.type == "Deck" then
+    local captainName = getCaptainName(playerColor)
+    local deckName = string.format("%sDraw Deck", captainName ~= "None" and captainName .. " " or "")
+    discardObj.setName(deckName)
+    discardObj.shuffle()
+  end
+
+  discardObj.setRotation(rotDrawDeck)
+  discardObj.setPositionSmooth(posDrawDeck, false, true)
+end
+
+
+function getReserveObject(reservesZone)
+  -- handles the detection of current reserves deck
+
+  for _, reserveObj in pairs(reservesZone.getObjects()) do
+    if reserveObj.type == "Deck" and #reserveObj.getObjects() > 0 then
+      return reserveObj
+    elseif reserveObj.type == "Card" then
+      return reserveObj
+    end
+  end
+  return nil
+end
+
+
+function enlistReserveCard(reserveObj, handZone, playerColor)
+  -- handles the functionality related to enlisting a reserves card
+
+  local card = reserveObj
+  local cardName = card.getName()
+  if reserveObj.type == "Deck" then
+    card = reserveObj.takeObject()
+    cardName = card.getName()
+  end
+
+  card.setRotation({0, playerColor == "Blue" and 270 or 90, 0})
+  card.setPositionSmooth(handZone.getPosition())
+
+  -- broadcast reserves enlistment
+  -- broadcasts without card name toAll
+  -- broadcasts with cardName toColor
+  local playerStr = getPlayerStr(playerColor)
+  local broadcastStr = string.format("%s has cycled their deck, and Enlists a Reserve.", playerStr)
+  broadcastToAll(broadcastStr, "White")
+
+  if Player[playerColor].seated then
+    broadcastStr = string.format("Enlisted Reserve Card: %s", cardName)
+    Wait.time(function()
+
+      broadcastToColor(broadcastStr, playerColor, "White")
+
+    end, 0.5)
+  end
+  return card
+end
+
+
+function enlistDevelopmentCard(devZone, playerColor, remainingToDraw, maxHandCount)
+  -- handles functionality related to enlisting a development card
+
+  -- if development deck is found, open up a search window & broadcast
+  local playerStr = getPlayerStr(playerColor)
+  for _, devObj in pairs(devZone.getObjects()) do
+    if devObj.type == "Deck" then
+      devObj.Container.search(playerColor)
+
+      local broadcastStr = string.format("%s has cycled their deck, and may Enlist a Development.", playerStr)
+      broadcastToAll(broadcastStr, "White")
+
+      if Player[playerColor].seated then
+        Wait.time(function()
+
+          broadcastStr = string.format("%s: Pull selected Development Card from deck, remember to pay Development cost, and add Development Card to hand.", playerStr)
+          broadcastToColor(broadcastStr, playerColor, "White")
+
+        end, 1)
+        Wait.time(function()
+
+          broadcastStr = string.format("%s: Afterwards, manually draw %d more cards, up to your hand size of %d.", playerStr, remainingToDraw - 1, maxHandCount)
+          broadcastToColor(broadcastStr, playerColor, "White")
+
+        end, 2)
+      end
+      return true
+
+    elseif devObj.type == "Card" then
+      local broadcastStr = string.format("%s has cycled their deck, and may Enlist their last Development.", playerStr)
+      broadcastToAll(broadcastStr, "White")
+
+      Wait.time(function()
+
+        broadcastStr = string.format("%s: Pull selected Development Card from deck, remember to pay Development cost, and add Development Card to hand.", playerStr)
+        broadcastToColor(broadcastStr, playerColor, "White")
+      end, 1)
+      Wait.time(function()
+
+        broadcastStr = string.format("%s: Afterwards, manually draw %d more cards, up to your hand size of %d.", playerStr, remainingToDraw - 1, maxHandCount)
+        broadcastToColor(broadcastStr, playerColor, "White")
+
+      end, 2)
+      return true
+    end
+  end
+
+  return false
+end
+
+
+function drawFromRefreshedDeck(drawDeck, remainingToDraw, playerColor)
+  -- handles a draw up to remaining count from draw deck
+
+  local drawDeckCount = 0
+  if drawDeck.type == "Deck" then
+    drawDeckCount = #drawDeck.getObjects()
+  elseif drawDeck.type == "Card" then
+    drawDeckCount = 1
+  end
+  if drawDeckCount <= 0 then return remainingToDraw end
+
+  local toDraw = math.min(remainingToDraw, drawDeckCount)
+  drawDeck.deal(toDraw, playerColor)
+
+  return remainingToDraw - toDraw
+end
+
+
+function continueDrawing(remainingToDraw, reservesZone, devZone, handZone, playerColor, maxHandCount)
+  -- handles the recursive draw off reserves/development if required
+
+  if remainingToDraw <= 0 then return end
+
+  local reserveObj = getReserveObject(reservesZone)
+  if reserveObj ~= nil then
+    enlistReserveCard(reserveObj, handZone, playerColor)
+    remainingToDraw = remainingToDraw - 1
+
+    Wait.time(function()
+      continueDrawing(remainingToDraw, reservesZone, devZone, handZone, playerColor, maxHandCount)
+    end, 0.25)
+
+    return
+  end
+
+  -- No more reserves -- handle development zone
+  if enlistDevelopmentCard(devZone, playerColor, remainingToDraw, maxHandCount) then
+    return
+  end
+
+  -- Still nothing? Broadcast error
+  local playerStr = getPlayerStr(playerColor)
+  local broadcastStr = string.format("%s: No more cards to draw from Reserves or Developments!", playerStr)
+  if Player[playerColor].seated then broadcastToColor(broadcastStr, playerColor, "Orange") end
+end
+
+
