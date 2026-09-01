@@ -60,11 +60,20 @@ end
 function getPlayerStr(playerColor)
   -- handles the creation of playerStr for broadcasts
   if playerColor == nil then return "Player" end
-
   local playerColorIsBot = checkPlayerColorIsBot(playerColor)
-
-  local playerStr = (Player[playerColor].steam_name ~= nil and not playerColorIsBot) and string.format("[%s]%s[-]", Color.fromString(playerColor):toHex(), Player[playerColor].steam_name) or
-                    string.format("[%s]%s %s[-]", Color.fromString(playerColor):toHex(), playerColor, playerColorIsBot and "Bot" or "Player")
+  local captainName = getCaptainName(playerColor)
+  local playerStr = (Player[playerColor].steam_name ~= nil and not playerColorIsBot) and
+                    string.format(
+                      "[%s]%s%s[-]",
+                      Color.fromString(playerColor):toHex(),
+                      Player[playerColor].steam_name,
+                      captainName ~= "None" and " ("..captainName..")" or ""
+                    ) or
+                    string.format(
+                      "[%s]%s[-]",
+                      Color.fromString(playerColor):toHex(),
+                      playerColorIsBot and (captainName .. " Bot") or (playerColor .. " Player")
+                    )
   return playerStr
 end
 
@@ -111,6 +120,7 @@ function getCaptainName(playerColor)
     for str in string.gmatch(captainBoardName,  "%S+") do
       table.insert(splitName, str)
     end
+    captainBoardName = splitName[1]
   end
   return captainBoardName
 end
@@ -172,7 +182,9 @@ function animateButton(buttonObj)
   buttonObj.clearButtons()
   buttonObj.setPosition(pos)
   pos.y = pos.y + downFactor
-  buttonObj.setPositionSmooth(pos, false, true)
+  if buttonObj.getName():find("Button Refresh Draw Deck") then
+    buttonObj.setPositionSmooth(pos, false, true)
+  end
   Wait.time(function()
 
     if buttonObj.getName():find("Button Control Location") then
@@ -188,6 +200,8 @@ function animateButton(buttonObj)
       initButtonReportCurrentTraits(buttonObj)
     elseif buttonObj.getName() == "Button Discard Hand" then
       initButtonDiscardHand(buttonObj)
+    elseif buttonObj.getName() == "Button Take Incident" then
+      initButtonTakeIncident(buttonObj)
     end
 
   end, .2)
@@ -195,6 +209,7 @@ function animateButton(buttonObj)
   Wait.time(function()
     -- refresh button requires extended refresh timing
     if buttonObj.getName():find("Button Refresh Draw Deck") then
+      buttonObj.setPositionSmooth(pos, false, true)
       initButtonRefreshDrawDeck(buttonObj)
     end
 

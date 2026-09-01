@@ -166,6 +166,11 @@ function onObjectSpawn(obj)
   if obj.getName():find("Button Refresh Draw Deck") then
     initButtonRefreshDrawDeck(obj)
   end
+
+  -- handle creation of take incident market button
+  if obj.getName() == "Button Take Incident" then
+    initButtonTakeIncident(obj)
+  end
 end
 
 
@@ -182,7 +187,7 @@ function onObjectEnterContainer(container, object)
     if container.hasTag('away_red') and object.hasTag('away_red') then
         container.highlightOn("Red")
     end
-end -- end onObjectEnterContainer()
+end
 
 
 function onPlayerTurn(player, _)
