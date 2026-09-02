@@ -173,8 +173,13 @@ function onObjectSpawn(obj)
   end
 
   -- handle creation of market junk buttons
-  if obj.getName():find("Junk Market") then
+  if obj.getName():find("Button Junk Market") then
     initButtonJunkCard(obj)
+  end
+
+  -- handle creation of market take buttons
+  if obj.getName():find("Button Take Market") then
+    initButtonTakeCard(obj)
   end
 end
 

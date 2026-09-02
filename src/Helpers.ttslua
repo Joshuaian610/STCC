@@ -185,7 +185,7 @@ function animateButton(buttonObj)
   buttonObj.clearButtons()
   buttonObj.setPosition(pos)
   pos.y = pos.y + downFactor
-  if buttonObj.getName():find("Button Refresh Draw Deck") then
+  if not buttonObj.getName():find("Button Refresh Draw Deck") then
     buttonObj.setPositionSmooth(pos, false, true)
   end
   Wait.time(function()
@@ -199,14 +199,21 @@ function animateButton(buttonObj)
     elseif buttonObj.getName() == "Button Report Resupply" or
            buttonObj.getName() == "Button Report Cleanup" then
       initButtonReportResupplyCleanup(buttonObj)
+
     elseif buttonObj.getName():find("Button Report") and (buttonObj.getName() ~= "Button Report Resupply" and buttonObj.getName() ~= "Button Report Cleanup") then
       initButtonReportCurrentTraits(buttonObj)
+
     elseif buttonObj.getName() == "Button Discard Hand" then
       initButtonDiscardHand(buttonObj)
+
     elseif buttonObj.getName() == "Button Take Incident" then
       initButtonTakeIncident(buttonObj)
-    elseif buttonObj.getName():find("Junk Market") then
+
+    elseif buttonObj.getName():find("Button Junk Market") then
       initButtonJunkCard(buttonObj)
+
+    elseif buttonObj.getName():find("Button Take Market") then
+      initButtonTakeCard(buttonObj)
     end
 
   end, .2)

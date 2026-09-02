@@ -41,9 +41,94 @@ function initButtonJunkCard(buttonObj)
 end
 
 
+function initButtonTakeCard(buttonObj)
+  local suit = (buttonObj.getName():find("Person") and "Person") or
+               (buttonObj.getName():find("Cargo") and "Cargo") or
+               (buttonObj.getName():find("Ship") and "Ship") or
+               (buttonObj.getName():find("Ally") and "Ally")
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+      click_function = "takeCard",
+      function_owner = self,
+      label          = "",
+      position       = { 0, 0.36, -0.01},
+      width          = 865,
+      height         = 435,
+      scale          = { 2.3, 2.3, 2.3 },
+      color          = { 1, 1, 1, .3 },
+      hover_color    = { 1, 1, 1, .6 },
+      tooltip        = "Clicking this button will take the above " .. suit .. " Market card, take any glory left on it, and replace it if possible.\n\nIf performing 'Take' action for bot, instead right click 'Gain To Deck' button to perform bot 'Take' action.",
+  })
+end
 
 
 
+function updateCounter(playerColor, resourceType, resources, mod)
+  -- handles the update and broadcast of a resource counter
+  -- provides a way to visually update and broadcast a counter receiving multiple resources,
+  -- while avoiding the single line item multiple broadcasts
+  -- will also handle animation movement of "resources to bag"
+  -- resourceTypes: "Dilithium", "Latinum", "Glory"
+
+  if #resources < 1 then return end
+
+  local counterObj = getObjectbyName(resourceType .. " Counter " .. playerColor)
+  if counterObj == nil then return end
+
+  local minVal = 0
+  local maxVal = 999
+  local oldVal = counterObj.getVar("val")
+  local newVal = math.max(minVal, math.min(maxVal, oldVal + (mod * #resources)))
+
+  -- set val variable on counter
+  counterObj.setVar("val", newVal)
+
+  -- update counter XML
+  local counterObjXML = counterObj.UI.getXmlTable()
+  if #counterObjXML ~= 0 then -- should be unneccessary, but just in case...
+    local uiElement = (resourceType == "Dilithium" and "dilithiumCounter") or
+                      (resourceType == "Latinum" and "latinumCounter") or
+                      (resourceType == "Glory" and "playerGloryCounter")
+    counterObj.UI.setAttribute(uiElement, "text", tostring(newVal))
+    local fontSizes = {
+      ["Dilithium"] = (newVal < 10 and "130") or
+                      ((newVal > 9 and newVal < 100) and "120") or
+                      (newVal > 99 and "110"),
+      ["Latinum"]   = (newVal < 10 and "325") or
+                      ((newVal > 9 and newVal < 100) and "305") or
+                      (newVal > 99 and "285"),
+      ["Glory"]     = (newVal < 10 and "160") or
+                      ((newVal > 9 and newVal < 100) and "150") or
+                      (newVal > 99 and "140"),
+    }
+    local fontSize = fontSizes[resourceType]
+    counterObj.UI.setAttribute(uiElement, "fontSize", fontSize)
+    local textColor = "#FFFFFF"
+    counterObj.UI.setAttribute(uiElement, "textColor", textColor)
+
+    -- refresh on screen XML
+    onloadXML()
+  end
+
+  -- animate the resource placement to bag appearance
+  local posCounter = counterObj.getPosition()
+  posCounter.y = posCounter.y + 0.5
+  for _, resource in pairs(resources) do
+    resource.setPositionSmooth(posCounter, false, true)
+    Wait.time(function()
+      resource.destruct()
+    end, 0.3)
+  end
+
+  -- broadcast
+  Wait.time(function()
+
+    local playerStr = getPlayerStr(playerColor)
+    local broadcastStr = string.format("%s Gained %s: %d (%d > %d)", playerStr, resourceType, #resources, oldVal, newVal)
+    broadcastToAll(broadcastStr, "White")
+
+  end, 1)
+end
 
 
 function takeIncident(buttonObj, clickerColor, altClick)
@@ -127,7 +212,7 @@ function takeIncident(buttonObj, clickerColor, altClick)
 end
 
 
-function junkCard(buttonObj, clickerColor, altClick)
+function junkCard(buttonObj, clickerColor, _)
   -- handles functionality associated with junk market card buttons
 
   animateButton(buttonObj)
@@ -198,7 +283,6 @@ function junkCard(buttonObj, clickerColor, altClick)
   Wait.time(function()
 
     for _, zoneObj in pairs(deckZone.getObjects()) do
-
       if zoneObj.type == "Deck" then
         replaceCard = zoneObj.takeObject()
         break
@@ -220,4 +304,121 @@ function junkCard(buttonObj, clickerColor, altClick)
     end
 
   end, 0.5)
+end
+
+
+function takeCard(buttonObj, clickerColor, altClick)
+  -- handles functionality associated with market take buttons
+  -- will "Take" market card to hand, any resources on it, and will replace if possible
+  -- "Take" = position market card to clickerColor handzone
+
+  animateButton(buttonObj)
+
+  local cardSuit = (buttonObj.getName():find("Person") and "Person") or
+                   (buttonObj.getName():find("Cargo") and "Cargo") or
+                   (buttonObj.getName():find("Ship") and "Ship") or
+                   (buttonObj.getName():find("Ally") and "Ally")
+  local cardZone = getObjectbyName("Zone Market Current " .. cardSuit)
+
+  -- this isn't a button that the bot should be using, so if right click & bot in game, handle
+  local botInGame = checkIsBot()
+  if botInGame and altClick then
+    local errorStr = "Bot 'Take' operation places Taken card to top of bot deck instead of taking to it's non existent hand. Instead, right click the 'Gain To Deck' button to perform bot 'Take' action."
+    broadcastToAll(errorStr, "Orange")
+    return
+  elseif not botInGame and altClick then
+    altClick = false
+  end
+
+  -- bot stuff out of the way, proceed to taking & positioning card, taking resources
+  local rotTake = clickerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+  local posTake = clickerColor == "Blue" and { -54.00, 3.00, 0.00 } or { 54.00, 3.00, 0.00 }
+  local takeCard = nil
+  local gloryGroup = {}
+  local dilithiumGroup = {}
+  local latinumGroup = {}
+
+  for _, zoneObj in pairs(cardZone.getObjects()) do
+    if zoneObj.hasTag("suit_" .. string.lower(cardSuit)) then
+      takeCard = zoneObj
+      break
+    end
+  end
+  if takeCard == nil then
+    broadcastToAll("No " .. cardSuit .. " card found to Take.", "Orange")
+    return
+  end
+
+  -- place taken card
+  takeCard.setRotation(rotTake)
+  takeCard.setPositionSmooth(posTake, false, true)
+
+  -- broadcast Take
+  local suitColors = {
+    ["Person"] = "BFA42C",
+    ["Cargo"]  = "4173B4",
+    ["Ship"]   = "C8C8C8",
+    ["Ally"]   = "CD28C3",
+  }
+  local suitColor = suitColors[cardSuit]
+  local clickerStr = getPlayerStr(clickerColor)
+  local takeCardName = takeCard.getName()
+  local broadcastStr = string.format("%s has Taken [b][%s]%s[-][/b] to hand.", clickerStr, suitColor, takeCardName)
+  broadcastToAll(broadcastStr, "White")
+
+  -- handle on card resources
+  for _, zoneObj in pairs(cardZone.getObjects()) do
+    if zoneObj.getName() == "Glory Token" then
+      table.insert(gloryGroup, zoneObj)
+    elseif zoneObj.getName() == "Dilithium Token" then
+      table.insert(dilithiumGroup, zoneObj)
+    elseif zoneObj.getName() == "Latinum Token" then
+      table.insert(latinumGroup, zoneObj)
+    end
+  end
+  if #gloryGroup > 0 then
+    updateCounter(clickerColor, "Glory", gloryGroup, 1)
+  end
+  if #dilithiumGroup > 0 then
+    updateCounter(clickerColor, "Dilithium", dilithiumGroup, 1)
+  end
+  if #latinumGroup > 0 then
+    updateCounter(clickerColor, "Latinum", latinumGroup, 1)
+  end
+
+  -- handle market suit replacement
+  Wait.time(function()
+
+    local deckZone = getObjectbyName("Zone Market " .. cardSuit)
+    local replaceCard = nil
+    local rotReplace = { 0.00, 180.00, 0.00 }
+    local posReplacements = {
+      ["Person"] = { -7.50, 1.50, 6.00 },
+      ["Cargo"]  = { -2.50, 1.50, 6.00 },
+      ["Ship"]   = { 2.50, 1.50, 6.00 },
+      ["Ally"]   = { 7.50, 1.50, 6.00 },
+    }
+    local posReplace = posReplacements[cardSuit]
+    for _, zoneObj in pairs(deckZone.getObjects()) do
+      if zoneObj.type == "Deck" then
+        replaceCard = zoneObj.takeObject()
+        break
+      elseif zoneObj.type == "Card" then
+        replaceCard = zoneObj
+        break
+      end
+    end
+    if replaceCard ~= nil then
+      replaceCard.setRotation(rotReplace)
+      replaceCard.setPositionSmooth(posReplace, false, true)
+    end
+
+    -- broadcast replacement
+    local replaceCardName = replaceCard.getName()
+    local followupStr = string.format("It has been replaced with [b][%s]%s[-][/b].", suitColor, replaceCardName)
+    broadcastToAll(followupStr, "White")
+
+  end, 0.5)
+
+
 end

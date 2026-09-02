@@ -644,7 +644,7 @@ function pullStardateGlory(playerColor)
         gloryToken.setRotation(rotSendGlory)
         gloryToken.setPositionSmooth(posSendGlory, false, true)
         simGloryBagDrop(playerColor)
-        Wait.time(function() gloryToken.destruct() end, .3)
+        Wait.time(function() gloryToken.destruct() end, 0.3)
       end)
     end
 

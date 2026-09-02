@@ -189,37 +189,27 @@ function onloadXML()
   for i = 1, 2 do
     local playerColor = colors[i]
     local isBot = checkIsBot()
-    local captainCheckZone = getObjectbyNameAndNotes("Zone Captain Card", playerColor)
-    local padCaptain = getObjectbyName("Pad Crew Board " .. playerColor)
-    local captainBoardName = nil
-    for _, zoneObj in pairs(captainCheckZone.getObjects()) do
-      if zoneObj.getName():find("Crew Board") and zoneObj ~= padCaptain then
-        captainBoardName = zoneObj.getName()
-      end
-    end
-    local captainName = nil
-    local splitName = {}
-    if captainBoardName ~= nil then
-      if captainBoardName ~= nil then
-        for str in string.gmatch(captainBoardName,  "%S+") do
-          table.insert(splitName, str)
-        end
-      end
-    end
-    captainName = splitName[1]
+    local captainName = getCaptainName(playerColor)
+    if captainName == "None" then return end
+
     Wait.time(function()
       local dilithiumVal = getObjectbyName("Dilithium Counter " .. playerColor).getVar("val")
       local latinumVal = getObjectbyName("Latinum Counter " .. playerColor).getVar("val")
       local gloryVal = getObjectbyName("Glory Counter " .. playerColor).getVar("val")
-      local influenceVal = getObjectbyName("Influence Counter " .. playerColor).getVar("val")
-      local militaryVal = getObjectbyName("Military Counter " .. playerColor).getVar("val")
-      local researchVal = getObjectbyName("Research Counter " .. playerColor).getVar("val")
+      local influenceVal
+      local militaryVal
+      local researchVal
+      if captainName ~= "Khan" then
+        influenceVal = getObjectbyName("Influence Counter " .. playerColor).getVar("val")
+        militaryVal = getObjectbyName("Military Counter " .. playerColor).getVar("val")
+        researchVal = getObjectbyName("Research Counter " .. playerColor).getVar("val")
+      end
 
       Wait.frames(function()
 
         if captainName == "Burnham" or captainName == "Picard" or captainName == "Sisko" or
-            captainName == "Archer" or captainName == "Georgiou" or captainName == "Kirk" or
-            captainName == "Freeman" or captainName == "Pike" or captainName == "Riker" then
+           captainName == "Archer" or captainName == "Georgiou" or captainName == "Kirk" or
+           captainName == "Freeman" or captainName == "Pike" or captainName == "Riker" then
           UI.setAttribute(playerColor == "Blue" and "blue_starfleet_panel" or "red_starfleet_panel", "active", "true")
           UI.setAttribute(playerColor == "Blue" and "blue_hum_glory" or "red_hum_glory", "text", gloryVal)
           UI.setAttribute(playerColor == "Blue" and "blue_hum_latinum" or "red_hum_latinum", "text", latinumVal)
@@ -280,7 +270,7 @@ function onloadXML()
           UI.setAttribute(playerColor == "Blue" and "blue_vul_research" or "red_vul_research", "text", researchVal)
         end
 
-        if captainName ~= nil then
+        if captainName ~= nil and Player[playerColor].seated then
           UI.show(playerColor == "Blue" and "ui_hide_blue" or "ui_hide_red")
         end
 
