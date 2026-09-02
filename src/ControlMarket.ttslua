@@ -20,6 +20,27 @@ function initButtonTakeIncident(buttonObj)
 end
 
 
+function initButtonJunkCard(buttonObj)
+  local suit = (buttonObj.getName():find("Person") and "Person") or
+               (buttonObj.getName():find("Cargo") and "Cargo") or
+               (buttonObj.getName():find("Ship") and "Ship") or
+               (buttonObj.getName():find("Ally") and "Ally")
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "junkCard",
+    function_owner = self,
+    label          = "",
+    position       = { 0, 0.36, -0.01 },
+    width          = 865,
+    height         = 435,
+    scale          = { 2.3, 2.3, 2.3 },
+    color          = { 1, 1, 1, .3 },
+    hover_color    = { 1, 1, 1, .6 },
+    tooltip        = "Clicking this button will junk the above " .. suit .. " Market card, destroy any glory left on it, and replace it if possible.",
+  })
+end
+
+
 
 
 
@@ -103,4 +124,100 @@ function takeIncident(buttonObj, clickerColor, altClick)
     end
 
   end, 1)
+end
+
+
+function junkCard(buttonObj, clickerColor, altClick)
+  -- handles functionality associated with junk market card buttons
+
+  animateButton(buttonObj)
+
+  local cardSuit = (buttonObj.getName():find("Person") and "Person") or
+                   (buttonObj.getName():find("Cargo") and "Cargo") or
+                   (buttonObj.getName():find("Ship") and "Ship") or
+                   (buttonObj.getName():find("Ally") and "Ally")
+  local cardZone = getObjectbyName("Zone Market Current " .. cardSuit)
+  local foundJunkTargetCard = nil
+  local gloryCount = 0
+  local dilithiumCount = 0
+  local latinumCount = 0
+
+  -- get card, resource count on card, error out if no card or resources found
+  for _, zoneObj in pairs(cardZone.getObjects()) do
+    if zoneObj.getName() == "Glory Token" then
+      gloryCount = gloryCount + 1
+    end
+    if zoneObj.getName() == "Dilithium Token" then
+      dilithiumCount = dilithiumCount + 1
+    end
+    if zoneObj.getName() == "Latinum Token" then
+      latinumCount = latinumCount + 1
+    end
+    if zoneObj.hasTag("suit_" .. string.lower(cardSuit)) then
+      foundJunkTargetCard = zoneObj
+    end
+  end
+  if foundJunkTargetCard == nil then
+    broadcastToAll("No " .. cardSuit .. " card found to Junk.", "Orange")
+    return
+  end
+  if gloryCount > 0 or dilithiumCount > 0 or latinumCount > 0 then
+    broadcastToAll("Market cards with Resource Tokens on them may only be junked via Stardate Card.", "Orange")
+    return
+  end
+
+  -- if able to junk a found card with no resources, place found card to junk pile
+  local rotCard = { 0.00, 180.00, 0.00 }
+  local posJunk = { -12.50, 2.00, 12.00 }
+  foundJunkTargetCard.setRotation(rotCard)
+  foundJunkTargetCard.setPositionSmooth(posJunk, false, true)
+
+  -- broadcast
+  local suitColors = {
+    ["Person"] = "BFA42C",
+    ["Cargo"]  = "4173B4",
+    ["Ship"]   = "C8C8C8",
+    ["Ally"]   = "CD28C3",
+  }
+  local suitColor = suitColors[cardSuit]
+  local clickerStr = getPlayerStr(clickerColor)
+  local junkTargetCardName = foundJunkTargetCard.getName()
+  local broadcastStr = string.format("%s has Junked [b][%s]%s[-][/b].", clickerStr, suitColor, junkTargetCardName)
+  broadcastToAll(broadcastStr, "White")
+
+  -- check to see if card can be replaced, do so if possible
+  local deckZone = getObjectbyName("Zone Market " .. cardSuit)
+  local posReplacements = {
+    ["Person"] = { -7.50, 1.50, 6.00 },
+    ["Cargo"]  = { -2.50, 1.50, 6.00 },
+    ["Ship"]   = { 2.50, 1.50, 6.00 },
+    ["Ally"]   = { 7.50, 1.50, 6.00 },
+  }
+  local posReplace = posReplacements[cardSuit]
+  local replaceCard = nil
+  Wait.time(function()
+
+    for _, zoneObj in pairs(deckZone.getObjects()) do
+
+      if zoneObj.type == "Deck" then
+        replaceCard = zoneObj.takeObject()
+        break
+      elseif zoneObj.type == "Card" then
+        replaceCard = zoneObj
+        break
+      end
+    end
+
+    -- if replacement card found, place to market slot
+    if replaceCard ~= nil then
+      replaceCard.setRotation(rotCard)
+      replaceCard.setPosition(posReplace, false, true)
+
+      -- broadcast replacement
+      local replaceCardName = replaceCard.getName()
+      local followupStr = string.format("It has been replaced with [b][%s]%s[-][/b].", suitColor, replaceCardName)
+      broadcastToAll(followupStr, "White")
+    end
+
+  end, 0.5)
 end

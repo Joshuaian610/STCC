@@ -171,6 +171,11 @@ function onObjectSpawn(obj)
   if obj.getName() == "Button Take Incident" then
     initButtonTakeIncident(obj)
   end
+
+  -- handle creation of market junk buttons
+  if obj.getName():find("Junk Market") then
+    initButtonJunkCard(obj)
+  end
 end
 
 
