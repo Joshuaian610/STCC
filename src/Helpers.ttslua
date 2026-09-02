@@ -214,6 +214,9 @@ function animateButton(buttonObj)
 
     elseif buttonObj.getName():find("Button Take Market") then
       initButtonTakeCard(buttonObj)
+    elseif buttonObj.getName():find("Button Deck Gain Market") or
+            buttonObj.getName():find("Button Discard Gain Market") then
+      initButtonGainCard(buttonObj)
     end
 
   end, .2)

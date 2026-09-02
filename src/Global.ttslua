@@ -181,6 +181,11 @@ function onObjectSpawn(obj)
   if obj.getName():find("Button Take Market") then
     initButtonTakeCard(obj)
   end
+
+  -- handle creation of market gain buttons (to deck, and to discard)
+  if obj.getName():find("Button Deck Gain Market") or obj.getName():find("Button Discard Gain Market") then
+    initButtonGainCard(obj)
+  end
 end
 
 

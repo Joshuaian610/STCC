@@ -28,7 +28,7 @@
   "GUID": "ea53d3",
   "Grid": true,
   "GridProjection": false,
-  "Hands": true,
+  "Hands": false,
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,

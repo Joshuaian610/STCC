@@ -48,16 +48,41 @@ function initButtonTakeCard(buttonObj)
                (buttonObj.getName():find("Ally") and "Ally")
   buttonObj.clearButtons()
   buttonObj.createButton({
-      click_function = "takeCard",
-      function_owner = self,
-      label          = "",
-      position       = { 0, 0.36, -0.01},
-      width          = 865,
-      height         = 435,
-      scale          = { 2.3, 2.3, 2.3 },
-      color          = { 1, 1, 1, .3 },
-      hover_color    = { 1, 1, 1, .6 },
-      tooltip        = "Clicking this button will take the above " .. suit .. " Market card, take any glory left on it, and replace it if possible.\n\nIf performing 'Take' action for bot, instead right click 'Gain To Deck' button to perform bot 'Take' action.",
+    click_function = "takeCard",
+    function_owner = self,
+    label          = "",
+    position       = { 0, 0.36, -0.01},
+    width          = 865,
+    height         = 435,
+    scale          = { 2.3, 2.3, 2.3 },
+    color          = { 1, 1, 1, .3 },
+    hover_color    = { 1, 1, 1, .6 },
+    tooltip        = "Clicking this button will take the above " .. suit .. " Market card, take any glory left on it, and replace it if possible.\n\nIf performing 'Take' action for bot, instead right click 'Gain To Deck' button to perform bot 'Take' action.",
+  })
+end
+
+
+function initButtonGainCard(buttonObj)
+  local suit = (buttonObj.getName():find("Person") and "Person") or
+               (buttonObj.getName():find("Cargo") and "Cargo") or
+               (buttonObj.getName():find("Ship") and "Ship") or
+               (buttonObj.getName():find("Ally") and "Ally")
+  local buttonType = (buttonObj.getName():find("Button Deck Gain Market")) and "toDeck" or
+                     (buttonObj.getName():find("Button Discard Gain Market")) and "toDiscard"
+  local tooltip = (buttonType == "toDeck" and "Clicking this button will gain the above " .. suit .. " Market card to [b]Deck[/b], take any Glory or Dilithium left on it, and replace it if possible.\n\nIf vs. a solo bot, right clicking this button will perform the 'Take' operation for the bot. (same as Gain To Deck)") or
+                  (buttonType == "toDiscard" and "Clicking this button will gain the above " .. suit .. " Market card to [b]Discard[/b], take any Glory or Dilithium left on it, and replace it if possible.\n\nIf vs. a solo bot, right clicking this button will perform the 'Gain' operation for the bot. (same as Gain To Discard)") or "None"
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "gainCard",
+    function_owner = self,
+    label          = "",
+    position       = { 0, 0.36, -0.01},
+    width          = 865,
+    height         = 435,
+    scale          = { 2.3, 2.3, 2.3 },
+    color          = { 1, 1, 1, .3 },
+    hover_color    = { 1, 1, 1, .6 },
+    tooltip        = tooltip,
   })
 end
 
@@ -215,6 +240,11 @@ end
 function junkCard(buttonObj, clickerColor, _)
   -- handles functionality associated with junk market card buttons
 
+  if clickerColor ~= "Blue" and clickerColor ~= "Red" then 
+    broadcastToAll("Please be seated at the Blue or Red side before using these buttons.", "Orange")
+    return
+  end
+
   animateButton(buttonObj)
 
   local cardSuit = (buttonObj.getName():find("Person") and "Person") or
@@ -311,6 +341,11 @@ function takeCard(buttonObj, clickerColor, altClick)
   -- handles functionality associated with market take buttons
   -- will "Take" market card to hand, any resources on it, and will replace if possible
   -- "Take" = position market card to clickerColor handzone
+
+  if clickerColor ~= "Blue" and clickerColor ~= "Red" then 
+    broadcastToAll("Please be seated at the Blue or Red side before using these buttons.", "Orange")
+    return
+  end
 
   animateButton(buttonObj)
 
@@ -419,6 +454,144 @@ function takeCard(buttonObj, clickerColor, altClick)
     broadcastToAll(followupStr, "White")
 
   end, 0.5)
+end
 
 
+
+
+
+
+
+
+
+
+
+
+
+function gainCard(buttonObj, clickerColor, altClick)
+  -- handles functionality associated with market gain to deck & gain to discard buttons
+  -- "Gain" action will either take facedown card to deck, or, faceup card to discard
+
+  if clickerColor ~= "Blue" and clickerColor ~= "Red" then 
+    broadcastToAll("Please be seated at the Blue or Red side before using these buttons.", "Orange")
+    return
+  end
+
+  animateButton(buttonObj)
+
+  local cardSuit = (buttonObj.getName():find("Person") and "Person") or
+                   (buttonObj.getName():find("Cargo") and "Cargo") or
+                   (buttonObj.getName():find("Ship") and "Ship") or
+                   (buttonObj.getName():find("Ally") and "Ally")
+  local cardZone = getObjectbyName("Zone Market Current " .. cardSuit)
+  local buttonType = (buttonObj.getName():find("Button Deck Gain Market")) and "toDeck" or
+                     (buttonObj.getName():find("Button Discard Gain Market")) and "toDiscard"
+
+  -- this is a button the bot should be using, so, unlike Take it will handle altclick & botInGame
+  local botInGame = checkIsBot()
+  if altClick and not botInGame then altClick = false end
+
+  local playerColor = clickerColor
+  local nonClickerColor = clickerColor == "Blue" and "Red" or "Blue"
+  if altClick then
+    local isBot = checkPlayerColorIsBot(nonClickerColor)
+    if isBot then playerColor = nonClickerColor end
+  end
+  local isBot = checkPlayerColorIsBot(playerColor)
+
+  local rotGain = playerColor == "Blue" and { 0.00, 270.00, 180.00 } or { 0.00, 90.00, 180.00 }
+  if altClick and isBot then rotGain = playerColor == "Blue" and { 0.00, 90.00, 180.00 } or { 0.00, 270.00, 180.00 } end
+  if buttonType == "toDiscard" then
+    rotGain = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+    if altClick and isBot then rotGain = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 } end
+  end
+  local posGainDeck = playerColor == "Blue" and { -44.50, 1.50, 7.00 } or { 44.50, 1.50, -7.00 }
+  local posGainDiscard = playerColor == "Blue" and { -44.50, 1.50, -21.00 } or { 44.50, 1.50, 21.00 }
+  local posGain = (buttonType == "toDeck" and posGainDeck) or (buttonType == "toDiscard" and posGainDiscard)
+  local gainCard = nil
+  local gloryGroup = {}
+  local dilithiumGroup = {}
+  local latinumGroup = {}
+
+  for _, zoneObj in pairs(cardZone.getObjects()) do
+    if zoneObj.hasTag("suit_" .. string.lower(cardSuit)) then
+      gainCard = zoneObj
+      break
+    end
+  end
+  if gainCard == nil then
+    broadcastToAll("No " .. cardSuit .. " card found to Gain.", "Orange")
+    return
+  end
+
+  -- place gained card
+  gainCard.setRotation(rotGain)
+  gainCard.setPositionSmooth(posGain, false, true)
+
+  -- broadcast Gain
+  local suitColors = {
+    ["Person"] = "BFA42C",
+    ["Cargo"]  = "4173B4",
+    ["Ship"]   = "C8C8C8",
+    ["Ally"]   = "CD28C3",
+  }
+  local suitColor = suitColors[cardSuit]
+  local clickerStr = getPlayerStr(clickerColor)
+  local gainCardName = gainCard.getName()
+  local broadcastStr = string.format("%s has Gained [b][%s]%s[-][/b] to %s.", clickerStr, suitColor, gainCardName, buttonType == "toDeck" and "Deck" or "Discard")
+  broadcastToAll(broadcastStr, "White")
+
+  -- handle on card resources
+  for _, zoneObj in pairs(cardZone.getObjects()) do
+    if zoneObj.getName() == "Glory Token" then
+      table.insert(gloryGroup, zoneObj)
+    elseif zoneObj.getName() == "Dilithium Token" then
+      table.insert(dilithiumGroup, zoneObj)
+    elseif zoneObj.getName() == "Latinum Token" then
+      table.insert(latinumGroup, zoneObj)
+    end
+  end
+  if #gloryGroup > 0 then
+    updateCounter(playerColor, "Glory", gloryGroup, 1)
+  end
+  if #dilithiumGroup > 0 then
+    updateCounter(playerColor, "Dilithium", dilithiumGroup, 1)
+  end
+  if #latinumGroup > 0 then
+    updateCounter(playerColor, "Latinum", latinumGroup, 1)
+  end
+
+  -- handle market suit replacement
+  Wait.time(function()
+
+    local deckZone = getObjectbyName("Zone Market " .. cardSuit)
+    local replaceCard = nil
+    local rotReplace = { 0.00, 180.00, 0.00 }
+    local posReplacements = {
+      ["Person"] = { -7.50, 1.50, 6.00 },
+      ["Cargo"]  = { -2.50, 1.50, 6.00 },
+      ["Ship"]   = { 2.50, 1.50, 6.00 },
+      ["Ally"]   = { 7.50, 1.50, 6.00 },
+    }
+    local posReplace = posReplacements[cardSuit]
+    for _, zoneObj in pairs(deckZone.getObjects()) do
+      if zoneObj.type == "Deck" then
+        replaceCard = zoneObj.takeObject()
+        break
+      elseif zoneObj.type == "Card" then
+        replaceCard = zoneObj
+        break
+      end
+    end
+    if replaceCard ~= nil then
+      replaceCard.setRotation(rotReplace)
+      replaceCard.setPositionSmooth(posReplace, false, true)
+    end
+
+    -- broadcast replacement
+    local replaceCardName = replaceCard.getName()
+    local followupStr = string.format("It has been replaced with [b][%s]%s[-][/b].", suitColor, replaceCardName)
+    broadcastToAll(followupStr, "White")
+
+  end, 0.5)
 end
