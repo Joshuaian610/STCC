@@ -733,29 +733,29 @@
 
 <Panel id="ui_hide_blue" class="manageButton" visibility="Blue" active="false">
     <HorizontalLayout>
-        <Panel><Button id="hide_ui_blue" onClick="ab8b38/hide_ui_blue" image="Hide UI" preserveAspect="true" width="100" height="23"></Button></Panel>
-        <Panel><Button id="close_ui_blue" onClick="ab8b38/close_ui_blue" image="Close UI" preserveAspect="true" width="100" height="23"></Button></Panel>
+        <Panel><Button id="hide_ui_blue" onClick="Global/hideBlueUI" image="Hide UI" preserveAspect="true" width="100" height="23"></Button></Panel>
+        <Panel><Button id="close_ui_blue" onClick="Global/closeBlueUI" image="Close UI" preserveAspect="true" width="100" height="23"></Button></Panel>
     </HorizontalLayout>
 </Panel>
 
 <Panel id="ui_show_blue" class="manageButtonBottom" visibility="Blue" active="false">
     <HorizontalLayout>
-        <Panel><Button id="show_ui_blue" onClick="ab8b38/show_ui_blue" image="Show UI" preserveAspect="true" width="100" height="23"></Button></Panel>
-        <Panel><Button id="close_ui_blue" onClick="ab8b38/close_ui_blue" image="Close UI" preserveAspect="true" width="100" height="23"></Button></Panel>
+        <Panel><Button id="show_ui_blue" onClick="Global/showBlueUI" image="Show UI" preserveAspect="true" width="100" height="23"></Button></Panel>
+        <Panel><Button id="close_ui_blue_show" onClick="Global/closeBlueUI" image="Close UI" preserveAspect="true" width="100" height="23"></Button></Panel>
     </HorizontalLayout>
 </Panel>
 
 <Panel id="ui_hide_red" class="manageButton" visibility="Red" active="false">
     <HorizontalLayout>
-        <Panel><Button id="hide_ui_red" onClick="ab8b38/hide_ui_red" image="Hide UI" preserveAspect="true" width="100" height="23"></Button></Panel>
-        <Panel><Button id="close_ui_red" onClick="ab8b38/close_ui_red" image="Close UI" preserveAspect="true" width="100" height="23"></Button></Panel>
+        <Panel><Button id="hide_ui_red" onClick="Global/hideRedUI" image="Hide UI" preserveAspect="true" width="100" height="23"></Button></Panel>
+        <Panel><Button id="close_ui_red" onClick="Global/closeRedUI" image="Close UI" preserveAspect="true" width="100" height="23"></Button></Panel>
     </HorizontalLayout>
 </Panel>
 
 <Panel id="ui_show_red" class="manageButtonBottom" visibility="Red" active="false">
     <HorizontalLayout>
-        <Panel><Button id="show_ui_red" onClick="ab8b38/show_ui_red" image="Show UI" preserveAspect="true" width="100" height="23"></Button></Panel>
-        <Panel><Button id="close_ui_red" onClick="ab8b38/close_ui_red" image="Close UI" preserveAspect="true" width="100" height="23"></Button></Panel>
+        <Panel><Button id="show_ui_red" onClick="Global/showRedUI" image="Show UI" preserveAspect="true" width="100" height="23"></Button></Panel>
+        <Panel><Button id="close_ui_red_show" onClick="Global/closeRedUI" image="Close UI" preserveAspect="true" width="100" height="23"></Button></Panel>
     </HorizontalLayout>
 </Panel>
 
@@ -783,7 +783,7 @@
     <Button
         id="bot_incident"
         active="false"
-        onClick="ab8b38/bot_take_incident"
+        onClick="Global/botTakeIncident"
         rectAlignment="LowerRight"
         offsetXY="-68 810"
         showAnimation="Grow"
@@ -795,7 +795,7 @@
     <Button
         id="bot_log"
         active="false"
-        onClick="ab8b38/bot_deck_log"
+        onClick="Global/botLogCard"
         rectAlignment="LowerRight"
         offsetXY="-68 740"
         showAnimation="Grow"
@@ -807,7 +807,7 @@
     <Button
         id="bot_discard_x3"
         active="false"
-        onClick="ab8b38/bot_discard_three"
+        onClick="Global/botDiscardThree"
         rectAlignment="LowerRight"
         offsetXY="-68 670"
         showAnimation="Grow"
@@ -819,7 +819,7 @@
     <Button
         id="bot_discard"
         active="false"
-        onClick="ab8b38/bot_deck_discard"
+        onClick="Global/botDeckDiscard"
         rectAlignment="LowerRight"
         offsetXY="-68 600"
         showAnimation="Grow"
@@ -832,7 +832,7 @@
     <Button
         id="bot_next_action_control"
         active="false"
-        onClick="e28824/click_self_button"
+        onClick="Global/clickNextBotAction"
         rectAlignment="LowerRight"
         offsetXY="-68 500"
         showAnimation="Grow"
@@ -844,7 +844,7 @@
     <Button
         id="bot_next_action_action"
         active="false"
-        onClick="e28824/click_self_button"
+        onClick="Global/clickNextBotAction"
         rectAlignment="LowerRight"
         offsetXY="-68 500"
         showAnimation="Grow"
@@ -856,7 +856,7 @@
     <Button
         id="bot_next_action_cleanup"
         active="false"
-        onClick="e28824/click_self_button"
+        onClick="Global/clickNextBotAction"
         rectAlignment="LowerRight"
         offsetXY="-68 500"
         showAnimation="Grow"
@@ -868,7 +868,7 @@
     <Button
         id="end_player_turn"
         active="false"
-        onClick="ab8b38/broadcast_playerturn"
+        onClick="Global/broadcastPlayerturn"
         rectAlignment="LowerRight"
         offsetXY="-68 500"
         showAnimation="Grow"

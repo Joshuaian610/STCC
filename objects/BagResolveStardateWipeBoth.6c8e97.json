@@ -1,0 +1,51 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
+  "ColorDiffuse": {
+    "b": 1,
+    "g": 0.37256,
+    "r": 0.30589
+  },
+  "ContainedObjects_order": [
+    "ButtonResolveStardate.f98522"
+  ],
+  "ContainedObjects_path": "BagResolveStardateWipeBoth.6c8e97",
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "",
+  "GUID": "6c8e97",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": true,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MaterialIndex": -1,
+  "MeasureMovement": false,
+  "MeshIndex": -1,
+  "Name": "Infinite_Bag",
+  "Nickname": "Bag Resolve Stardate Wipe Both",
+  "Snap": true,
+  "Sticky": true,
+  "Tooltip": true,
+  "Transform": {
+    "posX": 1.137,
+    "posY": -5.379,
+    "posZ": 29.593,
+    "rotX": 0,
+    "rotY": 180,
+    "rotZ": 0,
+    "scaleX": 0.5,
+    "scaleY": 0.5,
+    "scaleZ": 0.5
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

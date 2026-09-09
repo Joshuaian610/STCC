@@ -270,8 +270,8 @@ function onloadXML()
           UI.setAttribute(playerColor == "Blue" and "blue_vul_research" or "red_vul_research", "text", researchVal)
         end
 
-        if captainName ~= nil and Player[playerColor].seated then
-          UI.show(playerColor == "Blue" and "ui_hide_blue" or "ui_hide_red")
+        if captainName ~= nil then
+          UI.show((playerColor == "Blue" and "ui_hide_blue") or (playerColor == "Red" and "ui_hide_red"))
         end
 
       end)

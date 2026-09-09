@@ -468,6 +468,8 @@ end
 function setValue(newVal)
   -- handles setting a counter to a particular value
 
+  local playerColor = self.getName():find("Blue") and "Blue" or "Red"
+
   newVal = tonumber(newVal)
   if not newVal then return end
 
@@ -517,6 +519,10 @@ function setValue(newVal)
   self.UI.setAttribute(uiElement, "fontSize", fontSize)
   local textColor = "#FFFFFF"
   self.UI.setAttribute(uiElement, "textColor", textColor)
+
+  if counterType ~= "Stardate Glory" then
+    updateOnScreenXML(counterType, playerColor, val)
+  end
 
   updateSave()
 end
@@ -651,40 +657,54 @@ function pullStardateGlory(playerColor)
     -- take stardate card for opposing player if last glory is being taken
     if stardateGloryCount == 1 then
       local cardStardate = nil
+      local otherPlayerColor = playerColor == "Blue" and "Red" or "Blue"
       for _, zoneObj in pairs(stardateCheckZone.getObjects()) do
         -- handle single stardate card left
         if zoneObj.type == "Card" then
           cardStardate = zoneObj
-          -- getObjectFromGUID("ab8b38").call('button_stardate_trigger_endgame_remote', {button=stardate}) ** REVISIT creation of stardate card button
+
+          -- trigger end of game if last stardate card
+          local posRemove = { 0.00, 2.25, 27.50 }
+          zoneObj.setPositionSmooth(posRemove, false, true)
+          Global.call("stardateTriggerEndgame")
+          return
 
         -- handle pulling card from located deck if deck located
         elseif zoneObj.type == "Deck" then
-          local deckStardate = zoneObj
           cardStardate = zoneObj.takeObject()
-          local otherPlayerColor = playerColor == "Blue" and "Red" or "Blue"
-          local rotStardateCard = isBot and { 0, 270, 0 } or { 0, 90, 0 }
-          local posStardateCard = otherPlayerColor == "Blue" and { -24.00, 0.76, 15.00 } or { 24.00, 0.76, -15.00 }
-          cardStardate.setRotation(rotStardateCard)
-          cardStardate.setPositionSmooth(posStardateCard, false, true)
-
-          -- broadcast
-          Wait.time(function()
-
-            local playerStr = Global.call("getPlayerStr", playerColor)
-            local otherPlayerStr = Global.call("getPlayerStr", otherPlayerColor)
-            local stardateName = cardStardate.getName()
-            local broadcastStr = string.format("%s has given %s to %s.", playerStr, stardateName, otherPlayerStr)
-            broadcastToAll(broadcastStr, "White")
-
-          end, 0.5)
-
-          Wait.time(function()
-
-            Global.call("refreshGlory")
-
-          end, 1)
         end
       end
+      if cardStardate == nil then return end
+
+      local rotStardateCard = otherPlayerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0 }
+      if isBot then rotStardateCard = otherPlayerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0 } end
+      local posStardateCard = otherPlayerColor == "Blue" and { -24.00, 0.76, 15.00 } or { 24.00, 0.76, -15.00 }
+      cardStardate.setRotation(rotStardateCard)
+      cardStardate.setPositionSmooth(posStardateCard, false, true)
+
+      -- pull & init resolve stardate button
+      Wait.time(function()
+
+        Global.call("placeButtonResolveStardate", otherPlayerColor)
+
+      end, 1)
+
+      -- broadcast
+      Wait.time(function()
+
+        local playerStr = Global.call("getPlayerStr", playerColor)
+        local otherPlayerStr = Global.call("getPlayerStr", otherPlayerColor)
+        local stardateName = cardStardate.getName()
+        local broadcastStr = string.format("%s has given %s to %s.", playerStr, stardateName, otherPlayerStr)
+        broadcastToAll(broadcastStr, "White")
+
+      end, 0.5)
+
+      Wait.time(function()
+
+        Global.call("refreshGlory")
+
+      end, 1)
     end
 
   -- if cadet mode, glory comes direct from bag, not card

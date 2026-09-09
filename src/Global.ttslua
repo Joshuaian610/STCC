@@ -2,6 +2,7 @@
 -- code by Nonprophet, which is why it sucks
 
 require("BeamedBags")
+require("ControlBot")
 require("ButtonsCaptain")
 require("ControlMarket")
 require("ControlNZ")
@@ -24,6 +25,13 @@ function onLoad()
   -- enable / disable non interactable objects
   local nonInt = false
   makeNonInteractable(nonInt)
+
+  -- if 1 seated player and is White (new load of mod, set to Blue)
+  local seatedPlayers = getSeatedPlayers()
+  local playerCount = #getSeatedPlayers()
+  if playerCount == 1 and seatedPlayers[1] == "White" then
+    Player["White"].changeColor("Blue")
+  end
 
   -- manually hide/show blue bot difficulty buttons, create buttons
   local botDifficultyButtonVisibility = false
@@ -186,6 +194,29 @@ function onObjectSpawn(obj)
   if obj.getName():find("Button Deck Gain Market") or obj.getName():find("Button Discard Gain Market") then
     initButtonGainCard(obj)
   end
+
+  -- handle creation of market add resource / end turn buttons
+  if obj.getName():find("Button Market Resource") then
+    initButtonAddResource(obj)
+  end
+
+  -- handle creation of next bot action button if it exists
+  if obj.getName() == "Button Next Bot Action" then
+    initButtonNextBotAction(obj)
+  end
+
+  -- handle creation of solo get MVP button
+  if obj.getName() == "Button Most Value" then
+    initButtonGetMVP(obj)
+  end
+
+  -- handle creation of resolve stardate buttons
+  if obj.getName():find("Button Resolve Stardate") then
+    initButtonResolveStardate(obj)
+    local color = obj.getColorTint()
+    obj.highlightOn(color)
+  end
+
 end
 
 
@@ -195,13 +226,22 @@ end
 
 
 function onObjectEnterContainer(container, object)
-    -- keep highlighting consistent when away teams stack
-    if container.hasTag('away_blue') and object.hasTag('away_blue') then
-        container.highlightOn("Blue")
-    end
-    if container.hasTag('away_red') and object.hasTag('away_red') then
-        container.highlightOn("Red")
-    end
+  -- keep highlighting consistent when away teams stack
+  if container.hasTag('away_blue') and object.hasTag('away_blue') then
+    container.highlightOn("Blue")
+  end
+  if container.hasTag('away_red') and object.hasTag('away_red') then
+    container.highlightOn("Red")
+  end
+
+  -- handle glory token drop increasing related counters
+  if container.getName() == "Glory Token Bag" and object.getName() == "Glory Token" then
+    local playerColor = container.getGMNotes()
+    local counter = getObjectbyName("Glory Counter " .. playerColor)
+    local val = counter.getVar("val")
+    local newVal = val + 1
+    counter.call("setValue", newVal)
+  end
 end
 
 

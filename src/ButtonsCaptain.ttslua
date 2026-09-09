@@ -696,7 +696,9 @@ function pullActionToken(buttonObj, _, _)
 end
 
 
-function refreshDrawDeck(buttonObj, _, altClick)
+
+
+function refreshDrawDeck(buttonObj, _, altClick, dealCount)
 
   -- wrapper function to handle the refresh draw deck button functionality
 
@@ -705,64 +707,130 @@ function refreshDrawDeck(buttonObj, _, altClick)
   local playerColor = buttonObj.getName():find("Blue") and "Blue" or "Red"
   local isBot = checkPlayerColorIsBot(playerColor)
 
-  -- find card or deck in discard, return out if none found
-  local discardObj = getDiscardObject(playerColor)
-  if discardObj == nil then
-    broadcastToAll("Discard is currently empty!" , "Orange")
-    return
-  end
-
-  -- manipulate the found discardObj (move to draw deck pad, shuffle, rename if deck, etc)
-  refreshDiscardObject(discardObj, playerColor, isBot)
-
-  -- return out here if isBot or altClick, before code that enlists & draws up to hand size
-  if altClick or isBot then return end
-
   -- determine the maximum hand count for given playerColor
   local maxHandCount = getMaxHand(playerColor)
   local initialHandCount = Player[playerColor].getHandObjects()
   local currentHandCount = #initialHandCount
 
-  log("maxHandCount: " .. maxHandCount)
-  log("initialHandCount: " .. #initialHandCount)
-  log("currentHandCount: " .. currentHandCount)
+  local remainingToDraw = dealCount ~= nil
+    and dealCount
+    or math.max(0, maxHandCount - currentHandCount)
 
-  local remainingToDraw = math.max(0, maxHandCount - currentHandCount)
+  if remainingToDraw <= 0 and not isBot then return end
 
-  if remainingToDraw <= 0 then return end
+  -- find card or deck in draw deck
+  local drawDeckZone = getObjectbyNameAndNotes("Zone Draw Deck", playerColor)
+  local drawDeckObj
 
-  local reservesZone = getObjectbyNameAndNotes("Zone Reserves", playerColor)
-  local devZone = getObjectbyNameAndNotes("Zone Development", playerColor)
-  local handZone = getObjectbyNameAndNotes("Handzone", playerColor)
+  if drawDeckZone ~= nil then
+    for _, zoneObj in pairs(drawDeckZone.getObjects()) do
+      if zoneObj.tag == "Card" or zoneObj.tag == "Deck" then
+        drawDeckObj = zoneObj
+        break
+      end
+    end
+  end
 
-  -- always enlist 1 from Reserves if available, else Development
-  local reserveObj = getReserveObject(reservesZone)
+  -- bots never draw to hand
+  -- only refresh the discard when the draw deck is empty
+  if isBot then
+    if drawDeckObj ~= nil then return end
 
-  if reserveObj ~= nil then
-    enlistReserveCard(reserveObj, handZone, playerColor)
-    remainingToDraw = remainingToDraw - 1
-  else
-    enlistDevelopmentCard(devZone, playerColor, remainingToDraw, maxHandCount)
+    local discardObj = getDiscardObject(playerColor)
+    if discardObj == nil then return end
+
+    refreshDiscardObject(discardObj, playerColor, isBot)
     return
   end
 
-  if remainingToDraw <= 0 then return end
+  -- first attempt to deal from the existing draw deck
+  local drewFromDrawDeck = false
 
-  -- attempt to deal from refreshed deck
-  remainingToDraw = drawFromRefreshedDeck(discardObj, remainingToDraw, playerColor)
+  if drawDeckObj ~= nil then
+    local previousRemaining = remainingToDraw
 
-  -- all done? all done.
-  if remainingToDraw <= 0 then return end
+    remainingToDraw = drawFromRefreshedDeck(
+      drawDeckObj,
+      remainingToDraw,
+      playerColor
+    )
 
-  -- recursive fallback to Reserves or Development
-  continueDrawing(remainingToDraw, reservesZone, devZone, handZone, playerColor, maxHandCount)
+    if remainingToDraw < previousRemaining then
+      drewFromDrawDeck = true
+    end
+
+    if remainingToDraw <= 0 then return end
+  end
+
+  local function continueDraw()
+
+    -- return out here if altClick
+    if altClick then
+      local discardObj = getDiscardObject(playerColor)
+      if discardObj == nil then return end
+
+      refreshDiscardObject(discardObj, playerColor, isBot)
+      return
+    end
+
+    -- find card or deck in discard, return out if none found
+    local discardObj = getDiscardObject(playerColor)
+    if discardObj == nil then return end
+
+    -- manipulate the found discardObj
+    refreshDiscardObject(discardObj, playerColor, isBot)
+
+    local reservesZone = getObjectbyNameAndNotes("Zone Reserves", playerColor)
+    local devZone = getObjectbyNameAndNotes("Zone Development", playerColor)
+    local handZone = getObjectbyNameAndNotes("Handzone", playerColor)
+
+    -- try to enlist 1 Reserve as part of the draw
+    local reserveObj = getReserveObject(reservesZone)
+
+    if reserveObj ~= nil then
+      enlistReserveCard(reserveObj, handZone, playerColor)
+      remainingToDraw = remainingToDraw - 1
+    else
+      enlistDevelopmentCard(devZone, playerColor, remainingToDraw, maxHandCount)
+      return
+    end
+
+    if remainingToDraw <= 0 then return end
+
+    -- attempt to deal remaining cards from refreshed deck
+    remainingToDraw = drawFromRefreshedDeck(
+      discardObj,
+      remainingToDraw,
+      playerColor
+    )
+
+    if remainingToDraw <= 0 then return end
+
+    -- refreshed deck did not contain enough cards; enlist Development for the remainder
+    enlistDevelopmentCard(devZone, playerColor, remainingToDraw, maxHandCount)
+
+  end
+
+  -- wait before refreshing the discard if cards were drawn from the existing deck
+  if drewFromDrawDeck then
+    Wait.time(continueDraw, 0.5)
+  else
+    continueDraw()
+  end
+
 end
 
 
-function getMaxHand(playerColor)
+
+
+
+function getMaxHand(playerColor, captainName)
   -- handles detection of current captain & conditions to determine and return max hand size
 
   local maxHand = 5 -- default is usually 5 - REVISIT add special hand size cases below
+
+  -- handle rebner only having 3
+  if captainName == "Rebner" or getCaptainName(playerColor) == "Rebner" then maxHand = 3 end
 
   local dutyCheckZone = getObjectbyNameAndNotes("Zone Duty Officer", playerColor)
   local deployCheckZones = {
@@ -776,6 +844,9 @@ function getMaxHand(playerColor)
       if zoneObj.getName() == "Guardian Of Forever" then
         maxHand = maxHand + 1
       end
+      if zoneObj.getName() == "Ceti Alpha V" then
+        maxHand = maxHand + 1
+      end
     end
   end
 
@@ -785,12 +856,13 @@ function getMaxHand(playerColor)
 
       -- +1 duty officer cards
       if zoneObj.getName() == "Arne Darvin" or zoneObj.getName() == "T'Pel" or
-      zoneObj.getName() == "Talok" or zoneObj.getName() == "Joret Dal" then
+      zoneObj.getName() == "Talok" or zoneObj.getName() == "Joret Dal" or zoneObj.getName() == "Inert Dilithium" or 
+      zoneObj.getName() == "Barry Waddle" or zoneObj.getName() == "William Boimler, Lt. JG" then
         maxHand = maxHand + 1
       end
 
       -- +2 duty officer cards
-      if zoneObj.getName() == "Garak" then
+      if zoneObj.getName() == "Garak" or zoneObj.getName() == "Thelev" then
         maxHand = maxHand + 2
       end
 
@@ -807,6 +879,41 @@ function getMaxHand(playerColor)
           end
         end
       end
+
+      -- handle agent daniels (+ hand size based on focus count)
+      if zoneObj.getName() == "Agent Daniels" then
+        local counters = {
+          getObjectbyName("Influence Counter " .. playerColor),
+          getObjectbyName("Military Counter " .. playerColor),
+          getObjectbyName("Research Counter " .. playerColor),
+        }
+        for i = 1, 3 do
+          if counters[i].getVar("val") > 5 then
+            maxHand = maxHand + 1
+          end
+        end
+      end
+
+      -- handle minister kuvak (+ hand size based on non vulcan locations in play, max 3)
+      if zoneObj.getName() == "Minister Kuvak" then
+        local nonVulcanLocationCount = 0
+        local checkZones = {
+          getObjectbyNameAndNotes("Zone Deploy Location", playerColor),
+          getObjectbyNameAndNotes("Zone Deploy Ship", playerColor),
+        }
+        for i = 1, 2 do
+          for _, checkZoneObj in pairs(checkZones[i].getObjects()) do
+            if checkZoneObj.hasTag("suit_location") and not checkZoneObj.hasTag("trait_vulcan") then
+              nonVulcanLocationCount = nonVulcanLocationCount + 1
+            end
+          end
+        end
+        if nonVulcanLocationCount > 3 then nonVulcanLocationCount = 3 end
+        if nonVulcanLocationCount > 0 then
+          maxHand = maxHand + nonVulcanLocationCount
+        end
+      end
+
     end
   end
   return maxHand
@@ -1022,4 +1129,110 @@ function handleTurnResupplyBroadcast(playerColor)
 
     end, 0.5)
   end
+end
+
+
+
+
+
+
+
+
+function refreshPlayerArea(playerColor)
+  -- handles cleanup of a player area on turn end
+
+  -- check for stardate card in zones, announce reminder and return out if one is located
+  local stardateCheckZone = getObjectbyNameAndNotes("Zone Stardate Player", playerColor)
+  local isBot = checkPlayerColorIsBot(playerColor)
+  for _, object in pairs(stardateCheckZone.getObjects()) do
+    if string.find(object.getName(), "Stardate") then
+      local playerStr = getPlayerStr(playerColor)
+      local broadcastStr = string.format("%s: Stardate Card found in player area. Resolve and remove Stardate card at the beginning of Clean-Up Step.", playerStr)
+      broadcastToAll(broadcastStr, "Orange")
+      return
+    end
+  end
+
+  -- refresh action tokens
+  local actionTokens = {}
+  for _, object in pairs(getObjects()) do
+    if object.getName() == "Action Token" and object.getGMNotes() == playerColor then
+      table.insert(actionTokens, object)
+    end
+  end
+  local rotActionTokens = playerColor == "Blue" and { 0.00, 120.00, 0.00 } or { 0.00, 300.00, 180.00 }
+  local posActionTokens = playerColor == "Blue" and { { -34.25, 0.80, 22.50 }, { -34.25, 0.80, 20.50 }, { -34.25, 0.80, 18.50 } } or
+                                                    { { 34.25, 0.80, -22.50 }, { 34.25, 0.80, -20.50 }, { 34.25, 0.80, -18.50 } }
+  if #actionTokens > 0 then
+    for i = 1, #actionTokens do
+      if actionTokens[i] ~= nil then
+        actionTokens[i].setRotation(rotActionTokens)
+        actionTokens[i].setPositionSmooth(posActionTokens[i], false, true)
+      end
+    end
+  end
+
+  -- discard staging area cards
+  local checkZone = getObjectbyNameAndNotes("Zone In Play", playerColor)
+  local rotDiscard = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+  if isBot then rotDiscard = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 } end
+  local posDiscard = playerColor == "Blue" and { -44.57, 2.00, -21.00 } or { 44.57, 2.00, 21.00 }
+  for _, zoneObj in pairs(checkZone.getObjects()) do
+    if zoneObj.tag == "Card" or zoneObj.tag == "Deck" then
+      zoneObj.setRotation(rotDiscard)
+      zoneObj.setPositionSmooth(posDiscard, false, true)
+    end
+  end
+
+  -- refresh exhausted cards
+  local checkZones = {
+    getObjectbyNameAndNotes("Zone Captain", playerColor),
+    getObjectbyNameAndNotes("Zone Deploy Ship", playerColor),
+    getObjectbyNameAndNotes("Zone Duty Officer", playerColor),
+    getObjectbyNameAndNotes("Zone Deploy Location", playerColor),
+  }
+  local rotRefresh = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+  for i = 1, #checkZones do
+    for _, zoneObj in pairs(checkZones[i].getObjects()) do
+      if zoneObj.tag == "Card" then
+        zoneObj.setRotationSmooth(rotRefresh, false, true)
+      end
+    end
+  end
+
+  -- destroy any summoned action tokens
+  local tokenCount  = 0
+  for _, object in pairs(getObjects()) do
+    if object.hasTag('refresh_destruct_' .. string.lower(playerColor)) then
+      object.destruct()
+      tokenCount  = tokenCount + 1
+    end
+  end
+  if tokenCount > 0 then
+    local playerStr = getPlayerStr(playerColor)
+    local broadcastStr = string.format("%s - Extra Action Token%s %s been destroyed.", playerStr, tokenCount > 1 and "s" or "", tokenCount > 1 and "have" or "has")
+    broadcastToAll(broadcastStr, "White")
+  end
+  -- -- remove on turn end cloaking
+  -- local zone_1 = playerarea_color == "Blue" and getObjectFromGUID("2c336e") or getObjectFromGUID("77d0cb")
+  -- local zone_2 = playerarea_color == "Blue" and getObjectFromGUID("fc7f21") or getObjectFromGUID("5103b2")
+  -- local zones  = {zone_1, zone_2}
+  -- for i = 1, 2 do
+  --     for _, object in pairs(zones[i].getObjects()) do
+  --         local desc = object.getDescription()
+  --         local cloaked_via = desc:sub(1, 11) == "Cloaked via"
+  --         if cloaked_via then
+  --             object.setDescription("")
+  --             object.highlightOff()
+  --             object.removeTag('trait_cloak')
+  --             -- change ship color back to playerarea_color
+  --             for _, obj in pairs(getObjects()) do
+  --                 if (obj.getName() == object.getName()) and obj.hasTag('snap_ship') then
+  --                     obj.highlightOff()
+  --                     obj.highlightOn(playerarea_color)
+  --                 end
+  --             end
+  --         end
+  --     end
+  -- end
 end

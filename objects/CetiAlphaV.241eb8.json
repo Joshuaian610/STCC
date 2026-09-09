@@ -5,14 +5,14 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 19100,
+  "CardID": 60100,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "191": {
+    "601": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/15505471987704147950/DD0346D399BABF3DEB1DA5860C57C2568BC73E98/",
       "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/15417638572686411274/2A57756D13336239494A1B4407994DAF209F9DBE/",

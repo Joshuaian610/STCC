@@ -1,0 +1,2415 @@
+-- contains functions associated with the Solo bot functionality
+
+
+function initButtonNextBotAction(buttonObj)
+  -- steps = "Control", "Action", Cleanup
+  local currentBotTurnStep = buttonObj.getGMNotes()
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "bot" .. currentBotTurnStep .. "Step",
+    function_owner = self,
+    label          = "",
+    position       = { 0, 0.36, 0.02 },
+    rotation       = { 0, 180, 0 },
+    width          = 865,
+    height         = 435,
+    scale          = { 2.3, 2.3, 2.3 },
+    color          = { 1, 1, 1, .3 },
+    hover_color    = { 1, 1, 1, .6 },
+    tooltip        = "Perform next bot " .. currentBotTurnStep .. " Step action.",
+  })
+end
+
+
+function initButtonGetMVP(buttonObj)
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "getBotMVPs",
+    function_owner = self,
+    label          = "",
+    position       = { 0.00, 0.36, 0.050 },
+    width          = 1050,
+    height         = 250,
+    scale          = { 1, 1, 1 },
+    color          = { 1, 1, 1, .3 },
+    hover_color    = { 1, 1, 1, .6 },
+    tooltip        = "Left Clicking this button will broadcast the current Most Valuable Market and Location Cards for the Bot Player.\n\nRight Clicking will broadcast the current Least Valuable Market and Location Cards for the Bot Player.",
+  })
+  buttonObj.createButton({
+    click_function = "getHumanMVPs",
+    function_owner = self,
+    label          = "",
+    position       = { 0.00, 0.36, 0.615 },
+    width          = 1050,
+    height         = 250,
+    scale          = { 1, 1, 1 },
+    color          = { 1, 1, 1, .3 },
+    hover_color    = { 1, 1, 1, .6 },
+    tooltip        = "Left Clicking this button will broadcast the current Most Valuable Market and Location Cards for the Human Player.\n\nRight Clicking will broadcast the current Least Valuable Market and Location Cards for the Human Player.",
+  })
+end
+
+
+
+
+
+-- BUTTON GET MVP STUFF
+-- type == "Location" or "Market"
+function getCardValues(playerColor, type)
+  -- handles collection of current card values for type
+
+  local checkZones = type == "Market" and {
+    getObjectbyName("Zone Market Current Person"),
+    getObjectbyName("Zone Market Current Cargo"),
+    getObjectbyName("Zone Market Current Ship"),
+    getObjectbyName("Zone Market Current Ally"),
+  } or {
+    getObjectbyName("Zone NZ Location Top"),
+    getObjectbyName("Zone NZ Location Middle"),
+    getObjectbyName("Zone NZ Location Bottom"),
+  }
+
+  -- swap location zone index in case of playerColor Red
+  if playerColor == "Red" and type == "Location" then
+    checkZones = {
+      getObjectbyName("Zone NZ Location Bottom"),
+      getObjectbyName("Zone NZ Location Middle"),
+      getObjectbyName("Zone NZ Location Top"),
+    }
+  end
+
+  local captainName = getCaptainName(playerColor)
+  if captainName == nil then return end
+
+  local influenceCount = 0
+  local militaryCount = 0
+  local researchCount = 0
+  if getObjectbyName("Influence Counter " .. playerColor) ~= nil then
+    influenceCount = getObjectbyName("Influence Counter " .. playerColor).getVar("val")
+  end
+  if getObjectbyName("Military Counter " .. playerColor) ~= nil then
+    militaryCount = getObjectbyName("Military Counter " .. playerColor).getVar("val")
+  end
+  if getObjectbyName("Research Counter " .. playerColor) ~= nil then
+    researchCount = getObjectbyName("Research Counter " .. playerColor).getVar("val")
+  end
+
+  local influenceMultiplier
+  local militaryMultiplier
+  local researchMultiplier
+
+  if captainName == "Khan" then
+    influenceMultiplier = 0
+    militaryMultiplier = 0
+    researchMultiplier = 0
+  else
+    influenceMultiplier, militaryMultiplier, researchMultiplier = getTrackMultipliers(
+      captainName,
+      influenceCount,
+      militaryCount,
+      researchCount
+    )
+  end
+
+  local cards = {}
+
+  for i = 1, #checkZones do
+    local currentCards = {}
+
+    for _, zoneObj in pairs(checkZones[i].getObjects()) do
+      if zoneObj.type == "Card" then
+        local currentCard = zoneObj
+
+        -- create card entry
+        local cardValues = {
+          obj = currentCard,
+          vp = nil,
+          glory = nil,
+          latinum = nil,
+          dilithium = nil,
+          index = i,
+        }
+
+        -- get [vp]
+        local totalPrintedScore = 0
+
+        -- get printed VP
+        local printedVpScore = 0
+        if currentCard.getGMNotes():find("VP=") then
+          printedVpScore = tonumber(string.match(currentCard.getGMNotes(), "VP=(-?%d+)")) or 0
+        end
+
+        -- get focus VP
+        local focusVpScore = 0
+        if currentCard.getGMNotes() == "sci_multi" then focusVpScore = researchMultiplier end
+        if currentCard.getGMNotes() == "dip_multi" then focusVpScore = influenceMultiplier end
+        if currentCard.getGMNotes() == "mil_multi" then focusVpScore = militaryMultiplier end
+
+        -- get endgame VP
+        local endgameVpScore = 0
+        if currentCard.getName() == "Verex III" or currentCard.getName() == "Derna" or
+        currentCard.getName() == "Ba'ku" or currentCard.getName() == "Regula I" or
+        currentCard.getName() == "Daystrom Institute" or currentCard.getName() == "Boreth" or
+        currentCard.getName() == "Theta Zeta" or currentCard.getName() == "Coridan" or
+        currentCard.getName() == "Cold Station 12" or currentCard.getName() == "Azati Prime" or
+        currentCard.getName() == "Babel One" or currentCard.getName() == "Tellar Prime" or
+        currentCard.getName() == "Karzill VI" or currentCard.getName() == "Red Angel" or
+        currentCard.getName() == "Mount Seleya" or currentCard.getName() == "Paan Mokar" or
+        currentCard.getName() == "Vulcan" or currentCard.getName() == "Genesis Device" then
+          endgameVpScore = 5
+        end
+
+        cardValues.vp = printedVpScore + focusVpScore + endgameVpScore
+
+        -- get [glory] on card
+        local gloryCount = 0
+        for _, resourceObj in pairs(checkZones[i].getObjects()) do
+          if resourceObj.getName() == "Glory Token" then
+            gloryCount = gloryCount + 1
+          end
+        end
+        cardValues.glory = gloryCount
+
+        -- get [latinum] on card
+        local latinumCount = 0
+        for _, resourceObj in pairs(checkZones[i].getObjects()) do
+          if resourceObj.getName() == "Latinum Token" then
+            latinumCount = latinumCount + 1
+          end
+        end
+        cardValues.latinum = latinumCount
+
+        -- get [dilithium] on card
+        local dilithiumCount = 0
+        for _, resourceObj in pairs(checkZones[i].getObjects()) do
+          if resourceObj.getName() == "Dilithium Token" then
+            dilithiumCount = dilithiumCount + 1
+          end
+        end
+        cardValues.dilithium = dilithiumCount
+
+        -- if freeman bot and lower decker card, value +1
+        if captainName == "Freeman" and zoneObj.hasTag("trait_lowerdecker") and
+           ((playerColor == "Blue" and checkPlayerColorIsBot("Blue")) or (playerColor == "Red" and checkPlayerColorIsBot("Red"))) then
+          cardValues.vp = cardValues.vp + 1
+        end
+
+        -- if riker and his assortment of +1 value tagged card, value +1
+        if captainName == "Freeman" and
+           (zoneObj.hasTag("trait_lowerdecker") or zoneObj.hasTag("trait_nx01") or zoneObj.hasTag("trait_android") or
+           zoneObj.hasTag("trait_pakled") or zoneObj.hasTag("trait_beverage") or zoneObj.hasTag("trait_betazoid")) and
+           ((playerColor == "Blue" and checkPlayerColorIsBot("Blue")) or (playerColor == "Red" and checkPlayerColorIsBot("Red"))) then
+          cardValues.vp = cardValues.vp + 1
+        end
+
+        table.insert(currentCards, cardValues)
+      end
+    end
+
+    for _, card in ipairs(currentCards) do
+      table.insert(cards, card)
+    end
+  end
+
+  return cards
+end
+
+
+function getMVPCard(cards, altClick)
+  -- takes table generated by getCardValues, determines most valued
+
+  if #cards == 0 then return end
+
+  for _, card in ipairs(cards) do
+    local totalVP = (card.vp or 0) + (card.glory or 0)
+    local totalResources = (card.glory or 0) + (card.dilithium or 0) + (card.latinum or 0)
+    card.totalVP = totalVP
+    card.totalResources = totalResources
+    card.index = card.index or 99
+  end
+
+  local function compareMostValuable(a, b)
+    if a.totalVP ~= b.totalVP then return a.totalVP > b.totalVP end
+    if a.totalResources ~= b.totalResources then return a.totalResources > b.totalResources end
+    return a.index < b.index
+  end
+
+  local function compareLeastValuable(a, b)
+    if a.totalVP ~= b.totalVP then return a.totalVP < b.totalVP end
+    if a.totalResources ~= b.totalResources then return a.totalResources < b.totalResources end
+    return a.index < b.index
+  end
+
+  if altClick then
+    table.sort(cards, compareLeastValuable)
+    return cards[1].obj.getName()
+  elseif not altClick then
+    table.sort(cards, compareMostValuable)
+    return cards[1].obj.getName()
+  end
+end
+
+
+function getBotMVPs(_, _, altClick)
+  getMVPs(altClick, "Bot")
+end
+
+
+function getHumanMVPs(_, _, altClick)
+  getMVPs(altClick, "Human")
+end
+
+
+function getMVPs(altClick, contestentType)
+  -- pulls card values & reports mvps for location & market
+
+  local botColor, playerColor = getSoloColors()
+  local contestentColor = (contestentType == "Bot" and botColor) or (contestentType == "Human" and playerColor)
+  local botStr = getPlayerStr(botColor)
+  local playerStr = getPlayerStr(playerColor)
+  local contestentStr = (contestentType == "Bot" and botStr) or (contestentType == "Human" and playerStr)
+  local marketCards = getCardValues(contestentColor, "Market")
+  local locationCards = getCardValues(contestentColor, "Location")
+  local marketMVP = getMVPCard(marketCards, altClick)
+  local locationMVP = getMVPCard(locationCards, altClick)
+  local marketClr = Color.fromString("Yellow"):toHex()
+  local locationClr = Color.fromString("Green"):toHex()
+
+  -- altClick = true is least valuable, false is most valuable
+  local headlineStr = string.format("%s Current %s Valuable Cards:", contestentStr, altClick and "Least" or "Most")
+  local marketStr = string.format("[%s]Market[-]: %s", marketClr, marketMVP)
+  local locationStr = string.format("[%s]Location[-]: %s", locationClr, locationMVP)
+  broadcastToAll(headlineStr, "White")
+  Wait.time(function()
+
+    broadcastToAll(marketStr, "White")
+    broadcastToAll(locationStr, "White")
+
+  end, 0.5)
+end
+
+
+
+
+-- SOLO HELPER FUNCTIONS
+function getSoloColors()
+  -- determines & returns current botColor, humanColor
+  local botColor
+  local humanColor
+  if checkPlayerColorIsBot("Blue") then
+    botColor = "Blue"
+    humanColor = "Red"
+  elseif checkPlayerColorIsBot("Red") then
+    botColor = "Red"
+    humanColor = "Blue"
+  end
+  return botColor, humanColor
+end
+
+
+function getBotDeck()
+  -- determines & returns current bot deck object
+  local botColor, _ = getSoloColors()
+  local botDeck
+  local checkZone = getObjectbyNameAndNotes("Zone Draw Deck", botColor)
+  for _, zoneObj in pairs(checkZone.getObjects()) do
+    if zoneObj.type == "Deck" or zoneObj.type == "Card" then
+      botDeck = zoneObj
+    end
+  end
+  return botDeck
+end
+
+
+function checkIfDutyOfficer()
+  -- checks if bot has a DO in play, returns boolean
+  local botColor, _ = getSoloColors()
+  local checkZone = getObjectbyNameAndNotes("Zone Duty Officer", botColor)
+  for _, zoneObj in pairs(checkZone.getObjects()) do
+    if zoneObj.hasTag("suit_person") then
+      return true
+    end
+  end
+  return false
+end
+
+
+function botGainGlory()
+  -- handles the click of the XML bot gain glory button, gaining a single glory for the bot
+  local botColor, _ = getSoloColors()
+  local counter = getObjectbyName("Glory Counter " .. botColor)
+  counter.call("increaseValue")
+end
+
+
+function botTakeIncident()
+  -- handles functionality related to the bot taking an incident
+
+  UI.hide("bot_incident")
+  Wait.time(function() UI.show("bot_incident") end, 1)
+
+  local botColor, _ = getSoloColors()
+  local botStr = getPlayerStr(botColor)
+  local incidentColor = "9F110F"
+  local incidentCheckZone = getObjectbyName("Zone Incident")
+  local rotDeal = botColor == "Blue" and { 0.00, 90.00, 180.00 } or { 0.00, 270.00, 180.00 }
+  local posDeal = botColor == "Blue" and { -44.50, 1.50, 7.00 } or { 44.50, 1.50, -7.00 }
+  local incidentCard
+
+  for _, zoneObj in pairs(incidentCheckZone.getObjects()) do
+    if zoneObj.type == "Deck" then
+      incidentCard = zoneObj.takeObject()
+    elseif zoneObj.type == "Card" then
+      incidentCard = zoneObj
+      local burnStr = string.format("%s is taking last [b][%s]Incident[-][/b], [b][%s]Burn has been triggered![-][/b]", botStr, incidentColor, Color.fromString("Orange"):toHex())
+      broadcastToAll(burnStr, "White")
+      incidentCard.setRotation(rotDeal)
+      incidentCard.setPositionSmooth(posDeal, false, true)
+      return
+    end
+  end
+  if incidentCard ~= nil then
+    incidentCard.setRotation(rotDeal)
+    incidentCard.setPositionSmooth(posDeal, false, true)
+    local broadcastStr = string.format("%s has taken an [b][%s]Incident[-][/b].", botStr, incidentColor)
+    broadcastToAll(broadcastStr, "White")
+  elseif incidentCard == nil then
+    broadcastToAll("Incident Deck or Card Not Found! Has the Burn Happened?", "Orange")
+    return
+  end
+end
+
+
+function botLogCard()
+  -- handles functionality related to the solo bot logging a card off the top of it's deck
+
+  UI.hide("bot_log")
+  Wait.time(function() UI.show("bot_log") end, 1)
+
+  local botColor, _ = getSoloColors()
+  local botStr = getPlayerStr(botColor)
+  local captainName = getCaptainName(botColor)
+
+  local bagCaptainsLog = getObjectbyNameAndNotes("Captain's Log", botColor)
+  local buttonRefresh = getObjectbyName("Button Refresh Draw Deck " .. botColor)
+  local zoneDraw = getObjectbyNameAndNotes("Zone Draw Deck", botColor)
+  local zoneSupplement = getObjectbyNameAndNotes("Zone Development", botColor)
+  local discardCard
+  local drawDeck
+
+  for _, zoneObj in pairs(zoneDraw.getObjects()) do
+    if zoneObj.type == "Deck" or zoneObj.type == "Card" then
+      drawDeck = zoneObj
+      break
+    end
+  end
+
+  if drawDeck ~= nil then
+
+    local deckCount = drawDeck.type == "Deck" and #drawDeck.getObjects() or 1
+
+    -- if deck, simply take a card, if single card, detect and take it
+    if deckCount > 1 then
+      discardCard = drawDeck.takeObject()
+    elseif deckCount == 1 then
+      for _, zoneObj in pairs(zoneDraw.getObjects()) do
+        if zoneObj.type == "Card" then
+          discardCard = zoneObj
+          break
+        end
+      end
+    end
+
+    local cardName = discardCard.getName()
+    -- bot always returns incidents instead of logging them
+    if discardCard.hasTag("suit_incident") then
+      local rotIncidentReturn = { 0.00, 180.00, 0.00 }
+      local posIncidentReturn = { 12.50, 1.50, 4.00 }
+      discardCard.setRotation(rotIncidentReturn)
+      discardCard.setPositionSmooth(posIncidentReturn, false, true)
+
+      -- broadcast incident return
+      local incidentColor = "9F110F"
+      local broadcastStr = string.format(
+        "%s: Card to Log is an [b][%s]Incident[-][/b]! %s has Returned [b][%s]%s[-][/b] instead of Logging it.",
+        botStr, incidentColor, botStr, incidentColor, cardName
+      )
+      broadcastToAll(broadcastStr, "White")
+      return
+
+    -- handle non incident card logging action
+    elseif not discardCard.hasTag("suit_incident") then
+      local cardSuit = (discardCard.hasTag("suit_person") and "Person") or
+                       (discardCard.hasTag("suit_cargo") and "Cargo") or
+                       (discardCard.hasTag("suit_ship") and "Ship") or
+                       (discardCard.hasTag("suit_ally") and "Ally")
+      local suitColors = {
+        ["Person"] = "BFA42C",
+        ["Cargo"]  = "4173B4",
+        ["Ship"]   = "C8C8C8",
+        ["Ally"]   = "CD28C3",
+      }
+      local suitColor = suitColors[cardSuit] or "FFFFFF"
+      local broadcastStr = string.format("%s has Logged Card: [b][%s]%s[-][/b].", botStr, suitColor, cardName)
+      broadcastToAll(broadcastStr, "White")
+
+      bagCaptainsLog.putObject(discardCard)
+    end
+
+  elseif drawDeck == nil then
+    -- if required, refresh bot draw deck before proceeding
+    refreshDrawDeck(buttonRefresh, _, true, 0)
+
+    -- wait a tic, then, get supplement deck, pull card
+    Wait.time(function()
+
+      for _, zoneObj in pairs(zoneSupplement.getObjects()) do
+        if zoneObj.type == "Deck" then
+          discardCard = zoneObj.takeObject()
+          break
+        elseif zoneObj.type == "Card" then
+          discardCard = zoneObj
+        end
+      end
+
+      -- fall back to draw deck if supplement deck is gone
+      if discardCard == nil then
+        local botDeck = getBotDeck()
+        if botDeck ~= nil then
+          if botDeck.type == "Deck" then
+            discardCard = botDeck.takeObject()
+          elseif botDeck.type == "Card" then
+            discardCard = botDeck
+          end
+        end
+      end
+
+      if discardCard == nil then return end
+      local cardName = discardCard.getName()
+      local rotDiscard = botColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
+      local posDiscard = botColor == "Blue" and { -44.50, 1.50, -21.00 } or { 44.50, 1.50, 21.00 }
+
+      -- now then, we have a discard card
+      -- if it's an incident, return it
+      local cardSuit = (discardCard.hasTag("suit_person") and "Person") or
+                       (discardCard.hasTag("suit_cargo") and "Cargo") or
+                       (discardCard.hasTag("suit_ship") and "Ship") or
+                       (discardCard.hasTag("suit_ally") and "Ally")
+      local suitColors = {
+        ["Person"] = "BFA42C",
+        ["Cargo"]  = "4173B4",
+        ["Ship"]   = "C8C8C8",
+        ["Ally"]   = "CD28C3",
+      }
+      local suitColor = suitColors[cardSuit] or "FFFFFF"
+
+      if discardCard.hasTag("suit_incident") then
+        local rotIncidentReturn = { 0.00, 180.00, 0.00 }
+        local posIncidentReturn = { 12.50, 1.50, 4.00 }
+        discardCard.setRotation(rotIncidentReturn)
+        discardCard.setPositionSmooth(posIncidentReturn, false, true)
+
+        -- broadcast incident return
+        local incidentColor = "9F110F"
+        local broadcastStr = string.format(
+          "%s: Card to Log is an [b][%s]Incident[-][/b]! %s has Returned [b][%s]%s[-][/b] instead of Logging it.",
+          botStr, incidentColor, botStr, incidentColor, cardName
+        )
+        broadcastToAll(broadcastStr, "White")
+        return
+
+      -- if it's soval bot and path of surak, discard it
+      elseif discardCard.hasTag("trait_pathofsurak") and captainName == "Soval" then
+        local broadcastStr = string.format(
+          "%s: Card to Log is a Path Of Surak! %s has Discarded %s instead of Logging it.",
+          botStr, botStr, cardName
+        )
+        broadcastToAll(broadcastStr, "White")
+        return
+
+      -- if it's freeman bot and lower decker, discard it
+      elseif discardCard.hasTag("trait_lowerdecker") and captainName == "Freeman" then
+        local broadcastStr = string.format(
+          "%s: Card to Log is a Lower Decker! %s has Discarded %s instead of Logging it.",
+          botStr, botStr, cardName
+        )
+        broadcastToAll(broadcastStr, "White")
+        return
+
+      else -- all other cases
+        local broadcastStr = string.format("%s has Logged Card: [b][%s]%s[-][/b].", botStr, suitColor, cardName)
+        broadcastToAll(broadcastStr, "White")
+
+        bagCaptainsLog.putObject(discardCard)
+      end
+
+    end, 0.5)
+  end
+end
+
+
+function botDeckDraw(dealCount)
+
+  -- handles the draw of dealCount from the bot draw deck to staging area
+  local botColor, _ = getSoloColors()
+  local botDeck = getBotDeck()
+  local rotDeal = botColor == "Blue" and { 0, 90, 180 } or { 0, 270, 180 }
+  local posDeal = botColor == "Blue" and {
+    { -44.50, 0.96, 2.80 },
+    { -44.50, 0.96, -1.07 },
+    { -44.50, 0.96, -4.98 },
+    { -44.50, 0.96, -8.90 },
+    { -44.50, 0.96, -12.82 },
+  } or {
+    { 44.50, 0.96, -2.80 },
+    { 44.50, 0.96, 1.07 },
+    { 44.50, 0.96, 4.98 },
+    { 44.50, 0.96, 8.90 },
+    { 44.50, 0.96, 12.82 },
+  }
+  local deckCount = 0
+  if botDeck ~= nil then
+    deckCount = (botDeck.type == "Deck") and #botDeck.getObjects() or 1
+  end
+  local toDrawNow = math.min(dealCount, deckCount)
+
+  -- draw as many as possible from current bot deck
+  for i = 1, toDrawNow do
+    local card
+    if botDeck.type == "Deck" then
+      card = botDeck.takeObject()
+    elseif botDeck.type == "Card" then
+      card = botDeck
+      botDeck = nil
+    end
+    card.setRotation(rotDeal)
+    card.setPositionSmooth(posDeal[i], false, true)
+  end
+
+  local remainingToDeal = dealCount - toDrawNow
+
+  if remainingToDeal > 0 then
+    Wait.time(function()
+
+      botDeckRefresh(toDrawNow + 1, remainingToDeal, rotDeal, posDeal, dealCount)
+
+    end, 0.5)
+  elseif remainingToDeal < 1 then
+    local botStr = getPlayerStr(botColor)
+    local broadcastStr = string.format("%s has dealt itself %d facedown cards.", botStr, dealCount)
+    broadcastToAll(broadcastStr, "White")
+  end
+end
+
+
+function botDeckRefresh(nextSlot, remainingDealCount, rotDeal, posDeal, dealCount)
+  -- handles the refresh of the bot deck in the case of remaining cards to be dealt after refresh
+
+  local botColor, _ = getSoloColors()
+  local botStr = getPlayerStr(botColor)
+  local buttonRefresh = getObjectbyName("Button Refresh Draw Deck " .. botColor)
+
+  refreshDrawDeck(buttonRefresh, _, false, remainingDealCount)
+
+  -- disable UI while refreshing
+  UI.setAttribute("bot_controls", "active", "false")
+
+  Wait.time(function()
+
+    local supplementZone = getObjectbyNameAndNotes("Zone Development", botColor)
+    local deckSupplement = nil
+
+    for _, zoneObj in pairs(supplementZone.getObjects()) do
+      if zoneObj.type == "Deck" or zoneObj.type == "Card" then
+        deckSupplement = zoneObj
+        break
+      end
+    end
+
+    if deckSupplement then
+      local card
+
+      if deckSupplement.type == "Deck" then
+        card = deckSupplement.takeObject()
+      elseif deckSupplement.type == "Card" then
+        card = deckSupplement
+      end
+
+      if card then
+        card.setRotation(rotDeal)
+        card.setPositionSmooth(posDeal[nextSlot+1], false, true)
+      end
+    end
+
+  end, 0.5)
+
+  Wait.time(function()
+
+    local botDeck = getBotDeck()
+
+    if botDeck then
+
+      if botDeck.type == "Card" then
+        botDeck.setRotation(rotDeal)
+        botDeck.setPosition(posDeal[nextSlot], false, true)
+        remainingDealCount = remainingDealCount - 1
+        nextSlot = nextSlot + 1
+
+      elseif botDeck.type == "Deck" then
+        local deckCount = #botDeck.getObjects()
+        local toDraw = math.min(deckCount, remainingDealCount)
+
+        for i = 0, toDraw - 1 do
+          local card = botDeck.takeObject()
+          card.setPositionSmooth(posDeal[nextSlot], false, true)
+        end
+
+        nextSlot = nextSlot + toDraw
+        remainingDealCount = remainingDealCount - toDraw
+      end
+
+      if remainingDealCount > 0 then
+        Wait.time(function()
+
+          botDeckRefresh(
+            nextSlot,
+            remainingDealCount,
+            rotDeal,
+            posDeal,
+            dealCount
+          )
+
+        end, 0.5)
+      else
+        local broadcastStr = string.format(
+          "%s has finished dealing %d facedown cards.",
+          botStr,
+          dealCount
+        )
+        broadcastToAll(broadcastStr, "White")
+        UI.setAttribute("bot_controls", "active", "true")
+      end
+
+    else
+      -- handle case of no found bot deck
+      local broadcastStr = string.format(
+        "%s attempted to refresh its deck, but the refreshed draw deck is empty.",
+        botStr
+      )
+      broadcastToAll(broadcastStr, "White")
+      UI.setAttribute("bot_controls", "active", "true")
+    end
+
+  end, 1)
+end
+
+
+function botDeckDiscard()
+  -- handles a discard off of the bot deck
+
+  UI.hide("bot_discard")
+
+  local botColor, _ = getSoloColors()
+  local botStr = getPlayerStr(botColor)
+  local zoneDiscard = getObjectbyNameAndNotes("Zone Discard", botColor)
+  local buttonRefresh = getObjectbyName("Button Refresh Draw Deck " .. botColor)
+  local zoneDraw = getObjectbyNameAndNotes("Zone Draw Deck", botColor)
+  local zoneSupplement = getObjectbyNameAndNotes("Zone Development", botColor)
+  local rotDiscard = botColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
+  local posDiscard = botColor == "Blue" and { -44.57, 1.50, -21.00 } or { 44.57, 1.50, 21.00 }
+  local discardCard
+  local deckDraw
+
+  for _, zoneObj in pairs(zoneDraw.getObjects()) do
+    if zoneObj.type == "Deck" then
+      discardCard = zoneObj.takeObject()
+      break
+    end
+    if zoneObj.type == "Card" then
+      discardCard = zoneObj
+      break
+    end
+  end
+
+  if discardCard ~= nil then
+    discardCard.setRotation(rotDiscard)
+    discardCard.setPosition(posDiscard)
+
+    local cardName = discardCard.getName()
+    local broadcastStr = string.format("%s has discarded a card off the top of it's deck: %s", botStr, cardName)
+    broadcastToAll(broadcastStr, "White")
+
+    Wait.time(function() UI.show("bot_discard") end, 1)
+
+  elseif discardCard ==  nil then
+    refreshDrawDeck(buttonRefresh, _, true, 0)
+
+    Wait.time(function()
+
+      for _, zoneObj in pairs(zoneSupplement.getObjects()) do
+        if zoneObj.type == "Deck" then
+          discardCard = zoneObj.takeObject()
+          break
+        elseif zoneObj.type == "Card" then
+          discardCard =  zoneObj
+          break
+        end
+      end
+
+      if discardCard == nil then
+        discardCard = getBotDeck().takeObject()
+      end
+
+      if discardCard then
+        discardCard.setRotation(rotDiscard)
+        discardCard.setPositionSmooth(posDiscard, false, true)
+
+        local cardName = discardCard.getName()
+        local broadcastStr = string.format("%s has discarded a card off the top of it's deck: %s", botStr, cardName)
+        broadcastToAll(broadcastStr, "White")
+
+        Wait.time(function() UI.show("bot_discard") end, 1)
+      end
+
+    end, 0.5)
+  end
+end
+
+
+function botDiscardThree()
+  -- handles discarding three cards from the bot deck
+
+  UI.hide("bot_discard_x3")
+
+  local botColor, _ = getSoloColors()
+  local botStr = getPlayerStr(botColor)
+  local zoneDiscard = getObjectbyNameAndNotes("Zone Discard", botColor)
+  local buttonRefresh = getObjectbyName("Button Refresh Draw Deck " .. botColor)
+  local zoneDraw = getObjectbyNameAndNotes("Zone Draw Deck", botColor)
+  local zoneSupplement = getObjectbyNameAndNotes("Zone Development", botColor)
+  local rotDiscard = botColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
+  local posDiscard = botColor == "Blue" and { -44.57, 1.50, -21.00 } or { 44.57, 1.50, 21.00 }
+  local discardCount = 0
+
+  local function discardSingleCard()
+    local discardCard
+
+    for _, zoneObj in pairs(zoneDraw.getObjects()) do
+      if zoneObj.type == "Deck" then
+        discardCard = zoneObj.takeObject()
+        break
+      elseif zoneObj.type == "Card" then
+        discardCard = zoneObj
+        break
+      end
+    end
+
+    if discardCard ~= nil then
+      discardCard.setRotation(rotDiscard)
+      discardCard.setPositionSmooth(posDiscard, false, false)
+
+      local cardName = discardCard.getName()
+      local broadcastStr = string.format("%s has discarded a card: %s", botStr, cardName)
+      broadcastToAll(broadcastStr, "White")
+    end
+  end
+
+  local function refreshAndDiscardFromSupplemental()
+    Wait.time(function()
+
+      local discardCheckZone = getObjectbyNameAndNotes("Zone Discard", botColor)
+      local deck
+      local rotDrawDeck = botColor == "Blue" and { 0.00, 270.00, 180.00 } or { 0.00, 90.00, 180.00 }
+      local posDrawDeck = botColor == "Blue" and { -44.50, 1.20, 7.00 } or { 44.50, 1.20, -7.00 }
+
+      for _, zoneObj in pairs(discardCheckZone.getObjects()) do
+        if zoneObj.type == "Deck" or zoneObj.type == "Card" then
+          deck = zoneObj
+          if deck.type == "Deck" then deck.setName("Draw Deck") end
+          deck.setRotation(rotDrawDeck)
+          deck.shuffle()
+          deck.setPositionSmooth(posDrawDeck, false, true)
+          break
+        end
+      end
+
+      Wait.time(function()
+
+        local discardCard
+
+        for _, zoneObj in ipairs(zoneSupplement.getObjects()) do
+          if zoneObj.type == "Deck" then
+            discardCard = zoneObj.takeObject()
+            break
+          elseif zoneObj.type == "Card" then
+            discardCard = zoneObj
+            break
+          end
+        end
+
+        if discardCard == nil then
+          discardCard = getBotDeck().takeObject()
+        end
+
+        if discardCard then
+          discardCard.setRotation(rotDiscard)
+          discardCard.setPositionSmooth(posDiscard, false, false)
+
+          local cardName = discardCard.getName()
+          local broadcastStr = string.format("%s has discarded a card from Supplemental Deck: %s", botStr, cardName)
+          broadcastToAll(broadcastStr, "White")
+        end
+
+        discardCount = discardCount + 1
+
+        if discardCount < 3 then
+          Wait.time(discardLoop, 1)
+        else
+          Wait.time(function() UI.show("bot_discard_x3") end, 1)
+        end
+
+      end, 0.5)
+
+    end, 1)
+  end
+
+  function discardLoop()
+    local drawDeckEmpty = true
+
+    for _, zoneObj in pairs(zoneDraw.getObjects()) do
+      if zoneObj.type == "Deck" or zoneObj.type == "Card" then
+        drawDeckEmpty = false
+        break
+      end
+    end
+
+    if drawDeckEmpty then
+      refreshAndDiscardFromSupplemental()
+    else
+      discardSingleCard()
+      discardCount = discardCount + 1
+
+      if discardCount < 3 then
+        Wait.time(discardLoop, 1)
+      else
+        Wait.time(function() UI.show("bot_discard_x3") end, 1)
+      end
+    end
+  end
+
+  discardLoop()
+end
+
+
+function broadcastPlayerturn()
+  -- handle the null func click of the on screen player turn indicator
+  broadcastToAll("This button is currently inactive, it is simply a reminder that it is your turn. Use the 'Add Resource' buttons in the market row to place a resource and end your turn.", "Orange")
+  return
+end
+
+
+function getNextBotAction()
+  -- checks button for current bot step, determines & returns next bot step
+  local buttonNextBotAction = getObjectbyName("Button Next Bot Action")
+  local currentStep = buttonNextBotAction.getGMNotes()
+end
+
+
+function clickNextBotAction()
+  local buttonNextBotAction = getObjectbyName("Button Next Bot Action")
+  if buttonNextBotAction == nil then return end
+
+  local buttons = buttonNextBotAction.getButtons()
+  if not buttons or #buttons == 0 then return end
+
+  local tooltip = buttons[1].tooltip
+  local currentStep = tooltip:match("Perform next bot (.-) Step action.")
+  if not currentStep then return end
+
+  local funcName = "bot" .. currentStep .. "Step"
+  local func = _G[funcName]
+
+  if func then
+    func()
+  end
+end
+
+
+
+
+
+
+
+function botControlStep()
+  -- handles the click of next action button for bot control step
+
+  UI.hide("end_player_turn")
+  Wait.time(function() UI.show("bot_next_action_action") end, 1)
+
+  -- animate button from global, but slightly modified to change button name
+  -- does the check to see if any locations can be controlled\
+  local botColor, humanColor = getSoloColors()
+  local broadcastStr = string.format("Player Turn has ended, moving on to [%s]Bot Control Step[-].", Color.fromString("Purple"):toHex())
+  broadcastToAll(broadcastStr, "White")
+
+  -- if turns enabled, end and pass turn
+  if Turns.enable then
+    local currentColor = Turns.turn_color
+    local nextColor = currentColor == "Blue" and "Red" or "Blue"
+    Turns.turn_color = nextColor
+  end
+
+  -- control step stuff - check zones and game state to determine if bot can control a location
+  local nzCheckZones = {
+    ["Blue"] = {
+      getObjectbyNameAndNotes("Zone NZ Player Top", "Blue"),
+      getObjectbyNameAndNotes("Zone NZ Player Middle", "Blue"),
+      getObjectbyNameAndNotes("Zone NZ Player Bottom", "Blue"),
+    },
+    ["Red"] = {
+      getObjectbyNameAndNotes("Zone NZ Player Top", "Red"),
+      getObjectbyNameAndNotes("Zone NZ Player Middle", "Red"),
+      getObjectbyNameAndNotes("Zone NZ Player Bottom", "Red"),
+    }
+  }
+  local botZones = nzCheckZones[botColor]
+  local humanZones = nzCheckZones[humanColor]
+  local possibleSlots = {}
+
+  -- get bot count of tokens in zone
+  for i = 1, 3 do
+    local botCount = 0
+    local humanCount = 0
+
+    for _, object in pairs(botZones[i].getObjects()) do
+      if object.getName():find("Away Team") or object.hasTag("snap_ship") then
+        botCount = botCount + 1
+      end
+    end
+    for _, object in pairs(humanZones[i].getObjects()) do
+      if object.getName():find("Away Teams") or object.hasTag("snap_ship") then
+        humanCount = humanCount + 1
+      end
+    end
+    if botCount >= (humanCount + 2) and botCount >= 3 then
+      table.insert(possibleSlots, i)
+    end
+  end
+
+  local mvpCard
+  local mvpCardName
+  local controlSlot
+  local locationZones = { -- top (market) to bottom of table
+    getObjectbyName("Zone NZ Location Top"),
+    getObjectbyName("Zone NZ Location Middle"),
+    getObjectbyName("Zone NZ Location Bottom"),
+  }
+
+  if #possibleSlots == 1 then
+    controlSlot = possibleSlots[1]
+    for _, zoneObj in pairs(locationZones[controlSlot].getObjects()) do
+      if zoneObj.hasTag("suit_location") then
+        mvpCard = zoneObj
+        mvpCardName = zoneObj.getName()
+      end
+    end
+
+  elseif #possibleSlots > 1 then
+
+    -- MVP for tiebreaker
+    local cards = getCardValues(botColor, "Location")
+
+    -- cards needs to be in following format:
+    -- [obj] = card object
+    -- [vp] = printed/focus/endgame total
+    -- [glory] = glory count in card zone
+    -- [dilithium] = dilithium count in card zone
+    -- [latinum] = latinum count in card zone
+    -- [index] = card zone index (L-R positioning)
+    local slot1Active = false
+    local slot2Active = false
+    local slot3Active = false
+    for i = 1, #possibleSlots do
+      if possibleSlots[i] == 1 then
+        slot1Active = true
+      elseif possibleSlots[i] == 2 then
+        slot2Active = true
+      elseif possibleSlots[i] == 3 then
+        slot3Active = true
+      end
+    end
+    local filteredCards = {}
+    for _, card in pairs(cards) do
+      if botColor ~= "Red" then
+        if (card.index == 1 and slot1Active) or
+          (card.index == 2 and slot2Active) or
+          (card.index == 3 and slot3Active) then
+          table.insert(filteredCards, card)
+        end
+      else
+        if (card.index == 3 and slot1Active) or
+          (card.index == 2 and slot2Active) or
+          (card.index == 1 and slot3Active) then
+          table.insert(filteredCards, card)
+        end
+      end
+    end
+    cards = filteredCards
+    mvpCardName = getMVPCard(cards, false)
+
+    -- check zones for found MVP card object
+    for i = 1, 3 do
+      for _, zoneObj in pairs(locationZones[i].getObjects()) do
+        if zoneObj.getName() == mvpCardName then
+          mvpCard = zoneObj
+        end
+      end
+    end
+  end
+
+  -- if can control, simply determine correct control button and use it
+  if mvpCard ~= nil then
+
+    -- get mvp card slot
+    local cardSlot = nil
+    for i = 1, 3 do
+      for _, zoneObj in pairs(locationZones[i].getObjects()) do
+        if zoneObj.getName() == mvpCardName then
+          cardSlot = i
+        end
+      end
+    end
+
+    local buttons = {
+      getObjectbyNameAndNotes("Button Control Location Top", botColor),
+      getObjectbyNameAndNotes("Button Control Location Middle", botColor),
+      getObjectbyNameAndNotes("Button Control Location Bottom", botColor),
+    }
+    local buttonObj = buttons[cardSlot]
+    controlNZLocation(buttonObj, _, _)
+
+  -- if can't control, just broadcast unable to control and move on
+  else
+    local cantControltStr = string.format("[%s]Bot[-] is unable to Control a Location!", Color.fromString(botColor):toHex())
+    broadcastToAll(cantControltStr, "White")
+  end
+
+  -- broadcast moving on to action step
+
+  local actionStepStr = string.format("Moving on to [%s]Bot[-] [%s]Action Step[-].", Color.fromString(botColor):toHex(), Color.fromString("Purple"):toHex())
+  broadcastToAll(actionStepStr, "White")
+
+  -- prep button for action step
+  local buttonObj = getObjectbyName("Button Next Bot Action")
+  buttonObj.clearButtons()
+  buttonObj.setGMNotes("Action")
+  initButtonNextBotAction(buttonObj)
+end
+
+
+function botActionStep()
+  -- handles the click of next action button for bot action step
+
+  local botColor, _ = getSoloColors()
+  local zoneStaging = getObjectbyNameAndNotes("Zone In Play", botColor)
+  local buttonObj = getObjectbyName("Button Next Bot Action")
+
+  -- if empty staging area, check stardate card to get # of cards to deal
+  local cardCount = 0
+  for _, zoneObj in pairs(zoneStaging.getObjects()) do
+    if zoneObj.tag == "Card" then
+      cardCount = cardCount + 1
+    end
+  end
+
+  if cardCount == 0 then
+    local stardateCardName
+    local foundStardate = false
+    local stardateCheckZone = getObjectbyName("Zone Stardate")
+
+    for _, zoneObj in pairs(stardateCheckZone.getObjects()) do
+
+      if zoneObj.tag == "Deck" then
+        local deckObjs = zoneObj.getObjects()
+        stardateCardName = deckObjs[#deckObjs].name
+        foundStardate = true
+
+      elseif zoneObj.tag == "Card" then
+        if zoneObj.getName():find("Stardate") then
+          foundStardate = true
+          stardateCardName = zoneObj.getName()
+        end
+      end
+    end
+
+    -- handle end of game with sd being out of its zone
+    if not foundStardate then
+      local botDifficulty = getObjectbyName("Pad Junk").getGMNotes()
+      stardateCardName = string.format("%s Bot Stardate 5", botDifficulty)
+    end
+
+    if not buttonObj.hasTag("cleanup") then
+      local dealCounts = {
+        ["Solo vs. Ensign Bot Stardate 1"] = 2,
+        ["Solo vs. Ensign Bot Stardate 2"] = 2,
+        ["Solo vs. Ensign Bot Stardate 3"] = 2,
+        ["Solo vs. Ensign Bot Stardate 4"] = 2,
+        ["Solo vs. Ensign Bot Stardate 5"] = 3,
+
+        ["Solo vs. Lieutenant Bot Stardate 1"] = 2,
+        ["Solo vs. Lieutenant Bot Stardate 2"] = 2,
+        ["Solo vs. Lieutenant Bot Stardate 3"] = 3,
+        ["Solo vs. Lieutenant Bot Stardate 4"] = 3,
+        ["Solo vs. Lieutenant Bot Stardate 5"] = 3,
+
+        ["Solo vs. Commander Bot Stardate 1"] = 2,
+        ["Solo vs. Commander Bot Stardate 2"] = 3,
+        ["Solo vs. Commander Bot Stardate 3"] = 3,
+        ["Solo vs. Commander Bot Stardate 4"] = 3,
+        ["Solo vs. Commander Bot Stardate 5"] = 4,
+
+        ["Solo vs. Captain Bot Stardate 1"] = 3,
+        ["Solo vs. Captain Bot Stardate 2"] = 3,
+        ["Solo vs. Captain Bot Stardate 3"] = 3,
+        ["Solo vs. Captain Bot Stardate 4"] = 4,
+        ["Solo vs. Captain Bot Stardate 5"] = 4,
+
+        ["Solo vs. Admiral Bot Stardate 1"] = 3,
+        ["Solo vs. Admiral Bot Stardate 2"] = 3,
+        ["Solo vs. Admiral Bot Stardate 3"] = 4,
+        ["Solo vs. Admiral Bot Stardate 4"] = 4,
+        ["Solo vs. Admiral Bot Stardate 5"] = 5
+      }
+
+      local dealCount = dealCounts[stardateCardName] or nil
+
+      if dealCount == nil then
+        local botDifficulty = getObjectbyName("Pad Stardate").getGMNotes()
+
+        if botDifficulty == "Ensign" then
+          dealCount = 2
+        elseif botDifficulty == "Lieutenant" then
+          dealCount = 3
+        elseif botDifficulty == "Commander" then
+          dealCount = 4
+        elseif botDifficulty == "Captain" then
+          dealCount = 4
+        elseif botDifficulty == "Admiral" then
+          dealCount = 5
+        else
+          broadcastToAll(
+            "Unable to find Stardate Card in play to determine deal count - deal required number of facedown cards for the bot, and this button should work as usual again.",
+            "Orange"
+          )
+          return
+        end
+      end
+
+      local botDeck = getBotDeck()
+      local deckObjs
+
+      if botDeck ~= nil and botDeck.type == "Deck" then
+        deckObjs = botDeck.getObjects()
+      end
+
+      local deckCount = 0
+
+      if deckObjs ~= nil then
+        deckCount = #deckObjs
+      end
+
+      if botDeck ~= nil then
+        if botDeck.type == "Card" then
+          deckCount = 1
+        end
+      end
+
+      botDeckDraw(dealCount)
+
+      if deckCount ~= 0 and deckCount >= dealCount then
+        UI.hide("bot_next_action_action")
+        Wait.time(function()
+          UI.show("bot_next_action_action")
+        end, 1)
+      else
+        UI.hide("bot_next_action_action")
+        Wait.time(function()
+          UI.show("bot_next_action_action")
+        end, 2.5)
+      end
+
+      buttonObj.addTag("cleanup")
+      return
+    end
+  end
+
+  UI.hide("bot_next_action_action")
+  Wait.time(function()
+    UI.show("bot_next_action_action")
+  end, 1)
+
+  -- starting from next facedown card next to discard, flip card up
+  local nextFacedownSlot = 0
+  local cardSlots = { false, false, false, false, false }
+  local stagingCards = { nil, nil, nil, nil, nil }
+  local facedownCards = 0
+  local zoneInPlay = getObjectbyNameAndNotes("Zone In Play", botColor)
+
+  for _, zoneObj in pairs(zoneInPlay.getObjects()) do
+    local position = zoneObj.getPosition()
+    local rotation = zoneObj.getRotation()
+
+    if (position.z > 1.80 and position.z < 3.80)
+      or (position.z > -3.80 and position.z < -1.80) then
+
+      if rotation.z > 179.00 and rotation.z < 181.00 then
+        cardSlots[1] = true
+        stagingCards[1] = zoneObj
+        facedownCards = facedownCards + 1
+      end
+
+    elseif (position.z > -2.07 and position.z < 0.07)
+      or (position.z > 0.07 and position.z < 2.07) then
+
+      if rotation.z > 179.00 and rotation.z < 181.00 then
+        cardSlots[2] = true
+        stagingCards[2] = zoneObj
+        facedownCards = facedownCards + 1
+      end
+
+    elseif (position.z > -5.98 and position.z < -3.98)
+      or (position.z > 3.98 and position.z < 5.98) then
+
+      if rotation.z > 179.00 and rotation.z < 181.00 then
+        cardSlots[3] = true
+        stagingCards[3] = zoneObj
+        facedownCards = facedownCards + 1
+      end
+
+    elseif (position.z > -9.90 and position.z < -7.90)
+      or (position.z > 7.90 and position.z < 9.90) then
+
+      if rotation.z > 179.00 and rotation.z < 181.00 then
+        cardSlots[4] = true
+        stagingCards[4] = zoneObj
+        facedownCards = facedownCards + 1
+      end
+
+    elseif (position.z > -15.82 and position.z < -13.82)
+      or (position.z > 13.82 and position.z < 15.82) then
+
+      if rotation.z > 179.00 and rotation.z < 181.00 then
+        cardSlots[5] = true
+        stagingCards[5] = zoneObj
+        facedownCards = facedownCards + 1
+      end
+    end
+  end
+
+  for i = 1, 5 do
+    if cardSlots[i] then
+      nextFacedownSlot = i
+      break
+    end
+  end
+
+  -- get traits of card
+  -- get bot captain in play, determine first relevant trait/suit
+  -- call function on bot's trait card to do the thing (but for now just debug)
+  if nextFacedownSlot ~= 0 then
+    local operativeIcon, actionText = getOperativeIcon(stagingCards[nextFacedownSlot])
+
+    local broadcastStr = string.format(
+      "\n[%s]Bot[-] Flipped Card[%s]:[-] %s - First Matching Icon[%s]:[-] %s",
+      Color.fromString(botColor):toHex(),
+      Color.fromString(botColor):toHex(),
+      stagingCards[nextFacedownSlot].getName(),
+      Color.fromString(botColor):toHex(),
+      operativeIcon
+    )
+    broadcastToAll(broadcastStr, "White")
+
+    local followupStr = string.format(
+      "[%s]* [-] %s",
+      Color.fromString(botColor):toHex(),
+      actionText
+    )
+
+    Wait.time(function()
+      broadcastToAll(followupStr, "White")
+    end, 0.5)
+
+    local rotFlip = botColor == "Blue"
+      and { 0.00, 90.00, 0.00 }
+      or { 0.00, 270.00, 0.00 }
+
+    stagingCards[nextFacedownSlot].setRotationSmooth(rotFlip, false, true)
+
+    -- if this was the last facedown card, set up cleanup step
+    if facedownCards == 1 and buttonObj.hasTag("cleanup") then
+      buttonObj.clearButtons()
+      buttonObj.setGMNotes("Cleanup")
+      initButtonNextBotAction(buttonObj)
+      buttonObj.removeTag("cleanup")
+
+      local purpleStr = Color.fromString("Purple"):toHex()
+
+      local cleanupBroadcastStr = string.format(
+        "[%s]Bot[-] [%s]Action Step[-] has ended, setting up for [%s]Bot[-] [%s]Clean-Up Step[-].",
+        purpleStr,
+        purpleStr,
+        Color.fromString(botColor):toHex(),
+        purpleStr
+      )
+
+      broadcastToAll(cleanupBroadcastStr, "White")
+
+      UI.hide("bot_next_action_action")
+      Wait.time(function()
+        UI.show("bot_next_action_cleanup")
+      end, 1)
+    end
+
+    return
+  end
+end
+
+
+function botCleanupStep()
+  -- handles the click of next action button for bot cleanup step
+
+  UI.hide("bot_next_action_action")
+  UI.hide("bot_next_action_cleanup")
+
+  local botColor, humanColor = getSoloColors()
+
+  -- first check for stardate in bot player area, if so it needs to be resolved first
+  local stardateCheckZone = getObjectbyNameAndNotes("Zone Stardate Player", botColor)
+
+  for _, zoneObj in pairs(stardateCheckZone.getObjects()) do
+    if zoneObj.getName():find("Stardate") then
+      broadcastToAll("Stardate card found in Bot player area, it will need to be resolved before Bot Clean-Up Step.", "Orange")
+      Wait.time(function() UI.show("bot_next_action_cleanup") end, 1)
+      return
+    end
+  end
+
+  local cards = getCardValues(botColor, "Market")
+  local resourceTargetCardName = getMVPCard(cards, true)
+  local buttonAddResource
+  local resourceTargetCard
+  local marketCardZones = {
+    getObjectbyName("Zone Market Current Person"),
+    getObjectbyName("Zone Market Current Cargo"),
+    getObjectbyName("Zone Market Current Ship"),
+    getObjectbyName("Zone Market Current Ally"),
+  }
+  local cardSuit = "None"
+  for i = 1, #marketCardZones do
+    for _, zoneObj in pairs(marketCardZones[i].getObjects()) do
+      if zoneObj.getName() == resourceTargetCardName then
+        resourceTargetCard = zoneObj
+        if resourceTargetCard.hasTag("suit_person") then
+          buttonAddResource = getObjectbyName("Button Market Resource Person")
+          cardSuit = "Person"
+          break
+        elseif resourceTargetCard.hasTag("suit_cargo") then
+          buttonAddResource = getObjectbyName("Button Market Resource Cargo")
+          cardSuit = "Cargo"
+          break
+        elseif resourceTargetCard.hasTag("suit_ship") then
+          buttonAddResource = getObjectbyName("Button Market Resource Ship")
+          cardSuit = "Ship"
+          break
+        elseif resourceTargetCard.hasTag("suit_ally") then
+          buttonAddResource = getObjectbyName("Button Market Resource Ally")
+          cardSuit = "Ally"
+          break
+        end
+      end
+    end
+  end
+
+  -- locations left in staging at end of bot turn get deployed
+  local locationsInStaging = {}
+  local checkZone = getObjectbyName("Zone In Play")
+  for _, zoneObj in pairs(checkZone.getObjects()) do
+    if zoneObj.hasTag("suit_location") then
+      table.insert(locationsInStaging, zoneObj)
+    end
+  end
+
+  local botStr = getPlayerStr(botColor)
+  local suitColors = {
+    ["Person"] = "BFA42C",
+    ["Cargo"]  = "4173B4",
+    ["Ship"]   = "C8C8C8",
+    ["Ally"]   = "CD28C3",
+  }
+  local suitColor = suitColors[cardSuit] or "FFFFFF"
+
+  local function discardBotStaging()
+    local zoneInPlay = getObjectbyNameAndNotes("Zone In Play", botColor)
+    local rotDiscard = botColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
+    local posDiscard = botColor == "Blue" and { -44.50, 1.50, -21.00 } or { 44.50, 1.50, 21.00 }
+    for _, zoneObj in pairs(zoneInPlay.getObjects()) do
+      if zoneObj.type == "Card" then
+        zoneObj.setRotation(rotDiscard)
+        zoneObj.setPositionSmooth(posDiscard, false, true)
+      end
+    end
+  end
+
+  if #locationsInStaging > 0 then
+    local locationSlots = { false, false, false, false, false, false, false }
+    local locationZone = getObjectbyNameAndNotes("Zone Location Deploy", botColor)
+    local placement = botColor == "Blue" and {
+      { -30.00, 0.96, 2.46 },
+      { -30.00, 0.96, -1.46 },
+      { -30.00, 0.96, -5.37 },
+      { -30.00, 0.96, -9.29 },
+      { -30.00, 0.96, -13.21 },
+      { -30.00, 0.96, -17.13 },
+      { -30.00, 0.96, -21.04 },
+    } or
+    {
+      { 30.00, 0.96, -2.46 },
+      { 30.00, 0.96, 1.46 },
+      { 30.00, 0.96, 5.37 },
+      { 30.00, 0.96, 9.29 },
+      { 30.00, 0.96, 13.21 },
+      { 30.00, 0.96, 17.13 },
+      { 30.00, 0.96, 21.04 },
+    }
+    local tolerance = 0.5
+    local foundSlot = false
+    for _, zoneObj in pairs(locationZone.getObjects()) do
+      if zoneObj.type == "Card" then
+        local pos = zoneObj.getPosition()
+        for i = 1, 7 do
+          local targetZ = placement[i][3]
+          local diff = math.abs(pos.z - targetZ)
+
+          if diff < tolerance and not locationSlots[i] then
+            locationSlots[i] = true
+            foundSlot = true
+            locationsInStaging[i].setPositionSmooth(placement[i], false, false)
+            break
+          end
+        end
+        if foundSlot then
+          break
+        end
+      end
+    end
+    for i = 1, #locationsInStaging do
+      local nextFreeLocationSlot = 0
+      for i = 1, 7 do
+        if locationSlots[i] == false then
+          nextFreeLocationSlot = i
+          locationSlots[i] = true
+          break
+        end
+      end
+      locationsInStaging[i].setPositionSmooth(placement[nextFreeLocationSlot], false, true)
+    end
+
+    Wait.time(function()
+
+      placeResource(buttonAddResource, humanColor, true) -- humanColor to sim a human click
+
+      discardBotStaging()
+
+      local broadcastStr = string.format("%s has placed onto [b][%s]%s[-][/b] and discarded it's cards from Staging, [%s]Ending their Turn[-].", botStr, suitColor, resourceTargetCardName, Color.fromString("Purple"):toHex())
+      broadcastToAll(broadcastStr, "White")
+      Wait.time(function()
+        local followupStr = string.format("It is now [%s]Your[-] [%s]Turn[-].", Color.fromString(humanColor):toHex(), Color.fromString("Purple"):toHex())
+        broadcastToAll(followupStr, "White")
+
+      end, 1)
+      if Turns.enable == false then checkResupply() end
+
+    end, 1)
+
+  else -- no locations in staging
+    placeResource(buttonAddResource, humanColor, true)
+
+    discardBotStaging()
+
+    local broadcastStr = string.format("%s has placed onto [b][%s]%s[-][/b] and discarded it's cards from Staging, [%s]Ending their Turn[-].", botStr, suitColor, resourceTargetCardName, Color.fromString("Purple"):toHex())
+    broadcastToAll(broadcastStr, "White")
+    Wait.time(function()
+
+      local followupStr = string.format("It is now [%s]Your[-] [%s]Turn[-].", Color.fromString(humanColor):toHex(), Color.fromString("Purple"):toHex())
+      broadcastToAll(followupStr, "White")
+
+    end, 1)
+    if Turns.enable == false then checkResupply() end
+  end
+
+  local buttonObj = getObjectbyName("Button Next Bot Action")
+  buttonObj.clearButtons()
+  buttonObj.setGMNotes("Control")
+  initButtonNextBotAction(buttonObj)
+end
+
+
+function checkResupply()
+  -- check and report on human player's resupply cards if onPlayerTurn() not doing it
+  local _, playerColor = getSoloColors()
+  local checkZones = {
+    getObjectbyNameAndNotes("Zone Duty Officer", playerColor),
+    getObjectbyNameAndNotes("Zone Deploy Location", playerColor),
+    getObjectbyNameAndNotes("Zone Deploy Ship", playerColor),
+    getObjectbyNameAndNotes("Zone In Play", playerColor),
+    getObjectbyNameAndNotes("Zone Captain", playerColor),
+  }
+  local matchCards = {}
+  for i = 1, #checkZones do
+    for _, zoneObj in pairs(checkZones[i].getObjects()) do
+      if zoneObj.hasTag("resupply") then
+          zoneObj.highlightOn(playerColor)
+          table.insert(matchCards, zoneObj)
+          Wait.time(function() zoneObj.highlightOff() end, 5)
+      end
+    end
+  end
+  if #matchCards > 0 then
+    local playerStr = getPlayerStr(playerColor)
+    local headlineStr = string.format("%s Reminder - Current in play Resupply Step Cards:", playerStr)
+    broadcastToAll(headlineStr, "White")
+    Wait.time(function()
+
+      for i = 1, #matchCards do
+        local listStr = string.format("[%s]*[-] %s", Color.fromString(playerColor):toHex(), matchCards[i].getName())
+        broadcastToAll(listStr, "White")
+      end
+
+    end, 0.5)
+  end
+end
+
+
+function getOperativeIcon(cardObj)
+  -- checks cardObj to determine next solo action per tag per captain, returns operativeIcon & actionText
+
+  local botColor, _ = getSoloColors()
+  local hasDuty = false
+  local zoneDuty = getObjectbyNameAndNotes("Zone Duty Officer", botColor)
+  for _, zoneObj in pairs(zoneDuty.getObjects()) do
+    if zoneObj.hasTag("suit_person") then
+      hasDuty = true
+    end
+  end
+
+  local captainName = getCaptainName(botColor)
+  local attackColor = Color.fromString("Orange"):toHex()
+  local helpColor = Color.fromString("Green"):toHex()
+
+  -- first check if surprise
+  if cardObj.hasTag("trait_surprise") then
+    return "Surprise", "Resolve this card's Surprise operation."
+  end
+
+  -- then, check if any captain specific trait match
+  if captainName == "Burnham" then
+    if cardObj.hasTag("trait_creature") then
+      return "Creature", "Gain 1 Military. Gain a Person / Cargo. If a Ship is in Bot Discard pike, deploy it; it explores."
+    end
+    if cardObj.hasTag("trait_scientist") then
+      return "Scientist", "Log the top card of the Bot deck. Take an Incident. Gain 1 Research. Gain an Ally."
+    end
+    if cardObj.hasTag("trait_anomaly") then
+      return "Anomaly", "If a Person is in Bot Discard pile, promote it to Duty Officer. If this card is a Ship, deploy it; it explores. Otherwise, gain 2 Glory."
+    end
+    if cardObj.hasTag("trait_kelpian") then
+      return "Kelpian", "If able, gain a Kelpian. Otherwise, gain the card in the market with the most Dilithium > most Glory. If this card is a Person, promote it to Duty Officer."
+    end
+
+  elseif captainName == "Koloth" then
+    if cardObj.hasTag("trait_weapon") then
+      return "Weapon", string.format("Junk the most valuable card in the Market (ignoring any with tokens). Gain 1 Military. If Bot has 9+ Military and Bot Duty Officer is a Klingon, dismiss Duty Officer, gain 4 Glory, and log this card. Otherwise, [%s]if able, you remove an Away Team.[-] Otherwise, gain 1 Military.", attackColor)
+    end
+    if cardObj.hasTag("trait_attack") then
+      return "Attack", string.format("Junk the most valuable card in the Market (ignoring any with tokens). If able, return a Ship from discard to the top of the Bot deck. Otherwise, [%s]if able, you dismiss a Ship.[-] Otherwise, gain 1 Glory.", attackColor)
+    end
+    if cardObj.hasTag("trait_romulan") then
+      return "Romulan", "Log the top card of the Bot deck. Take the top card of the Supplement deck. Log this card."
+    end
+    if cardObj.hasTag("trait_scientist") then
+      return "Scientist", "Discard the top card of the Bot deck. Gain 2 Glory. Gain 1 Influence."
+    end
+
+  elseif captainName == "Picard" then
+    if cardObj.hasTag("trait_synthetic") then
+      return "Synthetic", "Log the top card of the Bot deck. Gain 1 Research. Gain 1 Influence. If this card is a Person, promote it to Duty Officer."
+    end
+    if cardObj.hasTag("trait_android") then
+      return "Android", "Log the top card of the Bot deck. Gain 1 Research. Gain 1 Influence. If this card is a Person, promote it to Duty Officer."
+    end
+    if cardObj.hasTag("trait_klingon") then
+      return "Klingon", string.format("Discard the top 3 cards of the Bot deck. Send an Away Team to a neutral Location. [%s]If able, you remove an Away Team.[-] Otherwise, gain 1 Glory and take an Incident.", attackColor)
+    end
+    if cardObj.hasTag("trait_alien") then
+      return "Alien", "Discard the top card of the Bot deck. Gain 1 Influence. If Both has 5+ Influence, gain 1 Research and Cargo. Log this card."
+    end
+    if cardObj.hasTag("trait_doctor") then
+      return "Doctor", "Discard the top 2 cards of the Bot deck. If able, return an Incident from discard. Otherwise, gain 2 Glory and 1 Research. If this card is a Person, promote it to Duty Officer."
+    end
+    if cardObj.hasTag("trait_attack") then
+      return "Attack", "Send an Away Team to a neutral Location. If able, put a Ship from discard on top of the Bot deck. Otherwise, gain 1 Influence. If this card is a Person, promote it to Duty Officer."
+    end
+
+  elseif captainName == "Sela" then
+    if cardObj.hasTag("trait_shady") then
+      return "Shady", "Gain 1 Military. If able, gain a Klingon > Shady. If Bot has 8+ Military, take control of the neutral Location with the most Bot tokens (minimum 1) and log this card. If Bot has 7 or fewer Military, gain 1 Military and 1 Influence."
+    end
+    if cardObj.hasTag("trait_cloak") then
+      return "Cloak", "If this card is a Ship, send an Away Team to a neutral Location, ignoring any opponent Ship, and deploy this Ship; it engages. Otherwise, log this card and gain 3 Glory."
+    end
+    if cardObj.hasTag("trait_vulcan") then
+      return "Vulcan", "Log the top card of the Bot Deck. Gain 1 Research / Influence (whichever is lower). Gain a Klingon > Ship. If this card is a Person, promote it to Duty Officer."
+    end
+    if cardObj.hasTag("trait_klingon") then
+      return "Klingon", "Discard the top 2 cards of the Bot deck. Gain 2 Influence / Military, whichever is lower. If this card is a Ship, then deploy this Ship; it explores. Otherwise, either you dismiss a Ship OR resolve the top card of the Bot deck."
+    end
+    if cardObj.hasTag("trait_attack") then
+      return "Attack", string.format("Junk the most valuable card in the Market (ignoring any with tokens). Send an Away Team to a neutral Location. [%s]You take an Incident[-] OR [%s]dismiss (one of) your Duty Officer(s).[-] If Bot has 8+ Military, log this card and either [%s]you log a controlled Location[-] OR [%s]discard a card.[-]", attackColor, attackColor, attackColor, attackColor)
+    end
+
+  elseif captainName == "Shran" then
+    if cardObj.hasTag("trait_weapon") then
+      return "Weapon", string.format("Junk the most valuable card in the Market (ignoring any with tokens). Send an Away Team to a neutral Location. Either [%s]you take an Incident[-] OR [%s]you remove an Away team.[-]", attackColor, attackColor)
+    end
+    if cardObj.hasTag("trait_attack") then
+      return "Attack", string.format("Send an Away Team to a neutral Location. [%s]You discard the top card of your deck.[-] If it is a Person, [%s]you take an Incident[-] and the Bot takes an Incident. Otherwise, gain 1 Military. If this card is a Person, promote it to Duty Officer.", attackColor, attackColor)
+    end
+    if cardObj.hasTag("trait_business") then
+      return "Business", "Log the top card of the Bot deck. Gain a Weapon > Cargo / Ship. Resolve the top card of the Bot deck. Log this card."
+    end
+    if cardObj.hasTag("trait_ambassador") then
+      return "Ambassador", string.format("Discard the top 2 cards of the Bot deck. Gain 2 Glory. [%s]You may return an Incident from your hand or discard pile.[-] If this card is a Person, promote it to Duty Officer. Otherwise, log this card.", helpColor)
+    end
+
+  elseif captainName == "Sisko" then
+    if cardObj.hasTag("trait_transcendent") then
+      return "Transcendent", "If able, gain a Bajoran > Dominion > Changeling. Otherwise, gain 2 Military and 1 Glory."
+    end
+    if cardObj.hasTag("trait_starbase") then
+      return "Starbase", "Discard the top 3 cards of the Bot deck. If this card is a Ship, deploy this card. Otherwise, gain 1 Glory. If able, resolve a Person from Bot Discard pile. Otherwise, gain 2 Influence."
+    end
+    if cardObj.hasTag("trait_bajoran") then
+      return "Bajoran", string.format("Gain 1 Influence and 1 Military. Take an Incident. If an Ally is in Bot Discard pile, send 2 Away Teams to a neutral Location. Otherwise, [%s]you dismiss (one of) your Duty Officer(s)[-] and the Bot gains 2 Military. If this card is a Person, promote it to Duty Officer.", attackColor)
+    end
+    if cardObj.hasTag("trait_changeling") then
+      return "Changeling", "Log the top card of the Bot deck. Resolve the top card of the Bot deck. If this card is a Person, promote it to Duty Officer."
+    elseif cardObj.hasTag("trait_dominion") then
+      return "Dominion", "Log the top card of the Bot deck. Resolve the top card of the Bot deck. If this card is a Person, promote it to Duty Officer."
+    end
+    if cardObj.hasTag("trait_attack") then
+      return "Attack", string.format("Send an Away Team to a neutral Starbase > Starfleet > Location. If this card is a Ship, [%s]you discard a card[-] and deploy this Ship; it engages. Otherwise, gain 2 Military.", attackColor)
+    end
+
+  elseif captainName == "Archer" then
+    if cardObj.hasTag("trait_timetravel") then
+      return "Time Travel", "Gain 1 Research, 1 Influence, and 1 Military. Manually Continue Resolution."
+    elseif cardObj.hasTag("trait_nx01") then
+      return "NX-01", "If this card is a Person: If able, gain a Research or Influence or Military. Otherwise, gain a Cargo. If this card is a Cargo: Gain an Incident and resolve the top card of the Supplement deck manually. If this card is neither a Person or a Cargo, continue resolution manually."
+    elseif cardObj.hasTag("trait_vulcan") then
+      return "Vulcan", "Discard the top card of the Supplement deck. If able, gain an Andorian, Vulcan, or Tellarite. Otherwise, add an Away Team from out of play to the Bot's Away Team Supply (max 6 total), and send it to a neutral Location. Manually continue resolution."
+    elseif cardObj.hasTag("trait_andorian") then
+      return "Andorian", "Discard the top card of the Supplement deck. If able, gain an Andorian, Vulcan, or Tellarite. Otherwise, add an Away Team from out of play to the Bot's Away Team Supply (max 6 total), and send it to a neutral Location. Manually continue resolution."
+    elseif cardObj.hasTag("trait_tellarite") then
+      return "Tellarite", "Discard the top card of the Supplement deck. If able, gain an Andorian, Vulcan, or Tellarite. Otherwise, add an Away Team from out of play to the Bot's Away Team Supply (max 6 total), and send it to a neutral Location. Manually continue resolution."
+    elseif cardObj.hasTag("trait_xindi") then
+      return "Xindi", string.format("Gain 1 Influence. If bot has 7 or fewer Influence, gain (if able) Xindi > Time Travel > Andorian, or, Tellarite > Vulcan, including from the Junk. If bot has 8 or more Influence, gain top Encounter and log this card, and [%s]you exhaust a controlled Location[-], and [b]if you have a Xindi in play,[/b] both the bot and [%s]you take an Incident[-].", attackColor, attackColor)
+    elseif cardObj.hasTag("trait_attack") then
+      return "Attack", string.format("Send an Away Team to a neutral Location, If able, [%s]you remove all your Away Teams[-] from a neutral Location where the bot has a Ship, then log this card. Otherwise, manually log a non NX-01 card from the bot Discard pile and gain all resources from a card in the Market.", attackColor)
+    end
+
+  elseif captainName == "Georgiou" then
+    if cardObj.hasTag("trait_anomaly") then
+      return "Anomaly", "Junk the most valuable card in the Market (ignoring any with tokens). Gain an Incident. Log this card. Manually resolve the top card of the Bot deck."
+    elseif cardObj.hasTag("trait_kelpian") then
+      return "Kelpian", "Log the top card of the Bot deck. Gain 1 Research. Manually continue resolution."
+    elseif cardObj.hasTag("trait_vulcan") then
+      return "Vulcan", "Discard the top card of the Bot deck. Gain 1 Influence. Manually continue resolution."
+    elseif cardObj.hasTag("trait_security") then
+      return "Security", string.format("[%s]You remove an Away Team.[-] Gain a Spy or a Klingon if able. Otherwise, gain 1 Military and 1 Glory. If this card is a Person, promote it to Duty Officer.", attackColor)
+    elseif cardObj.hasTag("trait_ops") then
+      return "Ops", string.format("[%s]You remove an Away Team.[-] Gain a Spy or a Klingon if able. Otherwise, gain 1 Military and 1 Glory. If this card is a Person, promote it to Duty Officer.", attackColor)
+    elseif cardObj.hasTag("trait_attack") then
+      return "Attack", string.format("If Research is higher than Military, gain 1 Glory and manually continue resolution. Otherwise: Dismiss Duty Officer if able, otherwise take an Incident. [%s]You dismiss a Duty Officer, if able,[-] otherwise the bot takes a Kelpian or Vulcan > Ship and gains 1 Glory. If this card is a Person, promote it to Duty Officer.", attackColor)
+    end
+
+  elseif captainName == "Khan" then -- DONT PLAY KHAN BOT YET LOL
+    -- need to determine if khan in exile still in play
+    local khanInExile = false
+    for _, object in pairs(getObjects()) do
+      if object.getName() == "Khan In Exile Traits" then
+        khanInExile = true
+      end
+    end
+    if khanInExile then
+
+    elseif not khanInExile then
+
+    end
+
+  elseif captainName == "Kirk" then
+    if cardObj.hasTag("trait_timetravel") then
+      return "Time Travel", "Gain 2 Research or 2 Influence or 2 Military (whichever is lower). Manually resolve the top card of the Bot deck. Log this card."
+    elseif cardObj.hasTag("trait_klingon") then
+      return "Klingon", "Gain 1 Military. If this card is a Ship, deploy it; it engages. If this card is a Person, promote it to Duty Officer. If able, resolve a Directive from Bot Discard pile. Otherwise, send an Away Team to a neutral Location."
+    elseif cardObj.hasTag("trait_attack") then
+      return "Attack", string.format("If able, log a deployed Ship to send 2 Away Teams to a neutral Location and [%s]you discard a card.[-] Otherwise, discard the top 2 cards of the Bot deck and [%s]you dismiss a Duty Officer and take an Incident.[-] If this card is a Person, promote it to Duty Officer.", attackColor, attackColor)
+    elseif cardObj.hasTag("trait_engineer") then
+      return "Engineer", "Discard the top 2 cards of the Bot deck. If able, resolve a Ship in Bot Discard pile. Otherwise, discard the top card of the Supplement deck. If this card is a Person, promote it to Duty Officer."
+    elseif cardObj.hasTag("trait_scientist") then
+      return "Scientist", "Log the top card of the Bot deck. Gain 1 Research or 1 Influence or 1 Military (whichever is lower). Gain 1 Research or 1 Influence or 1 Military (whichever is lower) again. If this card is a Person, and the Bot has no Duty Officer, promote it to Duty Officer. Otherwise, send an Away Team to a neutral Location."
+    elseif cardObj.hasTag("trait_vulcan") then
+      return "Vulcan", "Log the top card of the Bot deck. Gain 1 Research or 1 Influence or 1 Military (whichever is lower). Gain 1 Research or 1 Influence or 1 Military (whichever is lower) again. If this card is a Person, and the Bot has no Duty Officer, promote it to Duty Officer. Otherwise, send an Away Team to a neutral Location."
+    end
+
+  elseif captainName == "Rebner" then
+    if cardObj.hasTag("trait_helmet") then
+      return "Helmet", "If this card is [i]Big Enough Helmet[/i], take top Encounter and log this card. Otherwise, gain the most valuable card in the Market and discard the top 2 cards of the Bot deck."
+    elseif cardObj.hasTag("trait_weapon") then
+      return "Weapon", string.format("If Bot has 6+ Military, log this card and [%s]you take an Incident.[-] Otherwise, gain 1 Military and send an Away team to a neutral Location.", attackColor)
+    elseif cardObj.hasTag("trait_attack") then
+      return "Attack", string.format("If able to do both, log a Weapon from Bot Discard pile, and [%s]you log a Ship either from your hand, Discard pile, or in play.[-] Otherwise, [%s]you discard a card.[-] If this card is a Ship, deploy it; it engages. If this card is a Person, promote it to Duty Officer.", attackColor, attackColor)
+    elseif cardObj.hasTag("trait_engineer") then
+      return "Engineer", "Junk the most valuable card in the Market (ignoring any with tokens). Discard the top card of the Supplement deck. Gain 1 Military. If this card is a Person, promote it to Duty Officer."
+    elseif cardObj.hasTag("trait_scientist") then
+      return "Scientist", "Gain 1 Military. If this card is a Ship, deploy this Ship; it explores. Otherwise, log the top card of the Bot deck, gain 1 Glory, and if able, gain a Military > Cargo, including from the Junk."
+    elseif cardObj.hasTag("trait_communication") then
+      return "Communication", "Gain 1 Military. If this card is a Ship, deploy this Ship; it explores. Otherwise, log the top card of the Bot deck, gain 1 Glory, and if able, gain a Military > Cargo, including from the Junk."
+    end
+
+  elseif captainName == "Soval" then
+    if cardObj.hasTag("trait_telepath") then
+      return "Telepath", string.format("[%s]You [i]may[/i] return an Incident from your hand or Discard pile.[-] If you do, resolve the top card of the Bot deck. If this card is a Person, promote it to Duty Officer. Manually continue resolution.", helpColor)
+    elseif cardObj.hasTag("trait_scientist") then
+      return "Scientist", "Gain 1 Glory. Take a Research Focus or Influence Focus or Military Focus, if able. Otherwise, gain 2 Research and discard the top card of the Bot deck. If this card is a Ship, deploy it; it explores."
+    elseif cardObj.hasTag("trait_anomaly") then
+      return "Anomaly", "Gain 1 Glory. Take a Research Focus or Influence Focus or Military Focus, if able. Otherwise, gain 2 Research and discard the top card of the Bot deck. If this card is a Ship, deploy it; it explores."
+    elseif cardObj.hasTag("trait_human") then
+      return "Human", "Discard the top 3 cards of the Bot deck. Gain 1 Research or 1 Influence or 1 Military (whichever is lower). If this card is a Person, promote it to Duty Officer."
+    elseif cardObj.hasTag("trait_engineer") then
+      return "Engineer", "Discard the top 3 cards of the Bot deck. Gain 1 Research or 1 Influence or 1 Military (whichever is lower). If this card is a Person, promote it to Duty Officer."
+    elseif cardObj.hasTag("trait_pathofsurak") then
+      return "Path Of Surak", "Take top Encounter. If this card is Cargo, manually resolve the top card of the Bot deck and log this card."
+    elseif cardObj.hasTag("trait_attack") then
+      return "Attack", string.format("If Bot has 8 or fewer Military, [%s]you remove an Away Team from a neutral Location, if able,[-] then send a bot Away Team to the same Location, if able. If either option failed, gain 2 Military. If Bot has 9+ Military, the bot takes control of a neutral Location (excluding ones [b]you have secured[/b]), then log this card.", attackColor)
+    end
+
+  elseif captainName == "Freeman" then
+    if cardObj.hasTag("trait_orion") then
+      return "Orion", "If the Bot has 3 or fewer Influence, gain 1 Influence. Otherwise, if able gain an Orion including from the Junk; otherwise gain 2 Glory. Gain 1 Influence. Manually continue resolution."
+    elseif cardObj.hasTag("trait_lowerdecker") then
+      return "Lower Decker", "If this card is a Person and the Bot has no Duty Officer, promote this card to Duty Officer and manually resolve the top card of the Bot deck; otherwise discard the top 2 cards of the Bot deck and manually continue resolution."
+    elseif cardObj.hasTag("trait_anomaly") then
+      return "Anomaly", "Junk the most valuable card in the Market (ignoring any with tokens). Gain an Incident and a Cargo. If there is an Anomaly in the Bot's Log already, gain the top Encounter and destroy this card; otherwise log this card."
+    elseif cardObj.hasTag("trait_doctor") then
+      return "Doctor", "Gain 1 Research. Discard the top 2 cards of the Bot deck. If able, return an Incident from the Bot Discard pile, otherwise, gain 1 Research."
+    elseif cardObj.hasTag("trait_security") then
+      return "Security", string.format("If able, [%s]you remove an Away Team from a neutral Location[-] and the Bot gains 1 Research or 1 Influence or 1 Military (whichever is lower); otherwise gain 2 Glory and 2 Military.", attackColor)
+    elseif cardObj.hasTag("trait_ops") then
+      return "Ops", string.format("If able, [%s]you remove an Away Team from a neutral Location[-] and the Bot gains 1 Research or 1 Influence or 1 Military (whichever is lower); otherwise gain 2 Glory and 2 Military.", attackColor)
+    end
+
+  elseif captainName == "Pike" then
+    if cardObj.hasTag("trait_timetravel") then
+      return "Time Travel", "If this card is a Person, discard the top card of the Bot deck, take an Incident, gain a Person or Ship, and promote this card to Duty Officer. Otherwise, if this card is a Cargo, gain an Incident and manually resolve the top card of the Supplement deck, then log that card. Otherwise gain 3 Glory and log this card."
+    elseif cardObj.hasTag("trait_engineer") then
+      return "Engineer", "Discard the top 2 cards of the Bot deck. Send an Away Team to a neutral Location. Resolve a Cargo or Ship from the Bot Discard, if able; otherwise manually continue resolution."
+    elseif cardObj.hasTag("trait_doctor") then
+      return "Doctor", "If able, return an Incident from the Bot Discard; otherwise (if able) send an Away team to a Location where the Bot has a Ship. If Bot has 6 or more Research, gain a Time Travel > Doctor > Person. Otherwise, gain 1 Research and manually continue resolution."
+    elseif cardObj.hasTag("trait_telepath") then
+      return "Telepath", "Discard the top 3 cards of the Bot deck. Discard the top card of the Supplement deck."
+    elseif cardObj.hasTag("trait_attack") then
+      return "Attack", "Gain an Incident. Log this card."
+    elseif cardObj.hasTag("trait_shady") then
+      return "Shady", "Gain an Incident. Log this card."
+    end
+
+  elseif captainName == "Riker" then
+    if cardObj.hasTag("trait_nx01") then
+      return "NX-01", "Gain 3 Glory. Log this card."
+    elseif cardObj.hasTag("trait_android") then
+      return "Android", "Gain 3 Glory. Log this card."
+    elseif cardObj.hasTag("trait_pakled") then
+      return "Pakled", "Gain 3 Glory. Log this card."
+    elseif cardObj.hasTag("trait_lowerdecker") then
+      return "Lower Decker", "Gain a Beverage > Cargo. Resolve a Person from the Discard pile, if able; otherwise gain 1 Research, take an Incident, and manually resolve the top card of the Supplement deck, then log this card."
+    elseif cardObj.hasTag("trait_betazoid") then
+      return "Betazoid", "Gain 1 Influence. Discard the top card of the Bot deck. Return an Incident from the Bot Discard pile, if able; otherwise send an Away Team to a neutral Location."
+    elseif cardObj.hasTag("trait_beverage") then
+      return "Beverage", "Gain 1 Glory, take an Ally, and log the Duty Officer, then manually continue resolution."
+    elseif cardObj.hasTag("trait_attack") then
+      return "Attack", string.format("Gain 1 Glory. [b]If you have at least 1 Ship at a neutral Location,[b] [%s]you either dismiss one of them[-] [i][b]OR[/i][/b] [%s]take an Incident[-]. Manually continue resolution.", attackColor, attackColor)
+    end
+  end
+
+  -- if no trait match, default to checking suits
+  if cardObj.hasTag("suit_incident") then
+
+    if not hasDuty then
+      if captainName == "Burnham" then
+        return "Incident", "Discard the top card of the Bot deck. Gain 1 Glory. Gain a Scientist > Creature > Person. Return this card."
+      elseif captainName == "Koloth" then
+        return "Incident", string.format("Gain a Military Focus > Person / Ship. Send an Away Team to a neutral Location. [%s]You may draw a card.[-] Return this card.", helpColor)
+      elseif captainName == "Picard" then
+        return "Incident", "Log the top card of the Bot deck. Gain a Person. Return this card."
+      elseif captainName == "Sela" then
+        return "Incident", "Gain 1 Research / Influence / Military (whichever is lower). Gain a Person / Ally. Return this card."
+      elseif captainName == "Shran" then
+        return "Incident", "Gain a Person. Discard the top 3 cards of the Bot deck. Return this card."
+      elseif captainName == "Sisko" then
+        return "Incident", "Discard the top card of the Bot deck. Gain a Military Focus > Influence Focus > Person / Ally. Return this card."
+      elseif captainName == "Archer" then
+        return "Incident", "Log the top card of the Bot deck. Gain 1 Research. Return this card."
+      elseif captainName == "Georgiou" then
+        return "Incident", "Log the top card of the Bot deck. Gain a Person. Return this card."
+      elseif captainName == "Kirk" then
+        return "Incident", "Log the top card of the Bot deck. Gain a Person. Return this card."
+      -- elseif captainName == "Khan" then
+      --   return "Incident", ""
+      elseif captainName == "Rebner" then
+        return "Incident", "Junk the most valuable card in the Market (ignoring any with tokens). If able, gain a Military Focus. Otherwise, gain 2 Military. Return this card."
+      elseif captainName == "Soval" then
+        return "Incident", "Log the top card of the Bot deck. Gain a Person. Return this card."
+      elseif captainName == "Freeman" then
+        return "Incident", "Log the top card of the Bot deck. Return this card."
+      elseif captainName == "Pike" then
+        return "Incident", "If able, gain a Researcg Focus or Influence Focus; otherwise gain 1 Research or 1 Influence or 1 Military (whichever is lower). Return this card."
+      elseif captainName == "Riker" then
+        return "Incident", "Gain a Person. Log the top card of the Bot deck. Gain 1 Research or 1 Military (whichever is lower). Return this card."
+      end
+
+    else
+      if captainName == "Burnham" then
+        return "Incident", "Log the top card of the Bot deck. Gain 2 Research. Send an Away Team to a neutral Location. Return this card."
+      elseif captainName == "Koloth" then
+        return "Incident", "Gain 1 Military. If able, gain a Romulan. Otherwise, take a Military Focus > Cargo. Send an Away Team to a neutral Location. Return this card."
+      elseif captainName == "Picard" then
+        return "Incident", "Discard the top 2 cards of the Bot deck. Gain 1 Research. Return this card."
+      elseif captainName == "Sela" then
+        return "Incident", string.format("Log the top card of the Bot deck. Gain 1 Military. Send an Away Team to a neutral Location. [%s]You may draw a card.[-] Return this card.", helpColor)
+      elseif captainName == "Shran" then
+        return "Incident", "Log the top card of the Bot deck. Gain 1 Glory. Return this card."
+      elseif captainName == "Sisko" then
+        return "Incident", "Take a Military Focus > Ship > Cargo. Gain 1 Military. Return this card."
+      elseif captainName == "Archer" then
+        return "Incident", "Log the top card of the Bot deck. Gain 1 Research. Return this card."
+      elseif captainName == "Georgiou" then
+        return "Incident", "Send an Away Team to a neutral Location. Gain 1 Military. Return this card."
+      elseif captainName == "Kirk" then
+        return "Incident", "Discard the top card of the Bot deck. Gain 1 Research or 1 Influence or 1 Military (whichever is lower). Log Duty Officer. Return this card."
+      -- elseif captainName == "Khan" then
+      --   return "Incident", ""
+      elseif captainName == "Rebner" then
+        return "Incident", "Gain 1 Military. Send an Away Team to a neutral Location. Return this card."
+      elseif captainName == "Soval" then
+        return "Incident", "Log the top card of the Bot deck. Gain 1 Research. Gain 1 Military. Return this card."
+      elseif captainName == "Freeman" then
+        return "Incident", "Send an Away Team to a neutral Location, Gain 1 Military. Return this card."
+      elseif captainName == "Pike" then
+        return "Incident", "Discard the top card of the Bot deck. If Bot has 10 or more Research or Influence or Military and if able, gain a card with matching Focus, including from the Junk; otherwise gain 1 Research and 1 Influence. Return this card."
+      elseif captainName == "Riker" then
+        return "Incident", "Take a Research Focus or Military Focus, if able. Gain 1 Research or 1 Military (whichever is higher). Return this card."
+      end
+    end
+  end
+
+  if cardObj.hasTag("suit_ship") then
+
+    if not hasDuty then
+      if captainName == "Burnham" then
+        return "Ship", "Deploy this Ship; it engages. Send an Away Team to a neutral Location."
+      elseif captainName == "Koloth" then
+        return "Ship", "Deploy this Ship; it explores. Send an Away Team to a neutral Location."
+      elseif captainName == "Picard" then
+        return "Ship", "Deploy this Ship; it explores. If a Person is in Bot Discard pile, send an Away Team to a neutral Location."
+      elseif captainName == "Sela" then
+        return "Ship", "Gain 1 Military. Deploy this Ship; it explores."
+      elseif captainName == "Shran" then
+        return "Ship", "Deploy this ship; it explores. If a Person is in Bot Discard pile, send an Away Team to a neutral Location. If a Cargo is in Bot Discard pile, gain 1 Influence."
+      elseif captainName == "Sisko" then
+        return "Ship", "Discard the top 3 cards of the Bot deck. Deploy this Ship; it explores. If a Person is in Bot Discard pile, send an Away Team to a neutral Starbase > Starfleet > Location."
+      elseif captainName == "Archer" then
+        return "Ship", "Discard the top 2 cards of the Bot deck. Deploy this Ship; it explores. If able, send an Away Team to a neutral Xindi or Tellarite Location, otherwise gain 1 Glory."
+      elseif captainName == "Georgiou" then
+        return "Ship", "Deploy this Ship; it explores. If a Person is in Bot Discard pile, send an Away Team to a neutral Location."
+      elseif captainName == "Kirk" then
+        return "Ship", "Deploy this Ship; it explores. If Bot has 5+ Influence, send an Away Team to a neutral Location, ignoring any opponent's Ship. Otherwise, gain 1 Influence."
+      -- elseif captainName == "Khan" then
+      --   return "Ship", ""
+      elseif captainName == "Rebner" then
+        return "Ship", "Deploy this Ship; it explores. If a Helmet is in Bot Discard pile: If able gain a Helmet or Cargo or Military Focus from the Junk. Otherwise, send an Away Team to a neutral Location."
+      elseif captainName == "Soval" then
+        return "Ship", "Deploy this Ship; it explroes. If Bot has 5+ Military send an Away Team to a neutral Location. Otherwise gain 1 Research."
+      elseif captainName == "Freeman" then
+        return "Ship", "Deploy this Ship; it explores. Send an Away team to a neutral Location. If able, promote a Person from Bot Discard pile to Duty Officer; otherwise gain a Lower Decker > Orion or Security or Ops > Ally."
+      elseif captainName == "Pike" then
+        return "Ship", "Discard the top 3 cards of the Bot deck. Deploy this Ship; it explores. If a Person is in the Bot Discard pile, send an Away Team to a neutral Location."
+      elseif captainName == "Riker" then
+        return "Ship", "Deploy this Ship; it engages. Discard the top card of the Bot deck. If there is a Starfleet in the Bot discard pile, send an Away Team to a neutral Location."
+      end
+
+    else
+      if captainName == "Burnham" then
+        return "Ship", "Gain 1 Military. Deploy this Ship; it explores. Send an Away Team to a neutral Location."
+      elseif captainName == "Koloth" then
+        return "Ship", "Gain 1 Influence. Deploy this Ship; it engages. Send an Away Team to a neutral Location."
+      elseif captainName == "Picard" then
+        return "Ship", "Gain 1 Influence. Deply thos Ship; it explores. Send an Away Team to a neutral Location."
+      elseif captainName == "Sela" then
+        return "Ship", "Deploy this Ship; it engages. Send an Away Team to a neutral Location."
+      elseif captainName == "Shran" then
+        return "Ship", "Deploy this Ship; it engages. Send an Away Team to a neutral Location. Gain 1 Military."
+      elseif captainName == "Sisko" then
+        return "Ship", "If able, log a Starbase in play to resolve the top card of the Supplement deck. Deploy this Ship; it explores. Send an Away Team to a neutral Location."
+      elseif captainName == "Archer" then
+        return "Ship", "Deploy this Ship; it engages. Send an Away Team to a neutral Xindi or Tellarite Location > Location. Dismiss Duty Officer. Log this card."
+      elseif captainName == "Georgiou" then
+        return "Ship", "Gain 1 Research. Deploy this Ship; it explores. Send an Away Team to a neutral Location."
+      elseif captainName == "Kirk" then
+        return "Ship", "Gain 1 Military. Deploy this Ship; it engages. Send an Away Team to a neutral Location."
+      -- elseif captainName == "Khan" then
+      --   return "Ship", ""
+      elseif captainName == "Rebner" then
+        return "Ship", "Deploy this Ship; it engages. If a Helmet is in Bot Discard pile, send an Away team to a neutral Location. Otherwise, discard the top 2 cards of the Bot deck."
+      elseif captainName == "Soval" then
+        return "Ship", "Deploy this Ship; it explores. Gain 1 Military. Send an Away Team to a neutral Location."
+      elseif captainName == "Freeman" then
+        return "Ship", "Deploy this Ship; it explores. Send an Away Team to a neutral Location. If Duty Officer is Lower Decker, dismiss them, otherwise log them and the top card of the Bot deck."
+      elseif captainName == "Pike" then
+        return "Ship", "For each Starbase and Engineer in play, discard the top card of the Bot deck. Deploy this Ship; it engages. Send an Away Team to a neutral Location."
+      elseif captainName == "Riker" then
+        return "Ship", "Deploy this Ship; it engages. Send an Away Team to a neutral Location. If this card is Starfleet, manually resolve a Directive from the Bot Discard pile. Dismiss Duty Officer."
+      end
+    end
+  end
+
+  if cardObj.hasTag("suit_ally") then
+
+    if not hasDuty then
+      if captainName == "Burnham" then
+        return "Ally", "Discard the top 3 cards of the Bot deck. Take an Incident. Gain 1 Research."
+      elseif captainName == "Koloth" then
+        return "Ally", string.format("If able, gain a Romulan. Otherwise, take a Ship / Person and [%s]you take an Incident.[-] Log this card.", attackColor)
+      elseif captainName == "Picard" then
+        return "Ally", "Discard the top 2 cards of the Bot deck. For each Person in Bot Discard pile, gain 1 Influence. For each Ship in Bot Discard pile, send an Away Team to a neutral Location."
+      elseif captainName == "Sela" then
+        return "Ally", string.format("Discard the top 2 cards of the Bot deck. Gain a Klingon > Shady > Person. Send an Away Team to a neutral Location, ignoring any opponent Ship. [%s]You may draw a card.[-]", helpColor)
+      elseif captainName == "Shran" then
+        return "Ally", "Discard the top 3 cards of the Bot deck. For each Person in Bot Discard pile, gain 1 Influence. For each Ship in Bot Discard pile, send an Away Team to a neutral Location."
+      elseif captainName == "Sisko" then
+        return "Ally", "Gain 1 Glory. Discard the top 2 cards of the Bot deck. For each Person in the Bot Discard pile, gain 1 Influence. For each SHip in Bot Discard pile, send an Away Team to a neutral Starbase > Starfleet > Location."
+      elseif captainName == "Archer" then
+        return "Ally", "Gain an Andorian or Vulcan > Alien or Ambassador > Person. Log this card."
+      elseif captainName == "Georgiou" then
+        return "Ally", "Discard the top 2 cards of the Bot deck. If a Person is in Bot Discard pile, gain 1 Research or 1 Influence or 1 Military (whichever is lower). For each Ship in Bot Discard pile, send an Away Team to a neutral Location. Take a Person. Log this card."
+      elseif captainName == "Kirk" then
+        return "Ally", "Discard the top 2 cards of the Bot deck. Gain 1 Research or 1 Influence or 1 Military (whichever is lower). If Bot has 5+ Influence, gain 2 Glory and log this card."
+      -- elseif captainName == "Khan" then
+      --   return "Ally", ""
+      elseif captainName == "Rebner" then
+        return "Ally", string.format("Discard th top card of the Supplement deck. Gain 2 Military. If able, gain a Military Focus from the Junk. [%s]You take an Incident.[-] Log this card.", attackColor)
+      elseif captainName == "Soval" then
+        return "Ally", "Gain a Human > Person. Send an Away Team to a neutral Location. Log this card."
+      elseif captainName == "Freeman" then
+        return "Ally", "Gain a Person. Log the top card of the Bot deck. Log this card."
+      elseif captainName == "Pike" then
+        return "Ally", "Discard the top 2 cards of the Bot deck. Gain a Person. Gain 1 Research or 1 Influence or 1 Military (whichever is lower). Log this card."
+      elseif captainName == "Riker" then
+        return "Ally", "Take an Incident and a Person. Gain 2 Research or 2 Influence or 2 Military (whichever is lower). Log this card."
+      end
+
+    else
+      if captainName == "Burnham" then
+        return "Ally", "Discard the top 3 cards of the Bot deck. Gain 1 Military. Send an Away Team to a neutral Location."
+      elseif captainName == "Koloth" then
+        return "Ally", string.format("If able, gain a Romulan. Otherwise, take an Incident, gain 1 Glory, [%s]you take an Incident and discard it,[-] then dismiss Duty OFficer. Log this card.", attackColor)
+      elseif captainName == "Picard" then
+        return "Ally", "Discard the top card of the Bot deck. Gain a Klingon > Person / Ship / Ally. Log Duty Officer. Log this card."
+      elseif captainName == "Sela" then
+        return "Ally", string.format("Discard the top 2 cards of the Bot deck. Take an Incident. Gain 2 Research / Influence / Military (whichever is lower), and [%s]you take an Incident.[-] Dismiss Duty Officer. Log this card.", attackColor)
+      elseif captainName == "Shran" then
+        return "Ally", "Gain a Business > Person / Ship / Ally. If an Attack is in Bot Discard pile, gain 1 Military, and 1 Glory. Log Duty Officer. Log this card. "
+      elseif captainName == "Sisko" then
+        return "Ally", "Gain 1 Influence / Military (whichever is lower). Gain a Cargo > Ship / Ally. Log this card."
+      elseif captainName == "Archer" then
+        return "Ally", "Gain a Xindi > Tellarite > Ship. Log this card."
+      elseif captainName == "Georgiou" then
+        return "Ally", "Discard the top card of the Bot deck. Gain a Kelpian > Ally. Log Duty Officer. Log this card."
+      elseif captainName == "Kirk" then
+        return "Ally", "Discard the top card of the Bot deck. Gain 1 Research. Gain Any Species excluding Human > Person or Ally. Log Duty Officer. Log this card."
+      -- elseif captainName == "Khan" then
+      --   return "Ally", ""
+      elseif captainName == "Rebner" then
+        return "Ally", "Take an Incident. Gain 1 Military. If able, gain a Military Focus. Otherwise, gain a Cargo and log Duty Officer. Log this card."
+      elseif captainName == "Soval" then
+        return "Ally", "Gain a Scientist or Telepath > Ship > Ally. If Duty Officer is not Vulcan, log Duty Officer. Log this card."
+      elseif captainName == "Freeman" then
+        return "Ally", "Discard the top 2 cards f the Bot deck. Gain a Person. Log the top card of the Bot deck. Log this card."
+      elseif captainName == "Pike" then
+        return "Ally", "Gain 1 Influence or 1 Military (whichever is lower). If Bot has 8 or fewer Research, gain a Ship from the top of the deck and gain 1 Research; otherwise take Time Travel > Doctor > Person, and gain 1 Glory for each Doctor in play or in the Bot Discard. Log this card and dismiss Duty Officer."
+      elseif captainName == "Riker" then
+        return "Ally", "Gain 2 Influence. If able to do both, gain a Research Focus or Influence Focus or Military Focus and dmismiss the Duty Officer. Otherwise log the top card of the Bot deck. Log this card."
+      end
+    end
+  end
+
+  if cardObj.hasTag("suit_cargo") then
+
+    if not hasDuty then
+      if captainName == "Burnham" then
+        return "Cargo", "Gain the card in the Market with the most Dilithium > most Glory. Send an Away Team to a neutral Location. Log this card."
+      elseif captainName == "Koloth" then
+        return "Cargo", "Gain 1 Influence. Gain 1 Military. Gain a Person / Ship / Ally."
+      elseif captainName == "Picard" then
+        return "Cargo", "Discard the top 2 cards of the Bot deck. Gain 2 Glory. Take a Person. Log this card."
+      elseif captainName == "Sela" then
+        return "Cargo", "Gain an Ally > Person. If Bot has 7+ Military, gain 1 Research and 1 Influence. Otherwise, gain 2 Glory and 1 Military."
+      elseif captainName == "Shran" then
+        return "Cargo", "Discard the top 2 cards of the Bot deck. Gain 2 Glory. Gain a Business > Person. Log this card."
+      elseif captainName == "Sisko" then
+        return "Cargo", "Discard the top 2 cards of the Bot deck. If able, log a Person from Bot Discard pile. Gain 1 Glory. Gain 1 Influence. Gain 1 Military. Send an Away Team to a neutral Location."
+      elseif captainName == "Archer" then
+        return "Cargo", "Discard the top 2 cards of the Bot deck. Resolve an NX-01 from Bot Discard if able, otherwise gain a Ship and gain an Incident."
+      elseif captainName == "Georgiou" then
+        return "Cargo", "Discard the top 2 cards of the Bot deck. Send an Away Team to a neutral Location. Take a Person. Log this card."
+      elseif captainName == "Kirk" then
+        return "Cargo", "Discard the top 2 cards of the Bot deck. If able, promote a Person from Bot Discard pile to Duty Officer. otherwise, gain a Vulcan > Person and log this card."
+      -- elseif captainName == "Khan" then
+      --   return "Cargo", ""
+      elseif captainName == "Rebner" then
+        return "Cargo", "If a Helmet is in Bot Discard pile, take an Incident and gain a Ship or Ally. Otherwise, discard the top 2 cards of the Bot deck, then if able, gain a Military Focus > Person > Cargo from the Junk."
+      elseif captainName == "Soval" then
+        return "Cargo", "Gain 1 Research or 1 Military (whichever is higher)."
+      elseif captainName == "Freeman" then
+        return "Cargo", "Discard the top 2 cards of the Bot deck. Send an Away team to a neutral Location. If able, promote a Person from Bot Discard pile to Duty Officer; otherwise gain Ship or Ally."
+      elseif captainName == "Pike" then
+        return "Cargo", "Gain 1 Influence. Send an Away Team to a neutral Location. Discard the top 2 cards of the Bot deck. Log a non-Time Travel Person from the Bot Discard (if able) to gain 1 Glory. Log this card."
+      elseif captainName == "Riker" then
+        return "Cargo", "Junk the most valuable card in the Market (ignoring any with tokens). Gain 1 Glory. Manually resolve a Person or Ally from the Discard pile, if able. Log this card."
+      end
+
+    else
+      if captainName == "Burnham" then
+        return "Cargo", "Log the top card of the Bot deck. Gain a Ship. Log Duty Officer."
+      elseif captainName == "Koloth" then
+        return "Cargo", "Gain 1 Influence. Gain 1 Military. Discard the top card of the Supplement deck. Log Duty Officer."
+      elseif captainName == "Picard" then
+        return "Cargo", "Log the top card of the Bot deck. Discard the top 2 cards of the Bot deck. Gain a Ship. Deploy the gained Ship; it explores. Log Duty Officer."
+      elseif captainName == "Sela" then
+        return "Cargo", "Resolve the top card of the Supplement deck. Log Duty Officer. Log this card."
+      elseif captainName == "Shran" then
+        return "Cargo", "Log the top card of the Bot deck. Gain 1 Influence. Gain 1 Military. Log Duty Officer. Log this card."
+      elseif captainName == "Sisko" then
+        return "Cargo", "Discard the top 3 cards of the Bot deck. Gain an Influence Focus > Military Focus > Ship. Log Duty Officer."
+      elseif captainName == "Archer" then
+        return "Cargo", "Log the top card of the Bot deck. Send an Away Team to a neutral Xindi or Tellarite Location > Location. Dismiss Duty Officer. Log this card."
+      elseif captainName == "Georgiou" then
+        return "Cargo", "Log the top card of the Bot deck. Discard the top 2 cards of the Bot deck. Gain a Ship. Deploy the gained Ship; it explores. Log Duty Officer."
+      elseif captainName == "Kirk" then
+        return "Cargo", "Log the top card of the Bot deck. Gain 1 Research. Gain a Ship. Deploy the gained Ship; it explores."
+      -- elseif captainName == "Khan" then
+      --   return "Cargo", ""
+      elseif captainName == "Rebner" then
+        return "Cargo", string.format("Gain a Military Focus > Person. Gain 1 Military and [%s]you remove an Away Team from a neutral Location[-] where the Bot has 1+ token. Send an Away Team to a neutral Location. Dismiss Duty Officer.", attackColor)
+      elseif captainName == "Soval" then
+        return "Cargo", "Gain Scientist or Anomaly or Engineer > Ally, including from Junk. Dismiss Duty Officer."
+      elseif captainName == "Freeman" then
+        return "Cargo", "Discard the top 2 cards of the Bot deck. Gain a Person. If able, resolve a Ship from the Bot Discard pile; otherwise gain 1 Research or 1 Influence or 1 Military, whichever is higher. Log the top card of the Bot deck. Log this card."
+      elseif captainName == "Pike" then
+        return "Cargo", "Discard the top 3 cards of the Bot deck. Gain a Research Focus or Influence Focus > Ally. Dismiss Duty Officer."
+      elseif captainName == "Riker" then
+        return "Cargo", "Junk the most valuable card in the Market (ignoring any with tokens). Discard the top 2 cards of the Bot deck. Return an Incident from the Bot Discard pile, if able. Gain 1 Glory."
+      end
+    end
+  end
+
+  if cardObj.hasTag("suit_person") then
+
+    if not hasDuty then
+      if captainName == "Burnham" then
+        return "Person", "Gain 1 Research. Send an Away Team to a neutral Location. Promote this card to Duty Officer."
+      elseif captainName == "Koloth" then
+        return "Person", "Discard the top card of the Bot deck. Gain 1 Military / Influence (whichever is lower). Gain a Weapon > Ship. Promote this card to Duty Officer."
+      elseif captainName == "Picard" then
+        return "Person", "Log the top card of the Bot deck. Gain 1 Research / Influence (whichever is lower). Send an Away Team to a neutral Location. Promote this card to Duty OFficer."
+      elseif captainName == "Sela" then
+        return "Person", "Gain 1 Military. If able, gain a Vulcan > Klingon. Otherwise, if able, dismiss a Ship to gain a Person / Ship. Otherwise, gain a Cargo. Promote this card to Duty Officer."
+      elseif captainName == "Shran" then
+        return "Person", "Discard the top 2 cards of the Bot deck. Gain 1 Influence / Military (whichever is lower). Send an Away Team to a neutral Location. Promote this card to Duty Officer."
+      elseif captainName == "Sisko" then
+        return "Person", "Gain 1 Influence. Send an Away Team to a neutral Location. Promote this card to Duty Officer."
+      elseif captainName == "Archer" then
+        return "Person", "Gain a Xindi or Andorian > Cargo. Promote this card to Duty Officer."
+      elseif captainName == "Georgiou" then
+        return "Person", "Log the top card of the Bot deck. Gain 1 Research or 1 Military (whichver is lower). Send an Away team to a neutral Location. Promote this card to Duty Officer."
+      elseif captainName == "Kirk" then
+        return "Person", "Gain 1 Research or 1 Influence or 1 Military (whichever is lower). Send an Away Team to a neutral Location. Promote this card to Duty Officer"
+      -- elseif captainName == "Khan" then
+      --   return "Person", ""
+      elseif captainName == "Rebner" then
+        return "Person", "Gain a Weapon > Ship. Promote this card to Duty Officer."
+      elseif captainName == "Soval" then
+        return "Person", "Log the top card of the Bot deck. Gain 1 Research or 1 Military (whichever is lower). Send an Away Team to a neutral Location. Promote this card to Duty Officer."
+      elseif captainName == "Freeman" then
+        return "Person", "Log the top card of the Bot deck. Gain 1 Research or 1 Military (whichever is lower). If the Bot has 4 or more Research, gain Lower Decker or Anomaly or Doctor, including from the Junk. If the Bot has 4 or more Military, send an Away team to a neutral Location. Promote this card to Duty Officer."
+      elseif captainName == "Pike" then
+        return "Person", "If there is no Starfleet in the Bot Discard, take a Research Focus or Influence Focus > Starfleet or Augment > Ship; otherwise send an Away TEam to a neutral Location. Promote this card to Duty Officer."
+      elseif captainName == "Riker" then
+        return "Person", "Discard the top 3 cards of the Bot deck. If one of the discarded cards is Incident, return it; otherwise gain a Cargo. Promote this card to Duty Officer."
+      end
+
+    else
+      if captainName == "Burnham" then
+        return "Person", "Discard the top 2 cards of Bot deck. Gain 1 Research / Influence (whichever is lower). Send an Away Team to a neutral Location."
+      elseif captainName == "Koloth" then
+        return "Person", "Log the top card of Bot deck. Gain a Cargo. If able, return a Ship from Bot Discard pile to the top of the Bot deck. Otherwise, take a Ship."
+      elseif captainName == "Picard" then
+        return "Person", "Log the top card of the Bot deck. Gain 1 Research / Influence (whichever is lower). Send an Away Team to a neutral Location."
+      elseif captainName == "Sela" then
+        return "Person", "Log the top card of the Bot deck. DIscard the top 3 cards of the Bot deck. If able, gain a Shady > Vulcan. Otherwise, gain 2 Military."
+      elseif captainName == "Shran" then
+        return "Person", "Log the top card of the Bot deck. Gain 1 Influence. Gain 1 Military. Take a Ship / Ally."
+      elseif captainName == "Sisko" then
+        return "Person", "Discard the top 3 cards of the Bot deck. Gain 1 Influence / Military (whichever is lower). Gain a Ship / Influence Focus."
+      elseif captainName == "Archer" then
+        return "Person", "Manually Resolve a Directive from the Bot Discard pile if able, otherwise gain 1 Glory. Dismiss Duty Officer."
+      elseif captainName == "Georgiou" then
+        return "Person", "Log the top card of the Bot deck. Send an Away Team to a neutral Location."
+      elseif captainName == "Kirk" then
+        return "Person", "Discard the top card of the Bot deck. Gain a Vulcan > Any Species excluding Human > Person or Cargo or Ship or Ally."
+      -- elseif captainName == "Khan" then
+      --   return "Person", ""
+      elseif captainName == "Rebner" then
+        return "Person", "If the top card of the Bot deck is a Helmet, discard it and send an Away team to a neutral Location. Otherwise, log it, gain 1 Military, and gain a Communication > Scientist > Ally or Ship, including from the Junk."
+      elseif captainName == "Soval" then
+        return "Person", "If Ship is in Bot Discard, put it on top of the Bot deck. Gain a Research Focus > Military Focus > Influence Focus > Ship and dismiss Duty Officer."
+      elseif captainName == "Freeman" then
+        return "Person", "If able to do both, log a controlled Location and remove 2 Away Teams to take top Encounter, then log this card. Otherwise gain 1 Research or 1 Military, whichever is lower, and discard the top card of the Bot deck."
+      elseif captainName == "Pike" then
+        return "Person", "Junk the most valuable card in the Market (ignoring any with tokens). If Bot has 6 or more Influence, gain an Influence Focus or Ship or Ally and dismiss Duty Officer; otherwise gain 2 Influence."
+      elseif captainName == "Riker" then
+        return "Person", "Take an Incident. Manually resolve a Ship from the Bot Discard pile if able, otherwise take a Ship and dismiss Duty Officer."
+      end
+    end
+  end
+
+  if cardObj.hasTag("suit_directive") then
+
+    if not hasDuty then
+      if captainName == "Burnham" then
+        return "Directive", "Discard the top 2 cards of the Bot deck. Gain 2 Influence. Remove 1 Glory from the stardate card."
+      elseif captainName == "Koloth" then
+        return "Directive", "Discard the top 3 cards of the Bot deck. Gain 1 Military. Take an Incident. Send an Away Team to a neutral Location."
+      elseif captainName == "Picard" then
+        return "Directive", "If able, gain a Klingon. Otherwise, gain a Ship / Ally and take an Incident. Gain 1 Research / Influence (whichever is lower). Send an Away Team to a neutral Location."
+      elseif captainName == "Sela" then
+        return "Directive", "Discard the top 3 cards of the Bot deck. Gain 2 Research / Influence / Military (whichever is lower)."
+      elseif captainName == "Shran" then
+        return "Directive", "Gain a Business > Cargo. Send an Away Team to a neutral Location. If Bot has 5+ Influence, gain 1 Glory and take an Incident."
+      elseif captainName == "Sisko" then
+        return "Directive", "Discard the top 3 cards of the Bot deck. If able, log a Person from Bot Discard pile to send an Away Team to a neutral Location. Otherwise, gain 1 Influence / Military (whichever is lower) and gain a Person."
+      elseif captainName == "Archer" then
+        return "Directive", "Discard the top card of the Bot deck. Gain a NX-01 if able, otherwise twice: gain 1 Research or 1 Influence or 1 Military, whichever is lower. Promote a Person with NX-01 from the Bot Discard pile to Duty Officer, if able."
+      elseif captainName == "Georgiou" then
+        return "Directive", "Gain a Ship or Ally and take an Incident. Send an Away Team to a neutral Location."
+      elseif captainName == "Kirk" then
+        return "Directive", "Gain a Ship or Ally and take an Incident. Send an Away Team to a neutral Location."
+      -- elseif captainName == "Khan" then
+      --   return "Directive", ""
+      elseif captainName == "Rebner" then
+        return "Directive", "Junk the most valuable card in the Market (ignoring any with tokens). Discard the top 3 cards of the Bot deck. If able, promote a Person from Bot Discard pile to Duty Officer. Otherwise, send an Away Team to a neutral Location."
+      elseif captainName == "Soval" then
+        return "Directive", "Gain a Research Focus > Scientist or Telepath > Ally and gain an Incident."
+      elseif captainName == "Freeman" then
+        return "Directive", "Take a Lower Decker if able; otherwise gain a Ship or Ally and take an Incident. Send an Away Team to a neutral Location."
+      elseif captainName == "Pike" then
+        return "Directive", "Discard the top 2 cards of the Bot deck. Resolve a Ship from the Bot Discard, if able; otherwise take an Incidentand send an Away Team to a neutral Location."
+      elseif captainName == "Riker" then
+        return "Directive", "Gain 1 Research. If this card has a Skill icon, gain 2 (additional) Research, otherwise take an Incident and a Ship or Ally or Person. Send an Away Team to a neutral Location."
+      end
+
+    else
+      if captainName == "Burnham" then
+        return "Directive", "If able to do both, log a controlled Location and remove an Away Team to gain top Encounter. Otherwise, discard the top 2 cards of the Bot deck and gain the card in the Market with the most Dilithium > most Glory."
+      elseif captainName == "Koloth" then
+        return "Directive", "If able to do both, log a Ship and remove an Away Team to take top Encounter, then log this card and log Duty Officer. Otherwise, gain 1 Glory, 1 Military, and a Person."
+      elseif captainName == "Picard" then
+        return "Directive", "If able to do both, log a controlled Location and remove 2 Away Teams to take top Encounter then log this card. Otherwise, gain a Research Focus > Alien > Cargo / Ally."
+      elseif captainName == "Sela" then
+        return "Directive", "If able, remove 2 Away Teams to gain top Encounter, then log this card and log Duty Officer. Otherwise, gain a Shady > Attack > Cargo / Ship."
+      elseif captainName == "Shran" then
+        return "Directive", "If able to do both, log a controlled Location and remove 2 Away Teams to take top Encounter, then log this card. Otherwise gain a Cargo / Ship."
+      elseif captainName == "Sisko" then
+        return "Directive", "If able to do both, log a controlled Location (not a Starbase) and remove 2 Away Teams to take top Encounter and log this card. Otherwise, send an Away Team to a neutral Location, gain 1 Influence, and dismiss Duty Officer."
+      elseif captainName == "Archer" then
+        return "Directive", "If able to do both, log a controlled Location and remove 2 Away Teams to take top Encounter, then log this card. Otherwise, gain NX-01 > Ally or Ship. If a Ship was gained, dismiss Duty Officer, otherwise send Away Team to a neutral Location."
+      elseif captainName == "Georgiou" then
+        return "Directive", "If able to do both, log a controlled Location and remove 2 Away Teams to take top Encounter then log this card. Otherwise, gain a Resarch Focus or Military Focus > Anomaly > Cargo."
+      elseif captainName == "Kirk" then
+        return "Directive", "If able to do both, log a controlled Location and remove 2 Away Teams to take top Encounter, then log this card. Otherwise, discard the top card of the Supplement deck."
+      -- elseif captainName == "Khan" then
+      --   return "Directive", ""
+      elseif captainName == "Rebner" then
+        return "Directive", "Junk the most valuable card in the Market (ignoring any with tokens). Discard the top 2 cards of the Bot deck. If a Helmet is in Bot Discard pile, gain a Cargo or Ship. Otherwise, send an Away team to a neutral Location and gain 1 Military."
+      elseif captainName == "Soval" then
+        return "Directive", "Gain 1 Research. Gain 1 Influence or 1 Military (whichever is lower). If Duty Officer is Vulcan, discard the top 2 cards of the Bot deck; otherwise gain 1 Glory."
+      elseif captainName == "Freeman" then
+        return "Directive", "If able to do both, log a controlled Location and remove 2 Away Teams to take top Encounter, then log this card. Otherwise gain 1 Research or 1 Military, whichever is lower, and discard the top card of the Bot deck."
+      elseif captainName == "Pike" then
+        return "Directive", "If able to do both, log a controlled Location and remove 2 Away Teams to take top Encounter, then log this card. Otherwise gain 1 Research and gain a Research Skill or Research Focus, or Influence Skill or Influence Focus, or Military Skill or Military Focus."
+      elseif captainName == "Riker" then
+        return "Directive", "If able to do both, log a controlled Location and remove 2 Away Teams to take top Encounter, then log this card. Otherwise, gain 1 Research or 1 Military (whichever is lower), and discard the top 2 cards of the Bot deck."
+        end
+    end
+  end
+
+  if cardObj.hasTag("suit_encounter") then
+
+    if not hasDuty then
+      if captainName == "Burnham" then
+        return "Encounter", "Log the top 2 cards of the Bot deck. Take a Person."
+      elseif captainName == "Koloth" then
+        return "Encounter", "Gain a Person / Ally. Send an Away Team to a neutral Location. Log this card."
+      elseif captainName == "Picard" then
+        return "Encounter", "Log the top 2 cards of the Bot deck. Take a Ship. Log this card."
+      elseif captainName == "Sela" then
+        return "Encounter", "Log the top card of the Bot deck. Gain a Person and promote it to Duty OFficer."
+      elseif captainName == "Shran" then
+        return "Encounter", "Discard the top 2 cards of the Bot deck. Gain a Person. Gain a Cargo. Log this card."
+      elseif captainName == "Sisko" then
+        return "Encounter", "Discard the top 3 cards of the Bot deck. Take an Influence Focus > Person. Log this card."
+      elseif captainName == "Archer" then
+        return "Encounter", "Discard the top card of the Supplement deck. Log this card."
+      elseif captainName == "Georgiou" then
+        return "Encounter", "Log the top 2 cards of the Bot deck. Take a Ship. Log this card."
+      elseif captainName == "Kirk" then
+        return "Encounter", "Log the top card of the Bot deck. Gain the card in the Market with the most Glory."
+      -- elseif captainName == "Khan" then
+      --   return "Encounter", ""
+      elseif captainName == "Rebner" then
+        return "Encounter", "Discard the top 2 cards of the Bot deck. Gain a Military Focus > Attack > Weapon > Ship. Gain 1 Glory. Log this card."
+      elseif captainName == "Soval" then
+        return "Encounter", "Gain 1 Research. Discard the top card of the Supplement deck."
+      elseif captainName == "Freeman" then
+        return "Encounter", "Gain 2 Glory and log this card."
+      elseif captainName == "Pike" then
+        return "Encounter", "Discard the top 3 cards of the Bot deck. Take a Time Travel > Doctor > Research Focus or Influence Focus or Military Focus > Person. Discard the top card of the Supplement deck. Log this card."
+      elseif captainName == "Riker" then
+        return "Encounter", "Discard the entire Bot deck. Gain 2 Glory. Log this card."
+      end
+
+    else
+      if captainName == "Burnham" then
+        return "Encounter", "Gain 1 Research. Gain 1 Influence. Gain a Scientist > Anomaly > Ship. Log this card."
+      elseif captainName == "Koloth" then
+        return "Encounter", "Gain 1 Influence / Military (whichever is higher). Gain a Ship. Deploy the gained Ship; it engages."
+      elseif captainName == "Picard" then
+        return "Encounter", "Gain 1 Research / Influence (whichever is higher). Take a Kinglon > Ally > Ship. Log this card."
+      elseif captainName == "Sela" then
+        return "Encounter", "Gain 2 Glory. Send an Away TEam to a neutral Location. Send an Away Team to a neutral Location. Log Duty Officer. Log this card."
+      elseif captainName == "Shran" then
+        return "Encounter", "Gain 1 Glory. Gain 1 Military. Take a Ship > Ally. Log this card."
+      elseif captainName == "Sisko" then
+        return "Encounter", "Discard the top card of the Bot deck. Gain 1 Military. Gain 1 Influence. Take a Ship / Ally."
+      elseif captainName == "Archer" then
+        return "Encounter", "Resolve the top card of the Supplement deck. Log this card."
+      elseif captainName == "Georgiou" then
+        return "Encounter", "Gain 1 Research or 1 Military (whichever is higher). Take a Vulcan > Ally > Ship. Log this card."
+      elseif captainName == "Kirk" then
+        return "Encounter", "Gain 1 Research. Gain 1 Influence. Gain 1 Military. Gain 1 Glory. Log this card."
+      -- elseif captainName == "Khan" then
+      --   return "Encounter", ""
+      elseif captainName == "Rebner" then
+        return "Encounter", "Gain 1 Glory. Gain an Engineer or Communication or Scientist > Person, including from the Junk. Log this card."
+      elseif captainName == "Soval" then
+        return "Encounter", "Gain 1 Research. Gain 1 Influence. Manually resolve the top card of the Supplement deck. Log this card."
+      elseif captainName == "Freeman" then
+        return "Encounter", "Take a Lower Decker or Orion or Anomaly or Doctor or Security or Ops, if able, and log this card; otherwise log the top 2 cards of the Bot deck."
+      elseif captainName == "Pike" then
+        return "Encounter", "Log the top card of the Bot deck. Gain 1 Military. Gain 1 Influence. Take an Ally. Resolve the top card of the Supplement deck. Log this card."
+      elseif captainName == "Riker" then
+        return "Encounter", "Gain 1 Glory. Discard the entire Bot deck. Resolve the top card of the Supplement deck. Return an Incident from the Bot Discard pile, if able. Log this card."
+      end
+    end
+  end
+
+  if cardObj.hasTag("suit_location") then
+
+    if not hasDuty then
+      if captainName == "Burnham" then
+        return "Location", "Discard the top 2 cards of the Bot deck. Gain 1 Military. Gain 1 Research / Influence (whichever is lower)."
+      elseif captainName == "Koloth" then
+        return "Location", "Log the top card of the Bot deck. Discard the top 2 cards of the Bot deck. If a Ship is in Bot Discard pile, gain 1 Glory."
+      elseif captainName == "Picard" then
+        return "Location", "Log the top card of the Bot deck. Discard the top 3 cards of the Bot deck."
+      elseif captainName == "Sela" then
+        return "Location", "Log the top card of the Bot deck. Gain a Person and promote it to Duty Officer."
+      elseif captainName == "Shran" then
+        return "Location", "Log the top card of the Bot deck. Discard the top 2 cards of the Bot deck."
+      elseif captainName == "Sisko" then
+        return "Location", "Log the top card of the Bot deck. Discard the top 3 cards of the Bot deck. Gain 1 Military. If able, return a Ship from Bot Discard pile to top of the Bot deck."
+      elseif captainName == "Archer" then
+        return "Location", "Discard the top 2 cards of the Bot deck. Gain a Person. Gain 3 Glory from the supply (** Drag Glory Tokens out of Central Glory Bag and place to your Player Area Glory Counter Bag)."
+      elseif captainName == "Georgiou" then
+        return "Location", "Discard the top card of the Bot deck. Return an Incident from Bot Discard pile if able, otherwise gain 1 Glory."
+      elseif captainName == "Kirk" then
+        return "Location", "Log the top card of the Bot deck. Gain 1 Research or 1 Influence or 1 Military (whichever is lower). Send an Away team to a neutral Location."
+      -- elseif captainName == "Khan" then
+      --   return "Location", ""
+      elseif captainName == "Rebner" then
+        return "Location", "If able, gain an Engineer or Communication or Scientist. Otherwise, gain a Weapon or Attack > Person from the Junk."
+      elseif captainName == "Soval" then
+        return "Location", "Discard the top 3 cards of the Bot deck. Gain 1 Glory."
+      elseif captainName == "Freeman" then
+        return "Location", "Gain 1 Influence. Discard the top card of the Bot deck. Return an Incident from the Bot Discard pile if able; otherwise gain a Person."
+      elseif captainName == "Pike" then
+        return "Location", "Discard the top 2 cards of the Bot deck. Gain 1 Glory. If this card is a Starbase, send an Away Team to a neutral Location."
+      elseif captainName == "Riker" then
+        return "Location", "Gain 1 Influence. Send an Away Team to a neutral Location."
+      end
+
+    else
+      if captainName == "Burnham" then
+        return "Location", "Log the top 2 cards of the Bot deck. Gain 1 Research. Dismiss Duty Officer."
+      elseif captainName == "Koloth" then
+        return "Location", "Dismiss Duty Officer. Gain 1 Glory. Resolve the top card of the Bot deck."
+      elseif captainName == "Picard" then
+        return "Location", "Log the top 2 cards of the Bot deck. Gain 1 Research. Log Duty Officer."
+      elseif captainName == "Sela" then
+        return "Location", string.format("If able, gain a Shady. Otherwise, dismiss Duty Officer, gain a Person / Cargo / Ally, and [%s]you discard a card.[-]", attackColor)
+      elseif captainName == "Shran" then
+        return "Location", "Gain 1 Military. Gain 1 Glory. Log Duty Officer."
+      elseif captainName == "Sisko" then
+        return "Location", "Log the top card of the Bot deck. Discard the top 3 cards of the Bot deck. Gain 1 Influence. Log Duty Officer."
+      elseif captainName == "Archer" then
+        return "Location", "Discard the top card of the Supplement deck. Log the top 2 cards of the Bot deck. Gain 1 Glory (using bot Glory counter), and another 2 Glory (** Drag Glory Tokens out of Central Glory Bag and place to your Player Area Glory Counter Bag)."
+      elseif captainName == "Georgiou" then
+        return "Location", "Log the top 2 cards of the Bot deck. Gain 1 Research. Log Duty Officer."
+      elseif captainName == "Kirk" then
+        return "Location", "Gain 1 Research. Gain 1 Influence. Gain 1 Military. Take an Incident. If able, deploy a Ship from Bot Discard pile; it explores. Otherwise, send an Away Team to a neutral Location. Log Duty Officer."
+      -- elseif captainName == "Khan" then
+      --   return "Location", ""
+      elseif captainName == "Rebner" then
+        return "Location", "If a Helmet is in Bot Discard pile, gain 1 Military and discard the top card of the Supplement deck. Otherwise, dismiss Duty Officer, then manually resolve the top card of the Bot deck."
+      elseif captainName == "Soval" then
+        return "Location", "Gain 1 Influence. Gain a Research Focus > Starfleet > Cargo. Log Duty Officer."
+      elseif captainName == "Freeman" then
+        return "Location", "Discard the top 2 cards of the Bot deck. Gain 1 Influence. Log the top card of the Bot deck. If the Duty Officer is Lower Decker, dismiss them, otherwise log them."
+      elseif captainName == "Pike" then
+        return "Location", "Discard the top 3 cards of the Bot deck. Gain 1 Influence. If Duty Officer is Time Travel, dismiss it; otherwise log it."
+      elseif captainName == "Riker" then
+        return "Location", "Gain 1 Influence. Discard the top card of the Supplement deck. Log the Duty Officer."
+      end
+    end
+  end
+  return "No Operative Icon Found", "No Action Text Found"
+end

@@ -216,7 +216,10 @@ function setupCaptain(button, _, _)
 
   -- broadcast captain selection
   local playerStr = getPlayerStr(playerColor)
-  local broadcastStr = string.format("%s has selected %s Side Captain %s.", playerStr, selectedCaptainDifficulty, captainName)
+  local broadcastStr = string.format(
+                         "%s has selected %s Side Captain %s.",
+                         isBot and "["..Color.fromString(playerColor):toHex().."]"..playerColor.." Bot[-]" or playerStr, selectedCaptainDifficulty, captainName
+                       )
   broadcastToAll(broadcastStr, "White")
 
   -- destruct other player's button to select corresponding captain
@@ -428,7 +431,7 @@ function setupInitialSoloStardate(selectedBotDifficulty)
   -- handles initial setup of stardate area & glory stuff
 
   -- show stardate counter
-    showStardateGloryCounter(selectedBotDifficulty)
+    showStardateGloryCounter()
 
     -- place selected difficulty stardate deck to pad
     local deckStardate = selectedBotDifficulty ~= "Cadet" and getObjectbyName("Solo vs. " .. selectedBotDifficulty .. " Bot Stardate Deck") or
@@ -887,7 +890,12 @@ function placeCaptainDecks(captainName, playerColor, isBot)
 
       drawDeck.shuffle()
 
-    end, 0.50)
+      if not isBot then
+        local maxHandSize = getMaxHand(playerColor, captainName)
+        drawDeck.deal(maxHandSize, playerColor)
+      end
+
+    end, 1)
   end
 
   -- create "supplement" deck out of reserves/development decks if bot
@@ -1400,6 +1408,8 @@ function setupBotInstructionCards(captainName, playerColor)
 
   elseif captainName == "Khan" then
     -- special setup - regular traits to bottom, suits on top, to suits pos, khan in exile to traits
+    broadcastToAll("*** Khan Bot Reminder - When Khan is out of Exile, place 'Khan In Exile Traits' card to Unused Object Bag At Top of Table, then, place the 'Khan Traits' card from it's deck stack to the table to ensure proper bot scripting! ***", "Yellow")
+    
     for _, deckObj in pairs(deckTraits5YM.getObjects()) do
       if deckObj.name == "Traits / 5YM " .. captainName then
         local traitCard = deckTraits5YM.takeObject({ guid = deckObj.guid })
@@ -1599,7 +1609,7 @@ function displayPlayerControlXML(captainName, playerColor)
     UI.setAttribute(playerColor == "Blue" and "blue_vul_dilithium" or "red_vul_dilithium", "text", dilithiumVal)
   end
 
-  UI.show(playerColor == "Blue" and "ui_hide_blue" or "ui_hide_red")
+  UI.setAttribute(playerColor == "Blue" and "ui_hide_blue" or "ui_hide_red", "active", "true")
 end
 
 
@@ -1654,9 +1664,6 @@ function finalizeCaptainSetup()
       Turns.turn_color = firstPlayerColor
     end
 
-    -- junk pad GMNotes will always be playerColor of current turn holder, set initial
-    getObjectbyName("Pad Junk").setGMNotes(firstPlayerColor)
-
     -- broadcast
     local playerStr = getPlayerStr(firstPlayerColor)
     local broadcastStr = playerStr .. " will be First Player!"
@@ -1676,7 +1683,7 @@ function finalizeCaptainSetup()
       local deck2p = getObjectbyName("2-Player Stardate Deck")
       local posDeck2p = { -12.50, 1.50, 0.00 }
       deck2p.setPositionSmooth(posDeck2p, false, true)
-      showStardateGloryCounter("twoPlayer")
+      showStardateGloryCounter()
 
       -- mark stardate pad for 2 player detection
       local padStardate = getObjectbyName("Pad Stardate")
@@ -1688,8 +1695,11 @@ function finalizeCaptainSetup()
       end, 1.0)
     end
 
+    -- junk pad GMNotes will always be playerColor of current turn holder, set initial
+    getObjectbyName("Pad Junk").setGMNotes(firstPlayerColor)
+
   -- if IS isBot in game:
-  elseif soloInGame then
+  elseif soloInGame and not checkIsCadet() then
 
     -- place button most value, button next bot action
     local bagUnusedObjects = getObjectbyName("Unused Object Bag")
@@ -1707,6 +1717,8 @@ function finalizeCaptainSetup()
       buttonNext.setLock(true)
       buttonMVP.interactable = false
       buttonNext.interactable = false
+      initButtonNextBotAction(buttonNext)
+      initButtonGetMVP(buttonMVP)
     end)
 
     -- display bot control on screen XML UI
@@ -1719,6 +1731,10 @@ function finalizeCaptainSetup()
 
     -- first player will always be human player
     firstPlayerColor = botColor == "Blue" and "Red" or "Blue"
+
+    -- junk pad GMNotes will always be playerColor of current turn holder, set initial
+    getObjectbyName("Pad Junk").setGMNotes(firstPlayerColor)
+
   end
 
   -- in EITHER case:

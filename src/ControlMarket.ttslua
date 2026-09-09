@@ -87,6 +87,23 @@ function initButtonGainCard(buttonObj)
 end
 
 
+function initButtonAddResource(buttonObj)
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "placeResource",
+    function_owner = self,
+    label          = "",
+    position       = { 0, 0.46, -0.01 },
+    width          = 450,
+    height         = 450,
+    scale          = { 2.3, 2.3, 2.3 },
+    color          = { 1, 1, 1, 0 },
+    hover_color    = { 1, 1, 1, .4 },
+    tooltip        = "Clicking this button will take a Glory Token from the appropriate location, and then place it (or Dilithium if Burnham) on the above Market Card, and run the 'Refresh For End Of Turn' button action for the clicker's player area.\n\nMake sure to discard all unwanted cards before using this button, as it will assume all cards left in hand are intended to be held for next turn!",
+  })
+end
+
+
 
 function updateCounter(playerColor, resourceType, resources, mod)
   -- handles the update and broadcast of a resource counter
@@ -457,17 +474,6 @@ function takeCard(buttonObj, clickerColor, altClick)
 end
 
 
-
-
-
-
-
-
-
-
-
-
-
 function gainCard(buttonObj, clickerColor, altClick)
   -- handles functionality associated with market gain to deck & gain to discard buttons
   -- "Gain" action will either take facedown card to deck, or, faceup card to discard
@@ -594,4 +600,307 @@ function gainCard(buttonObj, clickerColor, altClick)
     broadcastToAll(followupStr, "White")
 
   end, 0.5)
+end
+
+
+
+
+
+
+function placeResource(buttonObj, playerColor, altClick)
+  -- handles the action of placing a resource to a market card, checking for stardate cards, everything associated with ending a turn
+
+  -- get old Turn owner from junk pad GMNotes, set to new turn owner
+  local padJunk = getObjectbyName("Pad Junk")
+  local oldTurn = padJunk.getGMNotes()
+  if oldTurn == "None" then return end -- game hasn't started yet
+
+  animateButton(buttonObj)
+
+  local otherPlayerColor = playerColor == "Blue" and "Red" or "Blue"
+  local buttonName = buttonObj.getName()
+  local cardSuit = (buttonName:find("Person") and "Person") or
+                   (buttonName:find("Cargo") and "Cargo") or
+                   (buttonName:find("Ship") and "Ship") or
+                   (buttonName:find("Ally") and "Ally")
+
+  -- check for stardate card in either player's area, broadcast & return out if so
+  local stardateCheckZone = getObjectbyNameAndNotes("Zone Stardate Player", otherPlayerColor)
+  local botInGame = checkIsBot()
+  local botColor
+  local humanColor = playerColor
+  if altClick and botInGame then
+    botColor, humanColor = getSoloColors()
+    playerColor = botColor
+    otherPlayerColor = humanColor
+    stardateCheckZone = getObjectbyNameAndNotes("Zone Stardate Player", botColor)
+  end
+  local playerStr = getPlayerStr(playerColor)
+  local otherPlayerStr = getPlayerStr(otherPlayerColor)
+
+  -- mark junk pad with turn owner playerColor
+  padJunk.setGMNotes(otherPlayerColor)
+
+  for _, zoneObj in pairs(stardateCheckZone.getObjects()) do
+    if string.find(zoneObj.getName(), "Stardate") then
+      broadcastToAll("There is a Stardate card in play, it must be resolved before a resource may be placed here.", "Orange")
+      return
+    end
+  end
+
+  -- no stardate card found! moving on with cleanup
+  -- if bot in game, and altClicked, cycle on screen bot control UI buttons, refresh human? or bot? play area
+  if altClick and botInGame then
+    UI.hide('bot_next_action_cleanup')
+    Wait.time(function() UI.show('end_player_turn') end, 1)
+    refreshPlayerArea(humanColor)
+  end
+
+  -- check for captain card
+  local captainName = getCaptainName(playerColor)
+
+  -- check if burnham
+  local isBurnham = captainName == "Burnham" and true or false
+
+  -- pull logic on where to grab glory from, from player counters
+  local gloryCount = 0
+  local gloryToken = nil
+  local gloryCheckZone = getObjectbyName("Zone Stardate Glory")
+  local stardateDeckCheckZone = getObjectbyName("Zone Stardate")
+  for _, zoneObj in pairs(gloryCheckZone.getObjects()) do
+    if zoneObj.getName() == "Glory Token" then
+      gloryToken = zoneObj
+      gloryCount = gloryCount + 1
+    end
+  end
+
+  -- take stardate for opposing player if taking last glory
+  if gloryCount == 1 then
+    local stardateCard
+    for _, zoneObj in pairs(stardateDeckCheckZone.getObjects()) do
+      if zoneObj.type == "Card" then
+        stardateCard = zoneObj
+        stardateTriggerEndgame()
+
+      elseif zoneObj.tag == "Deck" then
+        stardateCard = zoneObj.takeObject()
+        local stardateCardName = stardateCard.getName()
+        local rotStardateCard = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
+        if (altClick and botInGame) or stardateCardName:find("Cadet") then
+          rotStardateCard = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+        end
+        local posStardateCard = playerColor == "Blue" and { 24.00, 1.25, -15.00 } or { -24.00, 1.25, 15.00 }
+        if stardateCardName:find("Cadet") then posStardateCard = playerColor == "Blue" and { -24.00, 1.25, 15.00 } or { 24.00, 1.25, -15.00 } end
+        stardateCard.setRotation(rotStardateCard)
+        stardateCard.setPositionSmooth(posStardateCard, false, true)
+
+        local broadcastStr = string.format("%s has given [%s]%s[-] to %s.", playerStr, Color.fromString("Yellow"):toHex(), stardateCardName, otherPlayerStr)
+        broadcastToAll(broadcastStr, "White")
+      end
+    end
+  end
+
+  -- if no glory found in zone, pull one from the bag
+  if gloryToken == nil then
+    gloryToken = getObjectbyName("Central Glory Token Bag").takeObject()
+  end
+
+  -- place found glory token (or dilithium)
+  local posGlory = {
+    ["Person"] = { x=-7.50, y=2.00, z=8.00 },
+    ["Cargo"]  = { x=-2.50, y=2.00, z=8.00 },
+    ["Ship"]   = { x=2.50, y=2.00, z=8.00 },
+    ["Ally"]   = { x=7.50, y=2.00, z=8.00 },
+  }
+  local posDilithium_1 = {
+    ["Person"] = { x=-8.75, y=2.00, z=8.00 },
+    ["Cargo"]  = { x=-3.75, y=2.00, z=8.00 },
+    ["Ship"]   = { x=1.25, y=2.00, z=8.00 },
+    ["Ally"]   = { x=6.25, y=2.00, z=8.00 },
+  }
+  local posDilithium_2 = {
+    ["Person"] = { x=-6.25, y=2.00, z=8.00 },
+    ["Cargo"]  = { x=-1.25, y=2.00, z=8.00 },
+    ["Ship"]   = { x=3.75, y=2.00, z=8.00 },
+    ["Ally"]   = { x=8.75, y=2.00, z=8.00 },
+  }
+  local cardGloryCount = 0
+  local cardZone = getObjectbyName("Zone Market Current " .. cardSuit)
+
+  for _, zoneObj in pairs(cardZone.getObjects()) do
+    if zoneObj.getName() == "Glory Token" then
+      cardGloryCount = cardGloryCount + 1
+    end
+  end
+
+  posGlory[cardSuit].z = posGlory[cardSuit].z - (cardGloryCount * 0.75)
+
+  -- if not burnham, place glory to detected position
+  if not isBurnham then
+
+    -- check for too much Glory to neatly auto place, broadcast to do manual & return out if so
+    if posGlory[cardSuit].z < 3.50 then
+      local errorStr = string.format("Too much Glory on %s Card for scripting to place - pull and place manually!", cardSuit)
+      broadcastStr(errorStr, "Orange")
+      return
+    end
+
+    local rotGloryToken = { 0.00, 180.00, 180.00 }
+    gloryToken.setRotation(rotGloryToken)
+    gloryToken.setPositionSmooth(posGlory[cardSuit])
+    gloryToken.interactable = true
+    gloryToken.setLock(false)
+
+  elseif isBurnham then
+    -- remove the glory from stardate card before placing dilithium
+    getObjectbyName("Central Glory Token Bag").putObject(gloryToken)
+    local dilithiumCount = 0
+    for _, object in pairs(cardZone.getObjects()) do
+      if object.getName() == "Dilithium Token" then
+        dilithiumCount = dilithiumCount + 1
+      end
+    end
+
+    -- place dilithium to market card
+    local posDilithiumCount = math.floor(dilithiumCount / 2)
+    local posDilithium_1_Copy = {x = posDilithium_1[cardSuit].x, y = posDilithium_1[cardSuit].y, z = posDilithium_1[cardSuit].z - (posDilithiumCount * 1.00)}
+    local posDilithium_2_Copy = {x = posDilithium_2[cardSuit].x, y = posDilithium_2[cardSuit].y, z = posDilithium_2[cardSuit].z - (posDilithiumCount * 1.00)}
+
+    for i = 1, 2 do
+      local posDilithium = (i == 1) and posDilithium_1_Copy or posDilithium_2_Copy
+
+      -- check for too much Glory to neatly auto place, broadcast to do manual & return out if so
+      if posDilithium_1_Copy.z < 4.00 then
+        local broadcastStr = string.format("Too much Dilithium on %s Card for scripting to place, pull and place manually! (Glory has already been taken from Stardate Card.)", cardSuit)
+        broadcastToAll(broadcastStr , "Orange")
+        return
+      end
+
+      local dilithiumToken = getObjectbyName("Central Dilithium Bag").takeObject()
+      dilithiumToken.setPositionSmooth(posDilithium, false, true)
+    end
+  end
+
+  -- refresh human playerarea
+  Wait.time(function()
+
+    local buttonRefresh = getObjectbyName("Button Refresh Draw Deck " .. playerColor)
+    refreshDrawDeck(buttonRefresh, _, false)
+
+  end, 1)
+
+
+  -- run human player ending turn refresh actions
+  if (not altClick and botInGame) or not altClick then
+
+    -- initiate bot stuff at end of human turn if bot in game
+    UI.hide('end_player_turn')
+    if not altClick and botInGame then
+      botControlStep()
+    end
+
+    -- refresh human player area
+    refreshPlayerArea(playerColor)
+
+    Wait.time(function()
+
+      -- get current deck dize and max hand size, determine difference, deal back up to max hand size
+      local maxHandSize = getMaxHand(playerColor, captainName)
+      local currentHand = Player[playerColor].getHandObjects()
+      local handCount = #currentHand
+      local dealCount = math.max(0, maxHandSize - handCount)
+
+      local deckCheckZone = getObjectbyNameAndNotes("Zone Draw Deck", playerColor)
+      local drawDeck, deckCount = nil, 0
+      for _, zoneObj in pairs(deckCheckZone.getObjects()) do
+        if zoneObj.type == "Deck" then
+          drawDeck = zoneObj
+          deckCount = #(drawDeck.getObjects())
+          break
+        elseif zoneObj.type == "Card" then
+          drawDeck = zoneObj
+          deckCount = 1
+          break
+        end
+      end
+
+      local buttonRefresh = getObjectbyName("Button Refresh Draw Deck " .. playerColor)
+      if drawDeck and deckCount >= dealCount and dealCount > 0 then
+        drawDeck.deal(dealCount, playerColor)
+
+      elseif dealCount > 0 and deckCount > 0 then
+        local partial = math.min(deckCount, dealCount)
+        drawDeck.deal(partial, playerColor)
+        Wait.time(function()
+
+          refreshDrawDeck(buttonRefresh, _, true, 0)
+
+        end, 0.25)
+
+      elseif dealCount > 0 then
+        refreshDrawDeck(buttonRefresh, _, false, dealCount)
+      end
+
+    end, 2)
+  end
+
+  -- check for Cleanup tag cards, broadcast reminder if any found
+  if (altClick and not botInGame) or not altClick then
+    local cleanupCheckZones = {
+      getObjectbyNameAndNotes("Zone Duty Officer", playerColor),
+      getObjectbyNameAndNotes("Zone Deploy Location", playerColor),
+      getObjectbyNameAndNotes("Zone Deploy Ship", playerColor),
+      getObjectbyNameAndNotes("Zone In Play", playerColor),
+      getObjectbyNameAndNotes("Zone Captain", playerColor),
+    }
+    local matchCards = {}
+    for i = 1, 4 do
+      for _, zoneObj in pairs(cleanupCheckZones[i].getObjects()) do
+        if zoneObj.hasTag('cleanup') then
+          zoneObj.highlightOn(playerColor)
+          table.insert(matchCards, zoneObj)
+          Wait.time(function() zoneObj.highlightOff() end, 5)
+        end
+      end
+    end
+    if #matchCards > 0 then
+      local headlineStr = string.format("%s Reminder - Current in play Clean-Up Step Cards:", playerStr)
+      broadcastToAll(broadcastStr, "White")
+      Wait.time(function()
+
+        for i = 1, #matchCards do
+          local bulletStr = string.format("[b][%s]*[-][/b]", Color.fromString(playerColor):toHex())
+          broadcastToAll(matchCards[i].getName(), "White")
+        end
+
+      end, 0.5)
+    end
+  end
+
+  -- broadcast
+  local cardName = nil
+  local resourceString = "1 Glory"
+  if isBurnham then resourceString = "2 Dilithium" end
+  for _, zoneObj in pairs(cardZone.getObjects()) do
+    if zoneObj.type == "Card" then cardName = zoneObj.getName() end
+  end
+  local suitColors = {
+    ["Person"] = "BFA42C",
+    ["Cargo"]  = "4173B4",
+    ["Ship"]   = "C8C8C8",
+    ["Ally"]   = "CD28C3",
+  }
+  local suitColor = suitColors[cardSuit]
+
+  local broadcastStr = string.format("%s has placed %s %s.", playerStr, resourceString, cardName ~= nil and " on " .. "[b]["..suitColor.."]"..cardName.."[-][/b]" or "")
+  broadcastToAll(broadcastStr, "White")
+
+  -- if turns enabled, end and pass turn
+  if Turns.enable then
+    local currentColor = Turns.turn_color
+    local nextColor = currentColor == "Blue" and "Red" or "Blue"
+    Turns.turn_color = nextColor
+  else
+    return
+  end
 end

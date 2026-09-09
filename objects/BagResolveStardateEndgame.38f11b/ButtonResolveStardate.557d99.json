@@ -6,38 +6,38 @@
   },
   "Autoraise": true,
   "ColorDiffuse": {
-    "b": 0.23526,
-    "g": 0.23526,
-    "r": 0.23526
+    "b": 0.113,
+    "g": 0.392,
+    "r": 0.956
   },
   "CustomImage": {
     "CustomTile": {
       "Stackable": false,
       "Stretch": true,
-      "Thickness": 0.449356049,
+      "Thickness": 0.35392487,
       "Type": 3
     },
     "ImageScalar": 1,
-    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/25436014405374237/1EF84DCDB25E75F4E92CF40A8DEBF51A252812C4/",
-    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25436014405374237/1EF84DCDB25E75F4E92CF40A8DEBF51A252812C4/",
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/10789941580559562551/6D294819CE14A5A009A5B526B249A7115CC69554/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/10789941580559562551/6D294819CE14A5A009A5B526B249A7115CC69554/",
     "WidthScale": 0
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "",
-  "GUID": "ece298",
+  "GMNotes": "endgame",
+  "GUID": "557d99",
   "Grid": true,
   "GridProjection": false,
   "Hands": false,
   "HideWhenFaceDown": false,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
-  "Locked": true,
+  "Locked": false,
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Custom_Tile",
-  "Nickname": "Button Market Resource Ally",
+  "Nickname": "Button Resolve Stardate",
   "Snap": true,
   "Sticky": true,
   "Tags": [
@@ -45,15 +45,15 @@
   ],
   "Tooltip": false,
   "Transform": {
-    "posX": 8.561,
-    "posY": 0.75,
-    "posZ": 10,
+    "posX": 9.047,
+    "posY": 3.779,
+    "posZ": -28.447,
     "rotX": 0,
-    "rotY": 180,
+    "rotY": 270,
     "rotZ": 0,
-    "scaleX": 0.5,
+    "scaleX": 1.25,
     "scaleY": 1,
-    "scaleZ": 0.5
+    "scaleZ": 1.25
   },
   "Value": 0,
   "XmlUI": ""

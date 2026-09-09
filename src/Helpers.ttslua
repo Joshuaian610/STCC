@@ -59,7 +59,9 @@ end
 
 function getPlayerStr(playerColor)
   -- handles the creation of playerStr for broadcasts
+
   if playerColor == nil then return "Player" end
+
   local playerColorIsBot = checkPlayerColorIsBot(playerColor)
   local captainName = getCaptainName(playerColor)
   local playerStr = (Player[playerColor].steam_name ~= nil and not playerColorIsBot) and
@@ -126,6 +128,393 @@ function getCaptainName(playerColor)
     captainBoardName = splitName[1]
   end
   return captainBoardName
+end
+
+
+function getCurrentStardate(playerColor)
+  -- handles a check of playe stardate card zone for a stardate card, returns cardName or "None"
+  local cardName = "None"
+  local checkZone = getObjectbyNameAndNotes("Zone Stardate Player", playerColor)
+  for _, zoneObj in pairs(checkZone.getObjects()) do
+    if zoneObj.type == "Card" and zoneObj.getName():find("Stardate") then
+      cardName = zoneObj.getName()
+    end
+  end
+  return cardName
+end
+
+
+function getTrackMultipliers(captainName, influenceCount, militaryCount, researchCount)
+  -- returns current focus skill modifiers per captainName and count of focus skill
+  local influenceMultiplier
+  local militaryMultiplier
+  local researchMultiplier
+  local captainBoard
+  for _, object in pairs(getObjects()) do
+    if object.getName() == captainName .. " Crew Board Basic" or object.getName() == captainName .. " Crew Board Advanced" or
+    (captainName == "Khan" and object.getName() == "Khan Crew Board") then
+      captainBoard = object
+    end
+  end
+  local boardSide = captainBoard.getName():find("Basic") and "Basic" or "Advanced"
+
+  local function getMultiplier(count, thresholds)
+    for _, threshold in ipairs(thresholds) do
+        if count <= threshold[1] then
+            return threshold[2]
+        end
+    end
+
+    return thresholds[#thresholds][2]
+  end
+
+  local captainMultipliers = {
+    Burnham = {
+      influence = {
+        { 1, 1 },
+        { 6, 2 },
+        { 9, 3 },
+        { 12, 4 },
+        { 14, 5 },
+        { 15, 6 }
+      },
+      military = {
+        { 4, 1 },
+        { 9, 3 },
+        { 12, 4 },
+        { 15, 5 }
+      },
+      research = {
+        { 1, 1 },
+        { 6, 2 },
+        { 9, 3 },
+        { 12, 4 },
+        { 14, 5 },
+        { 15, 6 }
+      }
+    },
+    Koloth = {
+      influence = {
+        { 2, 1 },
+        { 7, 2 },
+        { 10, 3 },
+        { 14, 5 },
+        { 15, 7 }
+      },
+      military = {
+        { 1, 1 },
+        { 6, 2 },
+        { 9, 3 },
+        { 12, 4 },
+        { 14, 5 },
+        { 15, 7 }
+      },
+      research = {
+        { 4, 1 },
+        { 9, 3 },
+        { 12, 4 },
+        { 15, 5 }
+      }
+    },
+
+    Picard = {
+      influence = {
+        { 2, 1 },
+        { 7, 2 },
+        { 10, 3 },
+        { 14, 5 },
+        { 15, 7 }
+      },
+      military = {
+        { 4, 1 },
+        { 9, 3 },
+        { 13, 4 },
+        { 15, 5 }
+      },
+      research = {
+        { 1, 1 },
+        { 6, 2 },
+        { 9, 3 },
+        { 12, 4 },
+        { 14, 5 },
+        { 15, 6 }
+      }
+    },
+
+    Sela = {
+      influence = {
+        { 4, 1 },
+        { 9, 3 },
+        { 13, 4 },
+        { 15, 5 }
+      },
+      military = {
+        { 4, 1 },
+        { 9, 3 },
+        { 13, 4 },
+        { 15, 5 }
+      },
+      research = {
+        { 4, 1 },
+        { 9, 3 },
+        { 12, 4 },
+        { 15, 5 }
+      }
+    },
+
+    Shran = {
+      influence = {
+        { 1, 1 },
+        { 6, 2 },
+        { 9, 3 },
+        { 12, 4 },
+        { 14, 5 },
+        { 15, 6 }
+      },
+      military = {
+        { 2, 1 },
+        { 7, 2 },
+        { 10, 3 },
+        { 14, 5 },
+        { 15, 6 }
+      },
+      research = {
+        { 4, 1 },
+        { 9, 3 },
+        { 12, 4 },
+        { 15, 5 }
+      }
+    },
+
+    Sisko = {
+      influence = {
+        { 1, 1 },
+        { 6, 2 },
+        { 9, 3 },
+        { 12, 4 },
+        { 14, 5 },
+        { 15, 6 }
+      },
+      military = {
+        { 3, 1 },
+        { 8, 2 },
+        { 12, 4 },
+        { 14, 5 },
+        { 15, 6 }
+      },
+      research = {
+        { 2, 1 },
+        { 7, 2 },
+        { 10, 3 },
+        { 14, 5 },
+        { 15, 7 }
+      }
+    },
+
+    Archer = {
+      influence = {
+        { 2, 1 },
+        { 7, 2 },
+        { 14, 4 },
+        { 15, 6 }
+      },
+      military = {
+        { 2, 1 },
+        { 7, 2 },
+        { 14, 4 },
+        { 15, 7 }
+      },
+      research = {
+        { 2, 1 },
+        { 7, 2 },
+        { 14, 4 },
+        { 15, 6 }
+      }
+    },
+
+    Georgiou = {
+      influence = {
+        { 2, 1 },
+        { 7, 2 },
+        { 10, 3 },
+        { 14, 5 },
+        { 15, 7 }
+      },
+      military = {
+        { 1, 1 },
+        { 6, 2 },
+        { 9, 3 },
+        { 13, 4 },
+        { 15, 5 }
+      },
+      research = {
+        { 1, 1 },
+        { 6, 2 },
+        { 9, 3 },
+        { 12, 4 },
+        { 14, 5 },
+        { 15, 6 }
+      }
+    },
+
+    -- no khan
+
+    Kirk = {
+      influence = {
+        { 1, 1 },
+        { 2, 2 },
+        { 5, 3 },
+        { 9, 4 },
+        { 15, 5 },
+      },
+      military = {
+        { 1, 1 },
+        { 2, 2 },
+        { 5, 3 },
+        { 9, 4 },
+        { 15, 5 },
+      },
+      research = {
+        { 1, 1 },
+        { 2, 2 },
+        { 5, 3 },
+        { 9, 4 },
+        { 15, 5 },
+      }
+    },
+
+    Rebner = {
+      influence = {
+        { 0, 0 },
+      },
+      military = {
+        { 2, 1 },
+        { 5, 2 },
+        { 8, 3 },
+        { 11, 4 },
+        { 14, 5 },
+        { 15, 6 }
+      },
+      research = {
+        { 0, 0 },
+      }
+    },
+
+    Soval = {
+      influence = {
+        { 2, 1 },
+        { 7, 2 },
+        { 10, 4 },
+        { 14, 5 },
+        { 15, 6 },
+      },
+      military = {
+        { 1, 1 },
+        { 6, 2 },
+        { 9, 3 },
+        { 12, 4},
+        { 14, 5 },
+        { 15, 6 }
+      },
+      research = {
+        { 1, 1 },
+        { 6, 2 },
+        { 9, 3 },
+        { 12, 4 },
+        { 14, 5 },
+        { 15, 6 }
+      }
+    },
+
+    Freeman = {
+      influence = {
+        { 1, 1 },
+        { 6, 2 },
+        { 9, 3 },
+        { 12, 4},
+        { 14, 5 },
+        { 15, 6 }
+      },
+      military = {
+        { 1, 1 },
+        { 6, 2 },
+        { 9, 3 },
+        { 12, 4 },
+        { 14, 5 },
+        { 15, 6 }
+      },
+      research = {
+        { 1, 1 },
+        { 6, 2 },
+        { 9, 3 },
+        { 12, 4 },
+        { 14, 5 },
+        { 15, 6 }
+      }
+    },
+
+    Pike = {
+      influence = {
+        { 4, 1 },
+        { 9, 3},
+        { 14, 4 },
+        { 15, 5 },
+      },
+      military = {
+        { 2, 1 },
+        { 4, 2 },
+        { 8, 3 },
+        { 15, 4 },
+      },
+      research = {
+        { 8, 1, },
+        { 13, 4 },
+        { 15, 5},
+      }
+    },
+
+    Riker = {
+      influence = {
+        { 4, 1 },
+        { 9, 3 },
+        { 13, 4 },
+        { 15, 5 },
+      },
+      military = {
+        { 1, 1 },
+        { 6, 2 },
+        { 10, 3 },
+        { 14, 4 },
+        { 15, 6},
+      },
+      research = {
+        { 7, 1 },
+        { 10, 3 },
+        { 12, 4 },
+        { 15 , 5},
+      }
+    },
+  }
+
+  local captainData = captainMultipliers[captainName]
+
+  if captainData then
+    influenceMultiplier = getMultiplier(influenceCount, captainData.influence)
+    militaryMultiplier = getMultiplier(militaryCount, captainData.military)
+    researchMultiplier = getMultiplier(researchCount, captainData.research)
+
+    if boardSide == "Advanced" then
+      influenceMultiplier = influenceMultiplier - 1
+      militaryMultiplier = militaryMultiplier - 1
+      researchMultiplier = researchMultiplier - 1
+
+      if influenceMultiplier > 0 then influenceMultiplier = 0 end
+      if militaryMultiplier > 0 then militaryMultiplier = 0 end
+      if researchMultiplier > 0 then researchMultiplier = 0 end
+    end
+  end
+
+  return influenceMultiplier, militaryMultiplier, researchMultiplier
 end
 
 
@@ -214,9 +603,13 @@ function animateButton(buttonObj)
 
     elseif buttonObj.getName():find("Button Take Market") then
       initButtonTakeCard(buttonObj)
+
     elseif buttonObj.getName():find("Button Deck Gain Market") or
-            buttonObj.getName():find("Button Discard Gain Market") then
+           buttonObj.getName():find("Button Discard Gain Market") then
       initButtonGainCard(buttonObj)
+
+    elseif buttonObj.getName():find("Button Market Resource") then
+      initButtonAddResource(buttonObj)
     end
 
   end, .2)
@@ -229,4 +622,127 @@ function animateButton(buttonObj)
     end
 
   end, 5)
+end
+
+
+
+-- **** XML HELPERS ****
+
+function closeBlueUI()
+  UI.setAttribute("blue_andorian_panel", "active", "false")
+  UI.setAttribute("blue_klingon_panel", "active", "false")
+  UI.setAttribute("blue_romulan_panel", "active", "false")
+  UI.setAttribute("blue_starfleet_panel", "active", "false")
+  UI.setAttribute("blue_khan_panel", "active", "false")
+  UI.setAttribute("blue_pakled_panel", "active", "false")
+  UI.setAttribute("blue_vulcan_panel", "active", "false")
+  UI.setAttribute("ui_hide_blue", "active", "false")
+  UI.setAttribute("ui_show_blue", "active", "false")
+  UI.hide("bot_controls")
+end
+
+
+function closeRedUI()
+  UI.setAttribute("red_andorian_panel", "active", "false")
+  UI.setAttribute("red_klingon_panel", "active", "false")
+  UI.setAttribute("red_romulan_panel", "active", "false")
+  UI.setAttribute("red_starfleet_panel", "active", "false")
+  UI.setAttribute("red_khan_panel", "active", "false")
+  UI.setAttribute("red_pakled_panel", "active", "false")
+  UI.setAttribute("red_vulcan_panel", "active", "false")
+  UI.setAttribute("ui_hide_red", "active", "false")
+  UI.setAttribute("ui_show_red", "active", "false")
+  UI.hide("bot_controls")
+end
+
+
+function hideBlueUI()
+  UI.setAttribute("blue_andorian_panel", "active", "false")
+  UI.setAttribute("blue_klingon_panel", "active", "false")
+  UI.setAttribute("blue_romulan_panel", "active", "false")
+  UI.setAttribute("blue_starfleet_panel", "active", "false")
+  UI.setAttribute("blue_khan_panel", "active", "false")
+  UI.setAttribute("blue_pakled_panel", "active", "false")
+  UI.setAttribute("blue_vulcan_panel", "active", "false")
+  UI.setAttribute("ui_hide_blue", "active", "false")
+  UI.setAttribute("ui_show_blue", "active", "true")
+  UI.hide("bot_controls")
+end
+
+
+function hideRedUI()
+  UI.setAttribute("red_andorian_panel", "active", "false")
+  UI.setAttribute("red_klingon_panel", "active", "false")
+  UI.setAttribute("red_romulan_panel", "active", "false")
+  UI.setAttribute("red_starfleet_panel", "active", "false")
+  UI.setAttribute("red_khan_panel", "active", "false")
+  UI.setAttribute("red_pakled_panel", "active", "false")
+  UI.setAttribute("red_vulcan_panel", "active", "false")
+  UI.setAttribute("ui_hide_red", "active", "false")
+  UI.setAttribute("ui_show_red", "active", "true")
+  UI.hide("bot_controls")
+end
+
+
+function showBlueUI()
+  -- handles the showing of the on screen Blue Player XML UI Panel
+
+  local captainName = getCaptainName("Blue")
+
+  if captainName == "Burnham" or captainName == "Picard" or captainName == "Sisko" or
+     captainName == "Georgiou" or captainName == "Archer" or captainName == "Kirk" or
+     captainName == "Riker" or captainName == "Pike" or captainName == "Freeman" then
+    UI.setAttribute("blue_starfleet_panel", "active", "true")
+  elseif captainName == "Shran" then
+    UI.setAttribute("blue_andorian_panel", "active", "true")
+  elseif captainName == "Sela" then
+    UI.setAttribute("blue_romulan_panel", "active", "true")
+  elseif captainName == "Koloth" then
+    UI.setAttribute("blue_klingon_panel", "active", "true")
+  elseif captainName == "Khan" then
+    UI.setAttribute("blue_khan_panel", "active", "true")
+  elseif captainName == "Rebner" then
+    UI.setAttribute("blue_pakled_panel", "active", "true")
+  elseif captainName == "Soval" then
+    UI.setAttribute("blue_vulcan_panel", "active", "true")
+  end
+
+  UI.setAttribute("ui_show_blue", "active", "false")
+  UI.setAttribute("ui_hide_blue", "active", "true")
+
+  if checkIsBot() then
+    UI.show("bot_controls")
+  end
+end
+
+
+function showRedUI()
+  -- handles the showing of the on screen Red Player XML UI Panel
+
+  local captainName = getCaptainName("Red")
+
+  if captainName == "Burnham" or captainName == "Picard" or captainName == "Sisko" or
+     captainName == "Georgiou" or captainName == "Archer" or captainName == "Kirk" or
+     captainName == "Riker" or captainName == "Pike" or captainName == "Freeman" then
+    UI.setAttribute("red_starfleet_panel", "active", "true")
+  elseif captainName == "Shran" then
+    UI.setAttribute("red_andorian_panel", "active", "true")
+  elseif captainName == "Sela" then
+    UI.setAttribute("red_romulan_panel", "active", "true")
+  elseif captainName == "Koloth" then
+    UI.setAttribute("red_klingon_panel", "active", "true")
+  elseif captainName == "Khan" then
+    UI.setAttribute("red_khan_panel", "active", "true")
+  elseif captainName == "Rebner" then
+    UI.setAttribute("red_pakled_panel", "active", "true")
+  elseif captainName == "Soval" then
+    UI.setAttribute("red_vulcan_panel", "active", "true")
+  end
+
+  UI.setAttribute("ui_show_red", "active", "false")
+  UI.setAttribute("ui_hide_red", "active", "true")
+
+  if checkIsBot() then
+    UI.show("bot_controls")
+  end
 end

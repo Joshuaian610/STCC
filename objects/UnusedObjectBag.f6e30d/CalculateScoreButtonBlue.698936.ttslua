@@ -90,246 +90,246 @@ function remove_buttons(object)
 end -- end remove_buttons()
 
 
-function get_track_multipliers(captain_card, sci_count, dip_count, mil_count)
-    local sci_multiplier    = nil
-    local dip_multiplier    = nil
-    local mil_multiplier    = nil
-    local captain_card_name = captain_card.getName()
-    local split_card_name   = {}
-    for str in string.gmatch(captain_card_name,  "%S+") do
-        table.insert(split_card_name, str)
-    end
-    local captain_name      = split_card_name[1]
-    local difficulty        = split_card_name[4]
+-- function get_track_multipliers(captain_card, sci_count, dip_count, mil_count)
+--     local sci_multiplier    = nil
+--     local dip_multiplier    = nil
+--     local mil_multiplier    = nil
+--     local captain_card_name = captain_card.getName()
+--     local split_card_name   = {}
+--     for str in string.gmatch(captain_card_name,  "%S+") do
+--         table.insert(split_card_name, str)
+--     end
+--     local captain_name      = split_card_name[1]
+--     local difficulty        = split_card_name[4]
 
-    if captain_name     == "Burnham" then
-        -- science
-        if sci_count < 2 then
-            sci_multiplier = 1
-        elseif sci_count > 1 and sci_count < 7 then
-            sci_multiplier = 2
-        elseif sci_count > 6 and sci_count < 10 then
-            sci_multiplier = 3
-        elseif sci_count > 9 and sci_count < 13 then
-            sci_multiplier = 4
-        elseif sci_count > 12 and sci_count < 15 then
-            sci_multiplier = 5
-        elseif sci_count == 15 then
-            sci_multiplier = 6
-        end
-        -- diplomacy
-        if dip_count < 2 then
-            dip_multiplier = 1
-        elseif dip_count > 1 and dip_count < 7 then
-            dip_multiplier = 2
-        elseif dip_count > 6 and dip_count < 10 then
-            dip_multiplier = 3
-        elseif dip_count > 9 and dip_count < 13 then
-            dip_multiplier = 4
-        elseif dip_count > 12 and dip_count < 15 then
-            dip_multiplier = 5
-        elseif dip_count == 15 then
-            dip_multiplier = 6
-        end
-        -- military
-        if mil_count < 5 then
-            mil_multiplier = 1
-        elseif mil_count > 4 and mil_count < 10 then
-            mil_multiplier = 3
-        elseif mil_count > 9 and mil_count < 13 then
-            mil_multiplier = 4
-        elseif mil_count > 13 then
-            mil_multiplier = 5
-        end
-    elseif captain_name == "Koloth" then
-        -- science
-        if sci_count < 5 then
-            sci_multiplier = 1
-        elseif sci_count > 4 and sci_count < 10 then
-            sci_multiplier = 3
-        elseif sci_count > 9 and sci_count < 13 then
-            sci_multiplier = 4
-        elseif mil_count > 13 then
-            sci_multiplier = 5
-        end
-        -- diplomacy
-        if dip_count < 3 then
-            dip_multiplier = 1
-        elseif dip_count > 2 and dip_count < 8 then
-            dip_multiplier = 2
-        elseif dip_count > 7 and dip_count < 11 then
-            dip_multiplier = 3
-        elseif dip_count > 10 and dip_count < 15 then
-            dip_multiplier = 5
-        elseif dip_count == 15 then
-            dip_multiplier = 7
-        end
-        -- military
-        if mil_count < 2 then
-            mil_multiplier = 1
-        elseif mil_count > 1 and mil_count < 7 then
-            mil_multiplier = 2
-        elseif mil_count > 6 and mil_count < 10 then
-            mil_multiplier = 3
-        elseif mil_count > 9 and mil_count < 13 then
-            mil_multiplier = 4
-        elseif mil_count > 12 and mil_count < 15 then
-            mil_multiplier = 5
-        elseif mil_count == 15 then
-            mil_multiplier = 7
-        end
-    elseif captain_name == "Picard" then
-        -- science
-        if sci_count < 2 then
-            sci_multiplier = 1
-        elseif sci_count > 1 and sci_count < 7 then
-            sci_multiplier = 2
-        elseif sci_count > 6 and sci_count < 10 then
-            sci_multiplier = 3
-        elseif sci_count > 9 and sci_count < 13 then
-            sci_multiplier = 4
-        elseif sci_count > 12 and sci_count < 15 then
-            sci_multiplier = 5
-        elseif sci_count == 15 then
-            sci_multiplier = 6
-        end
-        -- diplomacy
-        if dip_count < 3 then
-            dip_multiplier = 1
-        elseif dip_count > 2 and dip_count < 8 then
-            dip_multiplier = 2
-        elseif dip_count > 7 and dip_count < 11 then
-            dip_multiplier = 3
-        elseif dip_count > 10 and dip_count < 15 then
-            dip_multiplier = 5
-        elseif dip_count == 15 then
-            dip_multiplier = 7
-        end
-        -- military
-        if mil_count < 5 then
-            mil_multiplier = 1
-        elseif mil_count > 4 and mil_count < 10 then
-            mil_multiplier = 3
-        elseif mil_count > 9 and mil_count < 14 then
-            mil_multiplier = 4
-        elseif mil_count > 14 then
-            mil_multiplier = 5
-        end
-    elseif captain_name == "Sela" then
-        -- science
-        if sci_count < 5 then
-            sci_multiplier = 1
-        elseif sci_count > 4 and sci_count < 10 then
-            sci_multiplier = 3
-        elseif sci_count > 9 and sci_count < 13 then
-            sci_multiplier = 4
-        elseif mil_count > 13 then
-            sci_multiplier = 5
-        end
-        -- diplomacy
-        if dip_count < 5 then
-            dip_multiplier = 1
-        elseif dip_count > 4 and dip_count < 10 then
-            dip_multiplier = 3
-        elseif dip_count > 9 and dip_count < 14 then
-            dip_multiplier = 4
-        elseif dip_count > 13 then
-            dip_multiplier = 5
-        end
-        -- military
-        if mil_count < 5 then
-            mil_multiplier = 1
-        elseif mil_count > 4 and mil_count < 10 then
-            mil_multiplier = 3
-        elseif mil_count > 9 and mil_count < 14 then
-            mil_multiplier = 4
-        elseif mil_count > 13 then
-            mil_multiplier = 5
-        end
-    elseif captain_name == "Shran" then
-        -- science
-        if sci_count < 5 then
-            sci_multiplier = 1
-        elseif sci_count > 4 and sci_count < 10 then
-            sci_multiplier = 3
-        elseif sci_count > 9 and sci_count < 13 then
-            sci_multiplier = 4
-        elseif mil_count > 13 then
-            sci_multiplier = 5
-        end
-        -- diplomacy
-        if dip_count < 2 then
-            dip_multiplier = 1
-        elseif dip_count > 1 and dip_count < 7 then
-            dip_multiplier = 2
-        elseif dip_count > 6 and dip_count < 10 then
-            dip_multiplier = 3
-        elseif dip_count > 9 and dip_count < 13 then
-            dip_multiplier = 4
-        elseif dip_count > 12 and dip_count < 15 then
-            dip_multiplier = 5
-        elseif dip_count == 15 then
-            dip_multiplier = 6
-        end
-        -- military
-        if mil_count < 3 then
-            mil_multiplier = 1
-        elseif mil_count > 2 and mil_count < 8 then
-            mil_multiplier = 2
-        elseif mil_count > 7 and mil_count < 11 then
-            mil_multiplier = 3
-        elseif mil_count > 10 and mil_count < 15 then
-            mil_multiplier = 5
-        elseif mil_count == 15 then
-            mil_multiplier = 6
-        end
-    elseif captain_name == "Sisko" then
-        -- science
-        if sci_count < 3 then
-            sci_multiplier = 1
-        elseif sci_count > 2 and sci_count < 8 then
-            sci_multiplier = 2
-        elseif sci_count > 7 and sci_count < 11 then
-            sci_multiplier = 3
-        elseif sci_count > 10 and sci_count < 15 then
-            sci_multiplier = 5
-        elseif sci_count == 15 then
-            sci_multiplier = 7
-        end
-        -- diplomacy
-        if dip_count < 2 then
-            dip_multiplier = 1
-        elseif dip_count > 1 and dip_count < 7 then
-            dip_multiplier = 2
-        elseif dip_count > 6 and dip_count < 10 then
-            dip_multiplier = 3
-        elseif dip_count > 9 and dip_count < 13 then
-            dip_multiplier = 4
-        elseif dip_count > 12 and dip_count < 15 then
-            dip_multiplier = 5
-        elseif dip_count == 15 then
-            dip_multiplier = 6
-        end
-        -- military
-        if mil_count < 4 then
-            mil_multiplier = 1
-        elseif mil_count > 3 and mil_count < 9 then
-            mil_multiplier = 2
-        elseif mil_count > 8 and mil_count < 13 then
-            mil_multiplier = 4
-        elseif mil_count > 12 and mil_count < 15 then
-            mil_multiplier = 5
-        elseif mil_count == 15 then
-            mil_multiplier = 6
-        end
-    end
-    if difficulty == "Advanced" then
-        sci_multiplier = sci_multiplier - 1
-        dip_multiplier = dip_multiplier - 1
-        mil_multiplier = mil_multiplier - 1
-    end
-    return sci_multiplier, dip_multiplier, mil_multiplier
-end -- end get_track_multipliers()
+--     if captain_name     == "Burnham" then
+--         -- science
+--         if sci_count < 2 then
+--             sci_multiplier = 1
+--         elseif sci_count > 1 and sci_count < 7 then
+--             sci_multiplier = 2
+--         elseif sci_count > 6 and sci_count < 10 then
+--             sci_multiplier = 3
+--         elseif sci_count > 9 and sci_count < 13 then
+--             sci_multiplier = 4
+--         elseif sci_count > 12 and sci_count < 15 then
+--             sci_multiplier = 5
+--         elseif sci_count == 15 then
+--             sci_multiplier = 6
+--         end
+--         -- diplomacy
+--         if dip_count < 2 then
+--             dip_multiplier = 1
+--         elseif dip_count > 1 and dip_count < 7 then
+--             dip_multiplier = 2
+--         elseif dip_count > 6 and dip_count < 10 then
+--             dip_multiplier = 3
+--         elseif dip_count > 9 and dip_count < 13 then
+--             dip_multiplier = 4
+--         elseif dip_count > 12 and dip_count < 15 then
+--             dip_multiplier = 5
+--         elseif dip_count == 15 then
+--             dip_multiplier = 6
+--         end
+--         -- military
+--         if mil_count < 5 then
+--             mil_multiplier = 1
+--         elseif mil_count > 4 and mil_count < 10 then
+--             mil_multiplier = 3
+--         elseif mil_count > 9 and mil_count < 13 then
+--             mil_multiplier = 4
+--         elseif mil_count > 13 then
+--             mil_multiplier = 5
+--         end
+--     elseif captain_name == "Koloth" then
+--         -- science
+--         if sci_count < 5 then
+--             sci_multiplier = 1
+--         elseif sci_count > 4 and sci_count < 10 then
+--             sci_multiplier = 3
+--         elseif sci_count > 9 and sci_count < 13 then
+--             sci_multiplier = 4
+--         elseif mil_count > 13 then
+--             sci_multiplier = 5
+--         end
+--         -- diplomacy
+--         if dip_count < 3 then
+--             dip_multiplier = 1
+--         elseif dip_count > 2 and dip_count < 8 then
+--             dip_multiplier = 2
+--         elseif dip_count > 7 and dip_count < 11 then
+--             dip_multiplier = 3
+--         elseif dip_count > 10 and dip_count < 15 then
+--             dip_multiplier = 5
+--         elseif dip_count == 15 then
+--             dip_multiplier = 7
+--         end
+--         -- military
+--         if mil_count < 2 then
+--             mil_multiplier = 1
+--         elseif mil_count > 1 and mil_count < 7 then
+--             mil_multiplier = 2
+--         elseif mil_count > 6 and mil_count < 10 then
+--             mil_multiplier = 3
+--         elseif mil_count > 9 and mil_count < 13 then
+--             mil_multiplier = 4
+--         elseif mil_count > 12 and mil_count < 15 then
+--             mil_multiplier = 5
+--         elseif mil_count == 15 then
+--             mil_multiplier = 7
+--         end
+--     elseif captain_name == "Picard" then
+--         -- science
+--         if sci_count < 2 then
+--             sci_multiplier = 1
+--         elseif sci_count > 1 and sci_count < 7 then
+--             sci_multiplier = 2
+--         elseif sci_count > 6 and sci_count < 10 then
+--             sci_multiplier = 3
+--         elseif sci_count > 9 and sci_count < 13 then
+--             sci_multiplier = 4
+--         elseif sci_count > 12 and sci_count < 15 then
+--             sci_multiplier = 5
+--         elseif sci_count == 15 then
+--             sci_multiplier = 6
+--         end
+--         -- diplomacy
+--         if dip_count < 3 then
+--             dip_multiplier = 1
+--         elseif dip_count > 2 and dip_count < 8 then
+--             dip_multiplier = 2
+--         elseif dip_count > 7 and dip_count < 11 then
+--             dip_multiplier = 3
+--         elseif dip_count > 10 and dip_count < 15 then
+--             dip_multiplier = 5
+--         elseif dip_count == 15 then
+--             dip_multiplier = 7
+--         end
+--         -- military
+--         if mil_count < 5 then
+--             mil_multiplier = 1
+--         elseif mil_count > 4 and mil_count < 10 then
+--             mil_multiplier = 3
+--         elseif mil_count > 9 and mil_count < 14 then
+--             mil_multiplier = 4
+--         elseif mil_count > 14 then
+--             mil_multiplier = 5
+--         end
+--     elseif captain_name == "Sela" then
+--         -- science
+--         if sci_count < 5 then
+--             sci_multiplier = 1
+--         elseif sci_count > 4 and sci_count < 10 then
+--             sci_multiplier = 3
+--         elseif sci_count > 9 and sci_count < 13 then
+--             sci_multiplier = 4
+--         elseif mil_count > 13 then
+--             sci_multiplier = 5
+--         end
+--         -- diplomacy
+--         if dip_count < 5 then
+--             dip_multiplier = 1
+--         elseif dip_count > 4 and dip_count < 10 then
+--             dip_multiplier = 3
+--         elseif dip_count > 9 and dip_count < 14 then
+--             dip_multiplier = 4
+--         elseif dip_count > 13 then
+--             dip_multiplier = 5
+--         end
+--         -- military
+--         if mil_count < 5 then
+--             mil_multiplier = 1
+--         elseif mil_count > 4 and mil_count < 10 then
+--             mil_multiplier = 3
+--         elseif mil_count > 9 and mil_count < 14 then
+--             mil_multiplier = 4
+--         elseif mil_count > 13 then
+--             mil_multiplier = 5
+--         end
+--     elseif captain_name == "Shran" then
+--         -- science
+--         if sci_count < 5 then
+--             sci_multiplier = 1
+--         elseif sci_count > 4 and sci_count < 10 then
+--             sci_multiplier = 3
+--         elseif sci_count > 9 and sci_count < 13 then
+--             sci_multiplier = 4
+--         elseif mil_count > 13 then
+--             sci_multiplier = 5
+--         end
+--         -- diplomacy
+--         if dip_count < 2 then
+--             dip_multiplier = 1
+--         elseif dip_count > 1 and dip_count < 7 then
+--             dip_multiplier = 2
+--         elseif dip_count > 6 and dip_count < 10 then
+--             dip_multiplier = 3
+--         elseif dip_count > 9 and dip_count < 13 then
+--             dip_multiplier = 4
+--         elseif dip_count > 12 and dip_count < 15 then
+--             dip_multiplier = 5
+--         elseif dip_count == 15 then
+--             dip_multiplier = 6
+--         end
+--         -- military
+--         if mil_count < 3 then
+--             mil_multiplier = 1
+--         elseif mil_count > 2 and mil_count < 8 then
+--             mil_multiplier = 2
+--         elseif mil_count > 7 and mil_count < 11 then
+--             mil_multiplier = 3
+--         elseif mil_count > 10 and mil_count < 15 then
+--             mil_multiplier = 5
+--         elseif mil_count == 15 then
+--             mil_multiplier = 6
+--         end
+--     elseif captain_name == "Sisko" then
+--         -- science
+--         if sci_count < 3 then
+--             sci_multiplier = 1
+--         elseif sci_count > 2 and sci_count < 8 then
+--             sci_multiplier = 2
+--         elseif sci_count > 7 and sci_count < 11 then
+--             sci_multiplier = 3
+--         elseif sci_count > 10 and sci_count < 15 then
+--             sci_multiplier = 5
+--         elseif sci_count == 15 then
+--             sci_multiplier = 7
+--         end
+--         -- diplomacy
+--         if dip_count < 2 then
+--             dip_multiplier = 1
+--         elseif dip_count > 1 and dip_count < 7 then
+--             dip_multiplier = 2
+--         elseif dip_count > 6 and dip_count < 10 then
+--             dip_multiplier = 3
+--         elseif dip_count > 9 and dip_count < 13 then
+--             dip_multiplier = 4
+--         elseif dip_count > 12 and dip_count < 15 then
+--             dip_multiplier = 5
+--         elseif dip_count == 15 then
+--             dip_multiplier = 6
+--         end
+--         -- military
+--         if mil_count < 4 then
+--             mil_multiplier = 1
+--         elseif mil_count > 3 and mil_count < 9 then
+--             mil_multiplier = 2
+--         elseif mil_count > 8 and mil_count < 13 then
+--             mil_multiplier = 4
+--         elseif mil_count > 12 and mil_count < 15 then
+--             mil_multiplier = 5
+--         elseif mil_count == 15 then
+--             mil_multiplier = 6
+--         end
+--     end
+--     if difficulty == "Advanced" then
+--         sci_multiplier = sci_multiplier - 1
+--         dip_multiplier = dip_multiplier - 1
+--         mil_multiplier = mil_multiplier - 1
+--     end
+--     return sci_multiplier, dip_multiplier, mil_multiplier
+-- end -- end get_track_multipliers()
 
 
 function get_away_count()

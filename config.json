@@ -208,7 +208,7 @@
     "ButtonControlLocationTop.e4d081",
     "ZoneNZPlayerTop.eaec24",
     "ZoneNZPlayerMiddle.3c477c",
-    "ZoneNZBottom.ba30f9",
+    "ZoneNZPlayerBottom.ba30f9",
     "ZoneNZPlayerBottom.758ef4",
     "ZoneNZPlayerMiddle.a0256f",
     "ZoneNZPlayerTop.817308",
@@ -483,7 +483,15 @@
     "LatinumCounterRed.c2bac2",
     "LatinumCounterBlue.39e892",
     "ButtonPullActionToken.312718",
-    "ChristopherPike.4d5117"
+    "ChristopherPike.4d5117",
+    "ZoneStardatePlayer.ed5ed8",
+    "ZoneStardatePlayer.668517",
+    "BagResolveStardateWipeMarket.488bd3",
+    "BagResolveStardateWipeBoth.6c8e97",
+    "BagResolveStardateEndgame.38f11b",
+    "BagResolveStardateDiscard.416301",
+    "CompletedGoalToken.e312a0",
+    "CompletedGoalToken.ef525c"
   ],
   "PlayArea": 0.7021237,
   "PlayerCounts": [
