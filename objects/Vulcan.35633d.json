@@ -12,7 +12,7 @@
     "r": 0.71324
   },
   "CustomDeck": {
-    "189": {
+    "232": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
       "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13907225384615601412/89F01F20469099831C8035F4F30CEECF210C171C/",
@@ -32,7 +32,7 @@
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
-  "Locked": false,
+  "Locked": true,
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
@@ -42,6 +42,7 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "cleanup_target",
     "skill_influence",
     "skill_research",
     "snap_card",
@@ -50,9 +51,9 @@
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -21.117,
-    "posY": 0.868,
-    "posZ": -14.114,
+    "posX": 89.299,
+    "posY": 0.854,
+    "posZ": -14.67,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

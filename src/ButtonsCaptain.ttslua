@@ -1132,12 +1132,6 @@ function handleTurnResupplyBroadcast(playerColor)
 end
 
 
-
-
-
-
-
-
 function refreshPlayerArea(playerColor)
   -- handles cleanup of a player area on turn end
 
@@ -1160,7 +1154,7 @@ function refreshPlayerArea(playerColor)
       table.insert(actionTokens, object)
     end
   end
-  local rotActionTokens = playerColor == "Blue" and { 0.00, 120.00, 0.00 } or { 0.00, 300.00, 180.00 }
+  local rotActionTokens = playerColor == "Blue" and { 0.00, 120.00, 180.00 } or { 0.00, 300.00, 180.00 }
   local posActionTokens = playerColor == "Blue" and { { -34.25, 0.80, 22.50 }, { -34.25, 0.80, 20.50 }, { -34.25, 0.80, 18.50 } } or
                                                     { { 34.25, 0.80, -22.50 }, { 34.25, 0.80, -20.50 }, { 34.25, 0.80, -18.50 } }
   if #actionTokens > 0 then

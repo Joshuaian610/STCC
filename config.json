@@ -42,9 +42,6 @@
     "Rulebook.fee62a",
     "PadCrewBoardBlue.997491",
     "PadCrewBoardRed.28a24b",
-    "ActionToken.d8a4e4",
-    "ActionToken.3a9253",
-    "ActionToken.8e3619",
     "DilithiumCounterBlue.a3ec59",
     "PadDrawDeck.3accb4",
     "PadCaptain.08fb97",
@@ -407,7 +404,6 @@
     "SovalDrawDeck.5073ca",
     "SovalReserves.fe46ac",
     "SovalDevelopment.6367d2",
-    "TiMur.693cac",
     "CarolFreeman.ea53d3",
     "FreemanDrawDeck.741453",
     "FreemanReserves.da83c0",
@@ -491,7 +487,11 @@
     "BagResolveStardateEndgame.38f11b",
     "BagResolveStardateDiscard.416301",
     "CompletedGoalToken.e312a0",
-    "CompletedGoalToken.ef525c"
+    "CompletedGoalToken.ef525c",
+    "Vulcan.35633d",
+    "ActionToken.a5ae29",
+    "ActionToken.6ff4a0",
+    "ActionToken.a5bc5d"
   ],
   "PlayArea": 0.7021237,
   "PlayerCounts": [

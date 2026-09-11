@@ -435,6 +435,10 @@
     {
       "displayed": "skill_x2_research",
       "normalized": "skill_x2_research"
+    },
+    {
+      "displayed": "destruct_on_end_turn",
+      "normalized": "destruct_on_end_turn"
     }
   ]
 }

@@ -42,6 +42,7 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "snap_card",
     "suit_cargo",
     "trait_beverage",
     "trait_vulcan"

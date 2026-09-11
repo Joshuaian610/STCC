@@ -886,11 +886,10 @@ function placeCaptainDecks(captainName, playerColor, isBot)
     drawDeck.setLock(false)
     drawDeck.setRotation(rotDrawDeck)
     drawDeck.setPosition(posDrawDeck)
+    drawDeck.shuffle()
     Wait.time(function()
 
-      drawDeck.shuffle()
-
-      if not isBot then
+      if not isBot then        
         local maxHandSize = getMaxHand(playerColor, captainName)
         drawDeck.deal(maxHandSize, playerColor)
       end
@@ -1033,7 +1032,8 @@ function setupCaptainDeployed(captainName, playerColor, isBot)
     ["Khan"]  = { "Ceti Alpha V", "Ceti Alpha VI" },
     ["Pike"]  = "Starbase One",
     ["Sisko"] = "Bajor",
-    ["Kirk"]  = "Starfleet Headquarters"
+    ["Kirk"]  = "Starfleet Headquarters",
+    ["Soval"] = "Vulcan"
   }
   local posDeployedLocations = playerColor == "Blue" and
                                { { -30.00, 1.25, 2.51 }, { -30.00, 1.25, -1.41 } } or
@@ -1043,7 +1043,7 @@ function setupCaptainDeployed(captainName, playerColor, isBot)
   if not isBot then
     -- ship only captains (most)
     if captainName == "Burnham" or captainName == "Koloth" or captainName == "Picard" or captainName == "Sela" or
-       captainName == "Shran" or captainName == "Archer" or captainName == "Georgiou" or captainName == "Soval" or
+       captainName == "Shran" or captainName == "Archer" or captainName == "Georgiou" or
        captainName == "Freeman" or captainName == "Riker" then
       local deployedShipCard = getObjectbyNameAndType(deployedShipNames[captainName], "Card")
       local deployedShipFigure = getObjectbyNameAndType(deployedShipNames[captainName], "Tileset")
@@ -1068,25 +1068,23 @@ function setupCaptainDeployed(captainName, playerColor, isBot)
         deployedShipFigure.setColorTint(playerColor)
       end
 
-    -- controlled location only captains (khan, pike)
-    elseif captainName == "Khan" or captainName == "Pike" then
-      if captainName == "Pike" then
-        local locationCard = getObjectbyName(deployedLocationNames["Pike"])
+    -- controlled location only captains (khan, pike, soval)
+    elseif captainName == "Pike" or captainName == "Soval" then
+        local locationCard = getObjectbyName(deployedLocationNames[captainName])
         if locationCard then
           locationCard.setLock(false)
           locationCard.setRotation(rotDeployedCard)
           locationCard.setPosition(posDeployedLocations[1])
         end
 
-      elseif captainName == "Khan" then
-        for i, locationName in ipairs(deployedLocationNames["Khan"]) do
-          local locationCard = getObjectbyName(locationName)
-          if locationCard then
-            locationCard.setLock(false)
-            locationCard.setRotation(rotDeployedCard)
-            locationCard.setPosition(posDeployedLocations[i])
-          end
-        end
+    -- khan
+    elseif captainName == "Khan" and not isBot then
+      local khanLocations = { "Ceti Alpha V", "Ceti Alpha VI" }
+      for i = 1, #khanLocations do
+        local khanLocation = getObjectbyName(khanLocations[i])
+        khanLocation.setLock(false)
+        khanLocation.setRotation(rotDeployedCard)
+        khanLocation.setPosition(posDeployedLocations[i])
       end
 
     -- both type captains (sisko, kirk)
@@ -1199,6 +1197,7 @@ function setupCaptainDeployed(captainName, playerColor, isBot)
           if shuffleDeck ~= nil then
             shuffleDeck.shuffle()
             shuffleDeck.setRotation(rotFacedown)
+            posDeck.y = 1.50
             shuffleDeck.setPosition(posDeck)
           end
 
@@ -1258,7 +1257,6 @@ function setupCaptainIncident(captainName)
 
       Wait.time(function()
 
-        local incidentDeck = nil
         local checkZone = getObjectbyName("Zone Incident")
         for _, zoneObj in pairs(checkZone.getObjects()) do
           if zoneObj.type == "Deck" then
@@ -1276,12 +1274,13 @@ function setupCaptainDiscard(captainName, playerColor, isBot)
   -- will handle setup of initial captain incident card or deck, if they exist
 
   if captainName == "Sela" or captainName == "Archer" or
-  captainName == "Pike" or captainName == "Riker" then
+  captainName == "Pike" or captainName == "Riker" or captainName == "Soval" then
     local discardNames = {
       ["Sela"]   = "Sela Discard",
       ["Archer"] = "Analyze",
       ["Pike"]   = "Pike Discard",
       ["Riker"]  = "Riker Discard",
+      ["Soval"]  = "Ti'Mur",
     }
     local rotDiscard = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
     if isBot then
@@ -1408,8 +1407,7 @@ function setupBotInstructionCards(captainName, playerColor)
 
   elseif captainName == "Khan" then
     -- special setup - regular traits to bottom, suits on top, to suits pos, khan in exile to traits
-    broadcastToAll("*** Khan Bot Reminder - When Khan is out of Exile, place 'Khan In Exile Traits' card to Unused Object Bag At Top of Table, then, place the 'Khan Traits' card from it's deck stack to the table to ensure proper bot scripting! ***", "Yellow")
-    
+
     for _, deckObj in pairs(deckTraits5YM.getObjects()) do
       if deckObj.name == "Traits / 5YM " .. captainName then
         local traitCard = deckTraits5YM.takeObject({ guid = deckObj.guid })
@@ -1437,6 +1435,21 @@ function setupBotInstructionCards(captainName, playerColor)
           traitCard.setPosition(posTraitsCard)
         end
       end
+      Wait.time(function()
+
+        for _, obj in pairs(getObjects()) do
+          if obj.type == "Deck" then
+            local objPos = obj.getPosition()
+
+            if math.abs(objPos.x - posSuitsCard[1]) <= 0.1 and math.abs(objPos.z - posSuitsCard[3]) <= 0.1 then
+              obj.setName("Khan Out Of Exile Deck")
+              obj.setDescription("** Leave this deck alone - Scripting will handle the actions at the apporpriate time.")
+              obj.setLock(true)
+            end
+          end
+        end
+
+      end, 1)
 
     end)
   end
@@ -1657,9 +1670,9 @@ function finalizeCaptainSetup()
   -- if NOT isBot in game:
   if not soloInGame then
 
-    -- if more than 1 seated player, enable turns and set to first turn owner
+    -- if more than 1 seated player and not cadet mode, enable turns and set to first turn owner
     local seatedPlayers = getSeatedPlayers()
-    if #seatedPlayers > 1 then
+    if #seatedPlayers > 1 and not checkIsCadet() then
       Turns.enable = true
       Turns.turn_color = firstPlayerColor
     end
@@ -1738,13 +1751,17 @@ function finalizeCaptainSetup()
   end
 
   -- in EITHER case:
-  -- place first player marker to first player's position
+  -- place first player marker to first player's position (or to unused objs bag if Cadet mode)
   local tokenFirstPlayer = getObjectbyName("First Player")
   local rotToken = firstPlayerColor == "Blue" and { 0.00, 180.00, 0.00 } or { 0.00, 0.00, 0.00 }
   local posToken = firstPlayerColor == "Blue" and { -46.00, 1.95, 28.00 } or { 46.00, 1.95, -28.00 }
 
-  tokenFirstPlayer.setRotation(rotToken)
-  tokenFirstPlayer.setPositionSmooth(posToken, false, true)
+  if checkIsCadet() then
+    bagUnusedObjs.putObject(tokenFirstPlayer)
+  else
+    tokenFirstPlayer.setRotation(rotToken)
+    tokenFirstPlayer.setPositionSmooth(posToken, false, true)
+  end
 
   -- clean up non selected stardate decks, any other required cleanup for top table panel
   Wait.time(function()

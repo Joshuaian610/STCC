@@ -144,6 +144,63 @@ function getCurrentStardate(playerColor)
 end
 
 
+function getKhanInExile()
+  -- gets and returns if Khan is in exile state, pre Ceti Alpha V blowing up, true if in exile, false if not
+
+  local khanBoard = getObjectbyName("Khan Crew Board")
+  if khanBoard == nil then return "No Khan" end
+
+  -- detect khan's playerColor via it's zone
+  local khanColor
+  for _, zone in pairs(khanBoard.getZones()) do
+    if zone.getGMNotes() == "Blue" then khanColor = "Blue" break end
+    if zone.getGMNotes() == "Red" then khanColor = "Red" break end
+  end
+  if khanColor == nil then return "Khan Not Seated" end
+
+  -- check if Khan is bot or not, will need to handle differently
+  -- if khan is bot, then need to check if Khan In Exile card exists
+  local khanInExile = false
+  if checkPlayerColorIsBot(khanColor) then
+    local cardKhanInExile = getObjectbyName("Khan In Exile Traits")
+    if cardKhanInExile ~= nil then
+      khanInExile = true
+    end
+
+  -- if khan is human player, need to check Ceti Alpha V to see if it's facedown
+  elseif not checkPlayerColorIsBot(khanColor) then
+    local cardCetiAlphaV = getObjectbyName("Ceti Alpha V")
+    if not cardCetiAlphaV.is_face_down then
+      khanInExile = true
+    end
+  end
+
+  return khanInExile
+end
+
+
+function checkKhanTrait(traitType)
+  -- checks and returns true if trait type is enabled on Khan Board, false if not enabled or trait type doesn't exist on khan board
+  local khanBoard = getObjectbyName("Khan Crew Board")
+  if khanBoard == nil then return "No Khan" end
+
+  -- detect khan's playerColor via it's zone
+  local khanColor
+  for _, zone in pairs(khanBoard.getZones()) do
+    if zone.getGMNotes() == "Blue" then khanColor = "Blue" break end
+    if zone.getGMNotes() == "Red" then khanColor = "Red" break end
+  end
+
+  local checkZone = getObjectbyNameAndNotes("Zone Captain Board", khanColor)
+  for _, zoneObj in pairs(checkZone.getObjects()) do
+    if zoneObj.getName():find(traitType) then
+      return true
+    end
+  end
+  return false
+end
+
+
 function getTrackMultipliers(captainName, influenceCount, militaryCount, researchCount)
   -- returns current focus skill modifiers per captainName and count of focus skill
   local influenceMultiplier
@@ -357,8 +414,6 @@ function getTrackMultipliers(captainName, influenceCount, militaryCount, researc
       }
     },
 
-    -- no khan
-
     Kirk = {
       influence = {
         { 1, 1 },
@@ -495,6 +550,55 @@ function getTrackMultipliers(captainName, influenceCount, militaryCount, researc
       }
     },
   }
+
+  -- if khan, determine special multipliers
+  if captainName == "Khan" then
+    local khanColor
+    for _, zone in pairs(captainBoard.getZones()) do
+      if zone.getGMNotes():find("Blue") then khanColor = "Blue" break end
+      if zone.getGMNotes():find("Red") then khanColor = "Red" break end
+    end
+
+    local khanInExile = getKhanInExile()
+    local isBot = checkPlayerColorIsBot(khanColor)
+
+    if khanInExile then
+      if isBot then
+        influenceMultiplier = 1
+        militaryMultiplier = 1
+        researchMultiplier = 1
+      else
+        influenceMultiplier = 0
+        militaryMultiplier = 0
+        researchMultiplier = 0
+      end
+    elseif isBot and not khanInExile then
+      influenceMultiplier = 3
+      militaryMultiplier = 3
+      researchMultiplier = 3
+    else
+      local traitCount = 0
+      local checkZone = getObjectbyNameAndNotes("Zone Captain Card", khanColor)
+
+      for _, zoneObj in pairs(checkZone.getObjects()) do
+        if zoneObj.getName():find("Trait Tracker") and zoneObj.is_face_down then
+          traitCount = traitCount + 1
+        end
+      end
+
+      if traitCount == 12 then
+        influenceMultiplier = 3
+        militaryMultiplier = 3
+        researchMultiplier = 3
+      else
+        influenceMultiplier = 1
+        militaryMultiplier = 1
+        researchMultiplier = 1
+      end
+    end
+
+    return influenceMultiplier, militaryMultiplier, researchMultiplier
+  end
 
   local captainData = captainMultipliers[captainName]
 

@@ -674,30 +674,39 @@ function placeResource(buttonObj, playerColor, altClick)
     end
   end
 
-  -- take stardate for opposing player if taking last glory
+  -- take stardate card for opposing player if last glory is being taken
   if gloryCount == 1 then
-    local stardateCard
+    local cardStardate = nil
     for _, zoneObj in pairs(stardateDeckCheckZone.getObjects()) do
+      -- handle single stardate card left
       if zoneObj.type == "Card" then
-        stardateCard = zoneObj
+        cardStardate = zoneObj
+
+        -- trigger end of game if last stardate card
+        local posRemove = { 0.00, 2.25, 27.50 }
+        zoneObj.setPositionSmooth(posRemove, false, true)
         stardateTriggerEndgame()
+        return
 
-      elseif zoneObj.tag == "Deck" then
-        stardateCard = zoneObj.takeObject()
-        local stardateCardName = stardateCard.getName()
-        local rotStardateCard = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
-        if (altClick and botInGame) or stardateCardName:find("Cadet") then
-          rotStardateCard = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
-        end
-        local posStardateCard = playerColor == "Blue" and { 24.00, 1.25, -15.00 } or { -24.00, 1.25, 15.00 }
-        if stardateCardName:find("Cadet") then posStardateCard = playerColor == "Blue" and { -24.00, 1.25, 15.00 } or { 24.00, 1.25, -15.00 } end
-        stardateCard.setRotation(rotStardateCard)
-        stardateCard.setPositionSmooth(posStardateCard, false, true)
-
-        local broadcastStr = string.format("%s has given [%s]%s[-] to %s.", playerStr, Color.fromString("Yellow"):toHex(), stardateCardName, otherPlayerStr)
-        broadcastToAll(broadcastStr, "White")
+      -- handle pulling card from located deck if deck located
+      elseif zoneObj.type == "Deck" then
+        cardStardate = zoneObj.takeObject()
       end
     end
+    if cardStardate == nil then return end
+
+    local rotStardateCard = otherPlayerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0 }
+    if checkPlayerColorIsBot(otherPlayerColor) then rotStardateCard = otherPlayerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0 } end
+    local posStardateCard = otherPlayerColor == "Blue" and { -24.00, 0.76, 15.00 } or { 24.00, 0.76, -15.00 }
+    cardStardate.setRotation(rotStardateCard)
+    cardStardate.setPositionSmooth(posStardateCard, false, true)
+
+    -- pull & init resolve stardate button
+    Wait.time(function()
+
+      placeButtonResolveStardate(otherPlayerColor)
+
+    end, 1)
   end
 
   -- if no glory found in zone, pull one from the bag

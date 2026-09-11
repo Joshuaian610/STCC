@@ -588,6 +588,9 @@ function dealInitialMarket()
     dealCard.setRotation(rotFaceup)
     dealCard.setPositionSmooth(posDeal[i], false, true)
   end
+
+  -- also shuffle encounters
+  getObjectbyName("Encounters Deck").shuffle()
 end
 
 

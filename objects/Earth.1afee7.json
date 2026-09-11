@@ -22,7 +22,7 @@
       "UniqueBack": false
     }
   },
-  "Description": "",
+  "Description": "Dilithium or Latinum to be placed onto this card may be found in the Player Area Counters, which are also bags.\n\nRemoving a resource [b]does not[/b] lower a counter, but dropping a resource into it's bag [b]will[/b] increase it's counter.",
   "DragSelectable": true,
   "GMNotes": "",
   "GUID": "1afee7",

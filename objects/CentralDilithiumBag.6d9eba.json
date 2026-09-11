@@ -34,7 +34,7 @@
     "NormalURL": "",
     "TypeIndex": 7
   },
-  "Description": "Dilithium Tokens pulled from here will not increment player area counters if dropped into one. This bag is for placing Dilithium Tokens onto market cards.",
+  "Description": "Dilithium Tokens pulled from here will Increment player area counters if dropped into one.",
   "DragSelectable": true,
   "GMNotes": "",
   "GUID": "6d9eba",

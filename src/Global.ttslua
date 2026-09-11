@@ -23,7 +23,7 @@ function onLoad()
   end
 
   -- enable / disable non interactable objects
-  local nonInt = false
+  local nonInt = true
   makeNonInteractable(nonInt)
 
   -- if 1 seated player and is White (new load of mod, set to Blue)
@@ -238,6 +238,22 @@ function onObjectEnterContainer(container, object)
   if container.getName() == "Glory Token Bag" and object.getName() == "Glory Token" then
     local playerColor = container.getGMNotes()
     local counter = getObjectbyName("Glory Counter " .. playerColor)
+    local val = counter.getVar("val")
+    local newVal = val + 1
+    counter.call("setValue", newVal)
+  end
+
+  -- handle dilithium token drop increasing related counters
+  if container.getName():find("Dilithium Counter") and object.getName() == "Dilithium Token" then
+    local counter = container
+    local val = counter.getVar("val")
+    local newVal = val + 1
+    counter.call("setValue", newVal)
+  end
+
+  -- handle latinum token drop increasing related counters
+  if container.getName():find("Latinum Counter") and object.getName() == "Latinum Token" then
+    local counter = container
     local val = counter.getVar("val")
     local newVal = val + 1
     counter.call("setValue", newVal)

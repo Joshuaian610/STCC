@@ -420,7 +420,10 @@ function modifyValue(mod, playerColor, clickerColor)
     self.UI.setAttribute(uiElement, "textColor", textColor)
 
     local broadcastStr = ""
-    local action = mod == -1 and (counterType == "Stardate Glory" and "removed" or "lost") or "gained"
+    local action = mod == -1 and "lost" or "gained"
+    if counterType == "Stardate Glory" then
+      action = mod == -1 and "removed" or "added"
+    end
     if counterType == "Focus" then
       local ctrName = self.getName()
       counterType = (ctrName:find("Influence") and "Influence") or
@@ -677,7 +680,7 @@ function pullStardateGlory(playerColor)
       if cardStardate == nil then return end
 
       local rotStardateCard = otherPlayerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0 }
-      if isBot then rotStardateCard = otherPlayerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0 } end
+      if Global.call("checkPlayerColorIsBot", otherPlayerColor) then rotStardateCard = otherPlayerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0 } end
       local posStardateCard = otherPlayerColor == "Blue" and { -24.00, 0.76, 15.00 } or { 24.00, 0.76, -15.00 }
       cardStardate.setRotation(rotStardateCard)
       cardStardate.setPositionSmooth(posStardateCard, false, true)

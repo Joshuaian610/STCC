@@ -20,7 +20,7 @@
   ],
   "ContainedObjects_path": "IncidentsToBoldlyGoDeck.8b3978",
   "CustomDeck": {
-    "194": {
+    "706": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
       "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/18225221278821754296/C0FE4C6340CA8E86413033535D13456D2E987C9E/",
@@ -31,12 +31,12 @@
     }
   },
   "DeckIDs": [
-    19405,
-    19404,
-    19403,
-    19402,
-    19401,
-    19400
+    70605,
+    70604,
+    70603,
+    70602,
+    70601,
+    70600
   ],
   "Description": "",
   "DragSelectable": true,
