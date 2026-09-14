@@ -40,8 +40,8 @@
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
   "Locked": true,
-  "LuaScriptState": "",
-  "LuaScript_path": "InertDilithium.a7ecd3.ttslua",
+  "LuaScript": "",
+  "LuaScriptState": "",  
   "MeasureMovement": false,
   "Name": "CardCustom",
   "Nickname": "Inert Dilithium",
@@ -66,5 +66,5 @@
     "scaleZ": 1.75
   },
   "Value": 0,
-  "XmlUI_path": "InertDilithium.a7ecd3.xml"
+  "XmlU": ""
 }
