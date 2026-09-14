@@ -462,7 +462,16 @@ function placeSelectedCaptainBoard(captainName, selectedCaptainDifficulty, playe
 
   local rotCaptainBoard = playerColor == "Blue" and { 0.00, 270.00, 0.00 }  or { 0.00, 90.00, 0.00 }
   if isBot then rotCaptainBoard = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 } end
+  -- account for base game boards having been snap pointed upside down
+  if captainName == "Burnham" or captainName == "Koloth" or captainName == "Picard" or
+     captainName == "Sela" or captainName == "Shran" or captainName == "Sisko" then
+    rotCaptainBoard[3] = 180.00
+  end
   local posCaptainBoard = playerColor == "Blue" and { -42.15, 0.95, 16.00 } or { 42.15, 0.95, -16.00 }
+  if captainName == "Burnham" or captainName == "Koloth" or captainName == "Picard" or
+     captainName == "Sela" or captainName == "Shran" or captainName == "Sisko" then
+    posCaptainBoard[2] = 1.05
+  end
   captainBoard.setRotation(rotCaptainBoard)
   captainBoard.setPosition(posCaptainBoard)
 

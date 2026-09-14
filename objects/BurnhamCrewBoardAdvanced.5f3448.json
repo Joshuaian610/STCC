@@ -4,6 +4,53 @@
     "y": 0,
     "z": 0
   },
+  "AttachedSnapPoints": [
+    {
+      "Position": {
+        "x": -0.77,
+        "y": 0,
+        "z": -0.69
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 180
+      },
+      "Tags": [
+        "goalToken"
+      ]
+    },
+    {
+      "Position": {
+        "x": -0.057,
+        "y": 0,
+        "z": -0.69
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 180
+      },
+      "Tags": [
+        "goalToken"
+      ]
+    },
+    {
+      "Position": {
+        "x": 0.653,
+        "y": 0,
+        "z": -0.633
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 180
+      },
+      "Tags": [
+        "goalToken"
+      ]
+    }
+  ],
   "Autoraise": true,
   "ColorDiffuse": {
     "b": 0.23527,
@@ -40,8 +87,8 @@
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
   "Locked": true,
+  "LuaScript": "",
   "LuaScriptState": "",
-  "LuaScript_path": "BurnhamCrewBoardAdvanced.5f3448.ttslua",
   "MeasureMovement": false,
   "Name": "Custom_Tile",
   "Nickname": "Burnham Crew Board Advanced",

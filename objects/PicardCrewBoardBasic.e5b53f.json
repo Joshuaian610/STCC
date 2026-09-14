@@ -4,6 +4,23 @@
     "y": 0,
     "z": 0
   },
+  "AttachedSnapPoints": [
+    {
+      "Position": {
+        "x": -0.56,
+        "y": 0,
+        "z": -0.704
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 180
+      },
+      "Tags": [
+        "goalToken"
+      ]
+    }
+  ],
   "Autoraise": true,
   "ColorDiffuse": {
     "b": 0.23527,
@@ -40,8 +57,8 @@
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
   "Locked": true,
+  "LuaScript": "",
   "LuaScriptState": "",
-  "LuaScript_path": "PicardCrewBoardBasic.e5b53f.ttslua",
   "MeasureMovement": false,
   "Name": "Custom_Tile",
   "Nickname": "Picard Crew Board Basic",
@@ -53,7 +70,7 @@
   "Tooltip": false,
   "Transform": {
     "posX": -75.009,
-    "posY": 0.839,
+    "posY": 0.84,
     "posZ": -14.001,
     "rotX": 0,
     "rotY": 180,

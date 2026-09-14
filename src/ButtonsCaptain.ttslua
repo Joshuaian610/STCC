@@ -353,9 +353,13 @@ function reportCurrentSkills(playerColor)
   local checkZoneDO = getObjectbyNameAndNotes("Zone Duty Officer", playerColor)
 
   for _, zoneObj in pairs(checkZoneDO.getObjects()) do
-    if zoneObj.getName() == "Keyla Detmer" then
+    if zoneObj.getName() == "Keyla Detmer" or zoneObj.getName() == "T'Pau" then
       skillIcons["wildcard"] = skillIcons["wildcard"] + 2
-      table.insert(inPlaySkillCards["wildcard"], "Keyla Detmer: 2")
+      table.insert(inPlaySkillCards["wildcard"], zoneObj.getName() .. ": 2")
+    end
+    if zoneObj.getName() == "LT. Detmer" or zoneObj.getName() == "T'Pau" then
+      skillIcons["wildcard"] = skillIcons["wildcard"] + 1
+      table.insert(inPlaySkillCards["wildcard"], "Lt Detmer: 1")
     end
   end
 
@@ -696,8 +700,6 @@ function pullActionToken(buttonObj, _, _)
 end
 
 
-
-
 function refreshDrawDeck(buttonObj, _, altClick, dealCount)
 
   -- wrapper function to handle the refresh draw deck button functionality
@@ -762,7 +764,7 @@ function refreshDrawDeck(buttonObj, _, altClick, dealCount)
     if remainingToDraw <= 0 then return end
   end
 
-  local function continueDraw()
+    local function continueDraw()
 
     -- return out here if altClick
     if altClick then
@@ -787,13 +789,13 @@ function refreshDrawDeck(buttonObj, _, altClick, dealCount)
     -- try to enlist 1 Reserve as part of the draw
     local reserveObj = getReserveObject(reservesZone)
 
-    if reserveObj ~= nil then
-      enlistReserveCard(reserveObj, handZone, playerColor)
-      remainingToDraw = remainingToDraw - 1
-    else
+    if reserveObj == nil then
       enlistDevelopmentCard(devZone, playerColor, remainingToDraw, maxHandCount)
       return
     end
+
+    enlistReserveCard(reserveObj, handZone, playerColor)
+    remainingToDraw = remainingToDraw - 1
 
     if remainingToDraw <= 0 then return end
 
@@ -806,9 +808,8 @@ function refreshDrawDeck(buttonObj, _, altClick, dealCount)
 
     if remainingToDraw <= 0 then return end
 
-    -- refreshed deck did not contain enough cards; enlist Development for the remainder
+    -- refreshed deck did not contain enough cards; enlist Development
     enlistDevelopmentCard(devZone, playerColor, remainingToDraw, maxHandCount)
-
   end
 
   -- wait before refreshing the discard if cards were drawn from the existing deck
@@ -817,11 +818,7 @@ function refreshDrawDeck(buttonObj, _, altClick, dealCount)
   else
     continueDraw()
   end
-
 end
-
-
-
 
 
 function getMaxHand(playerColor, captainName)
@@ -1229,4 +1226,218 @@ function refreshPlayerArea(playerColor)
   --         end
   --     end
   -- end
+end
+
+
+function onObjectDrop(_, droppedObject)
+  if not droppedObject then
+    return
+  end
+
+  if not droppedObject.hasTag("goalToken") then
+    return
+  end
+
+  local posGoalTokens = {
+    -- 1 through 3 = advanced side, 4 = basic side
+    -- values are blue, x, z will need to be * -1 for red
+    ["Burnham"]  = { { -38.70, 1.05, 20.07 }, { -38.70, 1.05, 16.30 }, { -38.99, 1.05, 12.55 }, { -38.64, 1.05, 18.85 } },
+    ["Koloth"]   = { { -38.64, 1.05, 20.01 }, { -38.94, 1.05, 16.26 }, { -38.69, 1.05, 12.51 }, { -38.68, 1.05, 18.89 } },
+    ["Picard"]   = { { -38.70, 1.05, 19.99 }, { -38.70, 1.05, 16.24 }, { -38.68, 1.05, 12.47 }, { -38.63, 1.05, 18.93 } },
+    ["Sela"]     = { { -38.68, 1.05, 20.02 }, { -38.68, 1.05, 16.27 }, { -38.68, 1.05, 12.51 }, { -38.66, 1.05, 18.88 } },
+    ["Shran"]    = { { -38.67, 1.05, 20.02 }, { -38.67, 1.05, 16.26 }, { -38.67, 1.05, 12.51 }, { -38.64, 1.05, 18.89 } },
+    ["Sisko"]    = { { -38.71, 1.05, 20.00 }, { -38.98, 1.05, 16.24 }, { -38.70, 1.05, 12.49 }, { -38.70, 1.05, 18.87 } },
+    ["Archer"]   = { { -38.50, 1.05, 20.31 }, { -38.50, 1.05, 16.45 }, { -38.50, 1.05, 12.60 }, { -38.71, 1.05, 18.84 } },
+    ["Georgiou"] = { { -38.45, 1.05, 20.29 }, { -38.45, 1.05, 16.43 }, { -38.45, 1.05, 12.58 }, { -38.66, 1.05, 18.86 } },
+    ["Khan"]     = { { -38.54, 1.05, 19.81 }, { -38.54, 1.05, 16.11 }, { -38.83, 1.05, 12.41 } },
+    ["Kirk"]     = { { -38.76, 1.05, 19.73 }, { -38.48, 1.05, 16.14 }, { -38.48, 1.05, 12.58 }, { -38.71, 1.05, 18.86 } },
+    ["Rebner"]   = { { -38.49, 1.05, 19.23 }, { -38.49, 1.05, 15.84 }, { -38.49, 1.05, 12.40 }, { -38.70, 1.05, 18.17 } },
+    ["Soval"]    = { { -38.50, 1.05, 18.48 }, { -38.50, 1.05, 15.22 }, { -38.50, 1.05, 11.96 }, { -38.70, 1.05, 18.82 } },
+    ["Freeman"]  = { { -38.48, 1.05, 19.48 }, { -38.48, 1.05, 15.88 }, { -38.46, 1.05, 12.31 }, { -38.67, 1.05, 18.84 } },
+    ["Pike"]     = { { -38.44, 1.05, 19.28 }, { -38.44, 1.05, 15.87 }, { -38.44, 1.05, 12.46 }, { -38.63, 1.05, 18.35 } },
+    ["Riker"]    = { { -38.52, 1.05, 18.88 }, { -38.51, 1.05, 15.57 }, { -38.49, 1.05, 12.26 }, { -38.70, 1.05, 18.83 } },
+  }
+
+  local goalNames = {
+    ["Burnham"]  = {
+      "Investigate The Burn",
+      "Reunite The Federation",
+      "Dealing With The Emerald Chain"
+    },
+    ["Koloth"]   = {
+      "Expanding The Empire",
+      "Romulan Weapons Trade Agreement",
+      "Sabotage"
+    },
+    ["Picard"]   = {
+      "Peace Negotiations",
+      "Arbiter Of Succession",
+      "Seek Out New Life"
+    },
+    ["Sela"]     = {
+      "Romulan Might",
+      "The Reunification Plot",
+      "The Duras Plot"
+    },
+    ["Shran"]    = {
+      "Securing Andoria's Borders",
+      "Founding The Federation",
+      "Andorian Mining Consortium"
+    },
+    ["Sisko"]    = {
+      "A Call To Arms",
+      "Bajor's Application To The Federation",
+      "Contacting The Dominion"
+    },
+    ["Archer"]   = {
+      "History With Every Light-Year",
+      "Coalition Of Planets",
+      "Temporal Cold War"
+    },
+    ["Georgiou"] = {
+      "Call In The Reinforcements",
+      "Hardly A Negotiation",
+      "Gazing At The Stars"
+    },
+    ["Khan"]     = {
+      "I've Hurt You",
+      "I Shall Leave You As You Left Me",
+      "Marooned For All Eternity! Buried Alive!"
+    },
+    ["Kirk"]     = {
+      "Where No Man Has Gone Before",
+      "The Undiscovered Country",
+      "Search For Spock"
+    },
+    ["Rebner"]   = {
+      "Things That Make Us Smart",
+      "Things That Make Us Strong",
+      "Things That Make Us Fast",
+    },
+    ["Soval"]    = {
+      "My Mind To Your Mind",
+      "Cooperation With Starfleet",
+      "The Needs Of The Many"
+    },
+    ["Freeman"]  = {
+      "Project Swing By",
+      "Beta Shift",
+      "Calling All Your Friends"
+    },
+    ["Pike"]     = {
+      "Weight Of The Future",
+      "Boy Scout",
+      "To Explore"
+    },
+    ["Riker"]    = {
+      "Battling The Pakled",
+      "Spirit Of Starfleet",
+      "Messages From Old Friends"
+    }
+  }
+
+  local captainCardZone
+  local captainName
+  local boardSide
+
+  local tokenPos = droppedObject.getPosition()
+  local tokenPlayerColor
+
+  if tokenPos.x < 0 and tokenPos.z > 0 then
+    tokenPlayerColor = "Blue"
+  elseif tokenPos.x > 0 and tokenPos.z < 0 then
+    tokenPlayerColor = "Red"
+  else
+    return
+  end
+
+  captainCardZone = getObjectbyNameAndNotes("Zone Captain Card", tokenPlayerColor)
+
+  if not captainCardZone then
+    return
+  end
+
+  for _, zoneObj in pairs(captainCardZone.getObjects()) do
+    local objectName = zoneObj.getName()
+    local basicSuffix = " Crew Board Basic"
+    local advancedSuffix = " Crew Board Advanced"
+
+    if objectName == "Khan Crew Board" then
+      captainName = "Khan"
+      boardSide = "Advanced"
+      break
+    elseif objectName:sub(-#basicSuffix) == basicSuffix then
+      captainName = objectName:sub(1, #objectName - #basicSuffix)
+      boardSide = "Basic"
+      break
+    elseif objectName:sub(-#advancedSuffix) == advancedSuffix then
+      captainName = objectName:sub(1, #objectName - #advancedSuffix)
+      boardSide = "Advanced"
+      break
+    end
+  end
+
+  if not captainName or not boardSide then
+    return
+  end
+
+  local checkStart
+  local checkEnd
+
+  if boardSide == "Advanced" then
+    checkStart = 1
+    checkEnd = 3
+  else
+    checkStart = 4
+    checkEnd = 4
+  end
+
+  local captainPositions = posGoalTokens[captainName]
+
+  if not captainPositions then
+    return
+  end
+
+  Wait.time(function()
+
+    local dropPos = droppedObject.getPosition()
+    local tolerance = 0.15
+
+    for i = checkStart, checkEnd do
+      local targetPos = captainPositions[i]
+      if targetPos then
+        local targetX = targetPos[1]
+        local targetZ = targetPos[3]
+
+        if tokenPlayerColor == "Red" then
+          targetX = targetX * -1
+          targetZ = targetZ * -1
+        end
+
+        if math.abs(dropPos.x - targetX) <= tolerance
+            and math.abs(dropPos.z - targetZ) <= tolerance then
+
+          local goalList = goalNames[captainName]
+
+          if not goalList then
+            return
+          end
+
+          local goalIndex = boardSide == "Advanced" and i or 1
+          local goalName = goalList[goalIndex]
+
+          if not goalName then
+            return
+          end
+
+          local playerStr = getPlayerStr(tokenPlayerColor)
+          local broadcastStr = string.format("%s has marked their Captain Goal as Completed: %s", playerStr, goalName)
+          broadcastToAll(broadcastStr, "White")
+
+          return
+        end
+      end
+    end
+
+  end, 0.5)
 end

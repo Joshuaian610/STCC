@@ -107,6 +107,7 @@ end
 
 
 function onObjectEnterContainer(container, object)
+  if container.getName() ~= "Beamed Cards" and container.getName() ~= "Captain's Log" then return end
   -- on a card being dropped into bag, refresh counter & search buttons
   if container == self and object.type == "Card" then
     updateButtons()

@@ -12,7 +12,7 @@
     "r": 0.71324
   },
   "CustomDeck": {
-    "190": {
+    "224": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
       "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12360013617275162435/E5276705FD0D38636B6C509A0ED68CF70AB1D303/",
@@ -37,7 +37,7 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Card",
-  "Nickname": "Vulcan",
+  "Nickname": "Vulcan (Kirk)",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
@@ -49,10 +49,10 @@
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -20.887,
-    "posY": 0.811,
-    "posZ": -6.664,
-    "rotX": 0,
+    "posX": 109.433,
+    "posY": 2.174,
+    "posZ": 30.377,
+    "rotX": 356,
     "rotY": 180,
     "rotZ": 0,
     "scaleX": 1.75,

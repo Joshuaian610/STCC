@@ -610,7 +610,6 @@ function pullStardateGlory(playerColor)
   -- handles a "simple" single glory token pull from the bag
   -- determines game state & where to draw glory token from, pulls token, broadcasts
   -- will also handle the detection and placement of stardate card to opposing player in case of last glory pull from SD card/deck
-  -- the onObjectEnterContainer will handle the code of counter manipulation as glory counters need to add/remove on token bag adds & removals
 
   -- need to detect how & where to pull glory token from
   local isBot = Global.call("checkPlayerColorIsBot", playerColor)

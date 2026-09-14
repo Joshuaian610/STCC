@@ -4,6 +4,53 @@
     "y": 0,
     "z": 0
   },
+  "AttachedSnapPoints": [
+    {
+      "Position": {
+        "x": 0.81,
+        "y": 0.1,
+        "z": -0.74
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "Tags": [
+        "goalToken"
+      ]
+    },
+    {
+      "Position": {
+        "x": 0.081,
+        "y": 0.1,
+        "z": -0.74
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "Tags": [
+        "goalToken"
+      ]
+    },
+    {
+      "Position": {
+        "x": -0.645,
+        "y": 0.1,
+        "z": -0.74
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "Tags": [
+        "goalToken"
+      ]
+    }
+  ],
   "Autoraise": true,
   "ColorDiffuse": {
     "b": 0.23529,

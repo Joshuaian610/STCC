@@ -2,6 +2,7 @@
 -- code by Nonprophet, which is why it sucks
 
 require("BeamedBags")
+require("CalculateScore")
 require("ControlBot")
 require("ButtonsCaptain")
 require("ControlMarket")
@@ -217,6 +218,10 @@ function onObjectSpawn(obj)
     obj.highlightOn(color)
   end
 
+  -- handle creation of calculate score buttons
+  if obj.getName():find("Calculate Score Button") then
+    initButtonCalculateScore(obj)
+  end
 end
 
 
@@ -226,6 +231,7 @@ end
 
 
 function onObjectEnterContainer(container, object)
+  if object == nil then return end
   -- keep highlighting consistent when away teams stack
   if container.hasTag('away_blue') and object.hasTag('away_blue') then
     container.highlightOn("Blue")
@@ -241,18 +247,16 @@ function onObjectEnterContainer(container, object)
     local val = counter.getVar("val")
     local newVal = val + 1
     counter.call("setValue", newVal)
-  end
 
   -- handle dilithium token drop increasing related counters
-  if container.getName():find("Dilithium Counter") and object.getName() == "Dilithium Token" then
+  elseif container.getName():find("Dilithium Counter") and object.getName() == "Dilithium Token" then
     local counter = container
     local val = counter.getVar("val")
     local newVal = val + 1
     counter.call("setValue", newVal)
-  end
 
   -- handle latinum token drop increasing related counters
-  if container.getName():find("Latinum Counter") and object.getName() == "Latinum Token" then
+  elseif container.getName():find("Latinum Counter") and object.getName() == "Latinum Token" then
     local counter = container
     local val = counter.getVar("val")
     local newVal = val + 1

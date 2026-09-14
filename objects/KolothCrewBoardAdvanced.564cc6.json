@@ -4,6 +4,53 @@
     "y": 0,
     "z": 0
   },
+  "AttachedSnapPoints": [
+    {
+      "Position": {
+        "x": -0.76,
+        "y": 0,
+        "z": -0.702
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 180
+      },
+      "Tags": [
+        "goalToken"
+      ]
+    },
+    {
+      "Position": {
+        "x": -0.049,
+        "y": 0,
+        "z": -0.643
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 180
+      },
+      "Tags": [
+        "goalToken"
+      ]
+    },
+    {
+      "Position": {
+        "x": 0.661,
+        "y": 0,
+        "z": -0.692
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 180
+      },
+      "Tags": [
+        "goalToken"
+      ]
+    }
+  ],
   "Autoraise": true,
   "ColorDiffuse": {
     "b": 0.23527,
@@ -40,8 +87,8 @@
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
   "Locked": true,
+  "LuaScript": "",
   "LuaScriptState": "",
-  "LuaScript_path": "KolothCrewBoardAdvanced.564cc6.ttslua",
   "MeasureMovement": false,
   "Name": "Custom_Tile",
   "Nickname": "Koloth Crew Board Advanced",
@@ -53,7 +100,7 @@
   "Tooltip": false,
   "Transform": {
     "posX": -75,
-    "posY": 0.739,
+    "posY": 0.74,
     "posZ": 0,
     "rotX": 0,
     "rotY": 180,

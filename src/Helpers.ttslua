@@ -714,6 +714,10 @@ function animateButton(buttonObj)
 
     elseif buttonObj.getName():find("Button Market Resource") then
       initButtonAddResource(buttonObj)
+
+    elseif buttonObj.getName():find("Calculate Score Button") then
+      initButtonCalculateScore(buttonObj)
+
     end
 
   end, .2)

@@ -439,6 +439,10 @@
     {
       "displayed": "destruct_on_end_turn",
       "normalized": "destruct_on_end_turn"
+    },
+    {
+      "displayed": "goalToken",
+      "normalized": "goaltoken"
     }
   ]
 }

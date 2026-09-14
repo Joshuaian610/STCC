@@ -486,12 +486,12 @@
     "BagResolveStardateWipeBoth.6c8e97",
     "BagResolveStardateEndgame.38f11b",
     "BagResolveStardateDiscard.416301",
-    "CompletedGoalToken.e312a0",
-    "CompletedGoalToken.ef525c",
-    "Vulcan.35633d",
+    "VulcanSoval.35633d",
     "ActionToken.a5ae29",
     "ActionToken.6ff4a0",
-    "ActionToken.a5bc5d"
+    "ActionToken.a5bc5d",
+    "CompletedGoalToken.99a689",
+    "CompletedGoalToken.6fcc4a"
   ],
   "PlayArea": 0.7021237,
   "PlayerCounts": [

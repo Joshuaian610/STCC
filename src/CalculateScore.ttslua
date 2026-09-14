@@ -1,0 +1,3158 @@
+-- contains functions related to end game score calculation and reporting
+
+
+
+function initButtonCalculateScore(buttonObj)
+  buttonObj.clearButtons()
+  buttonObj.createButton({
+    click_function = "calculateScore",
+    function_owner = self,
+    label          = "",
+    position       = { 0, 0.36, -0.01 },
+    width          = 1700,
+    height         = 435,
+    scale          = { 2.3, 2.3, 2.3 },
+    color          = { 1, 1, 1, .3 },
+    hover_color    = { 1, 1, 1, .6 },
+    tooltip        = "Clicking this button will update player scoring pads and player notebooks with the score as it currently stands. Ensure all cards are in their correct locations, all completed missions are checked off on Captain board, and Skill counters are correct to ensure correct scoring.\n\n *Important: If counting for Su'kal or Kelpians, manually return incidents before scoring.",
+  })
+end
+
+
+function getNZCount()
+  -- detects situation in neutral zone at end game, determines token counts for either color
+  local blueNZCount = 0
+  local redNZCount = 0
+  local playerColors = { "Blue", "Red" }
+
+  for i = 1, #playerColors do
+    local playerColor = playerColors[i]
+    local checkZones = {
+      getObjectbyNameAndNotes("Zone NZ Player Top", playerColor),
+      getObjectbyNameAndNotes("Zone NZ Player Middle", playerColor),
+      getObjectbyNameAndNotes("Zone NZ Player Bottom", playerColor),
+    }
+
+    for j = 1, 3 do
+      for _, zoneObj in pairs(checkZones[j].getObjects()) do
+        -- count ships
+        if zoneObj.hasTag("snap_ship") then
+          if i == 1 then
+            blueNZCount = blueNZCount + 1
+          elseif i == 2 then
+            redNZCount = redNZCount + 1
+          end
+        end
+        -- count away teams
+        if i == 1 then
+          if zoneObj.hasTag("away_blue") then
+            blueNZCount = blueNZCount + 1
+          end
+        elseif i == 2 then
+          if zoneObj.hasTag("away_red") then
+            redNZCount = redNZCount + 1
+          end
+        end
+      end
+    end
+  end
+
+  return blueNZCount, redNZCount
+end
+
+
+function getOwnedCards()
+  -- detects and creates a list of owned cards at runtime for both player colors
+
+  local cardListBlue = {}
+  local cardListRed = {}
+  local playerColors = { "Blue", "Red" }
+
+  for i = 1, #playerColors do
+    local playerColor = playerColors[i]
+    local cardList = i == 1 and cardListBlue or cardListRed
+    local checkZones = {
+      getObjectbyNameAndNotes("Handzone", playerColor),
+      getObjectbyNameAndNotes("Zone Captain", playerColor),
+      getObjectbyNameAndNotes("Zone Draw Deck", playerColor),
+      getObjectbyNameAndNotes("Zone Discard", playerColor),
+      getObjectbyNameAndNotes("Zone In Play", playerColor),
+      getObjectbyNameAndNotes("Zone Deploy Ship", playerColor),
+      getObjectbyNameAndNotes("Zone Deploy Location", playerColor),
+      getObjectbyNameAndNotes("Zone Duty Officer", playerColor),
+    }
+    local bagCaptainsLog = getObjectbyNameAndNotes("Captain's Log", playerColor)
+    local beamBags = {}
+    for _, object in pairs(getObjects()) do
+      if object.getName() == "Beamed Cards" and object.getGMNotes() == playerColor then
+        table.insert(beamBags, object)
+      end
+    end
+
+    -- detect cards/decks in zones
+    for j = 1, #checkZones do
+      for _, zoneObj in pairs(checkZones[j].getObjects()) do
+        if zoneObj.type == "Card" then
+          table.insert(cardList, zoneObj.getName())
+        end
+        if zoneObj.type == "Deck" then
+          for _, deckObj in pairs(zoneObj.getObjects()) do
+            table.insert(cardList, deckObj.name)
+          end
+        end
+      end
+    end
+
+    -- cards in captain's log, beam bags
+    for _, bagObj in pairs(bagCaptainsLog.getObjects()) do
+      table.insert(cardList, bagObj.name)
+    end
+    for j = 1, #beamBags do
+      for _, bagObj in pairs(beamBags[j].getObjects()) do
+        table.insert(cardList, bagObj.name)
+      end
+    end
+  end
+  return cardListBlue, cardListRed
+end
+
+
+function getEndgameCount()
+  -- checks scoring conditions of owned cards, formats reporting of endgame score list
+
+  local cardListBlue, cardListRed = getOwnedCards()
+  local endgameCardListBlue = {}
+  local endgameCardListRed = {}
+  local notebookStrBlue = ""
+  local notebookStrRed = ""
+  local playerColors = { "Blue", "Red" }
+
+  for color = 1, #playerColors do
+
+    local playerColor = playerColors[color]
+    local cardList = (playerColor == "Blue" and cardListBlue) or
+                     (playerColor == "Red" and cardListRed)
+    local endgameCardList = (playerColor == "Blue" and endgameCardListBlue) or
+                            (playerColor == "Red" and endgameCardListRed)
+    local notebookStr = (playerColor == "Blue" and notebookStrBlue) or
+                        (playerColor == "Red" and notebookStrRed)
+
+    local checkZones = {
+      getObjectbyNameAndNotes("Handzone", playerColor),
+      getObjectbyNameAndNotes("Zone Captain", playerColor),
+      getObjectbyNameAndNotes("Zone Draw Deck", playerColor),
+      getObjectbyNameAndNotes("Zone Discard", playerColor),
+      getObjectbyNameAndNotes("Zone In Play", playerColor),
+      getObjectbyNameAndNotes("Zone Deploy Ship", playerColor),
+      getObjectbyNameAndNotes("Zone Deploy Location", playerColor),
+      getObjectbyNameAndNotes("Zone Duty Officer", playerColor),
+    }
+    local deployCheckZones = {
+      getObjectbyNameAndNotes("Zone Deploy Ship", playerColor),
+      getObjectbyNameAndNotes("Zone Deploy Location", playerColor),
+    }
+    local inPlayCheckZones = {
+      getObjectbyNameAndNotes("Zone Captain", playerColor),
+      getObjectbyNameAndNotes("Zone In Play", playerColor),
+      getObjectbyNameAndNotes("Zone Deploy Ship", playerColor),
+      getObjectbyNameAndNotes("Zone Deploy Location", playerColor),
+      getObjectbyNameAndNotes("Zone Duty Officer", playerColor),
+    }
+    local isBot = checkPlayerColorIsBot(playerColor)
+    local bagCaptainsLog = getObjectbyNameAndNotes("Captain's Log", playerColor)
+    local beamBags = {}
+    for _, object in pairs(getObjects()) do
+      if object.getName() == "Beamed Cards" and object.getGMNotes() == playerColor then
+        table.insert(beamBags, object)
+      end
+    end
+
+    for i = 1, #cardList do
+
+      -- LOCATION SPECIAL CONDITIONS
+
+      -- Verex III: score 1 for every owned shady
+      if cardList[i] == "Verex III" then
+        endgameCardList, notebookStr = checkVerexIII(checkZones, deployCheckZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
+
+      -- Derna: score 2 for every weapon beamed here
+      elseif cardList[i] == "Derna" then
+        endgameCardList, notebookStr = checkDerna(deployCheckZones, playerColor, beamBags, isBot, endgameCardList, notebookStr)
+
+      -- Ba'ku: score 1 for every person beamed here
+      elseif cardList[i] == "Ba'ku" then
+        endgameCardList, notebookStr = checkBaku(deployCheckZones, beamBags, playerColor, isBot, endgameCardList, notebookStr)
+
+      -- Regula I: score 1 for every anomaly owned
+      elseif cardList[i] == "Regula I" then
+        endgameCardList, notebookStr = checkRegulaI(checkZones, deployCheckZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
+
+      -- Daystrom institute: score 1 for every synthetic
+      elseif cardList[i] == "Daystrom Institute" then
+        endgameCardList, notebookStr = checkDaystromInstitute(checkZones, deployCheckZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
+
+      -- Boreth: score 1 for every non beamed skill icon (inc wildcard) in play
+      elseif cardList[i] == "Boreth" then
+        endgameCardList, notebookStr = checkBoreth(deployCheckZones, inPlayCheckZones, isBot, endgameCardList, notebookStr)
+
+      -- Theta zeta: score 1 for every 2 dilithium owned
+      elseif cardList[i] == "Theta Zeta" then
+        endgameCardList, notebookStr = checkThetaZeta(deployCheckZones, isBot, playerColor, endgameCardList, notebookStr)
+
+      -- Coridan: score 1 for every 4 dilithium owned
+      elseif cardList[i] == "Coridan" then
+        endgameCardList, notebookStr = checkCoridan(deployCheckZones, isBot, playerColor, endgameCardList, notebookStr)
+
+      -- Weytahn: score 4 if 2 or more away teams are here
+      elseif cardList[i] == "Weytahn" then
+        endgameCardList, notebookStr = checkWeytahn(deployCheckZones, isBot, playerColor, endgameCardList, notebookStr)
+
+      -- Cold Station 12: score 1 for each beamed Augment here
+      elseif cardList[i] == "Cold Station 12" then
+        endgameCardList, notebookStr = checkColdStation(deployCheckZones, beamBags, playerColor, isBot, endgameCardList, notebookStr)
+
+      -- Azati Prime: score 1 for each owned Xindi
+      elseif cardList[i] == "Azati Prime" then
+        endgameCardList, notebookStr = checkAzatiPrime(checkZones, deployCheckZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
+
+      -- Babel One: if 6+ influence, score 1 for each Communication or Ambassador in play
+      elseif cardList[i] == "Babel One" then
+        endgameCardList, notebookStr = checkBabelOne(inPlayCheckZones, deployCheckZones, playerColor, beamBags, isBot, endgameCardList, notebookStr)
+
+      -- Tellar Prime: score 1 for every controlled location with starbase or starfleet
+      elseif cardList[i] == "Tellar Prime" then
+        endgameCardList, notebookStr = checkTellarPrime(deployCheckZones, isBot, endgameCardList, notebookStr)
+
+      -- Karzill VI: score 1 for every 4 Glory player has
+      elseif cardList[i] == "Karzill VI" then
+        endgameCardList, notebookStr = checkKarzillVI(deployCheckZones, isBot, playerColor, endgameCardList, notebookStr)
+
+      -- Mount Seleya: score 1 for every in play Telepath (including captain)
+      elseif cardList[i] == "Mount Seleya" then
+        endgameCardList, notebookStr = checkMountSeleya(inPlayCheckZones, deployCheckZones, beamBags, isBot, endgameCardList, notebookStr)
+
+      -- Paan Mokar: score 4 if 2+ Away Teams are here
+      elseif cardList[i] == "Paan Mokar" then
+        endgameCardList, notebookStr = checkPaanMokar(deployCheckZones, isBot, playerColor, endgameCardList, notebookStr)
+
+      -- Vulcan (Kirk): score the highest skill track value
+      elseif cardList[i] == "Vulcan (Kirk)" then
+        endgameCardList, notebookStr = checkVulcanKirk(deployCheckZones, isBot, playerColor, endgameCardList, notebookStr)
+
+      -- Orion: score 1 for every owned Orion
+      elseif cardList[i] == "Orion" then
+        endgameCardList, notebookStr = checkOrion(checkZones, deployCheckZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
+
+      -- Nepenthe: if 9+ research, score 3
+      elseif cardList[i] == "Nepenthe" then
+        endgameCardList, notebookStr = checkNepenthe(deployCheckZones, playerColor, isBot, endgameCardList, notebookStr)
+
+
+
+
+      -- CAPTAIN SPECIAL CONDITIONS
+
+      -- Picard: score 1 for every ally card owned
+      elseif cardList[i] == "Jean-Luc Picard" then
+        endgameCardList, notebookStr = checkPicard(checkZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
+
+      -- Sisko: score 1 for every controlled location in play
+      elseif cardList[i] == "Benjamin Sisko" then
+        endgameCardList, notebookStr = checkSisko(deployCheckZones, isBot, endgameCardList, notebookStr)
+
+      -- Sela: score 1 for every non romulan/reman attack card
+      elseif cardList[i] == "Sela" then
+        endgameCardList, notebookStr = checkSela(checkZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
+
+      -- Rebner: score 1 for every 2 owned non Helmet cargo cards
+      elseif cardList[i] == "Rebner" then
+        endgameCardList, notebookStr = checkRebner(checkZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
+
+      -- Georgiou: score 1 for every 3 cards in play
+      elseif cardList[i] == "Phillipa Georgiou" then
+        endgameCardList, notebookStr = checkGeorgiou(inPlayCheckZones, beamBags, isBot, endgameCardList, notebookStr)
+
+      -- Archer: score 1 for every 3 unique traits you have in play
+      elseif cardList[i] == "Jonathan Archer" then
+        endgameCardList, notebookStr = checkArcher(inPlayCheckZones, beamBags, isBot, endgameCardList, notebookStr)
+
+      -- Soval: score 1 for every in play person without vulcan
+      elseif cardList[i] == "Soval" then
+        endgameCardList, notebookStr = checkSoval(inPlayCheckZones, beamBags, isBot, endgameCardList, notebookStr)
+
+      -- Kirk: score 1 for every second step on lowest skill counter
+      elseif cardList[i] == "James T. Kirk" then
+        endgameCardList, notebookStr = checkKirk(isBot, playerColor, endgameCardList, notebookStr)
+
+      -- Wrathful Khan (needs check that captain card is face down): score 1 for every focus card, or 3 for every focus if all traits marked (isBot should return out)
+      elseif cardList[i] == "Khan Noonien Singh" then
+        local khanCard = getObjectbyName("Khan Noonien Singh")
+        if khanCard.is_face_down then
+          endgameCardList, notebookStr = checkWrathfulKhan(checkZones, bagCaptainsLog, beamBags, isBot, playerColor, endgameCardList, notebookStr)
+        end
+
+      -- Freeman: score 1 for every 2 cards in captains log
+      elseif cardList[i] == "Carol Freeman" then
+        endgameCardList, notebookStr = checkFreeman(bagCaptainsLog, isBot, endgameCardList, notebookStr)
+
+
+
+
+      -- PERSON SPECIAL CONDITIONS
+
+      -- The Living Witness: Score 4
+      elseif cardList[i] == "The Living Witness" then
+        endgameCardList, notebookStr = checkLivingWitness(checkZones, isBot, endgameCardList, notebookStr)
+
+
+
+      -- CARGO SPECIAL CONDITIONS
+
+      -- Genesis Device: score the points from completed missions again
+      elseif cardList[i] == "Genesis Device" then
+        endgameCardList, notebookStr = checkGenesisDevice()
+
+
+
+      -- SHIP SPECIAL CONDITIONS
+
+      -- U.S.S. Federation: score 1 for every card with military/influence focus (_multi in GMNotes)
+      elseif cardList[i] == "U.S.S. Federation" then
+        endgameCardList, notebookStr = checkUSSFederation(deployCheckZones, checkZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
+
+
+
+
+      -- ENCOUNTER SPECIAL CONDITIONS
+
+      -- Red Angel: score 1 for every owned Anomaly
+      elseif cardList[i] == "Red Angel" then
+        endgameCardList, notebookStr = checkRedAngel(checkZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
+
+      end
+    end
+
+    if playerColor == "Blue" then
+      endgameCardListBlue = endgameCardList
+      notebookStrBlue = notebookStr
+    else
+      endgameCardListRed = endgameCardList
+      notebookStrRed = notebookStr
+    end
+  end
+
+  return endgameCardListBlue, notebookStrBlue, endgameCardListRed, notebookStrRed
+end
+
+
+function getAssociatedBeamBag(posCard, beamBags, playerColor)
+
+  -- handles the detection and return of a beam bag at the same slot as a card object
+
+  local beamBag
+
+  -- check X position to narrow down potential bag suspects to rows
+
+  local possibleBags = {}
+  local posCardX = posCard.x * (playerColor == "Red" and -1 or 1)
+
+  if posCardX > 37.50 and posCardX < 39.50 or
+  posCardX > -39.50 and posCardX < -37.50 then
+    for i = 8, 14 do
+      table.insert(possibleBags, beamBags[i])
+    end
+  elseif posCardX > 29.00 and posCardX < 31.00 or
+  posCardX > -31.00 and posCardX < -29.00 then
+    for i = 1, 7 do
+      table.insert(possibleBags, beamBags[i])
+    end
+  end
+
+  -- match up the Z positioning
+
+  for i = 1, #possibleBags do
+    local posBag = possibleBags[i].getPosition()
+    if posCard.z > posBag.z - 1 and posCard.z < posBag.z + 1 then
+      beamBag = possibleBags[i]
+    end
+  end
+
+  return beamBag
+end
+
+
+
+
+-- INDIVIDUAL CHECK FUNCS
+
+-- locations
+function checkVerexIII(checkZones, deployCheckZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
+  -- Verex III: score 1 for every shady owned
+
+  -- check if in play
+  local cardInPlay = false
+
+  for i = 1, #deployCheckZones do
+    for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+      if zoneObj.getName() == "Verex III" then
+        cardInPlay = true
+        break
+      end
+    end
+    if cardInPlay then
+      break
+    end
+  end
+
+  if cardInPlay then
+
+    local shadyCount = 0
+
+    -- check zones for shady trait
+    for i = 1, #checkZones do
+      for _, zoneObj in pairs(checkZones[i].getObjects()) do
+        if zoneObj.type == "Card" and zoneObj.hasTag('trait_shady') then
+          shadyCount = shadyCount + 1
+        end
+        if zoneObj.type == "Deck" then
+          for _, deckObj in pairs(zoneObj.getObjects()) do
+            local deckObjTags = deckObj.tags
+            for j = 1, #deckObjTags do
+              if deckObjTags[j] == "trait_shady" then
+                shadyCount = shadyCount + 1
+              end
+            end
+          end
+        end
+      end
+    end
+
+    -- check bags for shady trait
+    for _, bagObj in pairs(bagCaptainsLog.getObjects()) do
+      local bagObjTags = bagObj.tags
+      for i = 1, #bagObjTags do
+        if bagObjTags[i] == "trait_shady" then
+          shadyCount = shadyCount + 1
+        end
+      end
+    end
+
+    for i = 1, #beamBags do
+      for _, bagObj in pairs(beamBags[i].getObjects()) do
+        local bagObjTags = bagObj.tags
+        for j = 1, #bagObjTags do
+          if bagObjTags[j] == "trait_shady" then
+            shadyCount = shadyCount + 1
+          end
+        end
+      end
+    end
+
+    if isBot then shadyCount = 5 end
+    if shadyCount > 0 then
+      table.insert(endgameCardList, {["Verex III"] = shadyCount})
+      notebookStr = notebookStr .. "\nVerex III: " .. shadyCount
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkDerna(deployCheckZones, playerColor, beamBags, isBot, endgameCardList, notebookStr)
+  -- Derna: score 2 for every weapon beamed here
+  -- get card position, use to determine beam bag
+
+  local posCard
+  local cardInPlay = false
+
+  for _, object in pairs(getObjects()) do
+    if object.getName() == "Derna" then
+      posCard = object.getPosition()
+      for i = 1, #deployCheckZones do
+        for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+          if zoneObj.getName() == "Derna" then
+            cardInPlay = true
+          end
+        end
+      end
+    end
+  end
+
+  if cardInPlay then
+
+    local beamBag = getAssociatedBeamBag(posCard, beamBags, playerColor)
+    local weaponCount = 0
+    if beamBag ~= nil then
+      for _, bagObj in pairs(beamBag.getObjects()) do
+        local bagObjTags = bagObj.tags
+        for i = 1, #bagObjTags do
+          if bagObjTags[i] == "trait_weapon" then
+            weaponCount = weaponCount + 1
+          end
+        end
+      end
+
+      if not isBot then
+        if weaponCount > 0 then
+          table.insert(endgameCardList, {["Derna"] = weaponCount * 2})
+          notebookStr = notebookStr .. "\nDerna: " .. weaponCount * 2
+        end
+      else
+        table.insert(endgameCardList, {["Derna"] = 5})
+        notebookStr = notebookStr .. "\nDerna: 5"
+      end
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkBaku(deployCheckZones, beamBags, playerColor, isBot, endgameCardList, notebookStr)
+  -- Ba'ku score 1 for every person beamed here
+
+  -- get card position, use to determine beam bag
+  local posCard = {}
+  local cardInPlay = false
+  for _, object in pairs(getObjects()) do
+    if object.getName() == "Ba'ku" then
+      posCard = object.getPosition()
+      for i = 1, #deployCheckZones do
+        for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+          if zoneObj.getName() == "Ba'ku" then
+            cardInPlay = true
+          end
+        end
+      end
+    end
+  end
+
+  if cardInPlay then
+
+    local beamBag = getAssociatedBeamBag(posCard, beamBags, playerColor)
+    local personCount = 0
+    if beamBag ~= nil then
+      for _, bagObj in pairs(beamBag.getObjects()) do
+        local bagObjTags = bagObj.tags
+        for i = 1, #bagObjTags do
+          if bagObjTags[i] == "suit_person" then
+            personCount = personCount + 1
+          end
+        end
+      end
+    end
+    if isBot then personCount = 5 end
+    if personCount > 0 then
+      table.insert(endgameCardList, {["Ba'ku"] = personCount})
+      notebookStr = notebookStr .. "\nBa'ku: " .. personCount
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkRegulaI(checkZones, deployCheckZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
+  -- Regula I: score 1 for every anomaly owned
+
+  local cardInPlay    = false
+  for _, object in pairs(getObjects()) do
+    if object.getName() == "Regula I" then
+      for i = 1, #deployCheckZones do
+        for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+          if zoneObj.getName() == "Regula I" then
+            cardInPlay = true
+          end
+        end
+      end
+    end
+  end
+
+  if cardInPlay then
+
+    local anomalyCount = 0
+
+    -- check zones for anomaly trait
+    for i = 1, #checkZones do
+      for _, object in pairs(checkZones[i].getObjects()) do
+        if object.type == "Card" and object.hasTag('trait_anomaly') then
+          anomalyCount = anomalyCount + 1
+        end
+        if object.type == "Deck" then
+          for _, deckObj in pairs(object.getObjects()) do
+            local deckObjTags = deckObj.tags
+            for j = 1, #deckObjTags do
+              if deckObjTags[j] == "trait_anomaly" then
+                anomalyCount = anomalyCount + 1
+              end
+            end
+          end
+        end
+      end
+    end
+
+    -- check bags for anomaly trait
+    for _, bagObj in pairs(bagCaptainsLog.getObjects()) do
+      local bagObjTags = bagObj.tags
+      for i = 1, #bagObjTags do
+        if bagObjTags[i] == "trait_anomaly" then
+          anomalyCount = anomalyCount + 1
+        end
+      end
+    end
+
+    for i = 1, #beamBags do
+      for _, bagObj in pairs(beamBags[i].getObjects()) do
+        local bagObjTags = bagObj.tags
+        for j = 1, #bagObjTags do
+          if bagObjTags[j] == "trait_anomaly" then
+            anomalyCount = anomalyCount + 1
+          end
+        end
+      end
+    end
+    if isBot then
+      anomalyCount = 5
+    end
+    if anomalyCount > 0 then
+      table.insert(endgameCardList, {["Regula I"] = anomalyCount})
+      notebookStr = notebookStr .. "\nRegula I: " .. anomalyCount
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkDaystromInstitute(checkZones, deployCheckZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
+  local cardInPlay    = false
+  for _, object in pairs(getObjects()) do
+    if object.getName() == "Daystrom Institute" then
+      for i = 1, #deployCheckZones do
+        for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+          if zoneObj.getName() == "Daystrom Institute" then
+            cardInPlay = true
+          end
+        end
+      end
+    end
+  end
+
+  if cardInPlay then
+
+    local syntheticCount = 0
+
+    -- check zones for anomaly trait
+    for i = 1, #checkZones do
+      for _, object in pairs(checkZones[i].getObjects()) do
+        if object.type == "Card" and object.hasTag('trait_synthetic') then
+          syntheticCount = syntheticCount + 1
+        end
+        if object.type == "Deck" then
+          for _, deckObj in pairs(object.getObjects()) do
+            local deckObjTags = deckObj.tags
+            for j = 1, #deckObjTags do
+              if deckObjTags[j] == "trait_synthetic" then
+                syntheticCount = syntheticCount + 1
+              end
+            end
+          end
+        end
+      end
+    end
+
+    -- check bags for synthetic trait
+    for _, bagObj in pairs(bagCaptainsLog.getObjects()) do
+      local bagObjTags = bagObj.tags
+      for i = 1, #bagObjTags do
+        if bagObjTags[i] == "trait_synthetic" then
+          syntheticCount = syntheticCount + 1
+        end
+      end
+    end
+
+    for i = 1, #beamBags do
+      for _, bagObj in pairs(beamBags[i].getObjects()) do
+        local bagObjTags = bagObj.tags
+        for j = 1, #bagObjTags do
+          if bagObjTags[j] == "trait_synthetic" then
+            syntheticCount = syntheticCount + 1
+          end
+        end
+      end
+    end
+    if isBot then
+      syntheticCount = 5
+    end
+    if syntheticCount > 0 then
+      table.insert(endgameCardList, {["Daystrom Institute"] = syntheticCount})
+      notebookStr = notebookStr .. "\nDaystrom Institute: " .. syntheticCount
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkBoreth(deployCheckZones, inPlayCheckZones, isBot, endgameCardList, notebookStr)
+  -- Boreth: score 1 for every non beamed skill icon (inc wildcard) in play
+
+  local cardInPlay = false
+  for _, object in pairs(getObjects()) do
+    if object.getName() == "Boreth" then
+      for i = 1, #deployCheckZones do
+        for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+          if zoneObj.getName() == "Boreth" then
+            cardInPlay = true
+          end
+        end
+      end
+    end
+  end
+
+  if cardInPlay then
+    -- check slots: captain, staging, ships, locations, duty officers
+    local researchCount = 0
+    local influenceCount = 0
+    local militaryCount = 0
+    local wildCount = 0
+    for i = 1, 5 do
+      for _, object in pairs(inPlayCheckZones[i].getObjects()) do
+        if object.hasTag('skill_science') then
+          researchCount = researchCount + 1
+        end
+        if object.hasTag('skill_diplomacy') then
+          influenceCount = influenceCount + 1
+        end
+        if object.hasTag('skill_military') then
+          militaryCount = militaryCount + 1
+        end
+        if object.hasTag('skill_wildcard') then
+          wildCount = wildCount + 1
+        end
+        if object.hasTag('skill_x2_science') then
+          researchCount = researchCount + 2
+        end
+        if object.hasTag('skill_x2_diplomacy') then
+          influenceCount = influenceCount + 2
+        end
+        if object.hasTag('skill_x2_military') then
+          militaryCount = militaryCount + 2
+        end
+        if object.hasTag('skill_x2_wildcard') then
+          wildCount = wildCount + 2
+        end
+        if object.hasTag('skill_x3_science') then
+          researchCount = researchCount + 3
+        end
+        if object.hasTag('skill_x3_diplomacy') then
+          influenceCount = influenceCount + 3
+        end
+        if object.hasTag('skill_x3_military') then
+          militaryCount = militaryCount + 3
+        end
+        if object.hasTag('skill_x3_wildcard') then
+          wildCount = wildCount + 3
+        end
+      end
+    end
+    local totalBorethScore = researchCount + influenceCount + militaryCount + wildCount
+    if isBot then totalBorethScore = 5 end
+    if totalBorethScore > 0 then
+      table.insert(endgameCardList, {["Boreth"] = totalBorethScore})
+      notebookStr = notebookStr .. "\nBoreth: " .. totalBorethScore
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkThetaZeta(deployCheckZones, isBot, playerColor, endgameCardList, notebookStr)
+  -- Theta Zeta: score 1 for every 2 dilithium owned
+
+  local cardInPlay = false
+  for _, object in pairs(getObjects()) do
+    if object.getName() == "Theta Zeta" then
+      for i = 1, #deployCheckZones do
+        for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+          if zoneObj.getName() == "Theta Zeta" then
+            cardInPlay = true
+          end
+        end
+      end
+    end
+  end
+
+  if cardInPlay then
+    if not isBot then
+      local dilithiumCount = getObjectbyName("Dilithium Counter " .. playerColor).getVar("val")
+      if dilithiumCount > 1 then
+        table.insert(endgameCardList, {["Theta Zeta"] = math.floor(dilithiumCount / 2)})
+        notebookStr = notebookStr .. "\nTheta Zeta: " .. math.floor(dilithiumCount / 2)
+      end
+    else
+      table.insert(endgameCardList, {["Theta Zeta"] = 5})
+      notebookStr = notebookStr .. "\nTheta Zeta: 5"
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkCoridan(deployCheckZones, isBot, playerColor, endgameCardList, notebookStr)
+  -- Coridan: score 1 for every 4 dilithium owned
+
+  local cardInPlay = false
+  for _, object in pairs(getObjects()) do
+    if object.getName() == "Coridan" then
+      for i = 1, #deployCheckZones do
+        for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+          if zoneObj.getName() == "Coridan" then
+            cardInPlay = true
+          end
+        end
+      end
+    end
+  end
+
+  if cardInPlay then
+    if not isBot then
+      local dilithiumCount = getObjectbyName("Dilithium Counter " .. playerColor).getVar('val')
+      if dilithiumCount > 3 then
+        table.insert(endgameCardList, {["Coridan"] = math.floor(dilithiumCount / 4)})
+        notebookStr = notebookStr .. "\nCoridan: " .. math.floor(dilithiumCount / 4)
+      end
+    else
+      table.insert(endgameCardList, {["Coridan"] = 5})
+      notebookStr = notebookStr .. "\nCoridan: 5"
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkWeytahn(deployCheckZones, isBot, playerColor, endgameCardList, notebookStr)
+  -- Weytahn: score 4 if 2 or more away teams are here
+
+  local cardInPlay = false
+  local cardObj
+  for i = 1, #deployCheckZones do
+    for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+      if zoneObj.getName() == "Weytahn" then
+        cardInPlay = true
+        cardObj = zoneObj
+      end
+    end
+  end
+
+  if cardInPlay then
+    if not isBot then
+      local tokenCount = 0
+      local tokenTag = "away_" .. string.lower(playerColor)
+      local cardPos = cardObj.getPosition()
+      local cardScale = cardObj.getScale()
+
+      local hits     = Physics.cast({
+        origin       = cardPos + Vector( 0, 1, 0 ),
+        direction    = Vector( 0, 1, 0 ),
+        type         = 3,
+        size         = Vector( 7 * cardScale.x, 1, 5 * cardScale.z ),
+        max_distance = 2
+      })
+
+      for _, hit in pairs(hits) do
+        local obj = hit.hit_object
+
+        if obj.hasTag(tokenTag) then
+          local tokenObjects = obj.getObjects()
+
+          if #tokenObjects > 0 then
+            tokenCount = tokenCount + #tokenObjects
+          else
+            tokenCount = tokenCount + 1
+          end
+        end
+      end
+
+      if tokenCount >= 2 then
+        table.insert(endgameCardList, {["Weytahn"] = 4})
+        notebookStr = notebookStr .. "\nWeytahn: 4"
+      end
+    elseif isBot then
+      table.insert(endgameCardList, {["Weytahn"] = 5})
+      notebookStr = notebookStr .. "\nWeytahn: 5"
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkColdStation(deployCheckZones, beamBags, playerColor, isBot, endgameCardList, notebookStr)
+  -- Cold Station 12: Score 1 for every Augment beamed here
+
+  -- get card position, use to determine beam bag
+  local posCard = {}
+  local cardInPlay = false
+  for _, object in pairs(getObjects()) do
+    if object.getName() == "Cold Station 12" then
+      posCard = object.getPosition()
+      for i = 1, #deployCheckZones do
+        for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+          if zoneObj.getName() == "Cold Station 12" then
+            cardInPlay = true
+          end
+        end
+      end
+    end
+  end
+
+  if cardInPlay then
+
+    local beamBag = getAssociatedBeamBag(posCard, beamBags, playerColor)
+    local augmentCount = 0
+    if beamBag ~= nil then
+      for _, bagObj in pairs(beamBag.getObjects()) do
+        local bagObjTags = bagObj.tags
+        for i = 1, #bagObjTags do
+          if bagObjTags[i] == "suit_augment" then
+            augmentCount = augmentCount + 1
+          end
+        end
+      end
+    end
+    if isBot then augmentCount = 5 end
+    if augmentCount > 0 then
+      table.insert(endgameCardList, {["Cold Station 12"] = augmentCount})
+      notebookStr = notebookStr .. "\nCold Station 12: " .. augmentCount
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkAzatiPrime(checkZones, deployCheckZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
+  -- Azati Prime: score 1 for each owned Xindi
+
+  -- check if in play
+  local cardInPlay = false
+
+  for i = 1, #deployCheckZones do
+    for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+      if zoneObj.getName() == "Azati Prime" then
+        cardInPlay = true
+        break
+      end
+    end
+    if cardInPlay then
+      break
+    end
+  end
+
+  if cardInPlay then
+
+    local xindiCount = 0
+
+    -- check zones for shady trait
+    for i = 1, #checkZones do
+      for _, zoneObj in pairs(checkZones[i].getObjects()) do
+        if zoneObj.type == "Card" and zoneObj.hasTag('trait_xindi') then
+          xindiCount = xindiCount + 1
+        end
+        if zoneObj.type == "Deck" then
+          for _, deckObj in pairs(zoneObj.getObjects()) do
+            local deckObjTags = deckObj.tags
+            for j = 1, #deckObjTags do
+              if deckObjTags[j] == "trait_xindi" then
+                xindiCount = xindiCount + 1
+              end
+            end
+          end
+        end
+      end
+    end
+
+    -- check bags for xindi trait
+    for _, bagObj in pairs(bagCaptainsLog.getObjects()) do
+      local bagObjTags = bagObj.tags
+      for i = 1, #bagObjTags do
+        if bagObjTags[i] == "trait_xindi" then
+          xindiCount = xindiCount + 1
+        end
+      end
+    end
+
+    for i = 1, #beamBags do
+      for _, bagObj in pairs(beamBags[i].getObjects()) do
+        local bagObjTags = bagObj.tags
+        for j = 1, #bagObjTags do
+          if bagObjTags[j] == "trait_xindi" then
+            xindiCount = xindiCount + 1
+          end
+        end
+      end
+    end
+
+    if isBot then xindiCount = 5 end
+    if xindiCount > 0 then
+      table.insert(endgameCardList, {["Azati Prime"] = xindiCount})
+      notebookStr = notebookStr .. "\nAzati Prime: " .. xindiCount
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkBabelOne(inPlayCheckZones, deployCheckZones, playerColor, beamBags, isBot, endgameCardList, notebookStr)
+  -- Babel One: if 6+ influence, score 1 for each Communication or Ambassador in play
+
+  -- check if in play
+  local cardInPlay = false
+  for i = 1, #deployCheckZones do
+    for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+      if zoneObj.getName() == "Babel One" then
+        cardInPlay = true
+        break
+      end
+    end
+    if cardInPlay then
+      break
+    end
+  end
+
+  if cardInPlay then
+
+    -- first need to check if influence is 6+ if not automatically giving 5 score for bot endgame
+    if not isBot then
+      local influenceCounter
+      if getCaptainName(playerColor) ~= "Khan" then -- counter doesn't exist for khan
+        influenceCounter = getObjectbyNameAndNotes("Influence Counter " .. playerColor)
+        if influenceCounter.getVar("val") < 6 then -- do nothing at all if under 6 influence
+          return endgameCardList, notebookStr
+        end
+      elseif getCaptainName(playerColor) == "Khan" then -- non bot khan will never have 6 influence
+        return endgameCardList, notebookStr
+      end
+    end
+
+    local scoreCount = 0
+
+    -- check zones for communication or ambassador trait
+    for i = 1, #inPlayCheckZones do
+      for _, zoneObj in pairs(inPlayCheckZones[i].getObjects()) do
+        if zoneObj.type == "Card" and
+           (zoneObj.hasTag('trait_communication') or zoneObj.hasTag('trait_ambassador')) then
+          scoreCount = scoreCount + 1
+        end
+        if zoneObj.type == "Deck" then
+          for _, deckObj in pairs(zoneObj.getObjects()) do
+            local deckObjTags = deckObj.tags
+            for j = 1, #deckObjTags do
+              if deckObjTags[j] == "trait_communication" or deckObjTags[j] == "trait_ambassador" then
+                scoreCount = scoreCount + 1
+                break
+              end
+            end
+          end
+        end
+      end
+    end
+
+    -- check bags for communication or ambassador trait
+    for i = 1, #beamBags do
+      for _, bagObj in pairs(beamBags[i].getObjects()) do
+        local bagObjTags = bagObj.tags
+        for j = 1, #bagObjTags do
+          if bagObjTags[j] == "trait_communication" or bagObjTags[j] == "trait_ambassador" then
+            scoreCount = scoreCount + 1
+          end
+        end
+      end
+    end
+
+    if isBot then scoreCount = 5 end
+    if scoreCount > 0 then
+      table.insert(endgameCardList, {["Babel One"] = scoreCount})
+      notebookStr = notebookStr .. "\nBabel One: " .. scoreCount
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkTellarPrime(deployCheckZones, isBot, endgameCardList, notebookStr)
+  -- Tellar Prime: score 1 for every controlled location with starbase or starfleet
+
+  -- check if in play
+  local cardInPlay = false
+  for i = 1, #deployCheckZones do
+    for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+      if zoneObj.getName() == "Tellar Prime" then
+        cardInPlay = true
+        break
+      end
+    end
+    if cardInPlay then
+      break
+    end
+  end
+
+  if cardInPlay then
+    local locationCount = 0
+    for i = 1, #deployCheckZones do
+      for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+        if zoneObj.hasTag('suit_location') and (zoneObj.hasTag("trait_starfleet") or zoneObj.hasTag("trait_starbase")) then
+          locationCount = locationCount + 1
+          break
+        end
+      end
+    end
+    if isBot then locationCount = 5 end
+    if locationCount > 0 then
+      table.insert(endgameCardList, {["Tellar Prime"] = locationCount})
+      notebookStr = notebookStr .. "\nTellar Prime: " .. locationCount
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkKarzillVI(deployCheckZones, isBot, playerColor, endgameCardList, notebookStr)
+  -- Karzill VI: score 1 for every 4 Glory player has
+
+  local cardInPlay = false
+
+  for i = 1, #deployCheckZones do
+    for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+      if zoneObj.getName() == "Karzill VI" then
+        cardInPlay = true
+      end
+    end
+  end
+
+
+  if cardInPlay then
+    if not isBot then
+      local gloryCount = getObjectbyName("Glory Counter " .. playerColor).getVar('val')
+      if gloryCount > 3 then
+        table.insert(endgameCardList, {["Karzill VI"] = math.floor(gloryCount / 4)})
+        notebookStr = notebookStr .. "\nKarzill VI: " .. math.floor(gloryCount / 4)
+      end
+    else
+      table.insert(endgameCardList, {["Karzill VI"] = 5})
+      notebookStr = notebookStr .. "\nKarzill VI: 5"
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkMountSeleya(inPlayCheckZones, deployCheckZones, beamBags, isBot, endgameCardList, notebookStr)
+  -- Mount Seleya: score 1 for every in play Telepath (including captain)
+
+  -- check if in play
+  local cardInPlay = false
+
+  for i = 1, #deployCheckZones do
+    for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+      if zoneObj.getName() == "Mount Seleya" then
+        cardInPlay = true
+        break
+      end
+    end
+    if cardInPlay then
+      break
+    end
+  end
+
+  if cardInPlay then
+
+    local telepathCount = 0
+
+    -- check zones for telepath trait
+    for i = 1, #inPlayCheckZones do
+      for _, zoneObj in pairs(inPlayCheckZones[i].getObjects()) do
+        if zoneObj.type == "Card" and zoneObj.hasTag('trait_telepath') then
+          telepathCount = telepathCount + 1
+        end
+        if zoneObj.type == "Deck" then
+          for _, deckObj in pairs(zoneObj.getObjects()) do
+            local deckObjTags = deckObj.tags
+            for j = 1, #deckObjTags do
+              if deckObjTags[j] == "trait_telepath" then
+                telepathCount = telepathCount + 1
+              end
+            end
+          end
+        end
+      end
+    end
+
+    -- check bags for telepath trait
+    for i = 1, #beamBags do
+      for _, bagObj in pairs(beamBags[i].getObjects()) do
+        local bagObjTags = bagObj.tags
+        for j = 1, #bagObjTags do
+          if bagObjTags[j] == "trait_telepath" then
+            telepathCount = telepathCount + 1
+          end
+        end
+      end
+    end
+
+    if isBot then telepathCount = 5 end
+    if telepathCount > 0 then
+      table.insert(endgameCardList, {["Mount Seleya"] = telepathCount})
+      notebookStr = notebookStr .. "\nMount Seleya: " .. telepathCount
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkPaanMokar(deployCheckZones, isBot, playerColor, endgameCardList, notebookStr)
+  -- Paan Mokar: score 4 if 2+ Away Teams are here
+
+  local cardInPlay = false
+  local cardObj
+  for i = 1, #deployCheckZones do
+    for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+      if zoneObj.getName() == "Paan Mokar" then
+        cardInPlay = true
+        cardObj = zoneObj
+      end
+    end
+  end
+
+  if cardInPlay then
+    if not isBot then
+      local tokenCount = 0
+      local tokenTag = "away_" .. string.lower(playerColor)
+      local cardPos = cardObj.getPosition()
+      local cardScale = cardObj.getScale()
+
+      local hits     = Physics.cast({
+        origin       = cardPos + Vector( 0, 1, 0 ),
+        direction    = Vector( 0, 1, 0 ),
+        type         = 3,
+        size         = Vector( 7 * cardScale.x, 1, 5 * cardScale.z ),
+        max_distance = 2
+      })
+
+      for _, hit in pairs(hits) do
+        local obj = hit.hit_object
+
+        if obj.hasTag(tokenTag) then
+          local tokenObjects = obj.getObjects()
+
+          if #tokenObjects > 0 then
+            tokenCount = tokenCount + #tokenObjects
+          else
+            tokenCount = tokenCount + 1
+          end
+        end
+      end
+
+      if tokenCount >= 2 then
+        table.insert(endgameCardList, {["Paan Mokar"] = 4})
+        notebookStr = notebookStr .. "\nPaan Mokar: 4"
+      end
+    elseif isBot then
+      table.insert(endgameCardList, {["Paan Mokar"] = 5})
+      notebookStr = notebookStr .. "\nPaan Mokar: 5"
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkVulcanKirk(deployCheckZones, isBot, playerColor, endgameCardList, notebookStr)
+  -- Vulcan (Kirk): score the highest skill track value
+
+  local cardInPlay = false
+  local cardObj
+  for i = 1, #deployCheckZones do
+    for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+      if zoneObj.getName() == "Vulcan (Kirk)" then
+        cardInPlay = true
+        cardObj = zoneObj
+      end
+    end
+  end
+
+  if cardInPlay then
+
+    if isBot then
+      table.insert(endgameCardList, {["Kirk (Vulcan)"] = 5})
+      notebookStr = notebookStr .. "\nKirk (Vulcan): 5"
+
+    elseif not isBot then
+      -- determine highest skill track value (no need for khan check to see if counter exists - it's a kirk card)
+      local influenceCount = getObjectbyName("Influence Counter " .. playerColor).getVar("val")
+      local militaryCount = getObjectbyName("Military Counter " .. playerColor).getVar("val")
+      local researchCount = getObjectbyName("Research Counter " .. playerColor).getVar("val")
+
+      local highestSkill = math.max(influenceCount, militaryCount, researchCount)
+
+      table.insert(endgameCardList, {["Kirk (Vulcan)"] = highestSkill})
+      notebookStr = notebookStr .. "\nKirk (Vulcan): " .. highestSkill
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkOrion(checkZones, deployCheckZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
+  -- Orion: score 1 for every owned Orion
+
+  -- check if in play
+  local cardInPlay = false
+
+  for i = 1, #deployCheckZones do
+    for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+      if zoneObj.getName() == "Orion" then
+        cardInPlay = true
+        break
+      end
+    end
+    if cardInPlay then
+      break
+    end
+  end
+
+  if cardInPlay then
+
+    local orionCount = 0
+
+    -- check zones for orion trait
+    for i = 1, #checkZones do
+      for _, zoneObj in pairs(checkZones[i].getObjects()) do
+        if zoneObj.type == "Card" and zoneObj.hasTag('trait_orion') then
+          orionCount = orionCount + 1
+        end
+        if zoneObj.type == "Deck" then
+          for _, deckObj in pairs(zoneObj.getObjects()) do
+            local deckObjTags = deckObj.tags
+            for j = 1, #deckObjTags do
+              if deckObjTags[j] == "trait_orion" then
+                orionCount = orionCount + 1
+              end
+            end
+          end
+        end
+      end
+    end
+
+    -- check bags for orion trait
+    for _, bagObj in pairs(bagCaptainsLog.getObjects()) do
+      local bagObjTags = bagObj.tags
+      for i = 1, #bagObjTags do
+        if bagObjTags[i] == "trait_orion" then
+          orionCount = orionCount + 1
+        end
+      end
+    end
+
+    for i = 1, #beamBags do
+      for _, bagObj in pairs(beamBags[i].getObjects()) do
+        local bagObjTags = bagObj.tags
+        for j = 1, #bagObjTags do
+          if bagObjTags[j] == "trait_orion" then
+            orionCount = orionCount + 1
+          end
+        end
+      end
+    end
+
+    if isBot then orionCount = 5 end
+    if orionCount > 0 then
+      table.insert(endgameCardList, {["Orion"] = orionCount})
+      notebookStr = notebookStr .. "\nOrion: " .. orionCount
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkNepenthe(deployCheckZones, playerColor, isBot, endgameCardList, notebookStr)
+  -- Nepenthe: if 9+ research, score 3
+
+  -- check if in play
+  local cardInPlay = false
+
+  for i = 1, #deployCheckZones do
+    for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+      if zoneObj.getName() == "Nepenthe" then
+        cardInPlay = true
+        break
+      end
+    end
+    if cardInPlay then
+      break
+    end
+  end
+
+  if cardInPlay then
+    -- first need to check if research is 9+ if not automatically giving 5 score for bot endgame
+    if not isBot then
+      local researchCounter = getObjectbyNameAndNotes("Research Counter " .. playerColor) -- riker card, no khan check required
+      if researchCounter.getVar("val") > 8 then
+        table.insert(endgameCardList, {["Nepenthe"] = 3})
+        notebookStr = notebookStr .. "\nNepenthe: 3"
+      end
+
+    elseif isBot then
+      table.insert(endgameCardList, {["Nepenthe"] = 5})
+      notebookStr = notebookStr .. "\nNepenthe: 5"
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+
+-- captains
+
+function checkPicard(checkZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
+  -- Picard: score 1 for every ally card owned
+
+  local allyCount = 0
+  -- check zones for ally trait
+  for i = 1, 8 do
+    for _, zoneObj in pairs(checkZones[i].getObjects()) do
+      if zoneObj.type == "Card" and zoneObj.hasTag('suit_ally') then
+        allyCount = allyCount + 1
+      end
+      if zoneObj.type == "Deck" then
+        for _, deckObj in pairs(zoneObj.getObjects()) do
+            local deckObjTags = deckObj.tags
+          for j = 1, #deckObjTags do
+            if deckObjTags[j] == "suit_ally" then
+              allyCount = allyCount + 1
+            end
+          end
+        end
+      end
+    end
+  end
+
+  -- check bags for ally trait
+  for _, bagObj in pairs(bagCaptainsLog.getObjects()) do
+    local bagObjTags = bagObj.tags
+    for i = 1, #bagObjTags do
+      if bagObjTags[i] == "suit_ally" then
+        allyCount = allyCount + 1
+      end
+    end
+  end
+  for i = 1, #beamBags do
+    for _, bagObj in pairs(beamBags[i].getObjects()) do
+      local bagObjTags = bagObj.tags
+      for j = 1, #bagObjTags do
+        if bagObjTags[j] == "suit_ally" then
+          allyCount = allyCount + 1
+        end
+      end
+    end
+  end
+
+  if isBot then
+    allyCount = 5
+  end
+  if allyCount > 0 then
+    table.insert(endgameCardList, {["Jean-Luc Picard"] = allyCount})
+    notebookStr = notebookStr .. "\nJean-Luc Picard: " .. allyCount
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkSisko(deployCheckZones, isBot, endgameCardList, notebookStr)
+  -- Sisko: score 1 for every controlled Location in play
+
+  local locationCount = 0
+  for i = 1, #deployCheckZones do
+    for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+      if zoneObj.hasTag('suit_location') then
+        locationCount = locationCount + 1
+      end
+    end
+  end
+  if isBot then locationCount = 5 end
+  if locationCount > 0 then
+    table.insert(endgameCardList, {["Benjamin Sisko"] = locationCount})
+    notebookStr = notebookStr .. "\nBenjamin Sisko: " .. locationCount
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkSela(checkZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
+  -- Sela: score 1 for every non romulan/reman attack card
+
+  local attackCount = 0
+  -- check zones for attack trait
+  for i = 1, #checkZones do
+    for _, zoneObj in pairs(checkZones[i].getObjects()) do
+      if zoneObj.type == "Card" and zoneObj.hasTag('trait_attack') and
+      (zoneObj.hasTag('trait_romulan') == false and zoneObj.hasTag('trait_reman') == false) then
+        attackCount = attackCount + 1
+      end
+      if zoneObj.type == "Deck" then
+        for _, deckObj in pairs(zoneObj.getObjects()) do
+          local deckObjTags = deckObj.tags
+          for j = 1, #deckObjTags do
+            if deckObjTags[j] == "trait_attack" then
+              local romulanOrRemusFound = false
+              for _, tag in pairs(deckObjTags) do
+                if tag == "trait_romulan" or tag == "trait_reman" then
+                  romulanOrRemusFound = true
+                end
+              end
+              if not romulanOrRemusFound then attackCount = attackCount + 1 end
+            end
+          end
+        end
+      end
+    end
+  end
+
+  -- check bags for attack trait
+  for _, bagObj in pairs(bagCaptainsLog.getObjects()) do
+    local bagObjTags = bagObj.tags
+    for i = 1, #bagObjTags do
+      if bagObjTags[i] == "trait_attack" then
+        local romulanOrRemusFound = false
+        for _, tag in pairs(bagObjTags) do
+          if tag == "trait_romulan" or tag == "trait_reman" then
+            romulanOrRemusFound = true
+          end
+        end
+        if not romulanOrRemusFound then attackCount = attackCount + 1 end
+      end
+    end
+  end
+  for i = 1, #beamBags do
+    for _, bagObj in pairs(beamBags[i].getObjects()) do
+      local bagObjTags = bagObj.tags
+      for j = 1, #bagObjTags do
+        if bagObjTags[j] == "trait_attack" then
+          local romulanOrRemusFound = false
+          for _, tag in pairs(bagObjTags) do
+            if tag == "trait_romulan" or tag == "trait_reman" then
+              romulanOrRemusFound = true
+            end
+          end
+          if not romulanOrRemusFound then attackCount = attackCount + 1 end
+        end
+      end
+    end
+  end
+  if isBot then attackCount = 5 end
+  if attackCount > 0 then
+    table.insert(endgameCardList, {["Sela"] = attackCount})
+    notebookStr = notebookStr .. "\nSela: " .. attackCount
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkRebner(checkZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
+  -- Rebner: score 1 for every 2 non Helmet cargo cards
+
+  local cargoCount = 0
+
+  -- check zones for cargo trait
+  for i = 1, #checkZones do
+    for _, zoneObj in pairs(checkZones[i].getObjects()) do
+      if zoneObj.type == "Card" and zoneObj.hasTag('suit_cargo') and not zoneObj.hasTag('trait_helmet') then
+        cargoCount = cargoCount + 1
+      end
+      if zoneObj.type == "Deck" then
+        for _, deckObj in pairs(zoneObj.getObjects()) do
+          local deckObjTags = deckObj.tags
+          local helmetFound = false
+          for _, tag in pairs(deckObjTags) do
+            if tag == "trait_helmet" then
+              helmetFound = true
+            end
+          end
+          if not helmetFound then
+            for j = 1, #deckObjTags do
+              if deckObjTags[j] == "suit_cargo" then
+                cargoCount = cargoCount + 1
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
+  -- check bags for cargo trait
+  for _, bagObj in pairs(bagCaptainsLog.getObjects()) do
+    local bagObjTags = bagObj.tags
+    local helmetFound = false
+    for _, tag in pairs(bagObjTags) do
+      if tag == "trait_helmet" then
+        helmetFound = true
+      end
+    end
+    if not helmetFound then
+      for i = 1, #bagObjTags do
+        if bagObjTags[i] == "suit_cargo" then
+          cargoCount = cargoCount + 1
+        end
+      end
+    end
+  end
+
+  for i = 1, #beamBags do
+    for _, bagObj in pairs(beamBags[i].getObjects()) do
+      local bagObjTags = bagObj.tags
+      local helmetFound = false
+      for _, tag in pairs(bagObjTags) do
+        if tag == "trait_helmet" then
+          helmetFound = true
+        end
+      end
+      if not helmetFound then
+        for j = 1, #bagObjTags do
+          if bagObjTags[j] == "suit_cargo" then
+            cargoCount = cargoCount + 1
+          end
+        end
+      end
+    end
+  end
+
+  local rebnerScore = math.floor(cargoCount / 2)
+  if isBot then rebnerScore = 5 end
+
+  if rebnerScore > 0 then
+    table.insert(endgameCardList, {["Rebner"] = rebnerScore})
+    notebookStr = notebookStr .. "\nRebner: " .. rebnerScore
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkGeorgiou(inPlayCheckZones, beamBags, isBot, endgameCardList, notebookStr)
+  -- Georgiou: score 1 for every 3 cards in play
+
+  local cardCount = 0
+  -- check zones for cards
+  for i = 1, #inPlayCheckZones do
+    for _, zoneObj in pairs(inPlayCheckZones[i].getObjects()) do
+      if zoneObj.type == "Card" then
+        cardCount = cardCount + 1
+      end
+      if zoneObj.type == "Deck" then
+        for _, deckObj in pairs(zoneObj.getObjects()) do
+          cardCount = cardCount + 1
+        end
+      end
+    end
+  end
+
+  -- check beam bags for cards
+  for i = 1, #beamBags do
+    for _, bagObj in pairs(beamBags[i].getObjects()) do
+      cardCount = cardCount + 1
+    end
+  end
+
+  local georgiouScore = math.floor(cardCount / 3)
+  if isBot then georgiouScore = 5 end
+
+  if georgiouScore > 0 then
+    table.insert(endgameCardList, {["Philippa Georgiou"] = georgiouScore})
+    notebookStr = notebookStr .. "\nPhilippa Georgiou: " .. georgiouScore
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkArcher(inPlayCheckZones, beamBags, isBot, endgameCardList, notebookStr)
+  -- Archer: score 1 for every 3 unique traits you have in play
+
+  local traitList = {}
+  -- check zones for traits
+  for i = 1, #inPlayCheckZones do
+    for _, zoneObj in pairs(inPlayCheckZones[i].getObjects()) do
+      if zoneObj.type == "Card" then
+        for _, tag in pairs(zoneObj.tags) do
+          if tag:sub(1, 6) == "trait_" then
+            traitList[tag] = true
+          end
+        end
+      end
+      if zoneObj.type == "Deck" then
+        for _, deckObj in pairs(zoneObj.getObjects()) do
+          for _, tag in pairs(deckObj.tags) do
+            if tag:sub(1, 6) == "trait_" then
+              traitList[tag] = true
+            end
+          end
+        end
+      end
+    end
+  end
+
+  -- check beam bags for traits
+  for i = 1, #beamBags do
+    for _, bagObj in pairs(beamBags[i].getObjects()) do
+      for _, tag in pairs(bagObj.tags) do
+        if tag:sub(1, 6) == "trait_" then
+          traitList[tag] = true
+        end
+      end
+    end
+  end
+
+  local traitCount = 0
+  for _ in pairs(traitList) do
+    traitCount = traitCount + 1
+  end
+
+  local archerScore = math.floor(traitCount / 3)
+
+  if isBot then archerScore = 5 end
+
+  if archerScore > 0 then
+    table.insert(endgameCardList, {["Jonathan Archer"] = archerScore})
+    notebookStr = notebookStr .. "\nJonathan Archer: " .. archerScore
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkSoval(inPlayCheckZones, beamBags, isBot, endgameCardList, notebookStr)
+  -- Soval: score 1 for every in play person without vulcan
+
+  local personCount = 0
+  -- check zones for person trait
+  for i = 1, #inPlayCheckZones do
+    for _, zoneObj in pairs(inPlayCheckZones[i].getObjects()) do
+      if zoneObj.type == "Card" and zoneObj.hasTag('suit_person') and
+      zoneObj.hasTag('trait_vulcan') == false then
+        personCount = personCount + 1
+      end
+      if zoneObj.type == "Deck" then
+        for _, deckObj in pairs(zoneObj.getObjects()) do
+          local deckObjTags = deckObj.tags
+          local vulcanFound = false
+          for _, tag in pairs(deckObjTags) do
+            if tag == "trait_vulcan" then
+              vulcanFound = true
+            end
+          end
+          if not vulcanFound then
+            for j = 1, #deckObjTags do
+              if deckObjTags[j] == "suit_person" then
+                personCount = personCount + 1
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
+  -- check beam bags for person trait
+  for i = 1, #beamBags do
+    for _, bagObj in pairs(beamBags[i].getObjects()) do
+      local bagObjTags = bagObj.tags
+      local vulcanFound = false
+      for _, tag in pairs(bagObjTags) do
+        if tag == "trait_vulcan" then
+          vulcanFound = true
+        end
+      end
+      if not vulcanFound then
+        for j = 1, #bagObjTags do
+          if bagObjTags[j] == "suit_person" then
+            personCount = personCount + 1
+          end
+        end
+      end
+    end
+  end
+
+  local sovalScore = personCount
+  if isBot then sovalScore = 5 end
+  if sovalScore > 0 then
+    table.insert(endgameCardList, {["Soval"] = sovalScore})
+    notebookStr = notebookStr .. "\nSoval: " .. sovalScore
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkKirk(isBot, playerColor, endgameCardList, notebookStr)
+  -- Kirk: score 1 for every second step on lowest skill counter
+
+  if isBot then
+    table.insert(endgameCardList, {["Kirk"] = 5})
+    notebookStr = notebookStr .. "\nKirk: 5"
+
+  elseif not isBot then
+    local influenceCount = getObjectbyName("Influence Counter " .. playerColor).getVar("val")
+    local militaryCount = getObjectbyName("Military Counter " .. playerColor).getVar("val")
+    local researchCount = getObjectbyName("Research Counter " .. playerColor).getVar("val")
+
+    local lowestSkill = math.min(influenceCount, militaryCount, researchCount)
+    local kirkScore = math.floor(lowestSkill / 2)
+
+    if kirkScore > 0 then
+      table.insert(endgameCardList, {["Kirk"] = kirkScore})
+      notebookStr = notebookStr .. "\nKirk: " .. kirkScore
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkWrathfulKhan(checkZones, bagCaptainsLog, beamBags, isBot, playerColor, endgameCardList, notebookStr)
+  -- Wrathful Khan: score 1 for every focus card, or 3 for every focus if all traits marked (isBot should return out)
+
+  if isBot then
+    return endgameCardList, notebookStr
+  end
+
+  local focusCount = 0
+  -- check zones for focus cards
+  for i = 1, #checkZones do
+    for _, zoneObj in pairs(checkZones[i].getObjects()) do
+      if zoneObj.type == "Card" then
+        local gmNotes = zoneObj.getGMNotes()
+        if gmNotes == "dip_multi" or gmNotes == "mil_multi" or gmNotes == "sci_multi" then
+          focusCount = focusCount + 1
+        end
+      end
+      if zoneObj.type == "Deck" then
+        for _, deckObj in pairs(zoneObj.getObjects()) do
+          local gmNotes = deckObj.gm_notes
+          if gmNotes == "dip_multi" or gmNotes == "mil_multi" or gmNotes == "sci_multi" then
+            focusCount = focusCount + 1
+          end
+        end
+      end
+    end
+  end
+
+  -- check Captain's Log for focus cards
+  for _, bagObj in pairs(bagCaptainsLog.getObjects()) do
+    local gmNotes = bagObj.gm_notes
+    if gmNotes == "dip_multi" or gmNotes == "mil_multi" or gmNotes == "sci_multi" then
+      focusCount = focusCount + 1
+    end
+  end
+
+  -- check beam bags for focus cards
+  for i = 1, #beamBags do
+    for _, bagObj in pairs(beamBags[i].getObjects()) do
+      local gmNotes = bagObj.gm_notes
+      if gmNotes == "dip_multi" or gmNotes == "mil_multi" or gmNotes == "sci_multi" then
+        focusCount = focusCount + 1
+      end
+    end
+  end
+
+  -- check if all 12 traits are marked
+  local traitZone = getObjectbyNameAndNotes("Zone Captain Card", playerColor)
+  local markedTraitCount = 0
+  for _, zoneObj in pairs(traitZone.getObjects()) do
+    if zoneObj.getName():find("Trait Token") then
+      if zoneObj.is_face_down then
+        markedTraitCount = markedTraitCount + 1
+      end
+    end
+  end
+
+  local khanScore = focusCount
+  if markedTraitCount == 12 then
+    khanScore = focusCount * 3
+  end
+
+  if khanScore > 0 then
+    table.insert(endgameCardList, {["Wrathful Khan"] = khanScore})
+    notebookStr = notebookStr .. "\nWrathful Khan: " .. khanScore
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+function checkFreeman(bagCaptainsLog, isBot, endgameCardList, notebookStr)
+  -- Freeman: score 1 for every 2 cards in Captain's Log
+
+  local cardCount = #bagCaptainsLog.getObjects()
+  local freemanScore = math.floor(cardCount / 2)
+
+  if isBot then
+    freemanScore = 5
+  end
+
+  if freemanScore > 0 then
+    table.insert(endgameCardList, {["Freeman"] = freemanScore})
+    notebookStr = notebookStr .. "\nFreeman: " .. freemanScore
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+
+
+-- persons
+
+function checkLivingWitness(checkZones, isBot, endgameCardList, notebookStr)
+  -- The Living Witness: Score 4
+
+  local cardInPlay = false
+
+  for i = 1, #checkZones do
+    for _, zoneObj in pairs(checkZones[i].getObjects()) do
+      if zoneObj.getName() == "The Living Witness" then
+        cardInPlay = true
+      end
+    end
+  end
+
+  if cardInPlay then
+    local livingWitnessScore = 4
+
+    if isBot then
+      livingWitnessScore = 5
+    end
+
+    table.insert(endgameCardList, {["The Living Witness"] = livingWitnessScore})
+    notebookStr = notebookStr .. "\nThe Living Witness: " .. livingWitnessScore
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+
+
+-- cargo
+
+function checkGenesisDevice()
+  -- Genesis Device: score the points from completed missions again
+end
+
+
+
+
+-- ships
+
+function checkUSSFederation(deployCheckZones, checkZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
+  -- U.S.S. Federation: score 1 for every card with military/influence focus (_multi in GMNotes)
+
+  local cardInPlay = false
+  for _, object in pairs(getObjects()) do
+    if object.getName() == "U.S.S. Federation" then
+      for i = 1, #deployCheckZones do
+        for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
+          if zoneObj.getName() == "U.S.S. Federation" then
+            cardInPlay = true
+          end
+        end
+      end
+    end
+  end
+
+  if cardInPlay then
+
+    local focusCount = 0
+    -- check owned card zones for influence/military focus cards
+    for i = 1, #checkZones do
+      for _, zoneObj in pairs(checkZones[i].getObjects()) do
+        if zoneObj.type == "Card" then
+          if zoneObj.getGMNotes() == "dip_multi" or zoneObj.getGMNotes() == "mil_multi" then
+            focusCount = focusCount + 1
+          end
+        elseif zoneObj.type == "Deck" then
+          for _, deckObj in pairs(zoneObj.getObjects()) do
+            if deckObj.gm_notes == "dip_multi" or deckObj.gm_notes == "mil_multi" then
+              focusCount = focusCount + 1
+            end
+          end
+        end
+      end
+    end
+
+    -- check bags for focus cards
+    for _, bagObj in pairs(bagCaptainsLog.getObjects()) do
+      if bagObj.gm_notes == "dip_multi" or bagObj.gm_notes == "mil_multi" then
+        focusCount = focusCount + 1
+      end
+    end
+    for i = 1, #beamBags do
+      for _, bagObj in pairs(beamBags[i].getObjects()) do
+        if bagObj.gm_notes == "dip_multi" or bagObj.gm_notes == "mil_multi" then
+          focusCount = focusCount + 1
+        end
+      end
+    end
+    if isBot then focusCount = 5 end
+    if focusCount > 0 then
+      table.insert(endgameCardList, {["U.S.S. Federation"] = focusCount})
+      notebookStr = notebookStr .. "\nU.S.S. Federation: " .. focusCount
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+
+
+-- encounters
+function checkRedAngel(checkZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
+  -- Red Angel: Score 1 per owned Anomaly
+
+  local cardInPlay = false
+
+  for i = 1, #checkZones do
+    for _, zoneObj in pairs(checkZones[i].getObjects()) do
+      if zoneObj.getName() == "Red Angel" then
+        cardInPlay = true
+      end
+    end
+  end
+
+  if cardInPlay then
+    local anomalyCount = 0
+
+    for i = 1, #checkZones do
+      for _, zoneObj in pairs(checkZones[i].getObjects()) do
+        if zoneObj.type == "Card" and zoneObj.hasTag("trait_anomaly") then
+          anomalyCount = anomalyCount + 1
+        end
+
+        if zoneObj.type == "Deck" or zoneObj.type == "Bag" then
+          local deckObjTags = zoneObj.tags
+
+          for j = 1, #deckObjTags do
+            if deckObjTags[j] == "trait_anomaly" then
+              anomalyCount = anomalyCount + 1
+            end
+          end
+        end
+      end
+    end
+
+    for _, bagObj in pairs(bagCaptainsLog.getObjects()) do
+      if bagObj.hasTag("trait_anomaly") then
+        anomalyCount = anomalyCount + 1
+      end
+
+      if bagObj.type == "Deck" or bagObj.type == "Bag" then
+        local bagObjTags = bagObj.tags
+
+        for j = 1, #bagObjTags do
+          if bagObjTags[j] == "trait_anomaly" then
+            anomalyCount = anomalyCount + 1
+          end
+        end
+      end
+    end
+
+    for i = 1, #beamBags do
+      for _, bagObj in pairs(beamBags[i].getObjects()) do
+        if bagObj.hasTag("trait_anomaly") then
+          anomalyCount = anomalyCount + 1
+        end
+
+        if bagObj.type == "Deck" or bagObj.type == "Bag" then
+          local bagObjTags = bagObj.tags
+
+          for j = 1, #bagObjTags do
+            if bagObjTags[j] == "trait_anomaly" then
+              anomalyCount = anomalyCount + 1
+            end
+          end
+        end
+      end
+    end
+
+    local redAngelScore = anomalyCount
+
+    if isBot then
+      redAngelScore = 5
+    end
+
+    if redAngelScore > 0 then
+      table.insert(endgameCardList, {["Red Angel"] = redAngelScore})
+      notebookStr = notebookStr .. "\nRed Angel: " .. redAngelScore
+    end
+  end
+
+  return endgameCardList, notebookStr
+end
+
+
+
+
+function getVPCount()
+  -- gets count of VP from cards, focus or straight score
+  -- returns lists of cards by category and playerColor
+
+  local cardListBlue, cardListRed = getOwnedCards()
+  local vpCardListBlue = {}
+  local vpCardListRed = {}
+  local influenceFocusCardListBlue = {}
+  local influenceFocusCardListRed = {}
+  local militaryFocusCardListBlue = {}
+  local militaryFocusCardListRed = {}
+  local researchFocusCardListBlue = {}
+  local researchFocusCardListRed = {}
+  local notebookStrVPBlue = ""
+  local notebookStrVPRed = ""
+  local notebookStrInfluenceBlue = ""
+  local notebookStrInfluenceRed = ""
+  local notebookStrMilitaryBlue = ""
+  local notebookStrMilitaryRed = ""
+  local notebookStrResearchBlue = ""
+  local notebookStrResearchRed = ""
+  local playerColors = { "Blue", "Red" }
+
+  for i = 1, #playerColors do
+
+    local playerColor = playerColors[i]
+
+    local captainName = getCaptainName(playerColor)
+
+    local influenceMultiplier = 0
+    local militaryMultiplier = 0
+    local researchMultiplier = 0
+
+    local influenceCount = captainName == "Khan" and 0 or getObjectbyName("Influence Counter " .. playerColor).getVar("val")
+    local militaryCount = captainName == "Khan" and 0 or getObjectbyName("Military Counter " .. playerColor).getVar("val")
+    local researchCount = captainName == "Khan" and 0 or getObjectbyName("Research Counter " .. playerColor).getVar("val")
+
+    local vpCardList = i == 1 and vpCardListBlue or vpCardListRed
+    local influenceFocusCardList = i == 1 and influenceFocusCardListBlue or influenceFocusCardListRed
+    local militaryFocusCardList = i == 1 and militaryFocusCardListBlue or militaryFocusCardListRed
+    local researchFocusCardList = i == 1 and researchFocusCardListBlue or researchFocusCardListRed
+    influenceMultiplier, militaryMultiplier, researchMultiplier = getTrackMultipliers(
+      captainName, influenceCount, militaryCount, researchCount
+    )
+
+    local notebookStrVP = i == 1 and notebookStrVPBlue or notebookStrVPRed
+    local notebookStrInfluence = i == 1 and notebookStrInfluenceBlue or notebookStrInfluenceRed
+    local notebookStrMilitary = i == 1 and notebookStrMilitaryBlue or notebookStrMilitaryRed
+    local notebookStrResearch = i == 1 and notebookStrResearchBlue or notebookStrResearchRed
+
+    local notebookStrColor = i == 1 and "1E87FF" or "DB1B18"
+
+    local checkZones = {
+      getObjectbyNameAndNotes("Handzone", playerColor),
+      getObjectbyNameAndNotes("Zone Captain", playerColor),
+      getObjectbyNameAndNotes("Zone Draw Deck", playerColor),
+      getObjectbyNameAndNotes("Zone Discard", playerColor),
+      getObjectbyNameAndNotes("Zone In Play", playerColor),
+      getObjectbyNameAndNotes("Zone Deploy Ship", playerColor),
+      getObjectbyNameAndNotes("Zone Deploy Location", playerColor),
+      getObjectbyNameAndNotes("Zone Duty Officer", playerColor),
+    }
+
+    -- check zones, get VP & focus card list = score pairs
+    for j = 1, #checkZones do
+      for _, zoneObj in pairs(checkZones[j].getObjects()) do
+        if zoneObj.type == "Card" then
+          local cardName = zoneObj.getName()
+          local vpCount = tonumber(zoneObj.getGMNotes():match("VP=(-?%d+)"))
+
+          if vpCount then
+            table.insert(vpCardList, {[cardName] = vpCount})
+            notebookStrVP = notebookStrVP .. "\n" .. cardName .. ": " .. vpCount
+          end
+
+          if zoneObj.getGMNotes() == "dip_multi" and influenceMultiplier > 0 then
+            table.insert(influenceFocusCardList, {[cardName] = influenceMultiplier})
+            notebookStrInfluence = notebookStrInfluence .. "\n" .. cardName .. ": " .. influenceMultiplier
+          end
+
+          if zoneObj.getGMNotes() == "mil_multi" and militaryMultiplier > 0 then
+            table.insert(militaryFocusCardList, {[cardName] = militaryMultiplier})
+            notebookStrMilitary = notebookStrMilitary .. "\n" .. cardName .. ": " .. militaryMultiplier
+          end
+
+          if zoneObj.getGMNotes() == "sci_multi" and researchMultiplier > 0 then
+            table.insert(researchFocusCardList, {[cardName] = researchMultiplier})
+            notebookStrResearch = notebookStrResearch .. "\n" .. cardName .. ": " .. researchMultiplier
+          end
+
+        end
+        if zoneObj.type == "Deck" then
+          for _, deckObj in pairs(zoneObj.getObjects()) do
+            local cardName = deckObj.name
+            local vpCount = tonumber(deckObj.gm_notes:match("VP=(-?%d+)"))
+
+            if vpCount then
+              table.insert(vpCardList, {[cardName] = vpCount})
+              notebookStrVP = notebookStrVP .. "\n" .. cardName .. ": " .. vpCount
+            end
+
+            if deckObj.gm_notes == "dip_multi" and influenceMultiplier > 0 then
+              table.insert(influenceFocusCardList, {[cardName] = influenceMultiplier})
+              notebookStrInfluence = notebookStrInfluence .. "\n" .. cardName .. ": " .. influenceMultiplier
+            end
+
+            if deckObj.gm_notes == "mil_multi" and militaryMultiplier > 0 then
+              table.insert(militaryFocusCardList, {[cardName] = militaryMultiplier})
+              notebookStrMilitary = notebookStrMilitary .. "\n" .. cardName .. ": " .. militaryMultiplier
+            end
+
+            if deckObj.gm_notes == "sci_multi" and researchMultiplier > 0 then
+              table.insert(researchFocusCardList, {[cardName] = researchMultiplier})
+              notebookStrResearch = notebookStrResearch .. "\n" .. cardName .. ": " .. researchMultiplier
+            end
+          end
+        end
+      end
+    end
+
+    -- check bags for VP or focus cards
+    local bagCaptainsLog = getObjectbyNameAndNotes("Captain's Log", playerColor)
+    for _, bagObj in pairs(bagCaptainsLog.getObjects()) do
+      local cardName = bagObj.name
+      local vpCount = tonumber(bagObj.gm_notes:match("VP=(-?%d+)"))
+
+      if vpCount then
+        table.insert(vpCardList, {[cardName] = vpCount})
+        notebookStrVP = notebookStrVP .. "\n" .. cardName .. ": " .. vpCount
+      end
+
+      if bagObj.gm_notes == "dip_multi" and influenceMultiplier > 0 then
+        table.insert(influenceFocusCardList, {[cardName] = influenceMultiplier})
+        notebookStrInfluence = notebookStrInfluence .. "\n" .. cardName .. ": " .. influenceMultiplier
+      end
+
+      if bagObj.gm_notes == "mil_multi" and militaryMultiplier > 0 then
+        table.insert(militaryFocusCardList, {[cardName] = militaryMultiplier})
+        notebookStrMilitary = notebookStrMilitary .. "\n" .. cardName .. ": " .. militaryMultiplier
+      end
+
+      if bagObj.gm_notes == "sci_multi" and researchMultiplier > 0 then
+        table.insert(researchFocusCardList, {[cardName] = researchMultiplier})
+        notebookStrResearch = notebookStrResearch .. "\n" .. cardName .. ": " .. researchMultiplier
+      end
+    end
+
+    local beamBags = {}
+    for _, object in pairs(getObjects()) do
+      if object.getName() == "Beamed Cards" and object.getGMNotes() == playerColor then
+        table.insert(beamBags, object)
+      end
+    end
+    for j = 1, #beamBags do
+      for _, bagObj in pairs(beamBags[j].getObjects()) do
+        local cardName = bagObj.name
+        local vpCount = tonumber(bagObj.gm_notes:match("VP=(-?%d+)"))
+
+        if vpCount then
+          table.insert(vpCardList, {[cardName] = vpCount})
+          notebookStrVP = notebookStrVP .. "\n" .. cardName .. ": " .. vpCount
+        end
+
+        if bagObj.gm_notes == "dip_multi" and influenceMultiplier > 0 then
+          table.insert(influenceFocusCardList, {[cardName] = influenceMultiplier})
+          notebookStrInfluence = notebookStrInfluence .. "\n" .. cardName .. ": " .. influenceMultiplier
+        end
+
+        if bagObj.gm_notes == "mil_multi" and militaryMultiplier > 0 then
+          table.insert(militaryFocusCardList, {[cardName] = militaryMultiplier})
+          notebookStrMilitary = notebookStrMilitary .. "\n" .. cardName .. ": " .. militaryMultiplier
+        end
+
+        if bagObj.gm_notes == "sci_multi" and researchMultiplier > 0 then
+          table.insert(researchFocusCardList, {[cardName] = researchMultiplier})
+          notebookStrResearch = notebookStrResearch .. "\n" .. cardName .. ": " .. researchMultiplier
+        end
+      end
+    end
+
+    -- assign gathered data back to respective color vars
+    if i == 1 then
+      notebookStrVPBlue = notebookStrVP
+      notebookStrInfluenceBlue = notebookStrInfluence
+      notebookStrMilitaryBlue = notebookStrMilitary
+      notebookStrResearchBlue = notebookStrResearch
+
+      vpCardListBlue = vpCardList
+      influenceFocusCardListBlue = influenceFocusCardList
+      militaryFocusCardListBlue = militaryFocusCardList
+      researchFocusCardListBlue = researchFocusCardList
+    elseif i == 2 then
+      notebookStrVPRed = notebookStrVP
+      notebookStrInfluenceRed = notebookStrInfluence
+      notebookStrMilitaryRed = notebookStrMilitary
+      notebookStrResearchRed = notebookStrResearch
+
+      vpCardListRed = vpCardList
+      influenceFocusCardListRed = influenceFocusCardList
+      militaryFocusCardListRed = militaryFocusCardList
+      researchFocusCardListRed = researchFocusCardList
+    end
+  end
+
+  return vpCardListBlue, influenceFocusCardListBlue, militaryFocusCardListBlue, researchFocusCardListBlue, notebookStrVPBlue, notebookStrInfluenceBlue, notebookStrMilitaryBlue, notebookStrResearchBlue,
+         vpCardListRed, influenceFocusCardListRed, militaryFocusCardListRed, researchFocusCardListRed, notebookStrVPRed, notebookStrInfluenceRed, notebookStrMilitaryRed, notebookStrResearchRed
+end
+
+
+function calculateScore(buttonObj, _, _)
+  -- takes in all generated data and reports the score to both pad and notebook
+
+  animateButton(buttonObj)
+
+  -- prime notebook for action
+  local tabs = Notes.getNotebookTabs()
+  local blueColor = "1E87FF"
+  local redColor = "DB1B18"
+  local notebookStr = "Current Score Breakdown as it stands:"
+
+  -- glory count
+  local gloryCountBlue = getObjectbyName("Glory Counter Blue").getVar("val")
+  local gloryCountRed = getObjectbyName("Glory Counter Red").getVar("val")
+  notebookStr = string.format("%s\n\n[%s]Blue[-] Glory Score: %s\n[%s]Red[-] Glory Score: %s", notebookStr, blueColor, gloryCountBlue, redColor, gloryCountRed)
+
+
+  -- neutral location count
+  local blueNZCount, redNZCount = getNZCount()
+  notebookStr = string.format("%s\n\n\n[%s]Blue[-] Neutral Zone Score: %s\n[%s]Red[-] Neutral Zone Score: %s", notebookStr, blueColor, blueNZCount, redColor, redNZCount)
+
+
+  -- endgame scoring cards
+  local endgameCardListBlue, notebookStrEndgameBlue, endgameCardListRed, notebookStrEndgameRed = getEndgameCount()
+  local blueEndgameScore = 0
+  local redEndgameScore = 0
+
+  -- compile endgame score counts from card lists
+  if #endgameCardListBlue > 0 then
+    for _, item in pairs(endgameCardListBlue) do
+      for _, scoreCount in pairs(item) do
+        blueEndgameScore = blueEndgameScore + scoreCount
+      end
+    end
+  end
+  if #endgameCardListRed > 0 then
+    for _, item in pairs(endgameCardListRed) do
+      for _, scoreCount in pairs(item) do
+        redEndgameScore = redEndgameScore + scoreCount
+      end
+    end
+  end
+
+  -- build notebookStr for endgame score counts
+  notebookStr = string.format("%s\n\n\n[%s]Blue[-] End Game Cards Score: %s:", notebookStr, blueColor, blueEndgameScore)
+  notebookStr = string.format("%s\n[%s]Red[-] End Game Cards Score: %s:", notebookStr, redColor, redEndgameScore)
+
+  -- build notebookStr for breakdowns of endgame score cards
+  if blueEndgameScore > 0 then
+    notebookStr = string.format("%s\n\n[%s]Blue[-] End Game Cards Breakdown: %s", notebookStr, blueColor, notebookStrEndgameBlue)
+  end
+  if redEndgameScore > 0 then
+    notebookStr = string.format("%s\n\n[%s]Red[-] End Game Cards Breakdown: %s", notebookStr, redColor, notebookStrEndgameRed)
+  end
+
+
+  -- VP scoring cards
+  local vpCardListBlue, influenceFocusCardListBlue, militaryFocusCardListBlue, researchFocusCardListBlue, notebookStrVPBlue, notebookStrInfluenceBlue, notebookStrMilitaryBlue, notebookStrResearchBlue,
+  vpCardListRed, influenceFocusCardListRed, militaryFocusCardListRed, researchFocusCardListRed, notebookStrVPRed, notebookStrInfluenceRed, notebookStrMilitaryRed, notebookStrResearchRed = getVPCount()
+
+  local blueVPScore = 0
+  local redVPScore = 0
+
+  -- compile VP score counts from card lists
+  for _, item in pairs(vpCardListBlue) do
+    for _, scoreCount in pairs(item) do
+      blueVPScore = blueVPScore + scoreCount
+    end
+  end
+  for _, item in pairs(vpCardListRed) do
+    for _, scoreCount in pairs(item) do
+      redVPScore = redVPScore + scoreCount
+    end
+  end
+
+  -- build notebookStr for VP score counts
+  notebookStr = string.format("%s\n\n\n[%s]Blue[-] Card Victory Points Score: %s", notebookStr, blueColor, blueVPScore)
+  notebookStr = string.format("%s\n[%s]Red[-] Card Victory Points Score: %s", notebookStr, redColor, redVPScore)
+
+  -- build notebookStr for breakdown of VP score cards
+  if blueVPScore > 0 then
+    notebookStr = string.format("%s\n\n[%s]Blue[-] Card Victory Points Breakdown: %s", notebookStr, blueColor, notebookStrVPBlue)
+  end
+  if redVPScore > 0 then
+    notebookStr = string.format("%s\n\n[%s]Red[-] Card Victory Points Breakdown: %s", notebookStr, redColor, notebookStrVPRed)
+  end
+
+  notebookStr = notebookStr .. "\n"
+
+
+  -- focus multiplier cards
+  local influenceColor = "D4D129"
+  local militaryColor = "C11E1E"
+  local researchColor = "1597C4"
+
+  local blueCompletedGoals, redCompletedGoals = getCompletedGoals()
+  local goalCompletedBlue = next(blueCompletedGoals) ~= nil
+  local goalCompletedRed = next(redCompletedGoals) ~= nil
+
+  local blueInfluenceScore = 0
+  local blueMilitaryScore = 0
+  local blueResearchScore = 0
+  local redInfluenceScore = 0
+  local redMilitaryScore = 0
+  local redResearchScore = 0
+
+  for _, v in pairs(influenceFocusCardListBlue) do
+    for _, scoreCount in pairs(v) do
+      blueInfluenceScore = blueInfluenceScore + scoreCount
+    end
+  end
+  for _, v in pairs(militaryFocusCardListBlue) do
+    for _, scoreCount in pairs(v) do
+      blueMilitaryScore = blueMilitaryScore + scoreCount
+    end
+  end
+  for _, v in pairs(researchFocusCardListBlue) do
+    for _, scoreCount in pairs(v) do
+      blueResearchScore = blueResearchScore + scoreCount
+    end
+  end
+
+  for _, v in pairs(influenceFocusCardListRed) do
+    for _, scoreCount in pairs(v) do
+      redInfluenceScore = redInfluenceScore + scoreCount
+    end
+  end
+  for _, v in pairs(militaryFocusCardListRed) do
+    for _, scoreCount in pairs(v) do
+      redMilitaryScore = redMilitaryScore + scoreCount
+    end
+  end
+  for _, v in pairs(researchFocusCardListRed) do
+    for _, scoreCount in pairs(v) do
+      redResearchScore = redResearchScore + scoreCount
+    end
+  end
+
+
+  if goalCompletedBlue or checkPlayerColorIsBot("Blue") and getCaptainName("Blue") ~= "Khan" then
+    if blueResearchScore > 0 then
+      notebookStr = string.format("%s\n\n[%s]Blue[-] [%s]Research[-] Focus Cards Score: %s", notebookStr, blueColor, researchColor, blueResearchScore)
+      notebookStr = string.format("%s\n[%s]Blue[-] [%s]Research[-] Focus Cards Breakdown: %s", notebookStr, blueColor, researchColor, notebookStrResearchBlue)
+    end
+    if blueInfluenceScore > 0 then
+      notebookStr = string.format("%s\n\n[%s]Blue[-] [%s]Influence[-] Focus Cards Score: %s", notebookStr, blueColor, influenceColor, blueInfluenceScore)
+      notebookStr = string.format("%s\n[%s]Blue[-] [%s]Influence[-] Focus Cards Breakdown: %s", notebookStr, blueColor, influenceColor, notebookStrInfluenceBlue)
+    end
+    if blueMilitaryScore > 0 then
+      notebookStr = string.format("%s\n\n[%s]Blue[-] [%s]Military[-] Focus Cards Score: %s", notebookStr, blueColor, militaryColor, blueMilitaryScore)
+      notebookStr = string.format("%s\n[%s]Blue[-] [%s]Military[-] Focus Cards Breakdown: %s", notebookStr, blueColor, militaryColor, notebookStrMilitaryBlue)
+    end
+    notebookStr = notebookStr .. "\n"
+
+  elseif not goalCompletedBlue and not checkPlayerColorIsBot("Blue") and getCaptainName("Blue") ~= "Khan" then
+    notebookStr = string.format("%s\n[%s]Blue[-] Focus Cards Score: 0 (No Captain Goals Completed)", notebookStr, blueColor)
+    blueInfluenceScore = 0
+    blueMilitaryScore = 0
+    blueResearchScore = 0
+
+  elseif getCaptainName("Blue") == "Khan" then
+    notebookStr = string.format("%s\n[%s]Blue[-] Focus Cards Score Under Wrathful Khan", notebookStr, blueColor)
+    blueInfluenceScore = 0
+    blueMilitaryScore = 0
+    blueResearchScore = 0
+  end
+
+  if goalCompletedRed or checkPlayerColorIsBot("Red") and getCaptainName("Red") ~= "Khan" then
+    if redResearchScore > 0 then
+      notebookStr = string.format("%s\n\n[%s]Red[-] [%s]Research[-] Focus Cards Score: %s", notebookStr, redColor, researchColor, redResearchScore)
+      notebookStr = string.format("%s\n[%s]Red[-] [%s]Research[-] Focus Cards Breakdown: %s", notebookStr, redColor, researchColor, notebookStrResearchRed)
+    end
+    if redInfluenceScore > 0 then
+      notebookStr = string.format("%s\n\n[%s]Red[-] [%s]Influence[-] Focus Cards Score: %s", notebookStr, redColor, influenceColor, redInfluenceScore)
+      notebookStr = string.format("%s\n[%s]Red[-] [%s]Influence[-] Focus Cards Breakdown: %s", notebookStr, redColor, influenceColor, notebookStrInfluenceRed)
+    end
+    if redMilitaryScore > 0 then
+      notebookStr = string.format("%s\n\n[%s]Red[-] [%s]Military[-] Focus Cards Score: %s", notebookStr, redColor, militaryColor, redMilitaryScore)
+      notebookStr = string.format("%s\n[%s]Red[-] [%s]Military[-] Focus Cards Breakdown: %s", notebookStr, redColor, militaryColor, notebookStrMilitaryRed)
+    end
+    notebookStr = notebookStr .. "\n"
+
+  elseif not goalCompletedRed and not checkPlayerColorIsBot("Red") and getCaptainName("Red") ~= "Khan" then
+    notebookStr = string.format("%s\n[%s]Red[-] Focus Cards Score: 0 (No Captain Goals Completed)", notebookStr, redColor)
+    redInfluenceScore = 0
+    redMilitaryScore = 0
+    redResearchScore = 0
+
+  elseif getCaptainName("Red") == "Khan" then
+    notebookStr = string.format("%s\n[%s]Red[-] Focus Cards Score Under Wrathful Khan", notebookStr, redColor)
+    redInfluenceScore = 0
+    redMilitaryScore = 0
+    redResearchScore = 0
+  end
+  notebookStr = notebookStr .. "\n"
+
+  -- advanced mission stuff
+  local blueAdvancedGoalScore = 0
+  local redAdvancedGoalScore = 0
+  local blueAdvancedGoalBreakdown = ""
+  local redAdvancedGoalBreakdown = ""
+  local blueAdvTooltip = "Goal"
+  local redAdvTooltip = "Goal"
+
+  if goalCompletedBlue then
+    for goalName, scoreCount in pairs(blueCompletedGoals) do
+      blueAdvancedGoalScore = blueAdvancedGoalScore + scoreCount
+
+      if blueAdvancedGoalBreakdown == "" then
+        blueAdvancedGoalBreakdown = string.format("%s: %s", goalName, scoreCount)
+      else
+        blueAdvancedGoalBreakdown = string.format("%s\n%s: %s", blueAdvancedGoalBreakdown, goalName, scoreCount)
+      end
+    end
+
+    notebookStr = string.format("%s\n[%s]Blue[-] Goal Score: %s", notebookStr, blueColor, blueAdvancedGoalScore)
+    notebookStr = string.format("%s\n[%s]Blue[-] Goal Breakdown: %s", notebookStr, blueColor, blueAdvancedGoalBreakdown)
+  end
+
+  if goalCompletedRed then
+    for goalName, scoreCount in pairs(redCompletedGoals) do
+      redAdvancedGoalScore = redAdvancedGoalScore + scoreCount
+
+      if redAdvancedGoalBreakdown == "" then
+        redAdvancedGoalBreakdown = string.format("%s: %s", goalName, scoreCount)
+      else
+        redAdvancedGoalBreakdown = string.format("%s\n%s: %s", redAdvancedGoalBreakdown, goalName, scoreCount)
+      end
+    end
+
+    notebookStr = string.format("%s\n[%s]Red[-] Goal Score: %s", notebookStr, redColor, redAdvancedGoalScore)
+    notebookStr = string.format("%s\n[%s]Red[-] Goal Breakdown: %s", notebookStr, redColor, redAdvancedGoalBreakdown)
+  end
+
+
+  -- SCORE PAD BUTTON CREATION
+  local bluePad = getObjectbyName("Score Sheet Blue")
+  local redPad = getObjectbyName("Score Sheet Red")
+  local blueStr = "Blue"
+  local redStr = "Red"
+  local scorePads = { bluePad, redPad }
+  local playerColors = { blueStr, redStr }
+  local blueLuaColor = { 31/255, 136/255, 255/255 }
+  local redLuaColor = { 219/255, 26/255, 24/255 }
+
+  for i = 1, #playerColors do
+
+    scorePads[i].clearButtons()
+
+    -- create score text field buttons on every slot (reversed in color)
+    local leftColor           = i == 1 and blueLuaColor              or redLuaColor
+    local rightColor          = i == 1 and redLuaColor               or blueLuaColor
+
+    local leftStr             = i == 1 and blueStr                   or redStr
+    local rightStr            = i == 1 and redStr                    or blueStr
+
+    local leftGloryCount      = i == 1 and gloryCountBlue             or gloryCountRed
+    local rightGloryCount     = i == 1 and gloryCountRed              or gloryCountBlue
+
+    local leftAwayCount       = i == 1 and blueNZCount                or redNZCount
+    local rightAwayCount      = i == 1 and redNZCount                 or blueNZCount
+
+    local leftEndgameCount    = i == 1 and blueEndgameScore            or redEndgameScore
+    local rightEndgameCount   = i == 1 and redEndgameScore             or blueEndgameScore
+
+    local leftVPCount         = i == 1 and blueVPScore                 or redVPScore
+    local rightVPCount        = i == 1 and redVPScore                  or blueVPScore
+
+    local leftResearchCount   = i == 1 and blueResearchScore           or redResearchScore
+    local rightResearchCount  = i == 1 and redResearchScore            or blueResearchScore
+
+    local leftInfluenceCount  = i == 1 and blueInfluenceScore          or redInfluenceScore
+    local rightInfluenceCount = i == 1 and redInfluenceScore           or blueInfluenceScore
+
+    local leftMilitaryCount   = i == 1 and blueMilitaryScore            or redMilitaryScore
+    local rightMilitaryCount  = i == 1 and redMilitaryScore             or blueMilitaryScore
+
+    local leftGoalCount       = i == 1 and blueAdvancedGoalScore        or redAdvancedGoalScore
+    local rightGoalCount      = i == 1 and redAdvancedGoalScore         or blueAdvancedGoalScore
+
+    local leftAdvTooltip      = i == 1 and blueAdvTooltip               or redAdvTooltip
+    local rightAdvTooltip     = i == 1 and redAdvTooltip                or blueAdvTooltip
+
+    scorePads[i].createButton({
+      click_function = "nullFunc",
+      function_owner = self,
+      label          = leftGloryCount,
+      position       = { 0.06, 0.21, -0.65 },
+      width          = 180,
+      height         = 180,
+      font_size      = 100,
+      scale          = { 0.5, 0.5, 0.5 },
+      color          = leftColor,
+      font_color     = { 1, 1, 1, 1 },
+      tooltip        = "Current " .. leftStr .. " Glory points.",
+    })
+
+    scorePads[i].createButton({
+      click_function = "nullFunc",
+      function_owner = self,
+      label          = rightGloryCount,
+      position       = { 0.55, 0.21, -0.65 },
+      width          = 180,
+      height         = 180,
+      font_size      = 100,
+      scale          = { 0.5, 0.5, 0.5 },
+      color          = rightColor,
+      font_color     = { 1, 1, 1, 1 },
+      tooltip        = "Current " .. rightStr .. " Glory points.",
+    })
+
+    scorePads[i].createButton({
+      click_function = "nullFunc",
+      function_owner = self,
+      label          = leftAwayCount,
+      position       = { 0.06, 0.21, -0.45 },
+      width          = 180,
+      height         = 180,
+      font_size      = 100,
+      scale          = { 0.5, 0.5, 0.5 },
+      color          = leftColor,
+      font_color     = { 1, 1, 1, 1 },
+      tooltip        = "Current " .. leftStr .. " Neutral Zone token points.",
+    })
+
+    scorePads[i].createButton({
+      click_function = "nullFunc",
+      function_owner = self,
+      label          = rightAwayCount,
+      position       = { 0.55, 0.21, -0.45 },
+      width          = 180,
+      height         = 180,
+      font_size      = 100,
+      scale          = { 0.5, 0.5, 0.5 },
+      color          = rightColor,
+      font_color     = { 1, 1, 1, 1 },
+      tooltip        = "Current " .. rightStr .. " Neutral Zone token points.",
+    })
+
+    scorePads[i].createButton({
+      click_function = "nullFunc",
+      function_owner = self,
+      label          = leftEndgameCount,
+      position       = { 0.06, 0.21, -0.25 },
+      width          = 180,
+      height         = 180,
+      font_size      = 100,
+      scale          = { 0.5, 0.5, 0.5 },
+      color          = leftColor,
+      font_color     = { 1, 1, 1, 1 },
+      tooltip        = "Current " .. leftStr .. " Endgame Scoring points.",
+    })
+
+    scorePads[i].createButton({
+      click_function = "nullFunc",
+      function_owner = self,
+      label          = rightEndgameCount,
+      position       = { 0.55, 0.21, -0.25 },
+      width          = 180,
+      height         = 180,
+      font_size      = 100,
+      scale          = { 0.5, 0.5, 0.5 },
+      color          = rightColor,
+      font_color     = { 1, 1, 1, 1 },
+      tooltip        = "Current " .. rightStr .. " Endgame Scoring points.",
+    })
+
+    scorePads[i].createButton({
+      click_function = "nullFunc",
+      function_owner = self,
+      label          = leftVPCount,
+      position       = { 0.06, 0.21, -0.05 },
+      width          = 180,
+      height         = 180,
+      font_size      = 100,
+      scale          = { 0.5, 0.5, 0.5 },
+      color          = leftColor,
+      font_color     = { 1, 1, 1, 1 },
+      tooltip        = "Current " .. leftStr .. " Printed Victory points.",
+    })
+
+    scorePads[i].createButton({
+      click_function = "nullFunc",
+      function_owner = self,
+      label          = rightVPCount,
+      position       = { 0.55, 0.21, -0.05 },
+      width          = 180,
+      height         = 180,
+      font_size      = 100,
+      scale          = { 0.5, 0.5, 0.5 },
+      color          = rightColor,
+      font_color     = { 1, 1, 1, 1 },
+      tooltip        = "Current " .. rightStr .. " Printed Victory points.",
+    })
+
+    scorePads[i].createButton({
+      click_function = "nullFunc",
+      function_owner = self,
+      label          = leftResearchCount,
+      position       = { 0.06, 0.21, 0.15 },
+      width          = 180,
+      height         = 180,
+      font_size      = 100,
+      scale          = { 0.5, 0.5, 0.5 },
+      color          = leftColor,
+      font_color     = { 1, 1, 1, 1 },
+      tooltip        = "Current " .. leftStr .. " Research Multiplier points.",
+    })
+
+    scorePads[i].createButton({
+      click_function = "nullFunc",
+      function_owner = self,
+      label          = rightResearchCount,
+      position       = { 0.55, 0.21, 0.15 },
+      width          = 180,
+      height         = 180,
+      font_size      = 100,
+      scale          = { 0.5, 0.5, 0.5 },
+      color          = rightColor,
+      font_color     = { 1, 1, 1, 1 },
+      tooltip        = "Current " .. rightStr .. " Research Multiplier points.",
+    })
+
+    scorePads[i].createButton({
+      click_function = "nullFunc",
+      function_owner = self,
+      label          = leftInfluenceCount,
+      position       = { 0.06, 0.21, 0.35 },
+      width          = 180,
+      height         = 180,
+      font_size      = 100,
+      scale          = { 0.5, 0.5, 0.5 },
+      color          = leftColor,
+      font_color     = { 1, 1, 1, 1 },
+      tooltip        = "Current " .. leftStr .. " Influence Multiplier points.",
+    })
+
+    scorePads[i].createButton({
+      click_function = "nullFunc",
+      function_owner = self,
+      label          = rightInfluenceCount,
+      position       = { 0.55, 0.21, 0.35 },
+      width          = 180,
+      height         = 180,
+      font_size      = 100,
+      scale          = { 0.5, 0.5, 0.5 },
+      color          = rightColor,
+      font_color     = { 1, 1, 1, 1 },
+      tooltip        = "Current " .. rightStr .. " Influence Multiplier points.",
+    })
+
+    scorePads[i].createButton({
+      click_function = "nullFunc",
+      function_owner = self,
+      label          = leftMilitaryCount,
+      position       = { 0.06, 0.21, 0.55 },
+      width          = 180,
+      height         = 180,
+      font_size       = 100,
+      scale          = { 0.5, 0.5, 0.5 },
+      color          = leftColor,
+      font_color      = { 1, 1, 1, 1 },
+      tooltip         = "Current " .. leftStr .. " Military Multiplier points.",
+    })
+
+    scorePads[i].createButton({
+      click_function = "nullFunc",
+      function_owner = self,
+      label          = rightMilitaryCount,
+      position       = { 0.55, 0.21, 0.55 },
+      width          = 180,
+      height         = 180,
+      font_size       = 100,
+      scale           = { 0.5, 0.5, 0.5 },
+      color           = rightColor,
+      font_color      = { 1, 1, 1, 1 },
+      tooltip         = "Current " .. rightStr .. " Military Multiplier points.",
+    })
+
+    if leftGoalCount > 0 then
+      scorePads[i].createButton({
+        click_function = "nullFunc",
+        function_owner = self,
+        label          = leftGoalCount,
+        position       = { 0.06, 0.21, 0.75 },
+        width          = 180,
+        height         = 180,
+        font_size      = 100,
+        scale          = { 0.5, 0.5, 0.5 },
+        color          = leftColor,
+        font_color     = { 1, 1, 1, 1 },
+        tooltip        = "Current " .. leftStr .. " " .. leftAdvTooltip .. " points.",
+      })
+    end
+
+    if rightGoalCount > 0 then
+      scorePads[i].createButton({
+        click_function = "nullFunc",
+        function_owner = self,
+        label          = rightGoalCount,
+        position       = { 0.55, 0.21, 0.75 },
+        width          = 180,
+        height         = 180,
+        font_size      = 100,
+        scale          = { 0.5, 0.5, 0.5 },
+        color          = rightColor,
+        font_color     = { 1, 1, 1, 1 },
+        tooltip        = "Current " .. rightStr .. " " .. rightAdvTooltip .. " points.",
+      })
+    end
+
+    local leftTotal = leftGloryCount + leftAwayCount + leftEndgameCount + leftVPCount + leftResearchCount + leftInfluenceCount + leftMilitaryCount + leftGoalCount
+    local rightTotal = rightGloryCount + rightAwayCount + rightEndgameCount + rightVPCount + rightResearchCount + rightInfluenceCount + rightMilitaryCount + rightGoalCount
+
+    scorePads[i].createButton({
+      click_function = "nullFunc",
+      function_owner = self,
+      label          = leftTotal,
+      position       = { 0.06, 0.21, 0.92 },
+      width          = 260,
+      height         = 180,
+      font_size      = 100,
+      scale          = { 0.5, 0.5, 0.5 },
+      color          = leftColor,
+      font_color     = { 1, 1, 1, 1 },
+      tooltip        = "Current " .. leftStr .. " Total points.",
+    })
+
+    scorePads[i].createButton({
+      click_function = "nullFunc",
+      function_owner = self,
+      label          = rightTotal,
+      position       = { 0.55, 0.21, 0.92 },
+      width          = 260,
+      height         = 180,
+      font_size      = 100,
+      scale          = { 0.5, 0.5, 0.5 },
+      color          = rightColor,
+      font_color     = { 1, 1, 1, 1 },
+      tooltip        = "Current " .. rightStr .. " Total points.",
+    })
+  end
+
+  -- set tab with full notebook string
+  if blueAdvancedGoalScore > 0 then
+    notebookStr = notebookStr .. "\n[" .. blueColor .. "]Blue[-] " .. blueAdvTooltip .. " Score: " .. blueAdvancedGoalScore
+  end
+  if redAdvancedGoalScore > 0 then
+    notebookStr = notebookStr .. "\n[" .. redColor .. "]Red[-] " .. redAdvTooltip .. " Score: " .. redAdvancedGoalScore
+  end
+
+  -- finally, build notebook
+  for _, tab in pairs(tabs) do
+    if tab.color == "Grey" then
+      Notes.editNotebookTab({
+        index = tab.index,
+        title = "Score Breakdown",
+        body  = notebookStr,
+        color = "Grey"
+      })
+    end
+  end
+
+  broadcastToAll("Table current score updated!", "Green")
+end
+
+
+
+function getCompletedGoals()
+  -- checks current completed captain goals via positional checks on tokens on captain boards
+  local posGoalTokens = {
+    -- 1 through 3 = advanced side, 4 = basic side
+    -- values are blue, x, z will need to be * -1 for red
+    ["Burnham"]  = { { -38.70, 1.05, 20.07 }, { -38.70, 1.05, 16.30 }, { -38.99, 1.05, 12.55 }, { -38.64, 1.05, 18.85 } },
+    ["Koloth"]   = { { -38.64, 1.05, 20.01 }, { -38.94, 1.05, 16.26 }, { -38.69, 1.05, 12.51 }, { -38.68, 1.05, 18.89 } },
+    ["Picard"]   = { { -38.70, 1.05, 19.99 }, { -38.70, 1.05, 16.24 }, { -38.68, 1.05, 12.47 }, { -38.63, 1.05, 18.93 } },
+    ["Sela"]     = { { -38.68, 1.05, 20.02 }, { -38.68, 1.05, 16.27 }, { -38.68, 1.05, 12.51 }, { -38.66, 1.05, 18.88 } },
+    ["Shran"]    = { { -38.67, 1.05, 20.02 }, { -38.67, 1.05, 16.26 }, { -38.67, 1.05, 12.51 }, { -38.64, 1.05, 18.89 } },
+    ["Sisko"]    = { { -38.71, 1.05, 20.00 }, { -38.98, 1.05, 16.24 }, { -38.70, 1.05, 12.49 }, { -38.70, 1.05, 18.87 } },
+    ["Archer"]   = { { -38.50, 1.05, 20.31 }, { -38.50, 1.05, 16.45 }, { -38.50, 1.05, 12.60 }, { -38.71, 1.05, 18.84 } },
+    ["Georgiou"] = { { -38.45, 1.05, 20.29 }, { -38.45, 1.05, 16.43 }, { -38.45, 1.05, 12.58 }, { -38.66, 1.05, 18.86 } },
+    ["Khan"]     = { { -38.54, 1.05, 19.81 }, { -38.54, 1.05, 16.11 }, { -38.83, 1.05, 12.41 } },
+    ["Kirk"]     = { { -38.76, 1.05, 19.73 }, { -38.48, 1.05, 16.14 }, { -38.48, 1.05, 12.58 }, { -38.71, 1.05, 18.86 } },
+    ["Rebner"]   = { { -38.49, 1.05, 19.23 }, { -38.49, 1.05, 15.84 }, { -38.49, 1.05, 12.40 }, { -38.70, 1.05, 18.17 } },
+    ["Soval"]    = { { -38.50, 1.05, 18.48 }, { -38.50, 1.05, 15.22 }, { -38.50, 1.05, 11.96 }, { -38.70, 1.05, 18.82 } },
+    ["Freeman"]  = { { -38.48, 1.05, 19.48 }, { -38.48, 1.05, 15.88 }, { -38.46, 1.05, 12.31 }, { -38.67, 1.05, 18.84 } },
+    ["Pike"]     = { { -38.44, 1.05, 19.28 }, { -38.44, 1.05, 15.87 }, { -38.44, 1.05, 12.46 }, { -38.63, 1.05, 18.35 } },
+    ["Riker"]    = { { -38.52, 1.05, 18.88 }, { -38.51, 1.05, 15.57 }, { -38.49, 1.05, 12.26 }, { -38.70, 1.05, 18.83 } },
+  }
+
+  local goalNames = {
+    ["Burnham"] = {
+      ["Investigate The Burn"]                     = 4,
+      ["Reunite The Federation"]                   = 3,
+      ["Dealing With The Emerald Chain"]           = 6,
+    },
+    ["Koloth"] = {
+      ["Expanding The Empire"]                     = 3,
+      ["Romulan Weapons Trade Agreement"]          = 1,
+      ["Sabotage"]                                 = 4,
+    },
+    ["Picard"] = {
+      ["Peace Negotiations"]                       = 5,
+      ["Arbiter Of Succession"]                    = 3,
+      ["Seek Out New Life"]                        = 2,
+    },
+    ["Sela"] = {
+      ["Romulan Might"]                            = 4,
+      ["The Reunification Plot"]                   = 4,
+      ["The Duras Plot"]                           = 1,
+    },
+    ["Shran"] = {
+      ["Securing Andoria's Borders"]               = 2,
+      ["Founding The Federation"]                  = 4,
+      ["Andorian Mining Consortium"]               = 3,
+    },
+    ["Sisko"] = {
+      ["A Call To Arms"]                           = 4,
+      ["Bajor's Application To The Federation"]    = 5,
+      ["Contacting The Dominion"]                  = 3,
+    },
+    ["Archer"] = {
+      ["History With Every Light-Year"]            = 4,
+      ["Coalition Of Planets"]                     = 3,
+      ["Temporal Cold War"]                        = 2,
+    },
+    ["Georgiou"] = {
+      ["Call In The Reinforcements"]               = 3,
+      ["Hardly A Negotiation"]                     = 3,
+      ["Gazing At The Stars"]                      = 3,
+    },
+    ["Khan"] = {
+      ["I've Hurt You"]                            = 1,
+      ["I Shall Leave You As You Left Me"]         = 2,
+      ["Marooned For All Eternity! Buried Alive!"] = 3,
+    },
+    ["Kirk"] = {
+      ["Where No Man Has Gone Before"]             = 4,
+      ["The Undiscovered Country"]                 = 1,
+      ["Search For Spock"]                         = 4,
+    },
+    ["Rebner"] = {
+      ["Things That Make Us Smart"]                = 3,
+      ["Things That Make Us Strong"]               = 1,
+      ["Things That Make Us Fast"]                 = 3,
+    },
+    ["Soval"] = {
+      ["My Mind To Your Mind"]                     = 2,
+      ["Cooperation With Starfleet"]               = 4,
+      ["The Needs Of The Many"]                    = 3,
+    },
+    ["Freeman"] = {
+      ["Project Swing By"]                         = 4,
+      ["Beta Shift"]                               = 1,
+      ["Calling All Your Friends"]                 = 1,
+    },
+    ["Pike"] = {
+      ["Weight Of The Future"]                     = 3,
+      ["Boy Scout"]                                = 4,
+      ["To Explore"]                               = 2,
+    },
+    ["Riker"] = {
+      ["Battling The Pakled"]                      = 3,
+      ["Spirit Of Starfleet"]                      = 2,
+      ["Messages From Old Friends"]                = 2,
+    }
+  }
+
+  local goalOrder = {
+    ["Burnham"] = {
+      "Investigate The Burn",
+      "Reunite The Federation",
+      "Dealing With The Emerald Chain",
+    },
+    ["Koloth"] = {
+      "Expanding The Empire",
+      "Romulan Weapons Trade Agreement",
+      "Sabotage",
+    },
+    ["Picard"] = {
+      "Peace Negotiations",
+      "Arbiter Of Succession",
+      "Seek Out New Life",
+    },
+    ["Sela"] = {
+      "Romulan Might",
+      "The Reunification Plot",
+      "The Duras Plot",
+    },
+    ["Shran"] = {
+      "Securing Andoria's Borders",
+      "Founding The Federation",
+      "Andorian Mining Consortium",
+    },
+    ["Sisko"] = {
+      "A Call To Arms",
+      "Bajor's Application To The Federation",
+      "Contacting The Dominion",
+    },
+    ["Archer"] = {
+      "History With Every Light-Year",
+      "Coalition Of Planets",
+      "Temporal Cold War",
+    },
+    ["Georgiou"] = {
+      "Call In The Reinforcements",
+      "Hardly A Negotiation",
+      "Gazing At The Stars",
+    },
+    ["Khan"] = {
+      "I've Hurt You",
+      "I Shall Leave You As You Left Me",
+      "Marooned For All Eternity! Buried Alive!",
+    },
+    ["Kirk"] = {
+      "Where No Man Has Gone Before",
+      "The Undiscovered Country",
+      "Search For Spock",
+    },
+    ["Rebner"] = {
+      "Things That Make Us Smart",
+      "Things That Make Us Strong",
+      "Things That Make Us Fast",
+    },
+    ["Soval"] = {
+      "My Mind To Your Mind",
+      "Cooperation With Starfleet",
+      "The Needs Of The Many",
+    },
+    ["Freeman"] = {
+      "Project Swing By",
+      "Beta Shift",
+      "Calling All Your Friends",
+    },
+    ["Pike"] = {
+      "Weight Of The Future",
+      "Boy Scout",
+      "To Explore",
+    },
+    ["Riker"] = {
+      "Battling The Pakled",
+      "Spirit Of Starfleet",
+      "Messages From Old Friends",
+    }
+  }
+
+  local blueCompletedGoals = {}
+  local redCompletedGoals = {}
+  local blueCaptainName = getCaptainName("Blue")
+  local redCaptainName = getCaptainName("Red")
+  local blueCheckZone = getObjectbyNameAndNotes("Zone Captain Card", "Blue")
+  local redCheckZone = getObjectbyNameAndNotes("Zone Captain Card", "Red")
+  local tolerance = 0.20
+
+  local function checkGoals(playerColor, captainName, checkZone, completedGoals)
+    if not captainName or not checkZone or not posGoalTokens[captainName] or not goalNames[captainName] then
+      return
+    end
+
+    local boardType = "Advanced"
+
+    if captainName ~= "Khan" then
+      for _, zoneObj in pairs(checkZone.getObjects()) do
+        if zoneObj.getName():find("Crew Board") then
+          if zoneObj.getName():find("Basic") then
+            boardType = "Basic"
+          elseif zoneObj.getName():find("Advanced") then
+            boardType = "Advanced"
+          end
+          break
+        end
+      end
+    end
+
+    local tokenObjects = {}
+
+    for _, zoneObj in pairs(checkZone.getObjects()) do
+      if zoneObj.getName() == "Completed Goal Tokens" then
+        table.insert(tokenObjects, zoneObj)
+      end
+    end
+
+    local goalIndexes
+
+    if boardType == "Basic" then
+      goalIndexes = { 4 }
+    else
+      goalIndexes = { 1, 2, 3 }
+    end
+
+    local goalIndexToName = goalOrder[captainName]
+
+    for _, posIndex in ipairs(goalIndexes) do
+      local targetPos = posGoalTokens[captainName][posIndex]
+
+      if targetPos then
+        local targetX = targetPos[1]
+        local targetZ = targetPos[3]
+
+        if playerColor == "Red" then
+          targetX = targetX * -1
+          targetZ = targetZ * -1
+        end
+
+        for _, tokenObj in pairs(tokenObjects) do
+          local tokenPos = tokenObj.getPosition()
+
+          if math.abs(tokenPos.x - targetX) <= tolerance and
+             math.abs(tokenPos.z - targetZ) <= tolerance then
+
+            local goalName = goalIndexToName[posIndex == 4 and 1 or posIndex]
+
+            if goalName then
+              completedGoals[goalName] = goalNames[captainName][goalName]
+            end
+
+            break
+          end
+        end
+      end
+    end
+  end
+
+  checkGoals("Blue", blueCaptainName, blueCheckZone, blueCompletedGoals)
+  checkGoals("Red", redCaptainName, redCheckZone, redCompletedGoals)
+
+  return blueCompletedGoals, redCompletedGoals
+end

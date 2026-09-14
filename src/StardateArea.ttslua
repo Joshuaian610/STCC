@@ -463,6 +463,7 @@ function stardateTriggerEndgame()
   local blueButton = getObjectFromBagbyName("Calculate Score Button Blue", bagUnusedObjs, rotBlueButton, posBlueButton, false)
   blueButton.interactable = false
   blueButton.setLock(true)
+  initButtonCalculateScore(blueButton)
 
   -- deploy red score sheet
   local rotRedSheet = { 0.00, 90.00, 0.00 }
@@ -477,6 +478,7 @@ function stardateTriggerEndgame()
   local redButton = getObjectFromBagbyName("Calculate Score Button Red", bagUnusedObjs, rotRedButton, posRedButton, false)
   redButton.interactable = false
   redButton.setLock(true)
+  initButtonCalculateScore(redButton)
 
   -- get rid of glory stardate counter
   local counter = getObjectbyName("Glory Counter Stardate")

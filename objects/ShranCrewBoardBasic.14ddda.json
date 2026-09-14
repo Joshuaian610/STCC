@@ -4,6 +4,23 @@
     "y": 0,
     "z": 0
   },
+  "AttachedSnapPoints": [
+    {
+      "Position": {
+        "x": -0.547,
+        "y": 0,
+        "z": -0.702
+      },
+      "Rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 180
+      },
+      "Tags": [
+        "goalToken"
+      ]
+    }
+  ],
   "Autoraise": true,
   "ColorDiffuse": {
     "b": 0.23527,
@@ -40,8 +57,8 @@
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
   "Locked": true,
+  "LuaScript": "",
   "LuaScriptState": "",
-  "LuaScript_path": "ShranCrewBoardBasic.14ddda.ttslua",
   "MeasureMovement": false,
   "Name": "Custom_Tile",
   "Nickname": "Shran Crew Board Basic",

@@ -22,10 +22,10 @@
     "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25435475829128502/75528EC3450DDE9A77EF361175575BC2C3DC6EC9/",
     "WidthScale": 0
   },
-  "Description": "",
+  "Description": "To mark a Goal as Completed on your Captain Board, drop this token onto the Snap Point - the top left of the Goal Token should cover the black \"Goal\" text to accurately hit the Snap Point.\n\nA confirmation will fire when correctly dropped into place. Leaving the token there will tell End Game Score Scripting that the Goal has been Completed.",
   "DragSelectable": true,
-  "GMNotes": "",
-  "GUID": "e312a0",
+  "GMNotes": "Red",
+  "GUID": "6fcc4a",
   "Grid": true,
   "GridProjection": false,
   "Hands": false,
@@ -43,7 +43,10 @@
   "Number": 3,
   "Snap": true,
   "Sticky": true,
-  "Tooltip": false,
+  "Tags": [
+    "goalToken"
+  ],
+  "Tooltip": true,
   "Transform": {
     "posX": 36.25,
     "posY": 0.8,

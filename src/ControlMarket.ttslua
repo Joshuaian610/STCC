@@ -624,8 +624,8 @@ function placeResource(buttonObj, playerColor, altClick)
                    (buttonName:find("Ship") and "Ship") or
                    (buttonName:find("Ally") and "Ally")
 
-  -- check for stardate card in either player's area, broadcast & return out if so
-  local stardateCheckZone = getObjectbyNameAndNotes("Zone Stardate Player", otherPlayerColor)
+  -- check for stardate card in end turn player's area, broadcast & return out if so
+  local stardateCheckZone = getObjectbyNameAndNotes("Zone Stardate Player", playerColor)
   local botInGame = checkIsBot()
   local botColor
   local humanColor = playerColor
@@ -636,7 +636,6 @@ function placeResource(buttonObj, playerColor, altClick)
     stardateCheckZone = getObjectbyNameAndNotes("Zone Stardate Player", botColor)
   end
   local playerStr = getPlayerStr(playerColor)
-  local otherPlayerStr = getPlayerStr(otherPlayerColor)
 
   -- mark junk pad with turn owner playerColor
   padJunk.setGMNotes(otherPlayerColor)
@@ -686,6 +685,14 @@ function placeResource(buttonObj, playerColor, altClick)
         local posRemove = { 0.00, 2.25, 27.50 }
         zoneObj.setPositionSmooth(posRemove, false, true)
         stardateTriggerEndgame()
+        -- if turns enabled, end and pass turn
+        if Turns.enable then
+          local currentColor = Turns.turn_color
+          local nextColor = currentColor == "Blue" and "Red" or "Blue"
+          Turns.turn_color = nextColor
+        else
+          return
+        end
         return
 
       -- handle pulling card from located deck if deck located
@@ -700,6 +707,11 @@ function placeResource(buttonObj, playerColor, altClick)
     local posStardateCard = otherPlayerColor == "Blue" and { -24.00, 0.76, 15.00 } or { 24.00, 0.76, -15.00 }
     cardStardate.setRotation(rotStardateCard)
     cardStardate.setPositionSmooth(posStardateCard, false, true)
+
+    -- refresh stardate Glory
+    Wait.time(function()
+      refreshGlory()
+    end, 0.5)
 
     -- pull & init resolve stardate button
     Wait.time(function()
@@ -791,12 +803,12 @@ function placeResource(buttonObj, playerColor, altClick)
   end
 
   -- refresh human playerarea
-  Wait.time(function()
+  -- Wait.time(function()
 
-    local buttonRefresh = getObjectbyName("Button Refresh Draw Deck " .. playerColor)
-    refreshDrawDeck(buttonRefresh, _, false)
+  --   local buttonRefresh = getObjectbyName("Button Refresh Draw Deck " .. playerColor)
+  --   refreshDrawDeck(buttonRefresh, _, false)
 
-  end, 1)
+  -- end, 1)
 
 
   -- run human player ending turn refresh actions
@@ -837,12 +849,12 @@ function placeResource(buttonObj, playerColor, altClick)
       if drawDeck and deckCount >= dealCount and dealCount > 0 then
         drawDeck.deal(dealCount, playerColor)
 
-      elseif dealCount > 0 and deckCount > 0 then
+     elseif dealCount > 0 and deckCount > 0 then
         local partial = math.min(deckCount, dealCount)
         drawDeck.deal(partial, playerColor)
         Wait.time(function()
 
-          refreshDrawDeck(buttonRefresh, _, true, 0)
+          refreshDrawDeck(buttonRefresh, _, false, dealCount - partial)
 
         end, 0.25)
 
