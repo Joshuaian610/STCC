@@ -57,8 +57,8 @@
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
   "Locked": true,
+  "LuaScript": "",
   "LuaScriptState": "",
-  "LuaScript_path": "KolothCrewBoardBasic.6abe1f.ttslua",
   "MeasureMovement": false,
   "Name": "Custom_Tile",
   "Nickname": "Koloth Crew Board Basic",
@@ -80,5 +80,5 @@
     "scaleZ": 5
   },
   "Value": 0,
-  "XmlUI_path": "KolothCrewBoardBasic.6abe1f.xml"
+  "XmlUI": ""
 }

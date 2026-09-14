@@ -349,7 +349,7 @@ function reportCurrentSkills(playerColor)
     end
   end
 
-  -- check if keyla detmer (burnham deck) is currently in DO slot
+  -- check if ? skill icons in DO slot
   local checkZoneDO = getObjectbyNameAndNotes("Zone Duty Officer", playerColor)
 
   for _, zoneObj in pairs(checkZoneDO.getObjects()) do
@@ -357,9 +357,9 @@ function reportCurrentSkills(playerColor)
       skillIcons["wildcard"] = skillIcons["wildcard"] + 2
       table.insert(inPlaySkillCards["wildcard"], zoneObj.getName() .. ": 2")
     end
-    if zoneObj.getName() == "LT. Detmer" or zoneObj.getName() == "T'Pau" then
+    if zoneObj.getName() == "Lt. Detmer" then
       skillIcons["wildcard"] = skillIcons["wildcard"] + 1
-      table.insert(inPlaySkillCards["wildcard"], "Lt Detmer: 1")
+      table.insert(inPlaySkillCards["wildcard"], "Lt. Detmer: 1")
     end
   end
 
