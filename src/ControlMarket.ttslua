@@ -913,7 +913,7 @@ function placeResource(buttonObj, playerColor, altClick)
   }
   local suitColor = suitColors[cardSuit]
 
-  local broadcastStr = string.format("%s has placed %s %s.", playerStr, resourceString, cardName ~= nil and " on " .. "[b]["..suitColor.."]"..cardName.."[-][/b]" or "")
+  local broadcastStr = string.format("%s has placed %s %s.", playerStr, resourceString, cardName ~= nil and "on " .. "[b]["..suitColor.."]"..cardName.."[-][/b]" or "")
   broadcastToAll(broadcastStr, "White")
 
   -- if turns enabled, end and pass turn

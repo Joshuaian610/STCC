@@ -1666,9 +1666,7 @@ function checkGeorgiou(inPlayCheckZones, beamBags, isBot, endgameCardList, noteb
         cardCount = cardCount + 1
       end
       if zoneObj.type == "Deck" then
-        for _, deckObj in pairs(zoneObj.getObjects()) do
-          cardCount = cardCount + 1
-        end
+        cardCount = cardCount + #zoneObj.getObjects()
       end
     end
   end
@@ -1700,7 +1698,7 @@ function checkArcher(inPlayCheckZones, beamBags, isBot, endgameCardList, noteboo
   for i = 1, #inPlayCheckZones do
     for _, zoneObj in pairs(inPlayCheckZones[i].getObjects()) do
       if zoneObj.type == "Card" then
-        for _, tag in pairs(zoneObj.tags) do
+        for _, tag in pairs(zoneObj.getTags()) do
           if tag:sub(1, 6) == "trait_" then
             traitList[tag] = true
           end
@@ -2334,7 +2332,6 @@ function calculateScore(buttonObj, _, _)
   animateButton(buttonObj)
 
   -- prime notebook for action
-  local tabs = Notes.getNotebookTabs()
   local blueColor = "1E87FF"
   local redColor = "DB1B18"
   local notebookStr = "Current Score Breakdown as it stands:"
@@ -2418,7 +2415,7 @@ function calculateScore(buttonObj, _, _)
   notebookStr = notebookStr .. "\n"
 
 
-  -- focus multiplier cards
+    -- focus multiplier cards
   local influenceColor = "D4D129"
   local militaryColor = "C11E1E"
   local researchColor = "1597C4"
@@ -2466,8 +2463,8 @@ function calculateScore(buttonObj, _, _)
     end
   end
 
+  if (goalCompletedBlue or checkPlayerColorIsBot("Blue")) and getCaptainName("Blue") ~= "Khan" then
 
-  if goalCompletedBlue or checkPlayerColorIsBot("Blue") and getCaptainName("Blue") ~= "Khan" then
     if blueResearchScore > 0 then
       notebookStr = string.format("%s\n\n[%s]Blue[-] [%s]Research[-] Focus Cards Score: %s", notebookStr, blueColor, researchColor, blueResearchScore)
       notebookStr = string.format("%s\n[%s]Blue[-] [%s]Research[-] Focus Cards Breakdown: %s", notebookStr, blueColor, researchColor, notebookStrResearchBlue)
@@ -2495,7 +2492,8 @@ function calculateScore(buttonObj, _, _)
     blueResearchScore = 0
   end
 
-  if goalCompletedRed or checkPlayerColorIsBot("Red") and getCaptainName("Red") ~= "Khan" then
+  if (goalCompletedRed or checkPlayerColorIsBot("Red")) and getCaptainName("Red") ~= "Khan" then
+
     if redResearchScore > 0 then
       notebookStr = string.format("%s\n\n[%s]Red[-] [%s]Research[-] Focus Cards Score: %s", notebookStr, redColor, researchColor, redResearchScore)
       notebookStr = string.format("%s\n[%s]Red[-] [%s]Research[-] Focus Cards Breakdown: %s", notebookStr, redColor, researchColor, notebookStrResearchRed)
@@ -2871,25 +2869,25 @@ function calculateScore(buttonObj, _, _)
     })
   end
 
-  -- set tab with full notebook string
-  if blueAdvancedGoalScore > 0 then
-    notebookStr = notebookStr .. "\n[" .. blueColor .. "]Blue[-] " .. blueAdvTooltip .. " Score: " .. blueAdvancedGoalScore
-  end
-  if redAdvancedGoalScore > 0 then
-    notebookStr = notebookStr .. "\n[" .. redColor .. "]Red[-] " .. redAdvTooltip .. " Score: " .. redAdvancedGoalScore
-  end
-
   -- finally, build notebook
+  local tabs = Notes.getNotebookTabs()
+  local scoreBreakdownIndexes = {}
+
   for _, tab in pairs(tabs) do
-    if tab.color == "Grey" then
-      Notes.editNotebookTab({
-        index = tab.index,
-        title = "Score Breakdown",
-        body  = notebookStr,
-        color = "Grey"
-      })
+    if tab.title == "Score Breakdown" then
+      table.insert(scoreBreakdownIndexes, tab.index)
     end
   end
+
+  for i = #scoreBreakdownIndexes, 1, -1 do
+    Notes.removeNotebookTab(scoreBreakdownIndexes[i])
+  end
+
+  Notes.addNotebookTab({
+    title = "Score Breakdown",
+    body = notebookStr,
+    color = "Grey"
+  })
 
   broadcastToAll("Table current score updated!", "Green")
 end
@@ -3091,12 +3089,13 @@ function getCompletedGoals()
 
     if captainName ~= "Khan" then
       for _, zoneObj in pairs(checkZone.getObjects()) do
-        if zoneObj.getName():find("Crew Board") then
+        if zoneObj.getName():find("Crew Board") and not zoneObj.getName():find("Pad") then
           if zoneObj.getName():find("Basic") then
             boardType = "Basic"
           elseif zoneObj.getName():find("Advanced") then
             boardType = "Advanced"
           end
+
           break
         end
       end
@@ -3105,7 +3104,7 @@ function getCompletedGoals()
     local tokenObjects = {}
 
     for _, zoneObj in pairs(checkZone.getObjects()) do
-      if zoneObj.getName() == "Completed Goal Tokens" then
+      if zoneObj.getName() == "Completed Goal Token" then
         table.insert(tokenObjects, zoneObj)
       end
     end
@@ -3134,10 +3133,10 @@ function getCompletedGoals()
 
         for _, tokenObj in pairs(tokenObjects) do
           local tokenPos = tokenObj.getPosition()
+          local xDifference = math.abs(tokenPos.x - targetX)
+          local zDifference = math.abs(tokenPos.z - targetZ)
 
-          if math.abs(tokenPos.x - targetX) <= tolerance and
-             math.abs(tokenPos.z - targetZ) <= tolerance then
-
+          if xDifference <= tolerance and zDifference <= tolerance then
             local goalName = goalIndexToName[posIndex == 4 and 1 or posIndex]
 
             if goalName then

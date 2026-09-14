@@ -612,9 +612,9 @@ function getTrackMultipliers(captainName, influenceCount, militaryCount, researc
       militaryMultiplier = militaryMultiplier - 1
       researchMultiplier = researchMultiplier - 1
 
-      if influenceMultiplier > 0 then influenceMultiplier = 0 end
-      if militaryMultiplier > 0 then militaryMultiplier = 0 end
-      if researchMultiplier > 0 then researchMultiplier = 0 end
+      if influenceMultiplier < 0 then influenceMultiplier = 0 end
+      if militaryMultiplier < 0 then militaryMultiplier = 0 end
+      if researchMultiplier < 0 then researchMultiplier = 0 end
     end
   end
 

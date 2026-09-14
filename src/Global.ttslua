@@ -267,6 +267,7 @@ end
 
 function onPlayerTurn(player, _)
   -- handle broadcast of resupply cards onPlayerTurn
+  if player == nil then return end
   local playerColor = player.color
   local isBot = checkPlayerColorIsBot(playerColor)
   if Turns.enable and not isBot then
