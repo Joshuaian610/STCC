@@ -773,7 +773,8 @@ function hideBlueUI()
   UI.setAttribute("blue_pakled_panel", "active", "false")
   UI.setAttribute("blue_vulcan_panel", "active", "false")
   UI.setAttribute("ui_hide_blue", "active", "false")
-  UI.setAttribute("ui_show_blue", "active", "true", "Blue")
+  UI.setAttribute("ui_show_blue", "visibility", "Blue")
+  UI.setAttribute("ui_show_blue", "active", "true")
   UI.hide("bot_controls")
 end
 
@@ -787,7 +788,8 @@ function hideRedUI()
   UI.setAttribute("red_pakled_panel", "active", "false")
   UI.setAttribute("red_vulcan_panel", "active", "false")
   UI.setAttribute("ui_hide_red", "active", "false")
-  UI.setAttribute("ui_show_red", "active", "true", "Red")
+  UI.setAttribute("ui_show_red", "visibility", "Red")
+  UI.setAttribute("ui_show_red", "active", "true")
   UI.hide("bot_controls")
 end
 
@@ -816,7 +818,8 @@ function showBlueUI()
   end
 
   UI.setAttribute("ui_show_blue", "active", "false")
-  UI.setAttribute("ui_hide_blue", "active", "true", "Blue")
+  UI.setAttribute("ui_hide_blue", "visibility", "Blue")
+  UI.setAttribute("ui_hide_blue", "active", "true")
 
   if checkIsBot() then
     UI.show("bot_controls")
@@ -848,7 +851,8 @@ function showRedUI()
   end
 
   UI.setAttribute("ui_show_red", "active", "false")
-  UI.setAttribute("ui_hide_red", "active", "true", "Red")
+  UI.setAttribute("ui_hide_red", "visibility", "Red")
+  UI.setAttribute("ui_hide_red", "active", "true")
 
   if checkIsBot() then
     UI.show("bot_controls")

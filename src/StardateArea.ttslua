@@ -111,6 +111,13 @@ function refreshGlory()
       tokenGlory.interactable = false
     end
     broadcastToAll(gloryCount .. " Glory has been refreshed for: " .. cardName, "Green")
+
+    -- set stardate glory counter to resolve times when the zone doesn't pick up the tokens entering the zone
+    Wait.time(function()
+
+      getObjectbyName("Glory Counter Stardate").call("setValue", gloryCount)
+
+    end, 1)
   else
     return
   end
@@ -487,5 +494,3 @@ function stardateTriggerEndgame()
   counter.setPosition(posCounter)
   counter.flip()
 end
-
-

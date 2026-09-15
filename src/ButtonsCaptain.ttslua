@@ -230,6 +230,7 @@ function reportCurrentSkills(playerColor)
     ambassador = 0,
     romulan    = 0,
   }
+  local countedCards = {}
   local checkZones = {
     getObjectbyNameAndNotes("Zone Captain", playerColor),
     getObjectbyNameAndNotes("Zone In Play", playerColor),
@@ -241,23 +242,27 @@ function reportCurrentSkills(playerColor)
   for i = 1, #checkZones do
     -- check i zone for in play skill icons
     for _, zoneObj in pairs(checkZones[i].getObjects()) do
-      for k, _ in pairs(inPlaySkillIcons) do
-        if zoneObj.hasTag("skill_" .. k) then
-          inPlaySkillIcons[k] = inPlaySkillIcons[k] + 1
-          table.insert(inPlaySkillCards[k], zoneObj.getName() .. ": 1")
-        elseif zoneObj.hasTag("skill_x2_" .. k) then
-          inPlaySkillIcons[k] = inPlaySkillIcons[k] + 2
-          table.insert(inPlaySkillCards[k], zoneObj.getName() .. ": 2")
-        elseif zoneObj.hasTag("skill_x3_" .. k) then
-          inPlaySkillIcons[k] = inPlaySkillIcons[k] + 3
-          table.insert(inPlaySkillCards[k], zoneObj.getName() .. ": 3")
-        end
-      end
+      if not countedCards[zoneObj.getGUID()] then
+        countedCards[zoneObj.getGUID()] = true
 
-      -- check i zone for in play ni'var match traits
-      for k, _ in pairs(nivarTraits) do
-        if zoneObj.hasTag("trait_" .. k) then
-          nivarTraits[k] = nivarTraits[k] + 1
+        for k, _ in pairs(inPlaySkillIcons) do
+          if zoneObj.hasTag("skill_" .. k) then
+            inPlaySkillIcons[k] = inPlaySkillIcons[k] + 1
+            table.insert(inPlaySkillCards[k], zoneObj.getName() .. ": 1")
+          elseif zoneObj.hasTag("skill_x2_" .. k) then
+            inPlaySkillIcons[k] = inPlaySkillIcons[k] + 2
+            table.insert(inPlaySkillCards[k], zoneObj.getName() .. ": 2")
+          elseif zoneObj.hasTag("skill_x3_" .. k) then
+            inPlaySkillIcons[k] = inPlaySkillIcons[k] + 3
+            table.insert(inPlaySkillCards[k], zoneObj.getName() .. ": 3")
+          end
+        end
+
+        -- check i zone for in play ni'var match traits
+        for k, _ in pairs(nivarTraits) do
+          if zoneObj.hasTag("trait_" .. k) then
+            nivarTraits[k] = nivarTraits[k] + 1
+          end
         end
       end
     end
@@ -283,21 +288,25 @@ function reportCurrentSkills(playerColor)
       local checkBag = checkBeamBagObjs[i]
 
       for _, bagObj in pairs(checkBag.getObjects()) do
-        for k, _ in pairs(beamedSkillIcons) do
-          for _, tag in pairs(bagObj.tags) do
-            if tag == "skill_" .. k then
-              beamedSkillIcons[k] = beamedSkillIcons[k] + 1
-              table.insert(inPlaySkillCards[k], bagObj.name .. ": 1")
-            end
+        if not countedCards[bagObj.guid] then
+          countedCards[bagObj.guid] = true
 
-            if tag == "skill_x2_" .. k then
-              beamedSkillIcons[k] = beamedSkillIcons[k] + 2
-              table.insert(inPlaySkillCards[k], bagObj.name .. ": 2")
-            end
+          for k, _ in pairs(beamedSkillIcons) do
+            for _, tag in pairs(bagObj.tags) do
+              if tag == "skill_" .. k then
+                beamedSkillIcons[k] = beamedSkillIcons[k] + 1
+                table.insert(inPlaySkillCards[k], bagObj.name .. ": 1")
+              end
 
-            if tag == "skill_x3_" .. k then
-              beamedSkillIcons[k] = beamedSkillIcons[k] + 3
-              table.insert(inPlaySkillCards[k], bagObj.name .. ": 3")
+              if tag == "skill_x2_" .. k then
+                beamedSkillIcons[k] = beamedSkillIcons[k] + 2
+                table.insert(inPlaySkillCards[k], bagObj.name .. ": 2")
+              end
+
+              if tag == "skill_x3_" .. k then
+                beamedSkillIcons[k] = beamedSkillIcons[k] + 3
+                table.insert(inPlaySkillCards[k], bagObj.name .. ": 3")
+              end
             end
           end
         end
@@ -483,6 +492,7 @@ function reportCurrentSuits(playerColor)
     person    = 0,
     ship      = 0,
   }
+  local countedCards = {}
   local checkZones = {
     getObjectbyNameAndNotes("Zone Captain", playerColor),
     getObjectbyNameAndNotes("Zone In Play", playerColor),
@@ -494,9 +504,13 @@ function reportCurrentSuits(playerColor)
   -- check zones
   for i = 1, #checkZones do
     for _, zoneObj in pairs(checkZones[i].getObjects()) do
-      for k, _ in pairs(cardSuits) do
-        if zoneObj.hasTag("suit_" .. k) then
-          cardSuits[k] = cardSuits[k] + 1
+      if not countedCards[zoneObj.getGUID()] then
+        countedCards[zoneObj.getGUID()] = true
+
+        for k, _ in pairs(cardSuits) do
+          if zoneObj.hasTag("suit_" .. k) then
+            cardSuits[k] = cardSuits[k] + 1
+          end
         end
       end
     end
@@ -614,6 +628,7 @@ function reportCurrentTraits(playerColor, buttonType)
     return
   end
 
+  local countedCards = {}
   local checkZones = {
     getObjectbyNameAndNotes("Zone Captain", playerColor),
     getObjectbyNameAndNotes("Zone In Play", playerColor),
@@ -625,9 +640,13 @@ function reportCurrentTraits(playerColor, buttonType)
   -- check zones
   for i = 1, #checkZones do
     for _, zoneObj in pairs(checkZones[i].getObjects()) do
-      for k, _ in pairs(traitCounts) do
-        if zoneObj.hasTag("trait_" .. k) then
-          traitCounts[k] = traitCounts[k] + 1
+      if not countedCards[zoneObj.getGUID()] then
+        countedCards[zoneObj.getGUID()] = true
+
+        for k, _ in pairs(traitCounts) do
+          if zoneObj.hasTag("trait_" .. k) then
+            traitCounts[k] = traitCounts[k] + 1
+          end
         end
       end
     end
@@ -821,13 +840,15 @@ function refreshDrawDeck(buttonObj, _, altClick, dealCount)
     -- try to enlist 1 Reserve as part of the draw
     local reserveObj = getReserveObject(reservesZone)
 
-    if reserveObj == nil then
+    if reserveObj == nil and getCaptainName(playerColor) ~= "Khan" then
       enlistDevelopmentCard(devZone, playerColor, remainingToDraw, maxHandCount)
       return
     end
 
-    enlistReserveCard(reserveObj, handZone, playerColor)
-    remainingToDraw = remainingToDraw - 1
+    if getCaptainName(playerColor) ~= "Khan" then
+      enlistReserveCard(reserveObj, handZone, playerColor)
+      remainingToDraw = remainingToDraw - 1
+    end
 
     if remainingToDraw <= 0 then return end
 
@@ -1048,7 +1069,7 @@ function enlistDevelopmentCard(devZone, playerColor, remainingToDraw, maxHandCou
         end, 1)
         Wait.time(function()
 
-          broadcastStr = string.format("%s: Afterwards, manually draw %d more cards, up to your hand size of %d.", playerStr, remainingToDraw - 1, maxHandCount)
+          broadcastStr = string.format("%s: Afterwards, manually draw up to your hand size of %d.", playerStr, maxHandCount)
           broadcastToColor(broadcastStr, playerColor, "White")
 
         end, 2)

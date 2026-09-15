@@ -1959,8 +1959,40 @@ end
 
 -- cargo
 
-function checkGenesisDevice()
-  -- Genesis Device: score the points from completed missions again
+function checkGenesisDevice(checkZones, isBot, playerColor, endgameCardList, notebookStr)
+  -- Genesis Device: Score based on completed captain missions
+
+  local cardInPlay = false
+
+  for i = 1, #checkZones do
+    for _, zoneObj in pairs(checkZones[i].getObjects()) do
+      if zoneObj.getName() == "Genesis Device" then
+        cardInPlay = true
+      end
+    end
+  end
+
+  if cardInPlay then
+    local genesisDeviceScore = 0
+
+    if isBot then
+      genesisDeviceScore = 5
+    else
+      local blueCompletedGoals, redCompletedGoals = getCompletedGoals()
+      local completedGoals = playerColor == "Red" and redCompletedGoals or blueCompletedGoals
+
+      for _, score in pairs(completedGoals) do
+        genesisDeviceScore = genesisDeviceScore + score
+      end
+    end
+
+    if genesisDeviceScore > 0 then
+      table.insert(endgameCardList, {["Genesis Device"] = genesisDeviceScore})
+      notebookStr = notebookStr .. "\nGenesis Device: " .. genesisDeviceScore
+    end
+  end
+
+  return endgameCardList, notebookStr
 end
 
 
@@ -2332,19 +2364,19 @@ function calculateScore(buttonObj, _, _)
   animateButton(buttonObj)
 
   -- prime notebook for action
-  local blueColor = "1E87FF"
-  local redColor = "DB1B18"
+  local bluePlayerStr = getPlayerStr("Blue")
+  local redPlayerStr = getPlayerStr("Red")
   local notebookStr = "Current Score Breakdown as it stands:"
 
   -- glory count
   local gloryCountBlue = getObjectbyName("Glory Counter Blue").getVar("val")
   local gloryCountRed = getObjectbyName("Glory Counter Red").getVar("val")
-  notebookStr = string.format("%s\n\n[%s]Blue[-] Glory Score: %s\n[%s]Red[-] Glory Score: %s", notebookStr, blueColor, gloryCountBlue, redColor, gloryCountRed)
+  notebookStr = string.format("%s\n\n%s Glory Score: %s\n%s Glory Score: %s", notebookStr, bluePlayerStr, gloryCountBlue, redPlayerStr, gloryCountRed)
 
 
   -- neutral location count
   local blueNZCount, redNZCount = getNZCount()
-  notebookStr = string.format("%s\n\n\n[%s]Blue[-] Neutral Zone Score: %s\n[%s]Red[-] Neutral Zone Score: %s", notebookStr, blueColor, blueNZCount, redColor, redNZCount)
+  notebookStr = string.format("%s\n\n\n%s Neutral Zone Score: %s\n%s Neutral Zone Score: %s", notebookStr, bluePlayerStr, blueNZCount, redPlayerStr, redNZCount)
 
 
   -- endgame scoring cards
@@ -2369,15 +2401,15 @@ function calculateScore(buttonObj, _, _)
   end
 
   -- build notebookStr for endgame score counts
-  notebookStr = string.format("%s\n\n\n[%s]Blue[-] End Game Cards Score: %s:", notebookStr, blueColor, blueEndgameScore)
-  notebookStr = string.format("%s\n[%s]Red[-] End Game Cards Score: %s:", notebookStr, redColor, redEndgameScore)
+  notebookStr = string.format("%s\n\n\n%s End Game Cards Score: %s:", notebookStr, bluePlayerStr, blueEndgameScore)
+  notebookStr = string.format("%s\n%s End Game Cards Score: %s:", notebookStr, redPlayerStr, redEndgameScore)
 
   -- build notebookStr for breakdowns of endgame score cards
   if blueEndgameScore > 0 then
-    notebookStr = string.format("%s\n\n[%s]Blue[-] End Game Cards Breakdown: %s", notebookStr, blueColor, notebookStrEndgameBlue)
+    notebookStr = string.format("%s\n\n%s End Game Cards Breakdown: %s", notebookStr, bluePlayerStr, notebookStrEndgameBlue)
   end
   if redEndgameScore > 0 then
-    notebookStr = string.format("%s\n\n[%s]Red[-] End Game Cards Breakdown: %s", notebookStr, redColor, notebookStrEndgameRed)
+    notebookStr = string.format("%s\n\n%s End Game Cards Breakdown: %s", notebookStr, redPlayerStr, notebookStrEndgameRed)
   end
 
 
@@ -2401,15 +2433,15 @@ function calculateScore(buttonObj, _, _)
   end
 
   -- build notebookStr for VP score counts
-  notebookStr = string.format("%s\n\n\n[%s]Blue[-] Card Victory Points Score: %s", notebookStr, blueColor, blueVPScore)
-  notebookStr = string.format("%s\n[%s]Red[-] Card Victory Points Score: %s", notebookStr, redColor, redVPScore)
+  notebookStr = string.format("%s\n\n\n%s Card Victory Points Score: %s", notebookStr, bluePlayerStr, blueVPScore)
+  notebookStr = string.format("%s\n%s Card Victory Points Score: %s", notebookStr, redPlayerStr, redVPScore)
 
   -- build notebookStr for breakdown of VP score cards
   if blueVPScore > 0 then
-    notebookStr = string.format("%s\n\n[%s]Blue[-] Card Victory Points Breakdown: %s", notebookStr, blueColor, notebookStrVPBlue)
+    notebookStr = string.format("%s\n\n%s Card Victory Points Breakdown: %s", notebookStr, bluePlayerStr, notebookStrVPBlue)
   end
   if redVPScore > 0 then
-    notebookStr = string.format("%s\n\n[%s]Red[-] Card Victory Points Breakdown: %s", notebookStr, redColor, notebookStrVPRed)
+    notebookStr = string.format("%s\n\n[%s]Red[-] Card Victory Points Breakdown: %s", notebookStr, redPlayerStr, notebookStrVPRed)
   end
 
   notebookStr = notebookStr .. "\n"
@@ -2466,27 +2498,27 @@ function calculateScore(buttonObj, _, _)
   if (goalCompletedBlue or checkPlayerColorIsBot("Blue")) and getCaptainName("Blue") ~= "Khan" then
 
     if blueResearchScore > 0 then
-      notebookStr = string.format("%s\n\n[%s]Blue[-] [%s]Research[-] Focus Cards Score: %s", notebookStr, blueColor, researchColor, blueResearchScore)
-      notebookStr = string.format("%s\n[%s]Blue[-] [%s]Research[-] Focus Cards Breakdown: %s", notebookStr, blueColor, researchColor, notebookStrResearchBlue)
+      notebookStr = string.format("%s\n\n%s [%s]Research[-] Focus Cards Score: %s", notebookStr, bluePlayerStr, researchColor, blueResearchScore)
+      notebookStr = string.format("%s\n%s [%s]Research[-] Focus Cards Breakdown: %s", notebookStr, bluePlayerStr, researchColor, notebookStrResearchBlue)
     end
     if blueInfluenceScore > 0 then
-      notebookStr = string.format("%s\n\n[%s]Blue[-] [%s]Influence[-] Focus Cards Score: %s", notebookStr, blueColor, influenceColor, blueInfluenceScore)
-      notebookStr = string.format("%s\n[%s]Blue[-] [%s]Influence[-] Focus Cards Breakdown: %s", notebookStr, blueColor, influenceColor, notebookStrInfluenceBlue)
+      notebookStr = string.format("%s\n\n%s [%s]Influence[-] Focus Cards Score: %s", notebookStr, bluePlayerStr, influenceColor, blueInfluenceScore)
+      notebookStr = string.format("%s\n%s [%s]Influence[-] Focus Cards Breakdown: %s", notebookStr, bluePlayerStr, influenceColor, notebookStrInfluenceBlue)
     end
     if blueMilitaryScore > 0 then
-      notebookStr = string.format("%s\n\n[%s]Blue[-] [%s]Military[-] Focus Cards Score: %s", notebookStr, blueColor, militaryColor, blueMilitaryScore)
-      notebookStr = string.format("%s\n[%s]Blue[-] [%s]Military[-] Focus Cards Breakdown: %s", notebookStr, blueColor, militaryColor, notebookStrMilitaryBlue)
+      notebookStr = string.format("%s\n\n%s [%s]Military[-] Focus Cards Score: %s", notebookStr, bluePlayerStr, militaryColor, blueMilitaryScore)
+      notebookStr = string.format("%s\n%s [%s]Military[-] Focus Cards Breakdown: %s", notebookStr, bluePlayerStr, militaryColor, notebookStrMilitaryBlue)
     end
     notebookStr = notebookStr .. "\n"
 
   elseif not goalCompletedBlue and not checkPlayerColorIsBot("Blue") and getCaptainName("Blue") ~= "Khan" then
-    notebookStr = string.format("%s\n[%s]Blue[-] Focus Cards Score: 0 (No Captain Goals Completed)", notebookStr, blueColor)
+    notebookStr = string.format("%s\n%s Focus Cards Score: 0 (No Captain Goals Completed)", notebookStr, bluePlayerStr)
     blueInfluenceScore = 0
     blueMilitaryScore = 0
     blueResearchScore = 0
 
   elseif getCaptainName("Blue") == "Khan" then
-    notebookStr = string.format("%s\n[%s]Blue[-] Focus Cards Score Under Wrathful Khan", notebookStr, blueColor)
+    notebookStr = string.format("%s\n%s Focus Cards Score Under Wrathful Khan", notebookStr, bluePlayerStr)
     blueInfluenceScore = 0
     blueMilitaryScore = 0
     blueResearchScore = 0
@@ -2495,27 +2527,27 @@ function calculateScore(buttonObj, _, _)
   if (goalCompletedRed or checkPlayerColorIsBot("Red")) and getCaptainName("Red") ~= "Khan" then
 
     if redResearchScore > 0 then
-      notebookStr = string.format("%s\n\n[%s]Red[-] [%s]Research[-] Focus Cards Score: %s", notebookStr, redColor, researchColor, redResearchScore)
-      notebookStr = string.format("%s\n[%s]Red[-] [%s]Research[-] Focus Cards Breakdown: %s", notebookStr, redColor, researchColor, notebookStrResearchRed)
+      notebookStr = string.format("%s\n\n%s [%s]Research[-] Focus Cards Score: %s", notebookStr, redPlayerStr, researchColor, redResearchScore)
+      notebookStr = string.format("%s\n%s [%s]Research[-] Focus Cards Breakdown: %s", notebookStr, redPlayerStr, researchColor, notebookStrResearchRed)
     end
     if redInfluenceScore > 0 then
-      notebookStr = string.format("%s\n\n[%s]Red[-] [%s]Influence[-] Focus Cards Score: %s", notebookStr, redColor, influenceColor, redInfluenceScore)
-      notebookStr = string.format("%s\n[%s]Red[-] [%s]Influence[-] Focus Cards Breakdown: %s", notebookStr, redColor, influenceColor, notebookStrInfluenceRed)
+      notebookStr = string.format("%s\n\n%s [%s]Influence[-] Focus Cards Score: %s", notebookStr, redPlayerStr, influenceColor, redInfluenceScore)
+      notebookStr = string.format("%s\n%s [%s]Influence[-] Focus Cards Breakdown: %s", notebookStr, redPlayerStr, influenceColor, notebookStrInfluenceRed)
     end
     if redMilitaryScore > 0 then
-      notebookStr = string.format("%s\n\n[%s]Red[-] [%s]Military[-] Focus Cards Score: %s", notebookStr, redColor, militaryColor, redMilitaryScore)
-      notebookStr = string.format("%s\n[%s]Red[-] [%s]Military[-] Focus Cards Breakdown: %s", notebookStr, redColor, militaryColor, notebookStrMilitaryRed)
+      notebookStr = string.format("%s\n\n%s [%s]Military[-] Focus Cards Score: %s", notebookStr, redPlayerStr, militaryColor, redMilitaryScore)
+      notebookStr = string.format("%s\n%s [%s]Military[-] Focus Cards Breakdown: %s", notebookStr, redPlayerStr, militaryColor, notebookStrMilitaryRed)
     end
     notebookStr = notebookStr .. "\n"
 
   elseif not goalCompletedRed and not checkPlayerColorIsBot("Red") and getCaptainName("Red") ~= "Khan" then
-    notebookStr = string.format("%s\n[%s]Red[-] Focus Cards Score: 0 (No Captain Goals Completed)", notebookStr, redColor)
+    notebookStr = string.format("%s\n%s Focus Cards Score: 0 (No Captain Goals Completed)", notebookStr, redPlayerStr)
     redInfluenceScore = 0
     redMilitaryScore = 0
     redResearchScore = 0
 
   elseif getCaptainName("Red") == "Khan" then
-    notebookStr = string.format("%s\n[%s]Red[-] Focus Cards Score Under Wrathful Khan", notebookStr, redColor)
+    notebookStr = string.format("%s\n%s Focus Cards Score Under Wrathful Khan", notebookStr, redPlayerStr)
     redInfluenceScore = 0
     redMilitaryScore = 0
     redResearchScore = 0
@@ -2541,8 +2573,8 @@ function calculateScore(buttonObj, _, _)
       end
     end
 
-    notebookStr = string.format("%s\n[%s]Blue[-] Goal Score: %s", notebookStr, blueColor, blueAdvancedGoalScore)
-    notebookStr = string.format("%s\n[%s]Blue[-] Goal Breakdown: %s", notebookStr, blueColor, blueAdvancedGoalBreakdown)
+    notebookStr = string.format("%s\n%s Goal Score: %s", notebookStr, bluePlayerStr, blueAdvancedGoalScore)
+    notebookStr = string.format("%s\n%s Goal Breakdown: %s", notebookStr, bluePlayerStr, blueAdvancedGoalBreakdown)
   end
 
   if goalCompletedRed then
@@ -2556,8 +2588,8 @@ function calculateScore(buttonObj, _, _)
       end
     end
 
-    notebookStr = string.format("%s\n[%s]Red[-] Goal Score: %s", notebookStr, redColor, redAdvancedGoalScore)
-    notebookStr = string.format("%s\n[%s]Red[-] Goal Breakdown: %s", notebookStr, redColor, redAdvancedGoalBreakdown)
+    notebookStr = string.format("%s\n%s Goal Score: %s", notebookStr, redPlayerStr, redAdvancedGoalScore)
+    notebookStr = string.format("%s\n%s Goal Breakdown: %s", notebookStr, redPlayerStr, redAdvancedGoalBreakdown)
   end
 
 

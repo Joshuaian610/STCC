@@ -1203,7 +1203,7 @@ function botActionStep()
         local botDifficulty = getObjectbyName("Pad Stardate").getGMNotes()
 
         if botDifficulty == "Ensign" then
-          dealCount = 2
+          dealCount = 3
         elseif botDifficulty == "Lieutenant" then
           dealCount = 3
         elseif botDifficulty == "Commander" then
@@ -1388,10 +1388,9 @@ function botActionStep()
         purpleStr
       )
 
-      broadcastToAll(cleanupBroadcastStr, "White")
-
       UI.hide("bot_next_action_action")
       Wait.time(function()
+        broadcastToAll(cleanupBroadcastStr, "White")
         UI.show("bot_next_action_cleanup")
       end, 1)
     end
@@ -1803,7 +1802,7 @@ function getOperativeIcon(cardObj)
     if cardObj.hasTag("trait_timetravel") then
       return "Time Travel", "Gain 1 Research, 1 Influence, and 1 Military. Manually Continue Resolution."
     elseif cardObj.hasTag("trait_nx01") then
-      return "NX-01", "If this card is a Person: If able, gain a Research or Influence or Military. Otherwise, gain a Cargo. If this card is a Cargo: Gain an Incident and resolve the top card of the Supplement deck manually. If this card is neither a Person nor a Cargo, continue resolution manually."
+      return "NX-01", "If this card is a Person, gain a Research Focus or Influence Focus or Military Focus > Cargo. Otherwise, if this card is a Cargo, gain an Incident and resolve the top card of the Supplement deck manually. Otherwise, manually continue resolution."
     elseif cardObj.hasTag("trait_vulcan") then
       return "Vulcan", "Discard the top card of the Supplement deck. If able, gain an Andorian or Vulcan or Tellarite. Otherwise, add an Away Team from out of play to the Bot's Away Team Supply (max 6 total), and send it to a neutral Location. Manually continue resolution."
     elseif cardObj.hasTag("trait_andorian") then
@@ -1811,9 +1810,9 @@ function getOperativeIcon(cardObj)
     elseif cardObj.hasTag("trait_tellarite") then
       return "Tellarite", "Discard the top card of the Supplement deck. If able, gain an Andorian or Vulcan or Tellarite. Otherwise, add an Away Team from out of play to the Bot's Away Team Supply (max 6 total), and send it to a neutral Location. Manually continue resolution."
     elseif cardObj.hasTag("trait_xindi") then
-      return "Xindi", string.format("Gain 1 Influence. If bot has 7 or fewer Influence, gain (if able) Xindi > Time Travel > Andorian or Tellarite > Vulcan, including from the Junk. If bot has 8 or more Influence, gain top Encounter and log this card, and [%s]you exhaust a controlled Location[-], and [b]if you have a Xindi in play,[/b] both the bot and [%s]you take an Incident[-].", attackColor, attackColor)
+      return "Xindi", string.format("Gain 1 Influence. If bot has 7 or fewer Influence, gain (if able) Xindi > Time Travel > Andorian or Tellarite or Vulcan, including from the Junk. Otherwise, gain top Encounter and log this card, and [%s]you exhaust a controlled Location[-], and [b]if you have a Xindi in play,[/b] both the bot and [%s]you take an Incident[-].", attackColor, attackColor)
     elseif cardObj.hasTag("trait_attack") then
-      return "Attack", string.format("Send an Away Team to a neutral Location. If able, [%s]you remove all your Away Teams[-] from a neutral Location where the bot has a Ship, then log this card. Otherwise, manually log a non NX-01 card from the bot Discard pile and gain all resources from a card in the Market.", attackColor)
+      return "Attack", string.format("Send an Away Team to a neutral Location. If able, [%s]you remove all your Away Teams[-] from a neutral Location where the bot has a Ship, then log this card. Otherwise, log a non NX-01 card from the bot Discard pile and gain all resources from a card in the Market (can drop resource token into bot's counter bags).", attackColor)
     end
 
   elseif captainName == "Georgiou" then

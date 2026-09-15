@@ -543,6 +543,9 @@ function gainCard(buttonObj, clickerColor, altClick)
   }
   local suitColor = suitColors[cardSuit]
   local clickerStr = getPlayerStr(clickerColor)
+  if checkPlayerColorIsBot(nonClickerColor) and altClick then
+    clickerStr = getPlayerStr(nonClickerColor)
+  end
   local gainCardName = gainCard.getName()
   local broadcastStr = string.format("%s has Gained [b][%s]%s[-][/b] to %s.", clickerStr, suitColor, gainCardName, buttonType == "toDeck" and "Deck" or "Discard")
   broadcastToAll(broadcastStr, "White")
@@ -676,6 +679,7 @@ function placeResource(buttonObj, playerColor, altClick)
   -- take stardate card for opposing player if last glory is being taken
   if gloryCount == 1 then
     local cardStardate = nil
+
     for _, zoneObj in pairs(stardateDeckCheckZone.getObjects()) do
       -- handle single stardate card left
       if zoneObj.type == "Card" then
@@ -685,40 +689,43 @@ function placeResource(buttonObj, playerColor, altClick)
         local posRemove = { 0.00, 2.25, 27.50 }
         zoneObj.setPositionSmooth(posRemove, false, true)
         stardateTriggerEndgame()
+
         -- if turns enabled, end and pass turn
         if Turns.enable then
           local currentColor = Turns.turn_color
           local nextColor = currentColor == "Blue" and "Red" or "Blue"
           Turns.turn_color = nextColor
-        else
-          return
         end
-        return
+
+        break
 
       -- handle pulling card from located deck if deck located
       elseif zoneObj.type == "Deck" then
         cardStardate = zoneObj.takeObject()
+        break
       end
     end
-    if cardStardate == nil then return end
 
-    local rotStardateCard = otherPlayerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0 }
-    if checkPlayerColorIsBot(otherPlayerColor) then rotStardateCard = otherPlayerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0 } end
-    local posStardateCard = otherPlayerColor == "Blue" and { -24.00, 0.76, 15.00 } or { 24.00, 0.76, -15.00 }
-    cardStardate.setRotation(rotStardateCard)
-    cardStardate.setPositionSmooth(posStardateCard, false, true)
+    -- handle stardate card if one was found
+    if cardStardate ~= nil then
+      local rotStardateCard = otherPlayerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0 }
+      if checkPlayerColorIsBot(otherPlayerColor) then rotStardateCard = otherPlayerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0 } end
+      local posStardateCard = otherPlayerColor == "Blue" and { -24.00, 0.76, 15.00 } or { 24.00, 0.76, -15.00 }
+      cardStardate.setRotation(rotStardateCard)
+      cardStardate.setPositionSmooth(posStardateCard, false, true)
 
-    -- refresh stardate Glory
-    Wait.time(function()
-      refreshGlory()
-    end, 0.5)
+      -- refresh stardate Glory
+      Wait.time(function()
+        refreshGlory()
+      end, 0.5)
 
-    -- pull & init resolve stardate button
-    Wait.time(function()
+      -- pull & init resolve stardate button
+      Wait.time(function()
 
-      placeButtonResolveStardate(otherPlayerColor)
+        placeButtonResolveStardate(otherPlayerColor)
 
-    end, 1)
+      end, 1)
+    end
   end
 
   -- if no glory found in zone, pull one from the bag
@@ -886,12 +893,12 @@ function placeResource(buttonObj, playerColor, altClick)
     end
     if #matchCards > 0 then
       local headlineStr = string.format("%s Reminder - Current in play Clean-Up Step Cards:", playerStr)
-      broadcastToAll(broadcastStr, "White")
+      broadcastToAll(headlineStr, "White")
       Wait.time(function()
 
         for i = 1, #matchCards do
           local bulletStr = string.format("[b][%s]*[-][/b]", Color.fromString(playerColor):toHex())
-          broadcastToAll(matchCards[i].getName(), "White")
+          broadcastToAll(bulletStr .. " " .. matchCards[i].getName(), "White")
         end
 
       end, 0.5)

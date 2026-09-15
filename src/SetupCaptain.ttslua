@@ -1234,6 +1234,9 @@ function setupCaptainStatus(captainName, playerColor, isBot)
       rotStatus = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
     end
     local posStatus = playerColor == "Blue" and { -30.00, 1.25, 10.11 } or { 30.00, 1.25, -10.11 }
+    if captainName == "Archer" then
+      posStatus = playerColor == "Blue" and { -30.00, 1.25, 2.46 } or { 30.00, 1.25, -2.46 }
+    end
     local statusCard = getObjectbyName(statusNames[captainName])
 
     if statusCard ~= nil then

@@ -4,7 +4,7 @@
   "PassTurns": true,
   "Reverse": false,
   "SkipEmpty": false,
-  "TurnColor": "Red",
+  "TurnColor": "",
   "TurnOrder": [],
   "Type": 0
 }

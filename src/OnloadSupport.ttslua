@@ -291,8 +291,10 @@ function onloadXML()
         UI.setAttribute('end_player_turn', 'active', 'true')
       elseif buttonNextAction.getGMNotes() == "Action" then
         UI.setAttribute('bot_next_action_action', 'active', 'true')
+        UI.setAttribute('end_player_turn', 'active', 'false')
       elseif buttonNextAction.getGMNotes() == "Cleanup" then
         UI.setAttribute('bot_next_action_cleanup', 'active', 'true')
+        UI.setAttribute('end_player_turn', 'active', 'false')
       end
     end
   end
@@ -304,5 +306,12 @@ function broadcastWelcome()
   if getObjectbyName("Button Setup Game") ~= nil then
     local broadcastStr = "Welcome to Star Trek: Captain's Chair! Select Market & Promo options, then, use the 'Setup Game' button at the center of the table to get started."
     broadcastToAll(broadcastStr, "White")
+
+    Wait.time(function()
+
+      local followupStr = "New players to this mod should check out the Hints and Tips in the Notebook (middle icon in row of icons at top of screen)!"
+      broadcastToAll(followupStr, "White")
+
+    end, 1)
   end
 end

@@ -41,7 +41,7 @@
   "LayoutGroupSortIndex": 0,
   "Locked": true,
   "LuaScript": "",
-  "LuaScriptState": "",  
+  "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "CardCustom",
   "Nickname": "Inert Dilithium",
@@ -66,5 +66,5 @@
     "scaleZ": 1.75
   },
   "Value": 0,
-  "XmlU": ""
+  "XmlUI": ""
 }

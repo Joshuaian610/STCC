@@ -281,11 +281,74 @@ function onObjectEnterZone(zone, enterObj)
   if zone == getObjectbyName("Zone Stardate Glory") and enterObj.getName() == "Glory Token" then
     updateStardateGloryCounter()
   end
+
+  -- check for suit_person entering a duty officer zone
+  if zone.getName() == "Zone Duty Officer" and enterObj.hasTag("suit_person") then
+    local playerColor = zone.getGMNotes()
+    local playerStr = getPlayerStr(playerColor)
+
+    Wait.condition(
+      function()
+        local broadcastStr = string.format("%s has Promoted Duty Officer: %s", playerStr, enterObj.getName())
+        broadcastToAll(broadcastStr, "White")
+
+        -- tag card as DO for removal cleanliness
+        enterObj.addTag("currentDutyOfficer")
+
+        -- if playerColor isBot, try to find bot suits card to flip to DO side
+        if checkPlayerColorIsBot(playerColor) then
+          local botCaptainName = getCaptainName(playerColor)
+          local suitsCard = getObjectbyName("Suits " .. botCaptainName)
+          if suitsCard ~= nil then
+            local rotSuitsCard = suitsCard.getRotation()
+            rotSuitsCard.z = 180.00
+            suitsCard.setRotationSmooth(rotSuitsCard, false, true)
+          end
+        end
+      end,
+      function()
+        return enterObj.resting
+      end
+    )
+  end
 end
 
 
 function onObjectLeaveZone(zone, leaveObj)
   if zone == getObjectbyName("Zone Stardate Glory") and leaveObj.getName() == "Glory Token" then
     updateStardateGloryCounter()
+  end
+
+  -- check for suit_person leaving a duty officer zone
+  if zone.getName() == "Zone Duty Officer" and leaveObj.hasTag("suit_person") and leaveObj.hasTag("currentDutyOfficer") then
+    local playerColor = zone.getGMNotes()
+    local playerStr = getPlayerStr(playerColor)
+
+    local broadcastStr = string.format("%s has Dismissed Duty Officer: %s", playerStr, leaveObj.getName())
+    broadcastToAll(broadcastStr, "White")
+
+    -- untag card as DO for cleanliness
+    leaveObj.removeTag("currentDutyOfficer")
+
+    -- if playerColor isBot, try to find bot suits card to flip to DO side
+    if checkPlayerColorIsBot(playerColor) then
+
+      -- first need to ensure bot has no other DO
+      local otherBotDO = false
+      for _, zoneObj in pairs(zone.getObjects()) do
+        if zoneObj.hasTag("currentDutyOfficer") then
+          otherBotDO = true
+        end
+      end
+      if not otherBotDO then
+        local botCaptainName = getCaptainName(playerColor)
+        local suitsCard = getObjectbyName("Suits " .. botCaptainName)
+        if suitsCard ~= nil then
+          local rotSuitsCard = suitsCard.getRotation()
+          rotSuitsCard.z = 0.00
+          suitsCard.setRotationSmooth(rotSuitsCard, false, true)
+        end
+      end
+    end
   end
 end
