@@ -225,11 +225,6 @@ function onObjectSpawn(obj)
 end
 
 
-
-
-
-
-
 function onObjectEnterContainer(container, object)
   if object == nil then return end
   -- keep highlighting consistent when away teams stack
