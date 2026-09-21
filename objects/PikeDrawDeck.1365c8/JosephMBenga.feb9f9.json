@@ -42,6 +42,8 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "playAction",
+    "playReaction",
     "resupply",
     "skill_military",
     "snap_card",

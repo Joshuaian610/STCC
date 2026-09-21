@@ -42,6 +42,9 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "playAction",
+    "playNoAction",
+    "playReaction",
     "cleanup",
     "resupply",
     "snap_card",

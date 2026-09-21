@@ -18,8 +18,8 @@
       "Type": 3
     },
     "ImageScalar": 1,
-    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/25437482713896587/7EDE0382D99A422A0B990E306131F50E1B67C600/",
-    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/25437482713896587/7EDE0382D99A422A0B990E306131F50E1B67C600/",
+    "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/10862249185272684835/7BF031EFCBF1FB60581366BE417795F226DED248/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/10862249185272684835/7BF031EFCBF1FB60581366BE417795F226DED248/",
     "WidthScale": 0
   },
   "Description": "",
@@ -45,9 +45,9 @@
   ],
   "Tooltip": false,
   "Transform": {
-    "posX": -18.567,
-    "posY": 2.038,
-    "posZ": 27.385,
+    "posX": -34.999,
+    "posY": 2.019,
+    "posZ": 27.4,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

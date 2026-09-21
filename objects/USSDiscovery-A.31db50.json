@@ -65,6 +65,10 @@
   "Sticky": true,
   "Tags": [
     "cleanup_target",
+    "deployAction",
+    "playActivation",
+    "playActivation2",
+    "playActivation3",
     "skill_influence",
     "skill_research",
     "snap_card",

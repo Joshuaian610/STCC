@@ -42,8 +42,12 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "playNoAction",
+    "playNoAction2",
+    "playNoAction3",
     "snap_card",
-    "suit_cargo"
+    "suit_cargo",
+    "trait_helmet"
   ],
   "Tooltip": true,
   "Transform": {

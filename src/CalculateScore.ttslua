@@ -854,26 +854,21 @@ function checkWeytahn(deployCheckZones, isBot, playerColor, endgameCardList, not
       local tokenCount = 0
       local tokenTag = "away_" .. string.lower(playerColor)
       local cardPos = cardObj.getPosition()
-      local cardScale = cardObj.getScale()
 
-      local hits     = Physics.cast({
-        origin       = cardPos + Vector( 0, 1, 0 ),
-        direction    = Vector( 0, 1, 0 ),
-        type         = 3,
-        size         = Vector( 7 * cardScale.x, 1, 5 * cardScale.z ),
-        max_distance = 2
-      })
-
-      for _, hit in pairs(hits) do
-        local obj = hit.hit_object
-
+      for _, obj in pairs(getObjects()) do
         if obj.hasTag(tokenTag) then
-          local tokenObjects = obj.getObjects()
+          local objPos = obj.getPosition()
+          local xDistance = math.abs(objPos.x - cardPos.x)
+          local zDistance = math.abs(objPos.z - cardPos.z)
 
-          if #tokenObjects > 0 then
-            tokenCount = tokenCount + #tokenObjects
-          else
-            tokenCount = tokenCount + 1
+          if xDistance <= 3.5 and zDistance <= 1.25 then
+            local quantity = obj.getQuantity()
+
+            if quantity > 0 then
+              tokenCount = tokenCount + quantity
+            else
+              tokenCount = tokenCount + 1
+            end
           end
         end
       end
@@ -1239,26 +1234,21 @@ function checkPaanMokar(deployCheckZones, isBot, playerColor, endgameCardList, n
       local tokenCount = 0
       local tokenTag = "away_" .. string.lower(playerColor)
       local cardPos = cardObj.getPosition()
-      local cardScale = cardObj.getScale()
 
-      local hits     = Physics.cast({
-        origin       = cardPos + Vector( 0, 1, 0 ),
-        direction    = Vector( 0, 1, 0 ),
-        type         = 3,
-        size         = Vector( 7 * cardScale.x, 1, 5 * cardScale.z ),
-        max_distance = 2
-      })
-
-      for _, hit in pairs(hits) do
-        local obj = hit.hit_object
-
+      for _, obj in pairs(getObjects()) do
         if obj.hasTag(tokenTag) then
-          local tokenObjects = obj.getObjects()
+          local objPos = obj.getPosition()
+          local xDistance = math.abs(objPos.x - cardPos.x)
+          local zDistance = math.abs(objPos.z - cardPos.z)
 
-          if #tokenObjects > 0 then
-            tokenCount = tokenCount + #tokenObjects
-          else
-            tokenCount = tokenCount + 1
+          if xDistance <= 3.5 and zDistance <= 1.25 then
+            local quantity = obj.getQuantity()
+
+            if quantity > 0 then
+              tokenCount = tokenCount + quantity
+            else
+              tokenCount = tokenCount + 1
+            end
           end
         end
       end
@@ -1926,7 +1916,6 @@ end
 
 
 -- persons
-
 function checkLivingWitness(checkZones, isBot, endgameCardList, notebookStr)
   -- The Living Witness: Score 4
 
@@ -1958,7 +1947,6 @@ end
 
 
 -- cargo
-
 function checkGenesisDevice(checkZones, isBot, playerColor, endgameCardList, notebookStr)
   -- Genesis Device: Score based on completed captain missions
 
@@ -1999,7 +1987,6 @@ end
 
 
 -- ships
-
 function checkUSSFederation(deployCheckZones, checkZones, bagCaptainsLog, beamBags, isBot, endgameCardList, notebookStr)
   -- U.S.S. Federation: score 1 for every card with military/influence focus (_multi in GMNotes)
 
@@ -2085,12 +2072,14 @@ function checkRedAngel(checkZones, bagCaptainsLog, beamBags, isBot, endgameCardL
           anomalyCount = anomalyCount + 1
         end
 
-        if zoneObj.type == "Deck" or zoneObj.type == "Bag" then
-          local deckObjTags = zoneObj.tags
+        if zoneObj.type == "Deck" then
+          for _, deckObj in pairs(zoneObj.getObjects()) do
+            local deckObjTags = deckObj.tags
 
-          for j = 1, #deckObjTags do
-            if deckObjTags[j] == "trait_anomaly" then
-              anomalyCount = anomalyCount + 1
+            for j = 1, #deckObjTags do
+              if deckObjTags[j] == "trait_anomaly" then
+                anomalyCount = anomalyCount + 1
+              end
             end
           end
         end
@@ -2101,14 +2090,11 @@ function checkRedAngel(checkZones, bagCaptainsLog, beamBags, isBot, endgameCardL
       if bagObj.hasTag("trait_anomaly") then
         anomalyCount = anomalyCount + 1
       end
+      local bagObjTags = bagObj.tags
 
-      if bagObj.type == "Deck" or bagObj.type == "Bag" then
-        local bagObjTags = bagObj.tags
-
-        for j = 1, #bagObjTags do
-          if bagObjTags[j] == "trait_anomaly" then
-            anomalyCount = anomalyCount + 1
-          end
+      for j = 1, #bagObjTags do
+        if bagObjTags[j] == "trait_anomaly" then
+          anomalyCount = anomalyCount + 1
         end
       end
     end
@@ -2118,14 +2104,11 @@ function checkRedAngel(checkZones, bagCaptainsLog, beamBags, isBot, endgameCardL
         if bagObj.hasTag("trait_anomaly") then
           anomalyCount = anomalyCount + 1
         end
+        local bagObjTags = bagObj.tags
 
-        if bagObj.type == "Deck" or bagObj.type == "Bag" then
-          local bagObjTags = bagObj.tags
-
-          for j = 1, #bagObjTags do
-            if bagObjTags[j] == "trait_anomaly" then
-              anomalyCount = anomalyCount + 1
-            end
+        for j = 1, #bagObjTags do
+          if bagObjTags[j] == "trait_anomaly" then
+            anomalyCount = anomalyCount + 1
           end
         end
       end
@@ -2145,8 +2128,6 @@ function checkRedAngel(checkZones, bagCaptainsLog, beamBags, isBot, endgameCardL
 
   return endgameCardList, notebookStr
 end
-
-
 
 
 function getVPCount()
@@ -2201,6 +2182,16 @@ function getVPCount()
 
     local notebookStrColor = i == 1 and "1E87FF" or "DB1B18"
 
+    local cardList = i == 1 and cardListBlue or cardListRed
+    local hasIncidentModifier = false
+
+    for j = 1, #cardList do
+      if cardList[j] == "Revenge Is A Dish Best Served Cold" then
+        hasIncidentModifier = true
+        break
+      end
+    end
+
     local checkZones = {
       getObjectbyNameAndNotes("Handzone", playerColor),
       getObjectbyNameAndNotes("Zone Captain", playerColor),
@@ -2220,6 +2211,10 @@ function getVPCount()
           local vpCount = tonumber(zoneObj.getGMNotes():match("VP=(-?%d+)"))
 
           if vpCount then
+            if hasIncidentModifier and zoneObj.hasTag("suit_incident") then
+              vpCount = -3
+            end
+
             table.insert(vpCardList, {[cardName] = vpCount})
             notebookStrVP = notebookStrVP .. "\n" .. cardName .. ": " .. vpCount
           end
@@ -2246,6 +2241,15 @@ function getVPCount()
             local vpCount = tonumber(deckObj.gm_notes:match("VP=(-?%d+)"))
 
             if vpCount then
+              if hasIncidentModifier and deckObj.tags then
+                for _, tag in pairs(deckObj.tags) do
+                  if tag == "suit_incident" then
+                    vpCount = -3
+                    break
+                  end
+                end
+              end
+
               table.insert(vpCardList, {[cardName] = vpCount})
               notebookStrVP = notebookStrVP .. "\n" .. cardName .. ": " .. vpCount
             end
@@ -2276,6 +2280,15 @@ function getVPCount()
       local vpCount = tonumber(bagObj.gm_notes:match("VP=(-?%d+)"))
 
       if vpCount then
+        if hasIncidentModifier and bagObj.tags then
+          for _, tag in pairs(bagObj.tags) do
+            if tag == "suit_incident" then
+              vpCount = -3
+              break
+            end
+          end
+        end
+
         table.insert(vpCardList, {[cardName] = vpCount})
         notebookStrVP = notebookStrVP .. "\n" .. cardName .. ": " .. vpCount
       end
@@ -2308,6 +2321,15 @@ function getVPCount()
         local vpCount = tonumber(bagObj.gm_notes:match("VP=(-?%d+)"))
 
         if vpCount then
+          if hasIncidentModifier and bagObj.tags then
+            for _, tag in pairs(bagObj.tags) do
+              if tag == "suit_incident" then
+                vpCount = -3
+                break
+              end
+            end
+          end
+
           table.insert(vpCardList, {[cardName] = vpCount})
           notebookStrVP = notebookStrVP .. "\n" .. cardName .. ": " .. vpCount
         end
@@ -2363,7 +2385,7 @@ function calculateScore(buttonObj, _, _)
 
   animateButton(buttonObj)
 
-  -- prime notebook for action
+    -- prime notebook for action
   local bluePlayerStr = getPlayerStr("Blue")
   local redPlayerStr = getPlayerStr("Red")
   local notebookStr = "Current Score Breakdown as it stands:"
@@ -2437,17 +2459,11 @@ function calculateScore(buttonObj, _, _)
   notebookStr = string.format("%s\n%s Card Victory Points Score: %s", notebookStr, redPlayerStr, redVPScore)
 
   -- build notebookStr for breakdown of VP score cards
-  if blueVPScore > 0 then
-    notebookStr = string.format("%s\n\n%s Card Victory Points Breakdown: %s", notebookStr, bluePlayerStr, notebookStrVPBlue)
-  end
-  if redVPScore > 0 then
-    notebookStr = string.format("%s\n\n[%s]Red[-] Card Victory Points Breakdown: %s", notebookStr, redPlayerStr, notebookStrVPRed)
-  end
-
+  notebookStr = string.format("%s\n\n%s Card Victory Points Breakdown: %s", notebookStr, bluePlayerStr, notebookStrVPBlue)
+  notebookStr = string.format("%s\n\n%s Card Victory Points Breakdown: %s", notebookStr, redPlayerStr, notebookStrVPRed)
   notebookStr = notebookStr .. "\n"
 
-
-    -- focus multiplier cards
+  -- focus multiplier cards
   local influenceColor = "D4D129"
   local militaryColor = "C11E1E"
   local researchColor = "1597C4"
@@ -2554,6 +2570,21 @@ function calculateScore(buttonObj, _, _)
   end
   notebookStr = notebookStr .. "\n"
 
+  local blueBasicBoard = false
+  local redBasicBoard = false
+
+  local blueCaptainName = getCaptainName("Blue")
+  local redCaptainName = getCaptainName("Red")
+
+  for _, object in pairs(getObjects()) do
+    if object.getName() == blueCaptainName .. " Crew Board Basic" then
+      blueBasicBoard = true
+    end
+    if object.getName() == redCaptainName .. " Crew Board Basic" then
+      redBasicBoard = true
+    end
+  end
+
   -- advanced mission stuff
   local blueAdvancedGoalScore = 0
   local redAdvancedGoalScore = 0
@@ -2562,7 +2593,7 @@ function calculateScore(buttonObj, _, _)
   local blueAdvTooltip = "Goal"
   local redAdvTooltip = "Goal"
 
-  if goalCompletedBlue then
+  if goalCompletedBlue and not blueBasicBoard then
     for goalName, scoreCount in pairs(blueCompletedGoals) do
       blueAdvancedGoalScore = blueAdvancedGoalScore + scoreCount
 
@@ -2574,10 +2605,10 @@ function calculateScore(buttonObj, _, _)
     end
 
     notebookStr = string.format("%s\n%s Goal Score: %s", notebookStr, bluePlayerStr, blueAdvancedGoalScore)
-    notebookStr = string.format("%s\n%s Goal Breakdown: %s", notebookStr, bluePlayerStr, blueAdvancedGoalBreakdown)
+    notebookStr = string.format("%s\n%s Goal Breakdown:\n%s", notebookStr, bluePlayerStr, blueAdvancedGoalBreakdown)
   end
 
-  if goalCompletedRed then
+  if goalCompletedRed and not redBasicBoard then
     for goalName, scoreCount in pairs(redCompletedGoals) do
       redAdvancedGoalScore = redAdvancedGoalScore + scoreCount
 
@@ -2589,7 +2620,7 @@ function calculateScore(buttonObj, _, _)
     end
 
     notebookStr = string.format("%s\n%s Goal Score: %s", notebookStr, redPlayerStr, redAdvancedGoalScore)
-    notebookStr = string.format("%s\n%s Goal Breakdown: %s", notebookStr, redPlayerStr, redAdvancedGoalBreakdown)
+    notebookStr = string.format("%s\n%s Goal Breakdown:\n%s", notebookStr, redPlayerStr, redAdvancedGoalBreakdown)
   end
 
 
@@ -2923,7 +2954,6 @@ function calculateScore(buttonObj, _, _)
 
   broadcastToAll("Table current score updated!", "Green")
 end
-
 
 
 function getCompletedGoals()

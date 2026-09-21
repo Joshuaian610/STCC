@@ -41,7 +41,10 @@
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
-  "Tags": [
+  "Tags": [    
+    "marketCard",
+    "playAction",
+    "playActivation",
     "resupply",
     "snap_card",
     "suit_person",

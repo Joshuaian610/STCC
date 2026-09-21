@@ -42,6 +42,9 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "marketCard",
+    "playAction",
+    "playAction2",
     "resupply",
     "snap_card",
     "suit_person",

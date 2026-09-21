@@ -43,6 +43,7 @@
   "Sticky": true,
   "Tags": [
     "cleanup_target",
+    "playReaction",
     "snap_card",
     "suit_captain",
     "trait_human",

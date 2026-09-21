@@ -43,6 +43,9 @@
   "Sticky": true,
   "Tags": [
     "cleanup",
+    "marketCard",
+    "playAction",
+    "playNoAction",
     "snap_card",
     "suit_ally",
     "trait_augment"

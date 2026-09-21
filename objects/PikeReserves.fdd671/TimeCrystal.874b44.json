@@ -42,6 +42,8 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "playNoAction",
+    "playNoAction2",
     "snap_card",
     "suit_cargo",
     "trait_timetravel"

@@ -42,6 +42,10 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "marketCard",
+    "playAction",
+    "playSupport",
+    "playActivation",
     "snap_card",
     "suit_person",
     "trait_klingon",

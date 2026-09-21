@@ -42,6 +42,9 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "marketCard",
+    "playNoAction",
+    "playReaction",
     "resupply",
     "skill_x2_wildcard",
     "snap_card",

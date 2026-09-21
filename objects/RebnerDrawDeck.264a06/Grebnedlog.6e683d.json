@@ -42,7 +42,11 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "pakled",
+    "playAction",
+    "playAction2",
+    "playAction3",
+    "playActivation",
+    "trait_pakled",
     "snap_card",
     "suit_person"
   ],

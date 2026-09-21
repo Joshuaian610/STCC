@@ -42,6 +42,9 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "marketCard",
+    "playAction",
+    "playNoAction",
     "snap_card",
     "suit_cargo",
     "trait_beverage",

@@ -12,7 +12,7 @@
     "r": 0.71324
   },
   "CustomDeck": {
-    "193": {
+    "577": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
       "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13119371198597679616/8407ECB6E3075E7657ADE53C6753CD7C488D30E2/",
@@ -42,9 +42,14 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "deployNoAction",
+    "marketCard",
+    "playActivation",
+    "playActivation2",
     "skill_research",
     "snap_card",
     "suit_encounter",
+    "suit_ship",
     "trait_alien",
     "trait_ancient",
     "trait_attack",
@@ -53,11 +58,11 @@
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -18.783,
-    "posY": 1.825,
-    "posZ": -27.081,
+    "posX": 32.324,
+    "posY": 2.721,
+    "posZ": -31.804,
     "rotX": 0,
-    "rotY": 180,
+    "rotY": 90,
     "rotZ": 0,
     "scaleX": 1.75,
     "scaleY": 1,

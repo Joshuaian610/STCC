@@ -42,6 +42,7 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "playNoAction",
     "snap_card",
     "suit_ally",
     "trait_aenar",

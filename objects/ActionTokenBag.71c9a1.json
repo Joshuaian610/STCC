@@ -11,7 +11,7 @@
     "r": 0.44295
   },
   "ContainedObjects_order": [
-    "ActionToken.550d6a"
+    "ExtraActionToken.550d6a"
   ],
   "ContainedObjects_path": "ActionTokenBag.71c9a1",
   "Description": "",
@@ -40,7 +40,7 @@
   "Tooltip": true,
   "Transform": {
     "posX": 60.36,
-    "posY": -1,
+    "posY": -1.807,
     "posZ": 25.29,
     "rotX": 0,
     "rotY": 0,

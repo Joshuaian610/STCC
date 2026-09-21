@@ -148,10 +148,12 @@ function reportResupplyCleanup(buttonObj, _, altClick)
   end
 
   -- gather resupply cards, highlight for 5 seconds
+  local countedCards = {}
   local foundCards = {}
   for i = 1, #checkZones do
     for _, zoneObj in pairs(checkZones[i].getObjects()) do
-      if zoneObj.hasTag(buttonTag) then
+      if not countedCards[zoneObj.getGUID()] and zoneObj.hasTag(buttonTag) then
+        countedCards[zoneObj.getGUID()] = true
         table.insert(foundCards, zoneObj)
 
         -- briefly highlight found current type card, 5 seconds
@@ -283,30 +285,28 @@ function reportCurrentSkills(playerColor)
     wildcard  = 0,
   }
 
-  if #checkBeamBagObjs > 0 then
-    for i = 1, #checkBeamBagObjs do
-      local checkBag = checkBeamBagObjs[i]
+  for i = 1, #checkBeamBagObjs do
+    local checkBag = checkBeamBagObjs[i]
 
-      for _, bagObj in pairs(checkBag.getObjects()) do
-        if not countedCards[bagObj.guid] then
-          countedCards[bagObj.guid] = true
+    for _, bagObj in pairs(checkBag.getObjects()) do
+      if not countedCards[bagObj.guid] then
+        countedCards[bagObj.guid] = true
 
-          for k, _ in pairs(beamedSkillIcons) do
-            for _, tag in pairs(bagObj.tags) do
-              if tag == "skill_" .. k then
-                beamedSkillIcons[k] = beamedSkillIcons[k] + 1
-                table.insert(inPlaySkillCards[k], bagObj.name .. ": 1")
-              end
+        for k, _ in pairs(beamedSkillIcons) do
+          for _, tag in pairs(bagObj.tags) do
+            if tag == "skill_" .. k then
+              beamedSkillIcons[k] = beamedSkillIcons[k] + 1
+              table.insert(inPlaySkillCards[k], bagObj.name .. ": 1")
+            end
 
-              if tag == "skill_x2_" .. k then
-                beamedSkillIcons[k] = beamedSkillIcons[k] + 2
-                table.insert(inPlaySkillCards[k], bagObj.name .. ": 2")
-              end
+            if tag == "skill_x2_" .. k then
+              beamedSkillIcons[k] = beamedSkillIcons[k] + 2
+              table.insert(inPlaySkillCards[k], bagObj.name .. ": 2")
+            end
 
-              if tag == "skill_x3_" .. k then
-                beamedSkillIcons[k] = beamedSkillIcons[k] + 3
-                table.insert(inPlaySkillCards[k], bagObj.name .. ": 3")
-              end
+            if tag == "skill_x3_" .. k then
+              beamedSkillIcons[k] = beamedSkillIcons[k] + 3
+              table.insert(inPlaySkillCards[k], bagObj.name .. ": 3")
             end
           end
         end
@@ -401,6 +401,12 @@ function reportCurrentSkills(playerColor)
         skillIcons["military"] = skillIcons["military"] + augmentCount
         table.insert(inPlaySkillCards["military"], "Malik: " .. augmentCount)
       end
+    end
+
+    -- 1 science while in DO slot
+    if zoneObj.getName() == "T'Ana" then
+      skillIcons["research"] = skillIcons["research"] + 1
+      table.insert(inPlaySkillCards["research"], "T'Ana: 1")
     end
   end
 
@@ -510,6 +516,32 @@ function reportCurrentSuits(playerColor)
         for k, _ in pairs(cardSuits) do
           if zoneObj.hasTag("suit_" .. k) then
             cardSuits[k] = cardSuits[k] + 1
+          end
+        end
+      end
+    end
+  end
+
+  -- check beam bags
+  local checkBeamBagObjs = {}
+  for _, obj in pairs(getObjects()) do
+    if obj.getName() == "Beamed Cards" and obj.getGMNotes() == playerColor then
+      table.insert(checkBeamBagObjs, obj)
+    end
+  end
+
+  for i = 1, #checkBeamBagObjs do
+    local checkBag = checkBeamBagObjs[i]
+
+    for _, bagObj in pairs(checkBag.getObjects()) do
+      if not countedCards[bagObj.guid] then
+        countedCards[bagObj.guid] = true
+
+        for k, _ in pairs(cardSuits) do
+          for _, tag in pairs(bagObj.tags) do
+            if tag == "suit_" .. k then
+              cardSuits[k] = cardSuits[k] + 1
+            end
           end
         end
       end
@@ -648,6 +680,88 @@ function reportCurrentTraits(playerColor, buttonType)
             traitCounts[k] = traitCounts[k] + 1
           end
         end
+      end
+    end
+  end
+
+  -- check beam bags
+  local checkBeamBagObjs = {}
+  for _, obj in pairs(getObjects()) do
+    if obj.getName() == "Beamed Cards" and obj.getGMNotes() == playerColor then
+      table.insert(checkBeamBagObjs, obj)
+    end
+  end
+
+  for i = 1, #checkBeamBagObjs do
+    local checkBag = checkBeamBagObjs[i]
+
+    for _, bagObj in pairs(checkBag.getObjects()) do
+      if not countedCards[bagObj.guid] then
+        countedCards[bagObj.guid] = true
+
+        for k, _ in pairs(traitCounts) do
+          for _, tag in pairs(bagObj.tags) do
+            if tag == "trait_" .. k then
+              traitCounts[k] = traitCounts[k] + 1
+            end
+          end
+        end
+      end
+    end
+  end
+
+
+  -- check special trait conditionals
+
+  -- protocol 12 (second contact cargo): while in staging area, all persons with doctor are also augment
+  local checkZoneStaging = getObjectbyNameAndNotes("Zone In Play", playerColor)
+  local protocol12Found = false
+  for _, zoneObj in pairs(checkZoneStaging.getObjects()) do
+    if zoneObj.getName() == "Protocol 12" then
+      protocol12Found = true
+    end
+  end
+  if protocol12Found then
+    for i = 1, #checkZones do
+      for _, zoneObj in pairs(checkZones[i].getObjects()) do
+        if zoneObj.hasTag("suit_person") and zoneObj.hasTag("trait_doctor") then
+          traitCounts.augment = traitCounts.augment + 1
+        end
+      end
+    end
+  end
+
+  -- delphic expanse sphere: while in play, if an anomaly is deployed as a ship or location, delphic Expanse Sphere gains the wildcard trait
+  if buttonType == "Other" then
+    local delphicSphereFound = false
+    for _, zoneObj in pairs(checkZoneStaging.getObjects()) do
+      if zoneObj.getName() == "Delphic Expanse Sphere" then
+        delphicSphereFound = true
+        break
+      end
+    end
+
+    if delphicSphereFound then
+      local anomalyFound = false
+      local anomalyZones = {
+        getObjectbyNameAndNotes("Zone Deploy Ship", playerColor),
+        getObjectbyNameAndNotes("Zone Deploy Location", playerColor),
+      }
+
+      for i = 1, #anomalyZones do
+        for _, zoneObj in pairs(anomalyZones[i].getObjects()) do
+          if zoneObj.hasTag("trait_anomaly") then
+            anomalyFound = true
+            break
+          end
+        end
+        if anomalyFound then
+          break
+        end
+      end
+
+      if anomalyFound then
+        traitCounts.wildcard = traitCounts.wildcard + 1
       end
     end
   end
@@ -912,7 +1026,7 @@ function getMaxHand(playerColor, captainName)
       end
 
       -- +2 duty officer cards
-      if zoneObj.getName() == "Garak" or zoneObj.getName() == "Thelev" then
+      if zoneObj.getName() == "Garak" then
         maxHand = maxHand + 2
       end
 
@@ -964,6 +1078,21 @@ function getMaxHand(playerColor, captainName)
         end
       end
 
+      -- handle ash taylor (+ hand size based on glory count > 7)
+      if zoneObj.getName() == "Ash Tyler" then
+        local gloryCount = getObjectbyName("Glory Counter " .. playerColor).getVar("val")
+        if gloryCount > 7 then
+          maxHand = maxHand + 2
+        end
+      end
+
+      -- handle thelev (+ hand size based on influence counter > 5)
+      if zoneObj.getName() == "Thelev" then
+        local influenceCount = getObjectbyName("Influence Counter " .. playerColor).getVar("val")
+        if influenceCount > 5 then
+          maxHand = maxHand + 2
+        end
+      end
     end
   end
   return maxHand
@@ -1026,8 +1155,10 @@ function enlistReserveCard(reserveObj, handZone, playerColor)
     cardName = card.getName()
   end
 
-  card.setRotation({0, playerColor == "Blue" and 270 or 90, 0})
-  card.setPositionSmooth(handZone.getPosition())
+  card.setRotation({ 0.00, playerColor == "Blue" and 270.00 or 90.00, 0.00 })
+  local posInitialReserve = playerColor == "Blue" and { -35.98, 2.67, 16.06 } or { 35.98, 2.67, -16.06 }
+  card.setPosition(posInitialReserve)
+  card.setPositionSmooth(handZone.getPosition(), false, true)
 
   -- broadcast reserves enlistment
   -- broadcasts without card name toAll
@@ -1155,10 +1286,14 @@ function handleTurnResupplyBroadcast(playerColor)
     getObjectbyNameAndNotes("Zone Deploy Ship", playerColor),
     getObjectbyNameAndNotes("Zone Captain", playerColor),
   }
+  local countedCards = {}
   local matchCards = {}
+
   for i = 1, #checkZones do
     for _, object in pairs(checkZones[i].getObjects()) do
-      if object.hasTag('resupply') then
+      if not countedCards[object.getGUID()] and object.hasTag("resupply") then
+        countedCards[object.getGUID()] = true
+
         object.highlightOn(playerColor)
         table.insert(matchCards, object)
         Wait.time(function() object.highlightOff() end, 5)
@@ -1222,7 +1357,7 @@ function refreshPlayerArea(playerColor)
   if isBot then rotDiscard = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 } end
   local posDiscard = playerColor == "Blue" and { -44.57, 2.00, -21.00 } or { 44.57, 2.00, 21.00 }
   for _, zoneObj in pairs(checkZone.getObjects()) do
-    if zoneObj.tag == "Card" or zoneObj.tag == "Deck" then
+    if zoneObj.type == "Card" or zoneObj.type == "Deck" then
       zoneObj.setRotation(rotDiscard)
       zoneObj.setPositionSmooth(posDiscard, false, true)
     end
@@ -1247,7 +1382,7 @@ function refreshPlayerArea(playerColor)
   -- destroy any summoned action tokens
   local tokenCount  = 0
   for _, object in pairs(getObjects()) do
-    if object.hasTag('refresh_destruct_' .. string.lower(playerColor)) then
+    if object.getName() == "Extra Action Token" then
       object.destruct()
       tokenCount  = tokenCount + 1
     end

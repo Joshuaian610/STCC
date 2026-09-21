@@ -42,6 +42,10 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "marketCard",
+    "playNoAction",
+    "playNoAction2",
+    "playReaction",
     "snap_card",
     "suit_person",
     "trait_ancient",

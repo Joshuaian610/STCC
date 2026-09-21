@@ -43,6 +43,9 @@
   "Sticky": true,
   "Tags": [
     "cleanup_target",
+    "playAction",
+    "playAction2",
+    "playNoAction",
     "snap_card",
     "suit_directive"
   ],

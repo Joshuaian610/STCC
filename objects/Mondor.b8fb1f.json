@@ -12,7 +12,7 @@
     "r": 0.71324
   },
   "CustomDeck": {
-    "193": {
+    "220": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
       "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13220764602361838146/2C4DCAC8E90F7DF90FDD0C779F33828C4A946D46/",
@@ -32,7 +32,7 @@
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
-  "Locked": false,
+  "Locked": true,
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
@@ -42,6 +42,11 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "cleanup_target",
+    "deployAction",
+    "playActivation",
+    "playActivation2",
+    "playActivation3",
     "snap_card",
     "suit_ship",
     "trait_business",
@@ -49,9 +54,9 @@
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -22.02,
-    "posY": 0.868,
-    "posZ": -14.385,
+    "posX": 89.26,
+    "posY": 0.854,
+    "posZ": -2.05,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

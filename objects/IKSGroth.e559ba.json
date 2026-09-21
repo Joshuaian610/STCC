@@ -65,6 +65,11 @@
   "Sticky": true,
   "Tags": [
     "cleanup_target",
+    "deployAction",
+    "playActivation",
+    "playActivation2",
+    "playActivation3",
+    "playActivationAction",
     "snap_card",
     "suit_ship",
     "trait_klingon"

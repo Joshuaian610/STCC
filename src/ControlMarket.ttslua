@@ -93,8 +93,8 @@ function initButtonAddResource(buttonObj)
     click_function = "placeResource",
     function_owner = self,
     label          = "",
-    position       = { 0, 0.46, -0.01 },
-    width          = 450,
+    position       = { 0, 0.46, 0.0 },
+    width          = 855,
     height         = 450,
     scale          = { 2.3, 2.3, 2.3 },
     color          = { 1, 1, 1, 0 },
@@ -152,15 +152,21 @@ function updateCounter(playerColor, resourceType, resources, mod)
     onloadXML()
   end
 
-  -- animate the resource placement to bag appearance
-  local posCounter = counterObj.getPosition()
-  posCounter.y = posCounter.y + 0.5
+  -- -- animate the resource placement to bag appearance
+  -- local posCounter = counterObj.getPosition()
+  -- posCounter.y = posCounter.y + 0.5
+  -- for _, resource in pairs(resources) do
+  --   resource.setPositionSmooth(posCounter, false, true)
+  --   Wait.time(function()
+  --     resource.destruct()
+  --   end, 0.3)
+  -- end
+
+  -- just destruct found resources
   for _, resource in pairs(resources) do
-    resource.setPositionSmooth(posCounter, false, true)
-    Wait.time(function()
-      resource.destruct()
-    end, 0.3)
+    resource.destruct()
   end
+
 
   -- broadcast
   Wait.time(function()
@@ -653,9 +659,8 @@ function placeResource(buttonObj, playerColor, altClick)
   -- no stardate card found! moving on with cleanup
   -- if bot in game, and altClicked, cycle on screen bot control UI buttons, refresh human? or bot? play area
   if altClick and botInGame then
-    UI.hide('bot_next_action_cleanup')
-    Wait.time(function() UI.show('end_player_turn') end, 1)
-    refreshPlayerArea(humanColor)
+    UI.setAttribute('bot_next_action_cleanup', 'active', 'false')
+    Wait.time(function() UI.setAttribute('end_player_turn', 'active', 'true') end, 1)
   end
 
   -- check for captain card
@@ -697,7 +702,7 @@ function placeResource(buttonObj, playerColor, altClick)
           Turns.turn_color = nextColor
         end
 
-        break
+        return
 
       -- handle pulling card from located deck if deck located
       elseif zoneObj.type == "Deck" then
@@ -809,20 +814,11 @@ function placeResource(buttonObj, playerColor, altClick)
     end
   end
 
-  -- refresh human playerarea
-  -- Wait.time(function()
-
-  --   local buttonRefresh = getObjectbyName("Button Refresh Draw Deck " .. playerColor)
-  --   refreshDrawDeck(buttonRefresh, _, false)
-
-  -- end, 1)
-
-
   -- run human player ending turn refresh actions
   if (not altClick and botInGame) or not altClick then
 
     -- initiate bot stuff at end of human turn if bot in game
-    UI.hide('end_player_turn')
+    UI.setAttribute('end_player_turn', 'active', 'false')
     if not altClick and botInGame then
       botControlStep()
     end
@@ -891,18 +887,22 @@ function placeResource(buttonObj, playerColor, altClick)
         end
       end
     end
-    if #matchCards > 0 then
-      local headlineStr = string.format("%s Reminder - Current in play Clean-Up Step Cards:", playerStr)
-      broadcastToAll(headlineStr, "White")
-      Wait.time(function()
+    Wait.time(function()
 
-        for i = 1, #matchCards do
-          local bulletStr = string.format("[b][%s]*[-][/b]", Color.fromString(playerColor):toHex())
-          broadcastToAll(bulletStr .. " " .. matchCards[i].getName(), "White")
-        end
+      if #matchCards > 0 then
+        local headlineStr = string.format("%s Reminder - Current in play Clean-Up Step Cards:", playerStr)
+        broadcastToAll(headlineStr, "White")
+        Wait.time(function()
 
-      end, 0.5)
-    end
+          for i = 1, #matchCards do
+            local bulletStr = string.format("[b][%s]*[-][/b]", Color.fromString(playerColor):toHex())
+            broadcastToAll(bulletStr .. " " .. matchCards[i].getName(), "White")
+          end
+
+        end, 0.5)
+      end
+
+    end, 1)
   end
 
   -- broadcast

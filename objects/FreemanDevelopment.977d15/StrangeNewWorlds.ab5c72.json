@@ -12,7 +12,7 @@
     "r": 0.71324
   },
   "CustomDeck": {
-    "188": {
+    "239": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
       "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/14282704425325042946/36BBC9F63AD92E1211BC5F3FCDFB4C339E48963D/",
@@ -24,7 +24,7 @@
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "",
+  "GMNotes": "VP=2",
   "GUID": "ab5c72",
   "Grid": true,
   "GridProjection": false,
@@ -42,16 +42,17 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "playAction",
     "skill_research",
     "snap_card",
     "suit_directive"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -17.512,
-    "posY": 1.806,
-    "posZ": -28.096,
-    "rotX": 0,
+    "posX": 131.066,
+    "posY": 7.646,
+    "posZ": 18.677,
+    "rotX": 357,
     "rotY": 180,
     "rotZ": 0,
     "scaleX": 1.75,

@@ -42,6 +42,8 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "deployAction",
+    "playActivation",
     "snap_card",
     "suit_location",
     "trait_human"

@@ -87,6 +87,44 @@ function returnPlayerNZObjects(buttonArea, playerColor, isBot)
 
     -- return ships
     elseif zoneObj.hasTag('snap_ship') then
+
+      -- account for R.I.S. Talvath
+      if zoneObj.getName() == "R.I.S. Talvath" then
+
+        local cardObj = getObjectbyNameAndType("R.I.S. Talvath", "Card")
+        local cardPos = cardObj.getPosition()
+        local dilithiumOnTalvathCount = 0
+        for _, object in pairs(getObjects()) do
+          if object.getName() == "Dilithium Token" then
+
+            local objPos = object.getPosition()
+            local xDistance = math.abs(objPos.x - cardPos.x)
+            local zDistance = math.abs(objPos.z - cardPos.z)
+
+            if xDistance <= 3.5 and zDistance <= 1.75 then
+              dilithiumOnTalvathCount = dilithiumOnTalvathCount + 1
+              object.destruct()
+            end
+          end
+        end
+
+        if dilithiumOnTalvathCount > 0 then
+          local counter = getObjectbyName("Dilithium Counter " .. playerColor)
+
+          if counter then
+            local oldVal = counter.getVar("val")
+            local newVal = oldVal + dilithiumOnTalvathCount
+            counter.call("setValue", newVal)
+            local gloryCounter = getObjectbyName("Glory Counter " .. playerColor)
+            gloryCounter.call("pullStardateGlory", playerColor)
+
+            local playerStr = getPlayerStr(playerColor)
+            local broadcastStr = string.format("%s - R.I.S. Talvath Dismissed during Control Step, gained 1 Glory, and %d Dilithium from card. (%d > %d)", playerStr, dilithiumOnTalvathCount, oldVal, newVal)
+            Wait.time(function() broadcastToAll(broadcastStr, "White") end, 2)
+          end
+        end
+      end
+
       local shipObj = zoneObj
       local cardObj = getObjectbyNameAndType(shipObj.getName(), "Card")
       dismissShip(cardObj, shipObj)
@@ -115,8 +153,47 @@ function returnOtherPlayerNZObjects(buttonArea, otherPlayerColor, isBot)
 
     -- dismiss ships
     elseif zoneObj.hasTag('snap_ship') then
+
+      -- account for R.I.S. Talvath
+      local cardObj
+      if zoneObj.getName() == "R.I.S. Talvath" then
+
+        cardObj = getObjectbyNameAndType("R.I.S. Talvath", "Card")
+        local cardPos = cardObj.getPosition()
+        local dilithiumOnTalvathCount = 0
+        for _, object in pairs(getObjects()) do
+          if object.getName() == "Dilithium Token" then
+
+            local objPos = object.getPosition()
+            local xDistance = math.abs(objPos.x - cardPos.x)
+            local zDistance = math.abs(objPos.z - cardPos.z)
+
+            if xDistance <= 3.5 and zDistance <= 1.75 then
+              dilithiumOnTalvathCount = dilithiumOnTalvathCount + 1
+              object.destruct()
+            end
+          end
+        end
+
+        if dilithiumOnTalvathCount > 0 then
+          local counter = getObjectbyName("Dilithium Counter " .. otherPlayerColor)
+
+          if counter then
+            local oldVal = counter.getVar("val")
+            local newVal = oldVal + dilithiumOnTalvathCount
+            counter.call("setValue", newVal)
+            local gloryCounter = getObjectbyName("Glory Counter " .. otherPlayerColor)
+            gloryCounter.call("pullStardateGlory", otherPlayerColor)
+
+            local playerStr = getPlayerStr(otherPlayerColor)
+            local broadcastStr = string.format("%s - R.I.S. Talvath Dismissed during Control Step, gained 1 Glory, and %d Dilithium from card. (%d > %d)", playerStr, dilithiumOnTalvathCount, oldVal, newVal)
+            Wait.time(function() broadcastToAll(broadcastStr, "White") end, 2)
+          end
+        end
+      end
       local shipObj = zoneObj
-      local cardObj = getObjectbyNameAndType(shipObj.getName(), "Card")
+      cardObj = getObjectbyNameAndType(shipObj.getName(), "Card")
+
       dismissShip(cardObj, shipObj)
       opposeCount = opposeCount + 1
     end

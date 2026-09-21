@@ -42,6 +42,7 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "marketCard",
     "snap_card",
     "suit_encounter",
     "trait_wildcard"

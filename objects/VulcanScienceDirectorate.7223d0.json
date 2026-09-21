@@ -22,13 +22,6 @@
       "UniqueBack": false
     }
   },
-  "CustomUIAssets": [
-    {
-      "Name": "Recrystallize",
-      "Type": 0,
-      "URL": "https://steamusercontent-a.akamaihd.net/ugc/25439356658951218/D916B77BA5C35248B643CABA9275FF2D5D03E9E3/"
-    }
-  ],
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
@@ -49,6 +42,7 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "playReaction",
     "cleanup_target",
     "snap_card",
     "suit_status"

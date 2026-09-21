@@ -1031,6 +1031,7 @@ function setupCaptainDeployed(captainName, playerColor, isBot)
     ["Shran"]    = "Kumari",
     ["Archer"]   = "NX-01 Enterprise",
     ["Georgiou"] = "U.S.S. Shenzhou",
+    ["Rebner"]   = "Mondor",
     ["Soval"]    = "Ti'Mur",
     ["Freeman"]  = "U.S.S. Cerritos",
     ["Riker"]    = "U.S.S. Titan",
@@ -1053,7 +1054,7 @@ function setupCaptainDeployed(captainName, playerColor, isBot)
     -- ship only captains (most)
     if captainName == "Burnham" or captainName == "Koloth" or captainName == "Picard" or captainName == "Sela" or
        captainName == "Shran" or captainName == "Archer" or captainName == "Georgiou" or
-       captainName == "Freeman" or captainName == "Riker" then
+       captainName == "Rebner" or captainName == "Freeman" or captainName == "Riker" then
       local deployedShipCard = getObjectbyNameAndType(deployedShipNames[captainName], "Card")
       local deployedShipFigure = getObjectbyNameAndType(deployedShipNames[captainName], "Tileset")
 
@@ -1069,12 +1070,9 @@ function setupCaptainDeployed(captainName, playerColor, isBot)
         deployedShipFigure.setPosition(posShipFigure, false, true)
 
         -- highlight, tint (cloaked ships should be highlighted purple)
-        if deployedShipCard.hasTag("trait_cloak") then
-          deployedShipFigure.highlightOn("Purple")
-        else
-          deployedShipFigure.highlightOn(playerColor)
-        end
+        deployedShipFigure.highlightOn(playerColor)
         deployedShipFigure.setColorTint(playerColor)
+        deployedShipFigure.setGMNotes(playerColor)
       end
 
     -- controlled location only captains (khan, pike, soval)
@@ -1116,6 +1114,7 @@ function setupCaptainDeployed(captainName, playerColor, isBot)
         -- highlight, tint (ship won't be cloaked)
         deployedShipFigure.highlightOn(playerColor)
         deployedShipFigure.setColorTint(playerColor)
+        deployedShipFigure.setGMNotes(playerColor)
       end
 
       if locationCard then
@@ -1147,7 +1146,7 @@ function setupCaptainDeployed(captainName, playerColor, isBot)
       local locationCard = getObjectbyName(deployedLocationNames[captainName])
 
       -- handle cases where its a single card location or ship
-      if captainName ~= "Sisko" and captainName ~= "Kirk" then
+      if captainName ~= "Sisko" and captainName ~= "Kirk" and captainName ~= "Soval" then
 
         Wait.time(function()
           if deployedShipCard ~= nil then
@@ -1285,11 +1284,12 @@ end
 function setupCaptainDiscard(captainName, playerColor, isBot)
   -- will handle setup of initial captain incident card or deck, if they exist
 
-  if captainName == "Sela" or captainName == "Archer" or
+  if captainName == "Sela" or captainName == "Archer" or captainName == "Rebner" or
   captainName == "Pike" or captainName == "Riker" or captainName == "Soval" then
     local discardNames = {
       ["Sela"]   = "Sela Discard",
       ["Archer"] = "Analyze",
+      ["Rebner"] = "Rebner Discard",
       ["Pike"]   = "Pike Discard",
       ["Riker"]  = "Riker Discard",
       ["Soval"]  = "Ti'Mur",
@@ -1741,7 +1741,7 @@ function finalizeCaptainSetup()
       buttonMVP.setLock(true)
       buttonNext.setLock(true)
       buttonMVP.interactable = false
-      buttonNext.interactable = false
+      -- buttonNext.interactable = false
       initButtonNextBotAction(buttonNext)
       initButtonGetMVP(buttonMVP)
     end)

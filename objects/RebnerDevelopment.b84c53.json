@@ -16,8 +16,7 @@
     "JackabogsClumpship.15f6cf",
     "VaruvianBomb.9c93ae",
     "KarzillVI.b1727a",
-    "BigEnoughHelmet.31d219",
-    "Mondor.b8fb1f"
+    "BigEnoughHelmet.31d219"
   ],
   "ContainedObjects_path": "RebnerDevelopment.b84c53",
   "CustomDeck": {
@@ -37,8 +36,7 @@
     22004,
     22003,
     22002,
-    22001,
-    22000
+    22001
   ],
   "Description": "",
   "DragSelectable": true,

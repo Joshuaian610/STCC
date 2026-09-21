@@ -42,7 +42,10 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "marketCard",
     "mix_remove",
+    "playAction",
+    "playAction2",
     "snap_card",
     "suit_ally",
     "trait_anomaly",

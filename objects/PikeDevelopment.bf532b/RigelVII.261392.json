@@ -43,6 +43,8 @@
   "Sticky": true,
   "Tags": [
     "cleanup",
+    "deployAction",
+    "playActivationAction",
     "snap_card",
     "suit_location"
   ],

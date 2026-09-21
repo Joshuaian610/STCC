@@ -43,6 +43,10 @@
   "Sticky": true,
   "Tags": [
     "cleanup_target",
+    "playAction",
+    "playAction2",
+    "playActivation",
+    "playActivation2",
     "snap_card",
     "suit_ship",
     "trait_vulcan"

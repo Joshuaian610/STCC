@@ -11,6 +11,10 @@
     "r": 0
   },
   "CustomImage": {
+    "CustomFigurine": {
+      "MirroredBack": false,
+      "UseMinimalCollider": false
+    },
     "ImageScalar": 2,
     "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/18154158462817764145/272C569A0FD4623645F22989332E514826C070BE/",
     "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/18433263150331522240/ED671E07131F217F231AF2536DA175A83122EA79/",
@@ -31,7 +35,7 @@
   "LuaScriptState": "",
   "MeasureMovement": false,
   "Name": "Figurine_Custom",
-  "Nickname": "Class-C Shuttlecraft",
+  "Nickname": "Class C Shuttlecraft",
   "Snap": true,
   "Sticky": true,
   "Tags": [
@@ -40,9 +44,9 @@
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 78.295,
-    "posY": 3.105,
-    "posZ": 21.601,
+    "posX": 25.296,
+    "posY": 2.138,
+    "posZ": -7.676,
     "rotX": 0,
     "rotY": 0,
     "rotZ": 0,

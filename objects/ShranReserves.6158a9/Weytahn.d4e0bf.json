@@ -43,6 +43,8 @@
   "Sticky": true,
   "Tags": [
     "cleanup",
+    "deployAction",
+    "playActivation",
     "snap_card",
     "suit_location",
     "trait_andorian",

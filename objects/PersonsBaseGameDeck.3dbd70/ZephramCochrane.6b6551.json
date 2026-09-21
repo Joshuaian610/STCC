@@ -42,6 +42,9 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "marketCard",
+    "playAction",
+    "playActivationAction",
     "snap_card",
     "suit_person",
     "trait_engineer",

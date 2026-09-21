@@ -43,6 +43,8 @@
   "Sticky": true,
   "Tags": [
     "cleanup",
+    "playAction",
+    "playNoAction",
     "snap_card",
     "suit_cargo",
     "trait_beverage"

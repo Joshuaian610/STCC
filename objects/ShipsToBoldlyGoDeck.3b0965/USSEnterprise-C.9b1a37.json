@@ -42,7 +42,12 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "deployAction",
+    "marketCard",
     "mix_remove",
+    "playActivation",
+    "playActivation2",
+    "playActivation3",
     "snap_card",
     "suit_ship",
     "trait_ambassador",

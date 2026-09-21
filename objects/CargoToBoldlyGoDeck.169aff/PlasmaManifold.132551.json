@@ -42,7 +42,9 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "marketCard",
     "mix_remove",
+    "playNoAction",
     "snap_card",
     "suit_cargo",
     "trait_engineer"

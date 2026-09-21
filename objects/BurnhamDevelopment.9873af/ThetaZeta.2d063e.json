@@ -42,6 +42,7 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "deployAction",
     "snap_card",
     "suit_location",
     "trait_anomaly"

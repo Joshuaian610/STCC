@@ -42,6 +42,9 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "playAction",
+    "playAction2",
+    "playNoAction",
     "snap_card",
     "suit_directive"
   ],

@@ -42,6 +42,7 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "deployAction",
     "skill_x2_research",
     "snap_card",
     "suit_location",

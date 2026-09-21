@@ -42,6 +42,9 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "playAction",
+    "playActivation",
+    "playNoAction",
     "snap_card",
     "suit_person",
     "trait_business",

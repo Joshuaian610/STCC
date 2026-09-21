@@ -42,6 +42,9 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "playNoAction",
+    "playActivation",
+    "playActivation2",
     "snap_card",
     "suit_cargo",
     "trait_ongoing"

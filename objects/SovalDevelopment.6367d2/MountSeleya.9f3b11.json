@@ -42,6 +42,8 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "playAction",
+    "playActivation",
     "skill_influence",
     "skill_research",
     "snap_card",

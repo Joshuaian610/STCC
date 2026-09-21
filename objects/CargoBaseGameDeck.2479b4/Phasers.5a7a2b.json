@@ -42,10 +42,13 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "marketCard",
+    "deployNoAction",
+    "deployNoAction2",
+    "playReaction",
     "snap_card",
     "suit_cargo",
     "trait_security",
-    "trait_starbase",
     "trait_starfleet",
     "trait_weapon"
   ],

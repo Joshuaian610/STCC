@@ -22,28 +22,6 @@
       "UniqueBack": false
     }
   },
-  "CustomUIAssets": [
-    {
-      "Name": "Dismiss Ship Red",
-      "Type": 0,
-      "URL": "https://steamusercontent-a.akamaihd.net/ugc/25437998677358871/850E7BC0248AB1C7DF2EDF04E828862585D1CBDA/"
-    },
-    {
-      "Name": "Dismiss Ship Blue",
-      "Type": 0,
-      "URL": "https://steamusercontent-a.akamaihd.net/ugc/25437998677358449/B55638917979DF06CF735E5EC9C2908A11480C0D/"
-    },
-    {
-      "Name": "Deploy Ship Blue",
-      "Type": 0,
-      "URL": "https://steamusercontent-a.akamaihd.net/ugc/25435380746010187/614515234F3B92A1FCCF2DC3DD02A9B0D5A1E74D/"
-    },
-    {
-      "Name": "Deploy Ship Red",
-      "Type": 0,
-      "URL": "https://steamusercontent-a.akamaihd.net/ugc/25435380746009590/4212AD86F0C701E59AA1C2BC0A4D442B5C816091/"
-    }
-  ],
   "Description": "Cloaked",
   "DragSelectable": true,
   "GMNotes": "",
@@ -64,6 +42,9 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "deployAction",
+    "playActivation",
+    "playActivation2",
     "skill_research",
     "snap_card",
     "suit_ship",
@@ -83,5 +64,5 @@
     "scaleZ": 1.75
   },
   "Value": 0,
-  "XmlUI_path": "SelaDiscard.4480c5/IRWTerix.4ff3bf.xml"
+  "XmlUI": ""
 }

@@ -181,17 +181,11 @@ function deployShip(_, value, _)
     posCard.y = 1.25
     foundShip.setPositionSmooth(posCard, false, true)
 
-    -- tint, highlight appropriately for playerColor or if cloaked
-    if shipCard.hasTag('trait_cloak') then
-      foundShip.setDescription('Cloaked')
-      foundShip.highlightOn("Purple")
-      foundShip.setColorTint(playerColor)
-
-    elseif not shipCard.hasTag('trait_cloak') then
-      foundShip.setDescription("")
-      foundShip.highlightOn(playerColor)
-      foundShip.setColorTint(playerColor)
-    end
+    -- tint, highlight appropriately for playerColor
+    foundShip.setDescription("")
+    foundShip.highlightOn(playerColor)
+    foundShip.setColorTint(playerColor)
+    foundShip.setGMNotes(playerColor)
   end
 end
 
@@ -217,7 +211,6 @@ end
 
 function dismissShip(cardObj, shipObj)
   -- handles the dismissal of a ship and any beamed cards at it's slot
-  local shipName = cardObj.getName()
   local beamBagGUIDs = {
     shipBlue     = {"f3ac62", "acf736", "f8fc03", "5807b2", "d57c5c", "9d0439", "ff0165"},
     locationBlue = {"26a5c6", "ca88c0", "40b578", "eeadbe", "7a7548", "397e6d", "ce11ad"},

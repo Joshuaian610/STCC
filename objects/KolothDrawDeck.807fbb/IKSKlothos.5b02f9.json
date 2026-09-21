@@ -64,6 +64,10 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "deployAction",
+    "playActivation",
+    "playActivation2",
+    "playActivationAction",
     "snap_card",
     "suit_ship",
     "trait_klingon"

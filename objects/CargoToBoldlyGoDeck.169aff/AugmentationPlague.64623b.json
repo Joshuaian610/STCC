@@ -42,6 +42,10 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "marketCard",
+    "playAction",
+    "playReaction",
+    "playReaction2",
     "snap_card",
     "suit_cargo",
     "trait_augment",

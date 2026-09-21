@@ -42,6 +42,10 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "marketCard",
+    "playAction",
+    "playAction2",
+    "playActivation",
     "snap_card",
     "suit_person",
     "trait_android",

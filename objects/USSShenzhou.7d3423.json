@@ -43,6 +43,10 @@
   "Sticky": true,
   "Tags": [
     "cleanup_target",
+    "playAction",
+    "playActivation",
+    "playActivation2",
+    "playActivation3",
     "skill_military",
     "snap_card",
     "suit_ship",

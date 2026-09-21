@@ -41,8 +41,12 @@
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
-  "Tags": [
+  "Tags": [    
     "cleanup",
+    "deployNoAction",
+    "marketCard",
+    "playActivation",
+    "playNoAction",
     "mix_remove",
     "snap_card",
     "suit_ship",

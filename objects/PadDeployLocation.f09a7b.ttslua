@@ -9,11 +9,6 @@ function onCollisionEnter(info)
     for _, zone in pairs(zones) do
       if zone.getName() == "Zone Deploy Ship" or zone.getName() == "Zone Deploy Location" then
         if enterObj.hasTag('suit_ship') then
-          if enterObj.hasTag('trait_cloak') and not enterObj.type == "Card" then
-            enterObj.highlightOn("Purple")
-            enterObj.setDescription('Cloaked')
-          end
-          local bagShipFigures = Global.call("getObjectbyName", "Ship Figurine Bag")
           Global.call("deployShipViaPad", enterObj.getGUID())
           Global.call('createDismissButton', enterObj)
         end

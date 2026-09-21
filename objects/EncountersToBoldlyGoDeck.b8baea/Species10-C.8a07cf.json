@@ -12,7 +12,7 @@
     "r": 0.71324
   },
   "CustomDeck": {
-    "193": {
+    "577": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
       "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/13119371198597679616/8407ECB6E3075E7657ADE53C6753CD7C488D30E2/",
@@ -42,7 +42,11 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "marketCard",
+    "playNoAction",
+    "playNoAction2",
     "snap_card",
+    "suit_ally",
     "suit_encounter",
     "trait_alien",
     "trait_communication",
@@ -50,11 +54,11 @@
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -18.225,
-    "posY": 1.786,
-    "posZ": -26.637,
+    "posX": 36.904,
+    "posY": 1.985,
+    "posZ": -35.406,
     "rotX": 0,
-    "rotY": 180,
+    "rotY": 90,
     "rotZ": 0,
     "scaleX": 1.75,
     "scaleY": 1,

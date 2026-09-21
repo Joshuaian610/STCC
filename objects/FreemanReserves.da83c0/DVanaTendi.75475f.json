@@ -42,8 +42,10 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "playAction",
+    "playSupport",
     "skill_influence",
-    "skill_military",
+    "skill_research",
     "snap_card",
     "suit_person",
     "trait_lowerdecker",

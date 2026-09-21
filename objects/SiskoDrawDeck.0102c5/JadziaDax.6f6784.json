@@ -42,6 +42,9 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "playAction",
+    "playAction2",
+    "playReaction",
     "skill_research",
     "snap_card",
     "suit_person",

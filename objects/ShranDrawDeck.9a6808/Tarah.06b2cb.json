@@ -42,6 +42,9 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "playAction",
+    "playNoAction",
+    "playActivation",
     "skill_military",
     "snap_card",
     "suit_person",

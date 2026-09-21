@@ -443,6 +443,62 @@
     {
       "displayed": "goalToken",
       "normalized": "goaltoken"
+    },
+    {
+      "displayed": "playActivation",
+      "normalized": "playactivation"
+    },
+    {
+      "displayed": "playAction",
+      "normalized": "playaction"
+    },
+    {
+      "displayed": "playAction2",
+      "normalized": "playaction2"
+    },
+    {
+      "displayed": "deployAction",
+      "normalized": "deployaction"
+    },
+    {
+      "displayed": "playActivation2",
+      "normalized": "playactivation2"
+    },
+    {
+      "displayed": "playActivation3",
+      "normalized": "playactivation3"
+    },
+    {
+      "displayed": "playNoAction",
+      "normalized": "playnoaction"
+    },
+    {
+      "displayed": "playReaction",
+      "normalized": "playreaction"
+    },
+    {
+      "displayed": "playReaction2",
+      "normalized": "playreaction2"
+    },
+    {
+      "displayed": "playSupport",
+      "normalized": "playsupport"
+    },
+    {
+      "displayed": "playActivationAction",
+      "normalized": "playactivationaction"
+    },
+    {
+      "displayed": "deployNoAction",
+      "normalized": "deploynoaction"
+    },
+    {
+      "displayed": "marketCard",
+      "normalized": "marketcard"
+    },
+    {
+      "displayed": "playNoAction2",
+      "normalized": "playnoaction2"
     }
   ]
 }

@@ -42,6 +42,10 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "marketCard",
+    "playNoAction",
+    "playSupport",
+    "playActivation",
     "snap_card",
     "suit_person",
     "trait_andoran",

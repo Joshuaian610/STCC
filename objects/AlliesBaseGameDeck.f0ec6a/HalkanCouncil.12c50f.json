@@ -43,6 +43,8 @@
   "Sticky": true,
   "Tags": [
     "cleanup",
+    "marketCard",
+    "playNoAction",
     "snap_card",
     "suit_ally"
   ],

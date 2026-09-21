@@ -42,6 +42,9 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "playActivation",
+    "playNoAction",
+    "playNoAction2",
     "snap_card",
     "suit_person",
     "trait_engineer",

@@ -42,6 +42,8 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "deployAction",
+    "deployNoAction",
     "skill_wildcard",
     "snap_card",
     "suit_directive",

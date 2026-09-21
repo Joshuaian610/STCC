@@ -42,6 +42,8 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "playAction",
+    "playNoAction",
     "skill_x2_military",
     "snap_card",
     "suit_directive",

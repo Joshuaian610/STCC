@@ -4,9 +4,12 @@
 function initButtonNextBotAction(buttonObj)
   -- steps = "Control", "Action", Cleanup
   local currentBotTurnStep = buttonObj.getGMNotes()
+  local clickFunc = buttonObj.getGMNotes() == "Control" and "broadcastPlayerturn" or "bot" .. currentBotTurnStep .. "Step"
+  local tooltip = buttonObj.getGMNotes() == "Control" and "This button is currently inactive, it is simply a reminder that it is your turn. Use the 'Add Resource' buttons in the market row to place a resource and end your turn." or
+                                            "Perform next bot " .. currentBotTurnStep .. " Step action."
   buttonObj.clearButtons()
   buttonObj.createButton({
-    click_function = "bot" .. currentBotTurnStep .. "Step",
+    click_function = clickFunc,
     function_owner = self,
     label          = "",
     position       = { 0, 0.36, 0.02 },
@@ -16,7 +19,7 @@ function initButtonNextBotAction(buttonObj)
     scale          = { 2.3, 2.3, 2.3 },
     color          = { 1, 1, 1, .3 },
     hover_color    = { 1, 1, 1, .6 },
-    tooltip        = "Perform next bot " .. currentBotTurnStep .. " Step action.",
+    tooltip        = tooltip,
   })
 end
 
@@ -344,8 +347,8 @@ end
 function botTakeIncident()
   -- handles functionality related to the bot taking an incident
 
-  UI.hide("bot_incident")
-  Wait.time(function() UI.show("bot_incident") end, 1)
+  UI.setAttribute("bot_incident", "active", "false")
+  Wait.time(function() UI.setAttribute("bot_incident", "active", "true") end, 1)
 
   local botColor, _ = getSoloColors()
   local botStr = getPlayerStr(botColor)
@@ -382,8 +385,8 @@ end
 function botLogCard()
   -- handles functionality related to the solo bot logging a card off the top of it's deck
 
-  UI.hide("bot_log")
-  Wait.time(function() UI.show("bot_log") end, 1)
+  UI.setAttribute("bot_log", "active", "false")
+  Wait.time(function() UI.setAttribute("bot_log", "active", "true") end, 1)
 
   local botColor, _ = getSoloColors()
   local botStr = getPlayerStr(botColor)
@@ -613,6 +616,8 @@ function botDeckRefresh(nextSlot, remainingDealCount, rotDeal, posDeal, dealCoun
   -- disable UI while refreshing
   UI.setAttribute("bot_controls", "active", "false")
 
+  local supplementDrawn = false
+
   Wait.time(function()
 
     local supplementZone = getObjectbyNameAndNotes("Zone Development", botColor)
@@ -635,6 +640,8 @@ function botDeckRefresh(nextSlot, remainingDealCount, rotDeal, posDeal, dealCoun
       end
 
       if card then
+        supplementDrawn = true
+
         -- if doing a supplemental card as khan in exile, need to add +1 dilithium
         local captainName = getCaptainName(botColor)
         if captainName == "Khan" and getKhanInExile() then
@@ -651,8 +658,12 @@ function botDeckRefresh(nextSlot, remainingDealCount, rotDeal, posDeal, dealCoun
 
           end)
         end
+
         card.setRotation(rotDeal)
-        card.setPositionSmooth(posDeal[nextSlot+1], false, true)
+        -- need to leap over duty officer pad to avoid firing DO promote broadcast
+        local posInitialSupplement = botColor == "Blue" and { -35.98, 2.67, 16.06 } or { 35.98, 2.67, -16.06 }
+        card.setPosition(posInitialSupplement)
+        card.setPositionSmooth(posDeal[nextSlot], false, true)
       end
     end
 
@@ -664,6 +675,12 @@ function botDeckRefresh(nextSlot, remainingDealCount, rotDeal, posDeal, dealCoun
 
     if botDeck then
 
+      -- if a Supplement was drawn, it already occupied nextSlot
+      if supplementDrawn then
+        nextSlot = nextSlot + 1
+        remainingDealCount = remainingDealCount - 1
+      end
+
       if botDeck.type == "Card" then
         botDeck.setRotation(rotDeal)
         botDeck.setPosition(posDeal[nextSlot], false, true)
@@ -674,12 +691,13 @@ function botDeckRefresh(nextSlot, remainingDealCount, rotDeal, posDeal, dealCoun
         local deckCount = #botDeck.getObjects()
         local toDraw = math.min(deckCount, remainingDealCount)
 
-        for i = 0, toDraw - 1 do
+        for i = 1, toDraw do
           local card = botDeck.takeObject()
+          card.setRotation(rotDeal)
           card.setPositionSmooth(posDeal[nextSlot], false, true)
+          nextSlot = nextSlot + 1
         end
 
-        nextSlot = nextSlot + toDraw
         remainingDealCount = remainingDealCount - toDraw
       end
 
@@ -722,7 +740,7 @@ end
 function botDeckDiscard()
   -- handles a discard off of the bot deck
 
-  UI.hide("bot_discard")
+  UI.setAttribute("bot_discard", "active", "false")
 
   local botColor, _ = getSoloColors()
   local botStr = getPlayerStr(botColor)
@@ -754,7 +772,7 @@ function botDeckDiscard()
     local broadcastStr = string.format("%s has discarded a card off the top of it's deck: %s", botStr, cardName)
     broadcastToAll(broadcastStr, "White")
 
-    Wait.time(function() UI.show("bot_discard") end, 1)
+    Wait.time(function() UI.setAttribute("bot_discard", "active", "true") end, 1)
 
   elseif discardCard ==  nil then
     refreshDrawDeck(buttonRefresh, _, true, 0)
@@ -764,6 +782,8 @@ function botDeckDiscard()
       for _, zoneObj in pairs(zoneSupplement.getObjects()) do
         if zoneObj.type == "Deck" then
           discardCard = zoneObj.takeObject()
+          local posInitialSupplement = botColor == "Blue" and { -35.98, 2.67, 16.06 } or { 35.98, 2.67, -16.06 }
+          discardCard.setPosition(posInitialSupplement)
           break
         elseif zoneObj.type == "Card" then
           discardCard =  zoneObj
@@ -783,7 +803,7 @@ function botDeckDiscard()
         local broadcastStr = string.format("%s has discarded a card off the top of it's deck: %s", botStr, cardName)
         broadcastToAll(broadcastStr, "White")
 
-        Wait.time(function() UI.show("bot_discard") end, 1)
+        Wait.time(function() UI.setAttribute("bot_discard", "active", "true") end, 1)
       end
 
     end, 0.5)
@@ -794,7 +814,7 @@ end
 function botDiscardThree()
   -- handles discarding three cards from the bot deck
 
-  UI.hide("bot_discard_x3")
+  UI.setAttribute("bot_discard_x3", "active", "false")
 
   local botColor, _ = getSoloColors()
   local botStr = getPlayerStr(botColor)
@@ -880,7 +900,7 @@ function botDiscardThree()
         if discardCount < 3 then
           Wait.time(discardLoop, 1)
         else
-          Wait.time(function() UI.show("bot_discard_x3") end, 1)
+          Wait.time(function() UI.setAttribute("bot_discard_x3", "active", "true") end, 1)
         end
 
       end, 0.5)
@@ -907,7 +927,7 @@ function botDiscardThree()
       if discardCount < 3 then
         Wait.time(discardLoop, 1)
       else
-        Wait.time(function() UI.show("bot_discard_x3") end, 1)
+        Wait.time(function() UI.setAttribute("bot_discard_x3", "active", "true") end, 1)
       end
     end
   end
@@ -933,6 +953,10 @@ end
 function clickNextBotAction()
   local buttonNextBotAction = getObjectbyName("Button Next Bot Action")
   if buttonNextBotAction == nil then return end
+  if buttonNextBotAction.getGMNotes() == "Control" then
+    broadcastPlayerturn()
+    return
+  end
 
   local buttons = buttonNextBotAction.getButtons()
   if not buttons or #buttons == 0 then return end
@@ -958,11 +982,17 @@ end
 function botControlStep()
   -- handles the click of next action button for bot control step
 
-  UI.hide("end_player_turn")
-  Wait.time(function() UI.show("bot_next_action_action") end, 1)
+  UI.setAttribute("end_player_turn", "active", "false")
+  Wait.time(function() UI.setAttribute("bot_next_action_action", "active", "true") end, 1)
 
-  -- animate button from global, but slightly modified to change button name
-  -- does the check to see if any locations can be controlled\
+  local buttonNextBotAction = getObjectbyName("Button Next Bot Action")
+  local buttonData = buttonNextBotAction.getCustomObject()
+  buttonData.image = "https://steamusercontent-a.akamaihd.net/ugc/16085399227453978019/AEE5B30FA17D68F2DFA1B81DE4833609DEB4956B/"
+  buttonNextBotAction.setCustomObject(buttonData)
+  buttonNextBotAction = buttonNextBotAction.reload()
+  Wait.frames(function() initButtonNextBotAction(buttonNextBotAction) end)
+
+  -- does the check to see if any locations can be controlled
   local botColor, humanColor = getSoloColors()
   local botStr = getPlayerStr(botColor)
   local broadcastStr = string.format("Player Turn has ended, moving on to %s [%s]Control Step[-].", botStr, Color.fromString("Purple"):toHex())
@@ -1243,14 +1273,14 @@ function botActionStep()
       botDeckDraw(dealCount)
 
       if deckCount ~= 0 and deckCount >= dealCount then
-        UI.hide("bot_next_action_action")
+        UI.setAttribute("bot_next_action_action", "active", "false")
         Wait.time(function()
-          UI.show("bot_next_action_action")
+          UI.setAttribute("bot_next_action_action", "active", "true")
         end, 1)
       else
-        UI.hide("bot_next_action_action")
+        UI.setAttribute("bot_next_action_action", "active", "false")
         Wait.time(function()
-          UI.show("bot_next_action_action")
+          UI.setAttribute("bot_next_action_action", "active", "true")
         end, 2.5)
       end
 
@@ -1259,12 +1289,12 @@ function botActionStep()
     end
   end
 
-  UI.hide("bot_next_action_action")
+  UI.setAttribute("bot_next_action_action", "active", "false")
   Wait.time(function()
-    UI.show("bot_next_action_action")
+    UI.setAttribute("bot_next_action_action", "active", "true")
   end, 1)
 
-  -- starting from next facedown card next to discard, flip card up
+    -- starting from next facedown card next to discard, flip card up
   local nextFacedownSlot = 0
   local cardSlots = { false, false, false, false, false }
   local stagingCards = { nil, nil, nil, nil, nil }
@@ -1275,8 +1305,7 @@ function botActionStep()
     local position = zoneObj.getPosition()
     local rotation = zoneObj.getRotation()
 
-    if (position.z > 1.80 and position.z < 3.80)
-      or (position.z > -3.80 and position.z < -1.80) then
+    if position.z > -3.85 and position.z < -1.85 then
 
       if rotation.z > 179.00 and rotation.z < 181.00 then
         cardSlots[1] = true
@@ -1284,8 +1313,7 @@ function botActionStep()
         facedownCards = facedownCards + 1
       end
 
-    elseif (position.z > -2.07 and position.z < 0.07)
-      or (position.z > 0.07 and position.z < 2.07) then
+    elseif position.z > 0.06 and position.z < 2.06 then
 
       if rotation.z > 179.00 and rotation.z < 181.00 then
         cardSlots[2] = true
@@ -1293,8 +1321,7 @@ function botActionStep()
         facedownCards = facedownCards + 1
       end
 
-    elseif (position.z > -5.98 and position.z < -3.98)
-      or (position.z > 3.98 and position.z < 5.98) then
+    elseif position.z > 3.98 and position.z < 5.98 then
 
       if rotation.z > 179.00 and rotation.z < 181.00 then
         cardSlots[3] = true
@@ -1302,8 +1329,7 @@ function botActionStep()
         facedownCards = facedownCards + 1
       end
 
-    elseif (position.z > -9.90 and position.z < -7.90)
-      or (position.z > 7.90 and position.z < 9.90) then
+    elseif position.z > 7.90 and position.z < 9.90 then
 
       if rotation.z > 179.00 and rotation.z < 181.00 then
         cardSlots[4] = true
@@ -1311,8 +1337,7 @@ function botActionStep()
         facedownCards = facedownCards + 1
       end
 
-    elseif (position.z > -15.82 and position.z < -13.82)
-      or (position.z > 13.82 and position.z < 15.82) then
+    elseif position.z > 11.82 and position.z < 13.82 then
 
       if rotation.z > 179.00 and rotation.z < 181.00 then
         cardSlots[5] = true
@@ -1388,11 +1413,17 @@ function botActionStep()
         purpleStr
       )
 
-      UI.hide("bot_next_action_action")
+      UI.setAttribute("bot_next_action_action", "active", "false")
       Wait.time(function()
         broadcastToAll(cleanupBroadcastStr, "White")
-        UI.show("bot_next_action_cleanup")
+        UI.setAttribute("bot_next_action_cleanup", "active", "true")
       end, 1)
+      local buttonNextBotAction = getObjectbyName("Button Next Bot Action")
+      local buttonData = buttonNextBotAction.getCustomObject()
+      buttonData.image = "https://steamusercontent-a.akamaihd.net/ugc/13463789940733613233/A11BF09A0251276A205454566AB9FF69BDB9DD60/"
+      buttonNextBotAction.setCustomObject(buttonData)
+      buttonNextBotAction = buttonNextBotAction.reload()
+      Wait.frames(function() initButtonNextBotAction(buttonNextBotAction) end)
     end
 
     return
@@ -1403,8 +1434,8 @@ end
 function botCleanupStep()
   -- handles the click of next action button for bot cleanup step
 
-  UI.hide("bot_next_action_action")
-  UI.hide("bot_next_action_cleanup")
+  UI.setAttribute("bot_next_action_action", "active", "false")
+  UI.setAttribute("bot_next_action_cleanup", "active", "false")
 
   local botColor, humanColor = getSoloColors()
 
@@ -1414,7 +1445,7 @@ function botCleanupStep()
   for _, zoneObj in pairs(stardateCheckZone.getObjects()) do
     if zoneObj.getName():find("Stardate") then
       broadcastToAll("Stardate card found in Bot player area, it will need to be resolved before Bot Clean-Up Step.", "Orange")
-      Wait.time(function() UI.show("bot_next_action_cleanup") end, 1)
+      Wait.time(function() UI.setAttribute("bot_next_action_cleanup", "active", "true") end, 1)
       return
     end
   end
@@ -1559,7 +1590,7 @@ function botCleanupStep()
         broadcastToAll(followupStr, "White")
 
       end, 1.5)
-      if Turns.enable == false then checkResupply() end
+      if Turns.enable == false then handleTurnResupplyBroadcast(humanColor) end
 
     end, 1)
 
@@ -1576,7 +1607,7 @@ function botCleanupStep()
       broadcastToAll(followupStr, "White")
 
     end, 1.5)
-    if Turns.enable == false then checkResupply() end
+    if Turns.enable == false then handleTurnResupplyBroadcast(humanColor) end
   end
 
   -- give +1 dilithium if khan bot remains in Exile
@@ -1635,46 +1666,14 @@ function botCleanupStep()
     end)
   end
 
-  local buttonObj = getObjectbyName("Button Next Bot Action")
-  buttonObj.clearButtons()
-  buttonObj.setGMNotes("Control")
-  initButtonNextBotAction(buttonObj)
-end
-
-
-function checkResupply()
-  -- check and report on human player's resupply cards if onPlayerTurn() not doing it
-  local _, playerColor = getSoloColors()
-  local checkZones = {
-    getObjectbyNameAndNotes("Zone Duty Officer", playerColor),
-    getObjectbyNameAndNotes("Zone Deploy Location", playerColor),
-    getObjectbyNameAndNotes("Zone Deploy Ship", playerColor),
-    getObjectbyNameAndNotes("Zone In Play", playerColor),
-    getObjectbyNameAndNotes("Zone Captain", playerColor),
-  }
-  local matchCards = {}
-  for i = 1, #checkZones do
-    for _, zoneObj in pairs(checkZones[i].getObjects()) do
-      if zoneObj.hasTag("resupply") then
-          zoneObj.highlightOn(playerColor)
-          table.insert(matchCards, zoneObj)
-          Wait.time(function() zoneObj.highlightOff() end, 5)
-      end
-    end
-  end
-  if #matchCards > 0 then
-    local playerStr = getPlayerStr(playerColor)
-    local headlineStr = string.format("%s Reminder - Current in play Resupply Step Cards:", playerStr)
-    broadcastToAll(headlineStr, "White")
-    Wait.time(function()
-
-      for i = 1, #matchCards do
-        local listStr = string.format("[%s]*[-] %s", Color.fromString(playerColor):toHex(), matchCards[i].getName())
-        broadcastToAll(listStr, "White")
-      end
-
-    end, 0.5)
-  end
+  local buttonNextBotAction = getObjectbyName("Button Next Bot Action")
+  buttonNextBotAction.clearButtons()
+  buttonNextBotAction.setGMNotes("Control")
+  local buttonData = buttonNextBotAction.getCustomObject()
+  buttonData.image = "https://steamusercontent-a.akamaihd.net/ugc/10862249185272684835/7BF031EFCBF1FB60581366BE417795F226DED248/"
+  buttonNextBotAction.setCustomObject(buttonData)
+  buttonNextBotAction = buttonNextBotAction.reload()
+  Wait.frames(function() initButtonNextBotAction(buttonNextBotAction) end)
 end
 
 
@@ -2036,7 +2035,7 @@ function getOperativeIcon(cardObj)
     end
   end
 
-  if cardObj.hasTag("suit_ship") then
+  if cardObj.hasTag("suit_ship") and cardObj.getName() ~= "Gomtuu" then
 
     if not hasDuty then
       if captainName == "Burnham" then
@@ -2106,7 +2105,7 @@ function getOperativeIcon(cardObj)
     end
   end
 
-  if cardObj.hasTag("suit_ally") then
+  if cardObj.hasTag("suit_ally") and cardObj.getName ~= "Species 10-C" then
 
     if not hasDuty then
       if captainName == "Burnham" then
@@ -2246,7 +2245,7 @@ function getOperativeIcon(cardObj)
     end
   end
 
-  if cardObj.hasTag("suit_person") then
+  if cardObj.hasTag("suit_person") and cardObj.getName() ~= "Wesley Crusher" then
 
     if not hasDuty then
       if captainName == "Burnham" then
@@ -2307,7 +2306,7 @@ function getOperativeIcon(cardObj)
       elseif captainName == "Soval" then
         return "Person", "If Ship is in Bot Discard, put it on top of the Bot deck. Gain a Research Focus > Military Focus > Influence Focus > Ship and dismiss Duty Officer."
       elseif captainName == "Freeman" then
-        return "Person", "If able to do both, log a controlled Location and remove 2 Away Teams to take top Encounter, then log this card. Otherwise gain 1 Research or 1 Military, whichever is lower, and discard the top card of the Bot deck."
+        return "Person", "Gain 1 Research. If this card is Synthetic take an Incident and discard the top card of the Supplement deck. If able, gain a Research or Influence or Mlitary > Ship. Dismiss Duty Officer."
       elseif captainName == "Pike" then
         return "Person", "Junk the most valuable card in the Market (ignoring any with tokens). If Bot has 6 or more Influence, gain an Influence Focus or Ship or Ally and dismiss Duty Officer; otherwise gain 2 Influence."
       elseif captainName == "Riker" then
@@ -2456,7 +2455,7 @@ function getOperativeIcon(cardObj)
     end
   end
 
-  if cardObj.hasTag("suit_location") then
+  if cardObj.hasTag("suit_location") and cardObj.getName() ~= "Sha Ka Ree" then
 
     if not hasDuty then
       if captainName == "Burnham" then
