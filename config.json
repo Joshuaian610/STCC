@@ -8,7 +8,7 @@
       "Size": 1
     }
   ],
-  "GameComplexity": "Low Complexity",
+  "GameComplexity": "Medium Complexity",
   "GameMode": "Star Trek Captain's Chair",
   "GameType": "Game",
   "Gravity": 0.5,
@@ -148,18 +148,6 @@
     "ButtonPullActionToken.093a8c",
     "ActionTokenBag.2b6501",
     "ActionTokenBag.71c9a1",
-    "ZoneReturnIncident.c66c67",
-    "ZoneReturnAlly.0cff6d",
-    "ZoneReturnShip.ae6503",
-    "ZoneReturnCargo.4b2cb1",
-    "ZoneReturnPerson.2fc3d5",
-    "ZoneReturnEncounter.5bd4df",
-    "ReturnPadEncounter.e630fd",
-    "ReturnPadPerson.0ecb40",
-    "ReturnPadCargo.45b613",
-    "ReturnPadShip.6f007c",
-    "ReturnPadAlly.5b86b6",
-    "ReturnPadIncident.db6d44",
     "ZoneMarketCurrentAlly.2edc6f",
     "ZoneMarketCurrentShip.489f00",
     "ZoneMarketCurrentCargo.ac4301",
@@ -492,7 +480,9 @@
     "ActionToken.a5bc5d",
     "CompletedGoalToken.99a689",
     "CompletedGoalToken.6fcc4a",
-    "Mondor.b8fb1f"
+    "Mondor.b8fb1f",
+    "ZoneActionTokens.d418bb",
+    "ZoneActionTokens.88270f"
   ],
   "PlayArea": 0.7021237,
   "PlayerCounts": [

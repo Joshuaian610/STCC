@@ -50,6 +50,7 @@
     "snap_card",
     "suit_ship",
     "trait_attack",
+    "trait_kazon",
     "trait_shady"
   ],
   "Tooltip": true,

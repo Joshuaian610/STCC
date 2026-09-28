@@ -203,6 +203,10 @@ end
 
 function getTrackMultipliers(captainName, influenceCount, militaryCount, researchCount)
   -- returns current focus skill modifiers per captainName and count of focus skill
+
+  -- handle a cadet mode empty query
+  if captainName == "None" then return 0, 0, 0 end
+
   local influenceMultiplier
   local militaryMultiplier
   local researchMultiplier
@@ -373,13 +377,13 @@ function getTrackMultipliers(captainName, influenceCount, militaryCount, researc
         { 2, 1 },
         { 7, 2 },
         { 14, 4 },
-        { 15, 6 }
+        { 15, 7 }
       },
       military = {
         { 2, 1 },
         { 7, 2 },
         { 14, 4 },
-        { 15, 7 }
+        { 15, 6 }
       },
       research = {
         { 2, 1 },
@@ -665,6 +669,21 @@ function checkIsCadet()
   local isCadet = false
   if padStardate.getGMNotes() == "Cadet" then isCadet = true end
   return isCadet
+end
+
+
+function getActionToken(playerColor)
+  -- checks for & returns a found action token for playerColor or nil
+  local checkZone = getObjectbyNameAndNotes("Zone Action Tokens", playerColor)
+
+  -- check for & return extra action tokens first
+  for _, zoneObj in pairs(checkZone.getObjects()) do
+    if zoneObj.getName() == "Extra Action Token" then return zoneObj end
+  end
+  for _, zoneObj in pairs(checkZone.getObjects()) do
+    if zoneObj.getName() == "Action Token" then return zoneObj end
+  end
+  return nil
 end
 
 

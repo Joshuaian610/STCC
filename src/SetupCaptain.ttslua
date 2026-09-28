@@ -957,6 +957,16 @@ function placeCaptainDecks(captainName, playerColor, isBot)
 
       developmentDeck.setName(captainName .. " Supplement Deck")
 
+      -- if riker bot, remove Gluonic Distortion
+      if captainName == "Riker" then
+        for _, deckObj in pairs(developmentDeck.getObjects()) do
+          if deckObj.name == "Gluonic Distortion" then
+            local removeCard = developmentDeck.takeObject({ guid = deckObj.guid })
+            getObjectbyName("Unused Object Bag").putObject(removeCard)
+          end
+        end
+      end
+
       -- if khan bot, place Genesis Device to bottom of Supplement Deck
       if captainName == "Khan" then
         developmentDeck.shuffle()
@@ -1220,6 +1230,7 @@ end
 function setupCaptainStatus(captainName, playerColor, isBot)
   -- will handle setup of initial captain status cards, if they exist
 
+  local bagUnusedObjs = getObjectbyName("Unused Object Bag")
   if captainName == "Burnham" or captainName == "Archer" or
   captainName == "Soval" or captainName == "Pike" then
     local statusNames = {
@@ -1228,10 +1239,7 @@ function setupCaptainStatus(captainName, playerColor, isBot)
       ["Soval"]   = "Vulcan Science Directorate",
       ["Pike"]    = "Improbable, Unstoppable, Sensational",
     }
-    local rotStatus = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
-    if isBot then
-      rotStatus = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 }
-    end
+    local rotStatus = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }    
     local posStatus = playerColor == "Blue" and { -30.00, 1.25, 10.11 } or { 30.00, 1.25, -10.11 }
     if captainName == "Archer" then
       posStatus = playerColor == "Blue" and { -30.00, 1.25, 2.46 } or { 30.00, 1.25, -2.46 }
@@ -1240,8 +1248,12 @@ function setupCaptainStatus(captainName, playerColor, isBot)
 
     if statusCard ~= nil then
       statusCard.setLock(false)
-      statusCard.setRotation(rotStatus)
-      statusCard.setPosition(posStatus)
+      if not isBot then
+        statusCard.setRotation(rotStatus)
+        statusCard.setPosition(posStatus)
+      else
+        bagUnusedObjs.putObject(statusCard)
+      end
     end
   end
 end

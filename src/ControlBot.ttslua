@@ -1027,14 +1027,22 @@ function botControlStep()
     local botCount = 0
     local humanCount = 0
 
-    for _, object in pairs(botZones[i].getObjects()) do
-      if object.getName():find("Away Team") or object.hasTag("snap_ship") then
+    for _, zoneObj in pairs(botZones[i].getObjects()) do
+      if zoneObj.getName():find("Away Team") or
+         (zoneObj.hasTag("snap_ship") and zoneObj.getName() ~= "A Fleet of 30 California-Class Ships") then
         botCount = botCount + 1
       end
+      if zoneObj.getName() == "A Fleet of 30 California-Class Ships" then
+        botCount = botCount + 2
+      end
     end
-    for _, object in pairs(humanZones[i].getObjects()) do
-      if object.getName():find("Away Teams") or object.hasTag("snap_ship") then
+    for _, zoneObj in pairs(humanZones[i].getObjects()) do
+      if zoneObj.getName():find("Away Teams") or
+         (zoneObj.hasTag("snap_ship") and zoneObj.getName() ~= "A Fleet of 30 California-Class Ships") then
         humanCount = humanCount + 1
+      end
+      if zoneObj.getName() == "A Fleet of 30 California-Class Ships" then
+        humanCount = humanCount + 2
       end
     end
     if botCount >= (humanCount + 2) and botCount >= 3 then
@@ -1378,15 +1386,24 @@ function botActionStep()
     )
 
     Wait.time(function()
+
       broadcastToAll(followupStr, "White")
+
     end, 0.5)
 
     -- add reminder for skill icons for pike bot
     local captainName = getCaptainName(botColor)
-    if captainName == "Pike" then
+    local card = stagingCards[nextFacedownSlot]
+    if captainName == "Pike" and
+       ( card.hasTag("skill_research") or card.hasTag("skill_x2_research") or
+         card.hasTag("skill_influence") or card.hasTag("skill_x2_influence") or card.hasTag("skill_x3_influence") or
+         card.hasTag("skill_military") or card.hasTag("skill_x2_military") or
+         card.hasTag("skill_wildcard") or card.hasTag("skill_x2_wildcard") ) then
       Wait.time(function()
+
         local pikeStr = string.format("%s [%s]Reminder:[-] %s has Skill, increase +1 using %s Skill Counter.", botStr, Color.fromString(botColor):toHex(), stagingCards[nextFacedownSlot].getName(), botStr)
         broadcastToAll(pikeStr, "White")
+
       end, 1)
     end
 
@@ -1450,7 +1467,7 @@ function botCleanupStep()
     end
   end
 
-  local cards = getCardValues(botColor, "Market")
+  local cards = getCardValues(humanColor, "Market")
   local resourceTargetCardName = getMVPCard(cards, true)
   local buttonAddResource
   local resourceTargetCard
@@ -1695,7 +1712,18 @@ function getOperativeIcon(cardObj)
 
   -- first check if surprise
   if cardObj.hasTag("trait_surprise") then
-    return "Surprise", "Resolve this card's Surprise operation."
+    local cardName = cardObj.getName()
+    local cardActions = {
+      ["Conspiracy"] = string.format("[%s]You must choose:[-] take an Incident and put it and this card to the bottom of your draw deck, or, the bot gains 2 Glory and discards the top card of its Supplement deck.", helpColor),
+      ["Time Is Running Out"] = string.format("Gain 2 Glory. Put the top card of the Supplement deck on top of the Bot deck. Junk the top card of the Incident deck. [%s]You draw a card and discard a card.[-]", helpColor),
+      ["Dilithium Shockwave"] = string.format("Gain 1 Glory and discard the top card of the Bot deck. [%s]You gain 2 dilithium.[-] Return this card.", helpColor),
+      ["To the Last, I Will Grapple With Thee!"] = string.format("Discard the top card of the Bot deck. [%s]Put this card in your Discard pile.[-] [%s]Draw a card.[-]", attackColor, helpColor),
+      ["From Hell's Heart, I Stab At Thee!"] = string.format("Discard the top card of the Bot deck. [%s]Put this card in your Discard pile.[-] [%s]Draw a card.[-]", attackColor, helpColor),
+      ["I Spit My Last Breath At Thee!"] = string.format("Discard the top card of the Bot deck. [%s]Put this card in your Discard pile.[-] [%s]Draw a card.[-]", attackColor, helpColor),
+      ["Two Dimensional Thinking"] = string.format("[%s]You may warp a Ship.[-] If Bot has Augment in play, return this card; otherwise continue resolution.", helpColor),
+      ["Knowledge of a Terrible Fate"] = "Gain 1 Glory. Discard the bottom card of the Supplement deck. Destroy this card (Place card into Unused Object Bag at top of Table).",
+    }
+    return "Surprise", cardActions[cardName]
   end
 
   -- then, check if any captain specific trait match
@@ -1892,9 +1920,9 @@ function getOperativeIcon(cardObj)
     elseif cardObj.hasTag("trait_engineer") then
       return "Engineer", "Junk the most valuable card in the Market (ignoring any with tokens). Discard the top card of the Supplement deck. Gain 1 Military. If this card is a Person, promote it to Duty Officer."
     elseif cardObj.hasTag("trait_scientist") then
-      return "Scientist", "Gain 1 Military. If this card is a Ship, deploy this Ship; it explores. Otherwise, log the top card of the Bot deck, gain 1 Glory, and if able, gain a Military > Cargo, including from the Junk."
+      return "Scientist", "Gain 1 Military. If this card is a Ship, deploy this Ship; it explores. Otherwise, log the top card of the Bot deck, gain 1 Glory, and if able, gain a Military Focus > Cargo, including from the Junk."
     elseif cardObj.hasTag("trait_communication") then
-      return "Communication", "Gain 1 Military. If this card is a Ship, deploy this Ship; it explores. Otherwise, log the top card of the Bot deck, gain 1 Glory, and if able, gain a Military > Cargo, including from the Junk."
+      return "Communication", "Gain 1 Military. If this card is a Ship, deploy this Ship; it explores. Otherwise, log the top card of the Bot deck, gain 1 Glory, and if able, gain a Military Focus > Cargo, including from the Junk."
     end
 
   elseif captainName == "Soval" then
@@ -2123,7 +2151,7 @@ function getOperativeIcon(cardObj)
       elseif captainName == "Archer" then
         return "Ally", "Gain an Andorian or Vulcan > Alien or Ambassador > Person. Log this card."
       elseif captainName == "Georgiou" then
-        return "Ally", "Discard the top 2 cards of the Bot deck. If a Person is in Bot Discard pile, gain 1 Research or 1 Influence or 1 Military (whichever is lower). For each Ship in Bot Discard pile, send an Away Team to a neutral Location. Take a Person. Log this card."
+        return "Ally", "Discard the top 2 cards of the Bot deck. If a Person is in Bot Discard pile, gain 1 Research or 1 Influence or 1 Military (whichever is lower). For each Ship in Bot Discard pile, send an Away Team to a neutral Location. Log this card."
       elseif captainName == "Kirk" then
         return "Ally", "Discard the top 2 cards of the Bot deck. Gain 1 Research or 1 Influence or 1 Military (whichever is lower). If Bot has 5+ Influence, gain 2 Glory and log this card."
       elseif captainName == "Khan" then

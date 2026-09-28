@@ -45,7 +45,9 @@
     "playNoAction",
     "playActivationAction",
     "snap_card",
-    "suit_person"
+    "suit_person",
+    "trait_engineer",
+    "trait_starfleet"
   ],
   "Tooltip": true,
   "Transform": {

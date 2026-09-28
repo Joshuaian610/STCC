@@ -656,10 +656,12 @@ function pullStardateGlory(playerColor)
       end)
     end
 
-    -- take stardate card for opposing player if last glory is being taken
+    -- take stardate card for off turn player if last glory is being taken
     if stardateGloryCount == 1 then
       local cardStardate = nil
+      local padJunk = Global.call("getObjectbyName", "Pad Junk")
       local otherPlayerColor = playerColor == "Blue" and "Red" or "Blue"
+      local otherSDPlayerColor = padJunk.getGMNotes() == "Blue" and "Red" or "Blue"
       for _, zoneObj in pairs(stardateCheckZone.getObjects()) do
         -- handle single stardate card left
         if zoneObj.type == "Card" then
@@ -678,26 +680,25 @@ function pullStardateGlory(playerColor)
       end
       if cardStardate == nil then return end
 
-      local rotStardateCard = otherPlayerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0 }
-      if Global.call("checkPlayerColorIsBot", otherPlayerColor) then rotStardateCard = otherPlayerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0 } end
-      local posStardateCard = otherPlayerColor == "Blue" and { -24.00, 0.76, 15.00 } or { 24.00, 0.76, -15.00 }
+      local rotStardateCard = otherSDPlayerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0 }
+      if Global.call("checkPlayerColorIsBot", otherSDPlayerColor) then rotStardateCard = otherSDPlayerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0 } end
+      local posStardateCard = otherSDPlayerColor == "Blue" and { -24.00, 0.76, 15.00 } or { 24.00, 0.76, -15.00 }
       cardStardate.setRotation(rotStardateCard)
       cardStardate.setPositionSmooth(posStardateCard, false, true)
 
       -- pull & init resolve stardate button
       Wait.time(function()
 
-        Global.call("placeButtonResolveStardate", otherPlayerColor)
+        Global.call("placeButtonResolveStardate", otherSDPlayerColor)
 
       end, 1)
 
       -- broadcast
       Wait.time(function()
 
-        local playerStr = Global.call("getPlayerStr", playerColor)
-        local otherPlayerStr = Global.call("getPlayerStr", otherPlayerColor)
+        local otherSDPlayerStr = Global.call("getPlayerStr", otherPlayerColor)
         local stardateName = cardStardate.getName()
-        local broadcastStr = string.format("%s has given %s to %s.", playerStr, stardateName, otherPlayerStr)
+        local broadcastStr = string.format("[%s]%s[-] has been sent to %s.", Color.fromString("Yellow"):toHex(), stardateName, otherSDPlayerStr)
         broadcastToAll(broadcastStr, "White")
 
       end, 0.5)

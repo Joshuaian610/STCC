@@ -45,8 +45,11 @@
     "playAction",
     "playNoAction",
     "playActivationAction",
+    "skill_military",
     "snap_card",
-    "suit_person"
+    "suit_person",
+    "trait_human",
+    "trait_timetravel"
   ],
   "Tooltip": true,
   "Transform": {

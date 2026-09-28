@@ -9,6 +9,7 @@ require("ControlMarket")
 require("ControlNZ")
 require("Helpers")
 require("OnloadSupport")
+require("PlayActions")
 require("SetupCaptain")
 require("SetupMarket")
 require("SetupSolo")
@@ -227,6 +228,11 @@ function onObjectSpawn(obj)
   if obj.hasTag("snap_ship") and (obj.getGMNotes() == "Blue" or obj.getGMNotes() == "Red") then
     obj.highlightOn(obj.getColorTint())
   end
+
+  -- handle creating correct right click context menu options for cards
+  if obj.type == "Card" then
+    checkContextActions(obj)
+  end
 end
 
 
@@ -262,6 +268,22 @@ function onObjectEnterContainer(container, object)
     local newVal = val + 1
     counter.call("setValue", newVal)
   end
+
+  -- broadcast logging actions
+  if container.getName() == "Captain's Log" and object.type == "Card" then
+    local playerColor = container.getGMNotes()
+    local playerStr = getPlayerStr(playerColor)
+    local broadcastStr = string.format("%s has Logged %s.", playerStr, object.getName())
+    broadcastToAll(broadcastStr, "White")
+  end
+
+  -- broadcast beaming actions
+  if container.getName() == "Beamed Cards" and object.type == "Card" then
+    local playerColor = container.getGMNotes()
+    local playerStr = getPlayerStr(playerColor)
+    local broadcastStr = string.format("%s has Beamed %s.", playerStr, object.getName())
+    broadcastToAll(broadcastStr, "White")
+  end
 end
 
 
@@ -282,75 +304,33 @@ function onObjectEnterZone(zone, enterObj)
     updateStardateGloryCounter()
   end
 
-  -- check for suit_person entering a duty officer zone
-  if zone.getName() == "Zone Duty Officer" and enterObj ~= nil and enterObj.hasTag("suit_person") then
-    local playerColor = zone.getGMNotes()
-    local playerStr = getPlayerStr(playerColor)
+  -- if captain discard/draw zone and deck in zone, rename deck
+  if zone.getName() == "Zone Discard" and (enterObj.type == "Card" or enterObj.type == "Deck") then
+    renameCaptainDeck(zone, "Discard")
+  end
+  if zone.getName() == "Zone Draw Deck" and (enterObj.type == "Card" or enterObj.type == "Deck") then
+    renameCaptainDeck(zone, "Draw")
+  end
 
-    Wait.condition(
-      function()
-        if enterObj ~= nil then
-          local broadcastStr = string.format("%s has Promoted Duty Officer: %s", playerStr, enterObj.getName())
-          broadcastToAll(broadcastStr, "White")
-
-          -- tag card as DO for removal cleanliness
-          enterObj.addTag("currentDutyOfficer")
-
-          -- if playerColor isBot, try to find bot suits card to flip to DO side
-          if checkPlayerColorIsBot(playerColor) then
-            local botCaptainName = getCaptainName(playerColor)
-            local suitsCard = getObjectbyName("Suits " .. botCaptainName)
-            if suitsCard ~= nil then
-              local rotSuitsCard = suitsCard.getRotation()
-              rotSuitsCard.z = 180.00
-              suitsCard.setRotationSmooth(rotSuitsCard, false, true)
-            end
-          end
-        end
-      end,
-      function()
-        return enterObj ~= nil and enterObj.resting
-      end
-    )
+  -- add card right click context menus when entering handzone
+  if (zone.getName() == "Handzone" or zone.getName() == "Zone In Play" or zone.getName():find("Zone Deploy") or zone.getName() == "Zone Duty Officer" or zone.getName() == "Zone Captain") and
+      enterObj.type == "Card" then
+    loadContextActions(zone, enterObj)
   end
 end
 
 
 function onObjectLeaveZone(zone, leaveObj)
+  -- update stardate glory counter
   if zone == getObjectbyName("Zone Stardate Glory") and leaveObj.getName() == "Glory Token" then
     updateStardateGloryCounter()
   end
 
-  -- check for suit_person leaving a duty officer zone
-  if zone.getName() == "Zone Duty Officer" and leaveObj.hasTag("suit_person") and leaveObj.hasTag("currentDutyOfficer") then
-    local playerColor = zone.getGMNotes()
-    local playerStr = getPlayerStr(playerColor)
-
-    local broadcastStr = string.format("%s has Dismissed Duty Officer: %s", playerStr, leaveObj.getName())
-    broadcastToAll(broadcastStr, "White")
-
-    -- untag card as DO for cleanliness
-    leaveObj.removeTag("currentDutyOfficer")
-
-    -- if playerColor isBot, try to find bot suits card to flip to DO side
-    if checkPlayerColorIsBot(playerColor) then
-
-      -- first need to ensure bot has no other DO
-      local otherBotDO = false
-      for _, zoneObj in pairs(zone.getObjects()) do
-        if zoneObj.hasTag("currentDutyOfficer") then
-          otherBotDO = true
-        end
-      end
-      if not otherBotDO then
-        local botCaptainName = getCaptainName(playerColor)
-        local suitsCard = getObjectbyName("Suits " .. botCaptainName)
-        if suitsCard ~= nil then
-          local rotSuitsCard = suitsCard.getRotation()
-          rotSuitsCard.z = 0.00
-          suitsCard.setRotationSmooth(rotSuitsCard, false, true)
-        end
-      end
-    end
+  -- remove zone specific right click context menu actions
+  if (zone.getName() == "Handzone" or zone.getName() == "Zone In Play" or
+     (zone.getName() == "Zone Deploy Ship" and not leaveObj.hasTag("suit_captain") or
+      zone.getName() == "Zone Deploy Location" or zone.getName() == "Zone Duty Officer") and leaveObj.type == "Card") then
+    leaveObj.clearContextMenu()
+    loadDefaultContextActions(leaveObj)
   end
 end

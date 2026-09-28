@@ -1,0 +1,1297 @@
+-- contains code related to card right click context menu functionality
+
+-- Play (Action) - (tag: 'playAction') will first check for available action token, then detect slot to place in staging, then place available action token, show in hand
+-- Play (No Action) - (tag: 'playNoAction') will detect slot to place in staging, show in hand
+
+-- Deploy - (tag: 'deployAction' OR 'deployNoAction') will detect slot to place in ship/location (cargo will deploy right to left in ships, encounters same for locations) show in hand, or, zone In Play
+
+-- Activation - (tag: 'playActivation'), only show when in DO (person), captain (captain), or deploy zones (ships, cargo, encounters, locations)
+-- Reaction - (tag: 'playReaction'), only show when in DO or deploy zones
+-- suffix either tag with Action if requires action (ie: playActivationAction)
+
+-- Support - tag: 'playSupport' show only in hand
+
+-- tagless:
+-- Make Duty Officer - in hand or in staging and Person
+-- Dismiss - only for people in zone duty officer, same as discard
+-- Return - (tag: 'marketCard' or 'suit_incident') show return at all times
+-- Log (any card any play zone) (no broadcast, broadcast will happen on log?) show log at all times
+-- Discard (any card show in hand) -- broadcast
+
+-- all suit cards all the time:
+-- Return (if marketCard)
+-- Log
+
+-- handzone items:
+-- playAction, 2, 3
+-- playNoAction, 2, 3
+-- deployAction, 2, 3
+-- deployNoAction, 2, 3
+-- playSupport
+-- promote DO
+-- Discard
+-- Return
+-- Log
+
+-- staging zone items:
+-- if Wesley crusher is DO:
+-- playActivation, 2, 3
+-- playActionActivation, 2, 3
+-- playReaction, 2, 3
+-- Make DO (if person)
+-- Discard
+-- Return
+-- Log
+
+-- deploy zone items (if ship, cargo, location, directive, or encounter):
+-- playActivation, 2, 3
+-- playActionActivation, 2, 3
+-- playReaction, 2, 3
+-- Dismiss
+-- Return
+-- Log
+
+-- DO zone items (if person):
+-- playActivation, 2, 3
+-- playActionActivation, 2, 3
+-- playReaction, 2, 3
+-- Dismiss
+-- Return
+-- Log
+
+function checkContextActions(cardObj)
+  -- handles call from Global onObjectSpawn,  creating correct right click context menu options for cards
+
+  -- need to check if card is in a relevent zone
+  local cardInZone = false
+  for _, zone in pairs(cardObj.getZones()) do
+    if zone.getName() == "Handzone" then
+
+      cardInZone = true
+      break
+    end
+    if zone.getName() == "Zone In Play" or
+        zone.getName() == "Zone Deploy Ship" or zone.getName() == "Zone Deploy Location" or
+        zone.getName() == "Zone Duty Officer" or zone.getName() == "Zone Captain" then
+        loadContextActions(zone, cardObj)
+      cardInZone = true
+      break
+    end
+  end
+
+  if not cardInZone then
+    loadDefaultContextActions(cardObj)
+  end
+end
+
+
+
+function loadDefaultContextActions(cardObj)
+  -- handles cases where no play action menu items are required
+  -- is the generic "default" context menu options given to a card on spawn if not in a relevant zone
+  -- default 2 actions: Return (if marketCard tagged), Log
+
+  cardObj.clearContextMenu()
+
+  if not cardObj.hasTag("suit_captain") then
+    if cardObj.hasTag("marketCard") or cardObj.hasTag("suit_incident") or cardObj.hasTag("suit_encounter") then
+      cardObj.addContextMenuItem("Return Card", returnMarketCardViaContext)
+    end
+    cardObj.addContextMenuItem("Log Card", logCardViaContext)
+  end
+end
+
+
+function reloadStagingPerson(cardObj)
+  -- handles reload of person cards in staging for when wesley crusher is promoted/dismissed as DO
+
+  local stagingZone
+  local cardZones = cardObj.getZones()
+  for _, zone in pairs(cardZones) do
+    if zone.getName() == "Zone In Play" then
+      stagingZone = zone
+    end
+  end
+  if stagingZone == nil then return end
+
+  loadContextActions(stagingZone, cardObj)
+end
+
+function loadContextActions(zone, cardObj)
+  -- determines correct set of, and order of context menu actions by card, as determined by it's current relevent zone (or lack of)
+  -- will be called on zone enter/leave for any card
+
+  if zone.getName() ~= "Handzone" and zone.getName() ~= "Zone In Play" and
+     zone.getName() ~= "Zone Deploy Ship" and zone.getName() ~= "Zone Deploy Location" and
+     zone.getName() ~= "Zone Duty Officer" and zone.getName() ~= "Zone Captain" then
+    return
+  end
+
+  -- waits for a 1 second after call to ensure card remains in triggering zone
+  Wait.time(function()
+
+    local cardStillInZone = false
+    for _, zoneObj in pairs(zone.getObjects()) do
+      if zoneObj == cardObj then
+        cardStillInZone = true
+        break
+      end
+    end
+    if not cardStillInZone then loadDefaultContextActions(cardObj) end
+
+    cardObj.clearContextMenu()
+
+    -- load handzone actions
+    if zone.getName() == "Handzone" then
+      if cardObj.hasTag("playAction") then
+        cardObj.addContextMenuItem("Play (Action)", playAction)
+      end
+      if cardObj.hasTag("playAction2") then
+        cardObj.addContextMenuItem("Play 2nd (Action)", playAction2)
+      end
+      if cardObj.hasTag("playAction3") then
+        cardObj.addContextMenuItem("Play 3rd (Action)", playAction3)
+      end
+
+      if cardObj.hasTag("playNoAction") then
+        cardObj.addContextMenuItem("Play (No Action)", playNoAction)
+      end
+      if cardObj.hasTag("playNoAction2") then
+        cardObj.addContextMenuItem("Play 2nd ( No Action)", playNoAction2)
+      end
+      if cardObj.hasTag("playNoAction3") then
+        cardObj.addContextMenuItem("Play 3rd (No Action)", playNoAction3)
+      end
+
+      if cardObj.hasTag("deployAction") then
+        cardObj.addContextMenuItem("Deploy (Action)", deployAction)
+      end
+      if cardObj.hasTag("deployAction2") then
+        cardObj.addContextMenuItem("2nd Deploy (Action)", deployAction2)
+      end
+      if cardObj.hasTag("deployAction3") then
+        cardObj.addContextMenuItem("3rd Deploy (Action)", deployAction3)
+      end
+
+      if cardObj.hasTag("deployNoAction") then
+        cardObj.addContextMenuItem("Deploy (No Action)", deployNoAction)
+      end
+      if cardObj.hasTag("deployNoAction2") then
+        cardObj.addContextMenuItem("2nd Deploy (No Action)", deployNoAction2)
+      end
+      if cardObj.hasTag("deployNoAction3") then
+        cardObj.addContextMenuItem("3rd Deploy (No Action)", deployNoAction3)
+      end
+
+      if cardObj.hasTag("playSupport") then
+        cardObj.addContextMenuItem("Support", playSupport)
+      end
+
+      if cardObj.hasTag("suit_person") then
+        cardObj.addContextMenuItem("Promote Duty Officer", promoteDO)
+      end
+
+      cardObj.addContextMenuItem("Discard Card", discardViaContext)
+
+      if cardObj.hasTag("marketCard") or cardObj.hasTag("suit_incident") or cardObj.hasTag("suit_encounter") then
+       cardObj.addContextMenuItem("Return Card", returnMarketCardViaContext)
+      end
+
+      cardObj.addContextMenuItem("Log Card", logCardViaContext)
+    end
+
+    -- load staging actions
+    if zone.getName() == "Zone In Play" then
+
+      -- need check for Wesley Crusher in DO slot to see if activations/reactions should be added to menus
+      local playerColor = zone.getGMNotes()
+      local wesCheckZone = getObjectbyNameAndNotes("Zone Duty Officer", playerColor)
+      local wesFound = false
+      for _, zoneObj in pairs(wesCheckZone.getObjects()) do
+        if zoneObj.getName() == "Wesley Crusher" then wesFound = true break end
+      end
+
+      if wesFound and cardObj.hasTag("suit_person") then
+        if cardObj.hasTag("playActivationAction") then
+          cardObj.addContextMenuItem("Activate (Action)", playActivationAction)
+        end
+        if cardObj.hasTag("playActivationAction2") then
+          cardObj.addContextMenuItem("2nd Activate (Action)", playActivationAction2)
+        end
+        if cardObj.hasTag("playActivationAction3") then
+          cardObj.addContextMenuItem("3rd Activate (Action)", playActivationAction3)
+        end
+
+        if cardObj.hasTag("playActivation") then
+          cardObj.addContextMenuItem("Activate", playActivation)
+        end
+        if cardObj.hasTag("playActivation2") then
+          cardObj.addContextMenuItem("2nd Activate", playActivation2)
+        end
+        if cardObj.hasTag("playActivation3") then
+          cardObj.addContextMenuItem("3rd Activate", playActivation3)
+        end
+
+        if cardObj.hasTag("playReaction") then
+          cardObj.addContextMenuItem("Reaction", playReaction)
+        end
+
+        if cardObj.hasTag("playReaction2") then
+          cardObj.addContextMenuItem("2nd Reaction", playReaction2)
+        end
+
+        if cardObj.hasTag("playReaction3") then
+          cardObj.addContextMenuItem("3rd Reaction", playReaction3)
+        end
+      end
+
+      if cardObj.hasTag("suit_person") then
+        cardObj.addContextMenuItem("Promote Duty Officer", promoteDO)
+      end
+
+      cardObj.addContextMenuItem("Discard Card", discardViaContext)
+
+      if cardObj.hasTag("marketCard") or cardObj.hasTag("suit_incident") or cardObj.hasTag("suit_encounter") then
+        cardObj.addContextMenuItem("Return Card", returnMarketCardViaContext)
+      end
+
+      cardObj.addContextMenuItem("Log Card", logCardViaContext)
+    end
+
+    -- load deploy zone actions
+    if (zone.getName() == "Zone Deploy Ship" or zone.getName() == "Zone Deploy Location") and
+        not cardObj.hasTag("suit_person") and not cardObj.hasTag("suit_captain") then
+
+      if cardObj.hasTag("playActivationAction") then
+        cardObj.addContextMenuItem("Activate (Action)", playActivationAction)
+      end
+      if cardObj.hasTag("playActivationAction2") then
+        cardObj.addContextMenuItem("2nd Activate (Action)", playActivationAction2)
+      end
+      if cardObj.hasTag("playActivationAction3") then
+        cardObj.addContextMenuItem("3rd Activate (Action)", playActivationAction3)
+      end
+
+      if cardObj.hasTag("playActivation") then
+        cardObj.addContextMenuItem("Activate", playActivation)
+      end
+      if cardObj.hasTag("playActivation2") then
+        cardObj.addContextMenuItem("2nd Activate", playActivation2)
+      end
+      if cardObj.hasTag("playActivation3") then
+        cardObj.addContextMenuItem("3rd Activate", playActivation3)
+      end
+
+      if cardObj.hasTag("playReaction") then
+        cardObj.addContextMenuItem("Reaction", playReaction)
+      end
+
+      if cardObj.hasTag("playReaction2") then
+        cardObj.addContextMenuItem("2nd Reaction", playReaction2)
+      end
+
+      if cardObj.hasTag("playReaction3") then
+        cardObj.addContextMenuItem("3rd Reaction", playReaction3)
+      end
+
+      cardObj.addContextMenuItem("Dismiss Card", dismissViaContext)
+
+      if cardObj.hasTag("marketCard") or cardObj.hasTag("suit_incident") or cardObj.hasTag("suit_encounter") then
+        cardObj.addContextMenuItem("Return Card", returnMarketCardViaContext)
+      end
+
+      cardObj.addContextMenuItem("Log Card", logCardViaContext)
+
+      -- add SNW actions
+      if cardObj.hasTag("suit_location") then
+        local playerColor = zone.getGMNotes()
+        local captainName = getCaptainName(playerColor)
+        if captainName == "None" then return end
+
+        if captainName == "Picard" or captainName == "Sisko" or captainName == "Burnham" or captainName == "Georgiou" or
+          captainName == "Kirk" or captainName == "Archer" or captainName == "Pike" or captainName == "Riker" or captainName == "Freeman" then
+            cardObj.addContextMenuItem("Strange New World", runStrangeNewWorlds)
+        end
+      end
+    end
+
+    -- load duty officer zone actions
+    if zone.getName() == "Zone Duty Officer" and cardObj.hasTag("suit_person") then
+      if cardObj.hasTag("playActivationAction") then
+        cardObj.addContextMenuItem("Activate (Action)", playActivationAction)
+      end
+      if cardObj.hasTag("playActivationAction2") then
+        cardObj.addContextMenuItem("2nd Activate (Action)", playActivationAction2)
+      end
+      if cardObj.hasTag("playActivationAction3") then
+        cardObj.addContextMenuItem("3rd Activate (Action)", playActivationAction3)
+      end
+
+      if cardObj.hasTag("playActivation") then
+        cardObj.addContextMenuItem("Activate", playActivation)
+      end
+      if cardObj.hasTag("playActivation2") then
+        cardObj.addContextMenuItem("2nd Activate", playActivation2)
+      end
+      if cardObj.hasTag("playActivation3") then
+        cardObj.addContextMenuItem("3rd Activate", playActivation3)
+      end
+
+      if cardObj.hasTag("playReaction") then
+        cardObj.addContextMenuItem("Reaction", playReaction)
+      end
+
+      if cardObj.hasTag("playReaction2") then
+        cardObj.addContextMenuItem("2nd Reaction", playReaction2)
+      end
+
+      if cardObj.hasTag("playReaction3") then
+        cardObj.addContextMenuItem("3rd Reaction", playReaction3)
+      end
+
+      cardObj.addContextMenuItem("Dismiss Card", dismissViaContext)
+
+      if cardObj.hasTag("marketCard") or cardObj.hasTag("suit_incident") or cardObj.hasTag("suit_encounter") then
+        cardObj.addContextMenuItem("Return Card", returnMarketCardViaContext)
+      end
+
+      cardObj.addContextMenuItem("Log Card", logCardViaContext)
+    end
+
+    -- load captain zone actions
+    if zone.getName() == "Zone Captain" then
+      if cardObj.hasTag("playActivationAction") then
+        cardObj.addContextMenuItem("Activate (Action)", playActivationAction)
+      end
+      if cardObj.hasTag("playActivationAction2") then
+        cardObj.addContextMenuItem("2nd Activate (Action)", playActivationAction2)
+      end
+      if cardObj.hasTag("playActivationAction3") then
+        cardObj.addContextMenuItem("3rd Activate (Action)", playActivationAction3)
+      end
+
+      if cardObj.hasTag("playActivation") then
+        cardObj.addContextMenuItem("Activate", playActivation)
+      end
+      if cardObj.hasTag("playActivation2") then
+        cardObj.addContextMenuItem("2nd Activate", playActivation2)
+      end
+      if cardObj.hasTag("playActivation3") then
+        cardObj.addContextMenuItem("3rd Activate", playActivation3)
+      end
+
+      if cardObj.hasTag("playReaction") then
+        cardObj.addContextMenuItem("Reaction", playReaction)
+      end
+
+      if cardObj.hasTag("playReaction2") then
+        cardObj.addContextMenuItem("2nd Reaction", playReaction2)
+      end
+
+      if cardObj.hasTag("playReaction3") then
+        cardObj.addContextMenuItem("3rd Reaction", playReaction3)
+      end
+    end
+
+  end, 1)
+
+end
+
+
+
+
+
+
+
+
+
+
+
+function returnMarketCardViaContext(playerColor, _, cardObj)
+  -- handles the return of a market card, same as old pads, via right click context menu
+
+  if playerColor ~= "Blue" and playerColor ~= "Red" then return end
+
+  local cardSuit = (cardObj.hasTag("suit_encounter") and "Encounter") or
+                   (cardObj.hasTag("suit_person") and "Person") or
+                   (cardObj.hasTag("suit_cargo") and "Cargo") or
+                   (cardObj.hasTag("suit_ship") and "Ship") or
+                   (cardObj.hasTag("suit_ally") and "Ally") or
+                   (cardObj.hasTag("suit_incident") and "Incident")
+  local suitColors = {
+    ["Encounter"] = "CDACB7",
+    ["Person"]    = "BFA42C",
+    ["Cargo"]     = "4173B4",
+    ["Ship"]      = "C8C8C8",
+    ["Ally"]      = "CD28C3",
+    ["Incident"]  = "9F110F"
+  }
+  local suitColor = suitColors[cardSuit] or "FFFFFF"
+
+  local deckCheckZone = getObjectbyName("Zone Market " .. cardSuit)
+  if cardSuit == "Encounter" then
+    deckCheckZone = getObjectbyName("Zone Encounter")
+  end
+  if cardSuit == "Incident" then
+    deckCheckZone = getObjectbyName("Zone Incident")
+  end
+  local cardOrDeckFound = false
+  for _, zoneObj in pairs(deckCheckZone.getObjects()) do
+    if zoneObj.type == "Deck" then
+      cardOrDeckFound = true
+      local posDeck = zoneObj.getPosition()
+      posDeck.y = -1.00
+      local rotCard = zoneObj.getRotation()
+      cardObj.setRotation(rotCard)
+      cardObj.setPosition(posDeck)
+      zoneObj.putObject(cardObj)
+      break
+    end
+    if zoneObj.type == "Card" then
+      cardOrDeckFound = true
+      local posDeck = zoneObj.getPosition()
+      posDeck.y = 2.00
+      zoneObj.setPositionSmooth(posDeck, false, true)
+      local rotCard = zoneObj.getRotation()
+      cardObj.setRotation(rotCard)
+      posDeck.y = 1.00
+      Wait.frames(function() cardObj.setPosition(posDeck) end)
+      break
+    end
+  end
+
+  -- if returning to empty market, simply place facedown to appropriate pad
+  if not cardOrDeckFound then
+    local rotEmpty = cardSuit == "Encounter" and { 0.00, 270.00, 180.00 } or { 0.00, 180.00, 180.00 }
+    local posEmpty = {
+      ["Encounter"] = { -12.50, 1.00, 19.25 },
+      ["Person"]    = { -7.50, 1.00, 14.00 },
+      ["Cargo"]     = { -2.50, 1.00, 14.00 },
+      ["Ship"]      = { 2.50, 1.00, 14.00 },
+      ["Ally"]      = { 7.50, 1.00, 14.00 },
+      ["Incident"]  = { 12.50, 1.00, 10.00 },
+    }
+    cardObj.setRotation(rotEmpty)
+    cardObj.setPosition(posEmpty[cardSuit])
+  end
+
+  -- broadcast
+  local playerStr = getPlayerStr(playerColor)
+  local broadcastStr = string.format("%s has returned %s[b][%s]%s[-][/b] to the Market.", playerStr, cardSuit == "Encounter" and "an " or "", suitColor, cardSuit == "Encounter" and "Encounter" or cardObj.getName())
+  broadcastToAll(broadcastStr, "White")
+
+  -- rename deck
+  Wait.time(function()
+
+    for _, zoneObj in pairs(deckCheckZone.getObjects()) do
+      if zoneObj.type == "Deck" then
+        zoneObj.setName(cardSuit .. (cardSuit == "Cargo" and "" or "s") .. " Deck")
+      end
+    end
+
+  end, 1)
+end
+
+
+function logCardViaContext(playerColor, _, cardObj)
+  -- handles the "log" action of a card
+
+  if playerColor ~= "Blue" and playerColor ~= "Red" then return end
+
+  local bagLog = getObjectbyNameAndNotes("Captain's Log", playerColor)
+  bagLog.putObject(cardObj)
+
+  if cardObj.hasTag("suit_location") then
+      local followupStr = string.format("[%s]Reminder[-] - if there are any Beamed cards at %s, right click the bottom Beam Bag button to dismiss all.", Color.fromString(playerColor):toHex(), cardObj.getName())
+
+      Wait.time(function()
+
+        broadcastToAll(followupStr, "White")
+
+      end, 2)
+    end
+end
+
+
+
+function placeStagingCard(actionRequired, playerColor, cardObj, opIndex)
+  -- context menu helper that determines the next available staging slot, places card
+  -- actionRequired parameter is boolean. true will first check for and place an available extra action token, then action token
+  -- false will ignore action tokens
+
+  -- first need to check for action token if actionRequired == true, broadcast unable to perform report if required and not found
+  local actionToken
+  if actionRequired then
+    local checkZone = getObjectbyNameAndNotes("Zone Action Tokens", playerColor)
+
+    -- check for and use extra action tokens first, then if not found, a regular action token
+    for _, zoneObj in pairs(checkZone.getObjects()) do
+      if zoneObj.getName() == "Extra Action Token" then
+        actionToken = zoneObj
+        break
+      end
+    end
+    if actionToken == nil then
+      for _, zoneObj in pairs(checkZone.getObjects()) do
+        if zoneObj.getName() == "Action Token" then
+          actionToken = zoneObj
+          break
+        end
+      end
+    end
+    if actionToken == nil then
+      -- broadcast unable to perform action
+      local playerStr = getPlayerStr(playerColor)
+      local broadcastStr = string.format("%s has no Action Tokens remaining, is unable to perform Action.", playerStr)
+      broadcastToAll(broadcastStr, "White")
+      return
+    end
+  end
+
+  local posStagingCard = playerColor == "Blue" and {
+    { -44.50, 0.96, 2.80 },
+    { -44.50, 0.96, -1.07 },
+    { -44.50, 0.96, -4.99 },
+    { -44.50, 0.96, -8.90 },
+    { -44.50, 0.96, -12.82 },
+    { -44.50, 0.96, -16.74 },
+  } or {
+    { 44.50, 0.96, -2.80 },
+    { 44.50, 0.96, 1.07 },
+    { 44.50, 0.96, 4.99 },
+    { 44.50, 0.96, 8.90 },
+    { 44.50, 0.96, 12.82 },
+    { 44.50, 0.96, 16.74 },
+  }
+
+  -- determine next available free slot in staging
+  local stagingZone = getObjectbyNameAndNotes("Zone In Play", playerColor)
+  local slotTolerance = 0.50
+  local firstAvailableSlot = nil
+
+  for slotNum, slotPos in ipairs(posStagingCard) do
+    local slotOccupied = false
+
+    for _, zoneObj in pairs(stagingZone.getObjects()) do
+      local cardZ = zoneObj.getPosition().z
+
+      if math.abs(cardZ - slotPos[3]) <= slotTolerance then
+        slotOccupied = true
+        break
+      end
+    end
+
+    if not slotOccupied then
+      firstAvailableSlot = slotNum
+      break
+    end
+  end
+  if firstAvailableSlot == nil then
+    local playerStr = getPlayerStr(playerColor)
+    local broadcastStr = string.format("%s: Staging area full, Manually Resolve action.", playerStr)
+    broadcastToAll(broadcastStr, "White")
+    return
+  end
+
+  local rotCardPlacement = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+  local posCardPlacement = posStagingCard[firstAvailableSlot]
+
+  cardObj.setRotation(rotCardPlacement)
+  cardObj.setPosition(posCardPlacement)
+
+  if actionRequired then
+    local rotToken = playerColor == "Blue" and { 0.00, 120.00, 0.00 } or { 0.00, 300.00, 0.00 }
+
+    -- not a world position, each index is relational to cardObj
+    local posToken = playerColor == "Blue" and { -1.44, 0.29, -1.04 } or { 1.44, 0.29, 1.04 }
+
+    local tokenPos = {
+      posCardPlacement[1] + posToken[1],
+      posCardPlacement[2] + posToken[2],
+      posCardPlacement[3] + posToken[3],
+    }
+
+    actionToken.setRotation(rotToken)
+    actionToken.setPositionSmooth(tokenPos, false, true)
+  end
+
+  local playerStr = getPlayerStr(playerColor)
+  local broadcastStr = actionRequired == true and string.format("%s has spent an Action to perform %s Play Operation.", playerStr, cardObj.getName()) or
+                                                  string.format("%s has performed %s Actionless Play Operation.", playerStr, cardObj.getName())
+  broadcastToAll(broadcastStr, "White")
+end
+
+
+function placeDeployCard(actionRequired, playerColor, cardObj, opIndex)
+  -- context menu helper that determines the next available deploy slot, places card
+  -- locations deploy L-R on location pad
+  -- encounters deploy R-L on location pad
+  -- ships deploy L-R on ship pad
+  -- cargo & directives deploy R-L on ship pad
+  -- action parameter is boolean. true will first check for and place an available extra action token, then action token
+  -- false will ignore action tokens
+
+  -- first need to check for action token if action == true, broadcast unable to perform report if required and not found
+  local actionToken
+  if actionRequired then
+    local checkZone = getObjectbyNameAndNotes("Zone Action Tokens", playerColor)
+
+    -- check for and use extra action tokens first, then if not found, a regular action token
+    for _, zoneObj in pairs(checkZone.getObjects()) do
+      if zoneObj.getName() == "Extra Action Token" then
+        actionToken = zoneObj
+        break
+      end
+    end
+    if actionToken == nil then
+      for _, zoneObj in pairs(checkZone.getObjects()) do
+        if zoneObj.getName() == "Action Token" then
+          actionToken = zoneObj
+          break
+        end
+      end
+    end
+    if actionToken == nil then
+      -- broadcast unable to perform action
+      local playerStr = getPlayerStr(playerColor)
+      local broadcastStr = string.format("%s has no Action Tokens remaining, is unable to perform Action.", playerStr)
+      broadcastToAll(broadcastStr, "White")
+      return
+    end
+  end
+
+  local posLocationCard = playerColor == "Blue" and {
+    { -30.00, 0.96, 2.46 },
+    { -30.00, 0.96, -1.46 },
+    { -30.00, 0.96, -5.38 },
+    { -30.00, 0.96, -9.30 },
+    { -30.00, 0.96, -13.20 },
+    { -30.00, 0.96, -17.12 },
+    { -30.00, 0.96, -21.04 },
+  } or {
+    { 30.00, 0.96, -2.46 },
+    { 30.00, 0.96, 1.46 },
+    { 30.00, 0.96, 5.38 },
+    { 30.00, 0.96, 9.30 },
+    { 30.00, 0.96, 13.20 },
+    { 30.00, 0.96, 17.12 },
+    { 30.00, 0.96, 21.04 },
+  }
+
+  local posShipCard = playerColor == "Blue" and {
+    { -38.50, 0.96, 2.46 },
+    { -38.50, 0.96, -1.46 },
+    { -38.50, 0.96, -5.38 },
+    { -38.50, 0.96, -9.30 },
+    { -38.50, 0.96, -13.20 },
+    { -38.50, 0.96, -17.12 },
+    { -38.50, 0.96, -21.04 },
+  } or {
+    { 38.50, 0.96, -2.46 },
+    { 38.50, 0.96, 1.46 },
+    { 38.50, 0.96, 5.38 },
+    { 38.50, 0.96, 9.30 },
+    { 38.50, 0.96, 13.20 },
+    { 38.50, 0.96, 17.12 },
+    { 38.50, 0.96, 21.04 },
+  }
+
+  local cardPositions
+  local deployZone
+  local reverseSlots = false
+
+  if cardObj.hasTag("suit_location") then
+    cardPositions = posLocationCard
+    deployZone = getObjectbyNameAndNotes("Zone Deploy Location", playerColor)
+  elseif cardObj.hasTag("suit_encounter") then
+    cardPositions = posLocationCard
+    deployZone = getObjectbyNameAndNotes("Zone Deploy Location", playerColor)
+    reverseSlots = true
+  elseif cardObj.hasTag("suit_ship") then
+    cardPositions = posShipCard
+    deployZone = getObjectbyNameAndNotes("Zone Deploy Ship", playerColor)
+  elseif cardObj.hasTag("suit_cargo") or cardObj.hasTag("suit_directive") then
+    cardPositions = posShipCard
+    deployZone = getObjectbyNameAndNotes("Zone Deploy Ship", playerColor)
+    reverseSlots = true
+  else
+    return
+  end
+
+  -- determine next available free slot in deploy area
+  local slotTolerance = 0.50
+  local firstAvailableSlot = nil
+
+  if reverseSlots then
+    for slotNum = #cardPositions, 1, -1 do
+      local slotPos = cardPositions[slotNum]
+      local slotOccupied = false
+
+      for _, zoneObj in pairs(deployZone.getObjects()) do
+        local cardZ = zoneObj.getPosition().z
+
+        if math.abs(cardZ - slotPos[3]) <= slotTolerance then
+          slotOccupied = true
+          break
+        end
+      end
+
+      if not slotOccupied then
+        firstAvailableSlot = slotNum
+        break
+      end
+    end
+  else
+    for slotNum, slotPos in ipairs(cardPositions) do
+      local slotOccupied = false
+
+      for _, zoneObj in pairs(deployZone.getObjects()) do
+        local cardZ = zoneObj.getPosition().z
+
+        if math.abs(cardZ - slotPos[3]) <= slotTolerance then
+          slotOccupied = true
+          break
+        end
+      end
+
+      if not slotOccupied then
+        firstAvailableSlot = slotNum
+        break
+      end
+    end
+  end
+
+  if firstAvailableSlot == nil then
+    local playerStr = getPlayerStr(playerColor)
+    local broadcastStr = string.format("%s: Deploy area full, Manually Resolve action.", playerStr)
+    broadcastToAll(broadcastStr, "White")
+    return
+  end
+
+  local rotCardPlacement = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+  local posCardPlacement = cardPositions[firstAvailableSlot]
+
+  cardObj.setRotation(rotCardPlacement)
+  cardObj.setPosition(posCardPlacement)
+
+  if actionRequired then
+    local rotToken = playerColor == "Blue" and { 0.00, 120.00, 0.00 } or { 0.00, 300.00, 0.00 }
+
+    -- not a world position, each index is relational to cardObj
+    local posToken = playerColor == "Blue" and { -1.44, 0.29, -1.04 } or { 1.44, 0.29, 1.04 }
+
+    local tokenPos = {
+      posCardPlacement[1] + posToken[1],
+      posCardPlacement[2] + posToken[2],
+      posCardPlacement[3] + posToken[3],
+    }
+
+    actionToken.setRotation(rotToken)
+    actionToken.setPositionSmooth(tokenPos, false, true)
+  end
+
+  local playerStr = getPlayerStr(playerColor)
+  local broadcastStr = actionRequired == true and string.format("%s has spent an Action to perform %s Deploy Operation.", playerStr, cardObj.getName()) or
+                                                  string.format("%s has performed %s Actionless Deploy Operation.", playerStr, cardObj.getName())
+  broadcastToAll(broadcastStr, "White")
+  local controlText
+  if cardObj.hasTag("suit_location") then
+    controlText = getControlText(cardObj.getName())
+  end
+  if controlText ~= nil then
+    Wait.time(function()
+
+      local controlStr = string.format("Location Control Effect: %s", controlText)
+      broadcastToAll(controlStr, "White")
+
+    end, 1)
+  end
+end
+
+
+function exhaustCardAction(actionRequired, playerColor, cardObj, opType, opIndex)
+  -- handles the exhaust action of a card object
+
+  local actionToken
+  if actionRequired then
+    local checkZone = getObjectbyNameAndNotes("Zone Action Tokens", playerColor)
+
+    -- check for and use extra action tokens first, then if not found, a regular action token
+    for _, zoneObj in pairs(checkZone.getObjects()) do
+      if zoneObj.getName() == "Extra Action Token" then
+        actionToken = zoneObj
+        break
+      end
+    end
+    if actionToken == nil then
+      for _, zoneObj in pairs(checkZone.getObjects()) do
+        if zoneObj.getName() == "Action Token" then
+          actionToken = zoneObj
+          break
+        end
+      end
+    end
+    if actionToken == nil then
+      -- broadcast unable to perform action
+      local playerStr = getPlayerStr(playerColor)
+      local broadcastStr = string.format("%s has no Action Tokens remaining, is unable to perform Action.", playerStr)
+      broadcastToAll(broadcastStr, "White")
+      return
+    end
+  end
+
+  local rotInitial = cardObj.getRotation()
+  local rotExhausted = rotInitial
+
+  if not cardObj.hasTag("currentDutyOfficer") then
+    rotExhausted = playerColor == "Blue" and { 0.00, 315.00, 0.00 } or { 38.50, 0.96, -2.51 }
+  elseif cardObj.hasTag("currentDutyOfficer") then
+    rotExhausted = playerColor == "Blue" and { 0.00, 225.00, 0.00 } or { 0.00, 45.00, 0.00 }
+  end
+
+  cardObj.setRotationSmooth(rotExhausted, false, true)
+
+  -- handle the removal of any activation/reaction etc actions
+  -- leave dismiss, log, return (will need refresh on end turn refresh)
+  cardObj.clearContextMenu()
+
+  if not cardObj.hasTag("suit_captain") then
+    cardObj.addContextMenuItem("Dismiss Card", dismissViaContext)
+
+    if cardObj.hasTag("marketCard") or cardObj.hasTag("suit_incident") or cardObj.hasTag("suit_encounter") then
+      cardObj.addContextMenuItem("Return Card", returnMarketCardViaContext)
+    end
+
+    cardObj.addContextMenuItem("Log Card", logCardViaContext)
+  end
+
+  -- place action token if required
+  if actionRequired then
+    local rotToken = playerColor == "Blue" and { 0.00, 120.00, 0.00 } or { 0.00, 300.00, 0.00 }
+
+    -- not a world position, each index is relational to cardObj
+    local posToken = playerColor == "Blue" and { -1.44, 0.29, -1.04 } or { 1.44, 0.29, 1.04 }
+
+    local posCard = cardObj.getPosition()
+    local tokenPos = {
+      posCard[1] + posToken[1],
+      posCard[2] + posToken[2],
+      posCard[3] + posToken[3],
+    }
+
+    actionToken.setRotation(rotToken)
+    actionToken.setPositionSmooth(tokenPos, false, true)
+  end
+
+  local playerStr = getPlayerStr(playerColor)
+  local broadcastStr = string.format("%s has exhausted %s for %s.", playerStr, cardObj.getName(), opType)
+  broadcastToAll(broadcastStr, "White")
+end
+
+
+
+function playAction(playerColor, _, cardObj)
+  -- handles the broadcast report of selected card's play requiring an action
+
+  placeStagingCard(true, playerColor, cardObj, 1)
+
+end
+
+
+function playAction2(playerColor, _, cardObj)
+  -- handles the broadcast report of selected card's second play requiring an action
+
+  placeStagingCard(true, playerColor, cardObj, 2)
+
+end
+
+
+function playAction3(playerColor, _, cardObj)
+  -- handles the broadcast report of selected card's third play requiring an action
+
+  placeStagingCard(true, playerColor, cardObj, 3)
+
+end
+
+
+function playNoAction(playerColor, _, cardObj)
+  -- handles the broadcast report of selected card's play not requiring an action
+
+  placeStagingCard(false, playerColor, cardObj, 1)
+
+end
+
+
+function playNoAction2(playerColor, _, cardObj)
+  -- handles the broadcast report of selected card's second play not requiring an action
+
+  placeStagingCard(false, playerColor, cardObj, 2)
+
+end
+
+
+function playNoAction3(playerColor, _, cardObj)
+  -- handles the broadcast report of selected card's third play not requiring an action
+
+  placeStagingCard(false, playerColor, cardObj, 3)
+
+end
+
+
+function deployAction(playerColor, _, cardObj)
+  -- handles the broadcast report of selected card's deploy requiring an action
+
+  placeDeployCard(true, playerColor, cardObj, 1)
+
+end
+
+
+function deployAction2(playerColor, _, cardObj)
+  -- handles the broadcast report of selected card's second deploy requiring an action
+
+  placeDeployCard(true, playerColor, cardObj, 2)
+
+end
+
+
+function deployAction3(playerColor, _, cardObj)
+  -- handles the broadcast report of selected card's third deploy requiring an action
+
+  placeDeployCard(true, playerColor, cardObj, 3)
+
+end
+
+
+function deployNoAction(playerColor, _, cardObj)
+  -- handles the broadcast report of selected card's deploy not requiring an action
+
+  placeDeployCard(false, playerColor, cardObj, 1)
+
+end
+
+
+function deployNoAction2(playerColor, _, cardObj)
+  -- handles the broadcast report of selected card's second deploy not requiring an action
+
+  placeDeployCard(false, playerColor, cardObj, 2)
+
+end
+
+
+function deployNoAction3(playerColor, _, cardObj)
+  -- handles the broadcast report of selected card's third deploy not requiring an action
+
+  placeDeployCard(false, playerColor, cardObj, 3)
+
+end
+
+
+function playSupport(playerColor, _, cardObj)
+  -- handles the broadcast report of selected card's Support actions
+
+  placeStagingCard(false, playerColor, cardObj)
+
+end
+
+
+function playActivation(playerColor, _, cardObj)
+  -- handles broadcast report & card exhaust of selected card's no action activation
+
+  exhaustCardAction(false, playerColor, cardObj, "Activation", 1)
+
+end
+
+
+function playActivation2(playerColor, _, cardObj)
+  -- handles broadcast report & card exhaust of selected card's 2nd no action activation
+
+  exhaustCardAction(false, playerColor, cardObj, "Activation", 2)
+
+end
+
+
+function playActivation3(playerColor, _, cardObj)
+  -- handles broadcast report & card exhaust of selected card's 3rd no action activation
+
+  exhaustCardAction(false, playerColor, cardObj, "Activation", 3)
+
+end
+
+
+function playActivationAction(playerColor, _, cardObj)
+  -- handles broadcast report & card exhaust of selected card's activation requiring action
+
+  exhaustCardAction(true, playerColor, cardObj, "Activation requiring Action", 1)
+
+end
+
+
+function playActivationAction2(playerColor, _, cardObj)
+  -- handles broadcast report & card exhaust of selected card's 2nd activation requiring action
+
+  exhaustCardAction(true, playerColor, cardObj, "Activation requiring Action", 2)
+
+end
+
+
+function playActivationAction3(playerColor, _, cardObj)
+  -- handles broadcast report & card exhaust of selected card's 3rd activation requiring action
+
+  exhaustCardAction(true, playerColor, cardObj, "Activation requiring Action", 3)
+
+end
+
+
+function playReaction(playerColor, _, cardObj)
+  -- handles broadcast report & card exhaust of selected card's reaction
+
+  exhaustCardAction(false, playerColor, cardObj, "Reaction", 1)
+
+end
+
+
+function playReaction2(playerColor, _, cardObj)
+  -- handles broadcast report & card exhaust of selected card's 2nd reaction
+
+  exhaustCardAction(false, playerColor, cardObj, "Reaction", 2)
+
+end
+
+
+function playReaction3(playerColor, _, cardObj)
+  -- handles broadcast report & card exhaust of selected card's 3rd reaction
+
+  exhaustCardAction(false, playerColor, cardObj, "Reaction", 3)
+
+end
+
+
+function promoteDO(playerColor, _, cardObj)
+  -- handles the promotion action of current DO
+  -- ** will need a check similar to maxHandSize() to determine max DO count
+  -- if max DO count is met, remove current DO and promote cardObj
+  -- if maxDO count is NOT met, determine position slot & place
+
+  local posDutyCard = playerColor == "Blue" and {
+    { -30.00, 0.96, 10.11 },
+    { -30.00, 0.96, 14.03 },
+    { -30.00, 0.96, 17.94 },
+    { -30.00, 0.96, 21.86 },
+  } or {
+    { 30.00, 0.96, -10.11 },
+    { 30.00, 0.96, -14.03 },
+    { 30.00, 0.96, -17.94 },
+    { 30.00, 0.96, -21.86 },
+  }
+
+  -- determine next available free slot in staging
+  local dutyZone = getObjectbyNameAndNotes("Zone Duty Officer", playerColor)
+  local slotTolerance = 0.50
+  local firstAvailableSlot = nil
+
+  for slotNum, slotPos in ipairs(posDutyCard) do
+    local slotOccupied = false
+
+    for _, zoneObj in pairs(dutyZone.getObjects()) do
+      local cardZ = zoneObj.getPosition().z
+
+      if math.abs(cardZ - slotPos[3]) <= slotTolerance then
+        slotOccupied = true
+        break
+      end
+    end
+
+    if not slotOccupied then
+      firstAvailableSlot = slotNum
+      break
+    end
+  end
+  if firstAvailableSlot == nil then
+    local playerStr = getPlayerStr(playerColor)
+    local broadcastStr = string.format("%s: Duty Zone area full, Manually Resolve action.", playerStr)
+    broadcastToAll(broadcastStr, "White")
+    return
+  end
+
+  local rotCardPlacement = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+  local posCardPlacement = posDutyCard[firstAvailableSlot]
+
+  cardObj.setRotation(rotCardPlacement)
+  cardObj.setPosition(posCardPlacement)
+
+  -- no broadcast required, broadcast happens on drop onto pad (on pad obj script)
+end
+
+
+function discardViaContext(playerColor, _, cardObj)
+  -- handles the discard actions and report of selected card
+
+  local rotDiscard = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+  local posDiscard = playerColor == "Blue" and { -44.43, 0.96, -21.00 } or { 44.43, 0.96, 21.00 }
+
+  cardObj.setRotation(rotDiscard)
+  cardObj.setPosition(posDiscard)
+
+  local playerStr = getPlayerStr(playerColor)
+  local broadcastStr = string.format("%s has discarded %s.", playerStr, cardObj.getName())
+  broadcastToAll(broadcastStr, "White")
+end
+
+
+function dismissViaContext(playerColor, _, cardObj)
+  -- handles the dismiss actions and report of selected card
+
+  if cardObj.hasTag("suit_ship") then
+    shipObj = getObjectbyNameAndType(cardObj.getName(), "Tileset")
+    dismissShip(cardObj, shipObj)
+  elseif not cardObj.hasTag("suit_ship") then
+    local rotDiscard = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+    local posDiscard = playerColor == "Blue" and { -44.43, 0.96, -21.00 } or { 44.43, 0.96, 21.00 }
+
+    cardObj.setRotation(rotDiscard)
+    cardObj.setPosition(posDiscard)
+
+    local playerStr = getPlayerStr(playerColor)
+    local broadcastStr = string.format("%s has dismissed %s.", playerStr, cardObj.getName())
+    broadcastToAll(broadcastStr, "White")
+
+    if cardObj.hasTag("suit_location") then
+      local followupStr = string.format("[%s]Reminder[-] - if there are any Beamed cards, right click the bottom Beam Bag button to dismiss all.", Color.fromString(playerColor):toHex())
+
+      Wait.time(function()
+
+        broadcastToAll(followupStr, "White")
+
+      end, 1)
+    end
+  end
+end
+
+
+function runStrangeNewWorlds(playerColor, _, cardObj)
+  -- handles automated return of away teams & dismissal of ships & logging of beamed cards on SNW play
+
+  -- first, need to detect a shipObj on the card
+  local shipObj
+  local cardPos = cardObj.getPosition()
+
+  for _, object in pairs(getObjects()) do
+    if object.hasTag("snap_ship") then
+      local objPos = object.getPosition()
+      local xDistance = math.abs(objPos.x - cardPos.x)
+      local zDistance = math.abs(objPos.z - cardPos.z)
+
+      if xDistance <= 3.5 and zDistance <= 1.25 then
+        shipObj = object
+      end
+    end
+  end
+
+  -- then, need to detect an away team or stack
+  local awayObjs = {}
+  local tokenTag = "away_" .. string.lower(playerColor)
+
+  for _, object in pairs(getObjects()) do
+    if object.hasTag(tokenTag) then
+      local objPos = object.getPosition()
+      local xDistance = math.abs(objPos.x - cardPos.x)
+      local zDistance = math.abs(objPos.z - cardPos.z)
+
+      if xDistance <= 3.5 and zDistance <= 1.25 then
+        table.insert(awayObjs, object)
+      end
+    end
+  end
+
+  -- return out if conditions not met
+  if #awayObjs == 0 then
+    broadcastToAll("No Away Team found on Location.")
+    return
+  end
+  if shipObj == nil then
+    broadcastToAll("No Ship found on Location.")
+    return
+  end
+
+  -- return away teams found on planet
+  local rotAT = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+  local posAT = playerColor == "Blue" and { -28.75, 1.50, 6.30 } or { 28.75, 1.50, -6.30 }
+  for _, obj in pairs(awayObjs) do
+    obj.setRotation(rotAT)
+    obj.setPositionSmooth(posAT, false, true)
+  end
+
+  -- dismiss found ship
+  shipCard = getObjectbyNameAndType(cardObj.getName(), "Card")
+  dismissShip(shipCard, shipObj)
+
+  -- log location card, any cards found in associated beam bag
+  local posSNW = cardObj.getPosition()
+  local beamBags = {}
+  for _, object in pairs(getObjects()) do
+    if object.getName() == "Beamed Cards" and object.getGMNotes() == playerColor then
+      table.insert(beamBags, object)
+    end
+  end
+  local beamBag = getAssociatedBeamBag(posSNW, beamBags, playerColor)
+  local logBag = getObjectbyNameAndNotes("Captain's Log", playerColor)
+
+  logBag.putObject(cardObj)
+  if beamBag ~= nil then
+    for i = 1, #beamBag.getObjects() do
+      local logTarget = beamBag.takeObject()
+      logBag.putObject(logTarget)
+    end
+  end
+
+  -- deal 2 facedown encounters (if possible) to above ATs
+  local rotEncounters = playerColor == "Blue" and { 0.00, 270.00, 180.00 } or { 0.00, 90.00, 180.00 }
+  local posEncounters = playerColor == "Blue" and {
+    { -24.11, 1.00, 9.76 },
+    { -24.11, 1.00, 5.86 },
+  } or {
+    { 24.11, 1.00, -9.76 },
+    { 24.11, 1.00, -5.86 },
+  }
+  local checkZone = getObjectbyName("Zone Encounter")
+  for _, zoneObj in pairs(checkZone.getObjects()) do
+    if zoneObj.type == "Deck" then
+      if #zoneObj.getObjects() > 2 then
+        for i = 1, 2 do
+          local encounterCard = zoneObj.takeObject()
+          encounterCard.setRotation(rotEncounters)
+          encounterCard.setPositionSmooth(posEncounters[i])
+        end
+      elseif #zoneObj.getObject() == 2 then
+        local encounterCard = zoneObj.takeObject()
+        encounterCard.setRotation(rotEncounters)
+        encounterCard.setPositionSmooth(posEncounters[1])
+        Wait.time(function()
+
+          for _, nestedZoneObj in pairs(checkZone.getObjects()) do
+            if nestedZoneObj.type == "Card" then
+              local nestedEncounterCard = zoneObj.takeObject()
+              nestedEncounterCard.setRotation(rotEncounters)
+              nestedEncounterCard.setPositionSmooth(posEncounters[2])
+            end
+          end
+
+        end, 0.5)
+      end
+    elseif zoneObj.type == "Card" then
+      local encounterCard = zoneObj.takeObject()
+      encounterCard.setRotation(rotEncounters)
+      encounterCard.setPositionSmooth(posEncounters[1])
+      Wait.time(function()
+
+        broadcastToAll("There was only 1 card remaining in the Encounter deck.")
+
+      end, 2)
+    end
+  end
+
+  -- broadcast instructions to right click > return one
+  local playerStr = getPlayerStr(playerColor)
+  local broadcastStr = string.format("%s has declared %s a Strange New World! Encounters have been dealt, if available. Hold Alt + Shift while hovering over the facedown cards, then, Right click > Return to return unselected Encounter.", playerStr, cardObj.getName())
+  broadcastToAll(broadcastStr, "White")
+end

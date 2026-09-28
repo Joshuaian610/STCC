@@ -1,10 +1,6 @@
 -- contains functions related to the Neutral Zone actions
 
 
-playerarea_color   = "Blue"
-replace_drop_loc   = {0.00, 2.00, -7.00}
-location_checkzone = getObjectFromGUID("65beaa")
-
 
 function initButtonControlNZLocation(buttonObj)
   buttonObj.clearButtons()
@@ -63,6 +59,16 @@ function controlNZLocation(buttonObj, _, _)
       end
       broadcastToAll(broadcastStr, "White")
 
+      local controlText = getControlText(controlledLocation)
+      if controlText ~= nil then
+        local controlStr = string.format("%s Control Effect: %s", controlledLocation, controlText)
+        Wait.time(function()
+
+          broadcastToAll(controlStr, "White")
+
+        end, 0.5)
+      end
+
     end, 0.5)
   else
     return
@@ -89,11 +95,22 @@ function returnPlayerNZObjects(buttonArea, playerColor, isBot)
     elseif zoneObj.hasTag('snap_ship') then
 
       -- account for R.I.S. Talvath
-      if zoneObj.getName() == "R.I.S. Talvath" then
+      if zoneObj.getName() == "R.I.S. Talvath" and not checkPlayerColorIsBot(playerColor) then
 
         local cardObj = getObjectbyNameAndType("R.I.S. Talvath", "Card")
         local cardPos = cardObj.getPosition()
         local dilithiumOnTalvathCount = 0
+        local isBurnham = getCaptainName(playerColor) == "Burnham"
+        local hasInertDilithium = false
+        if isBurnham then
+          for _, dutyZoneObj in pairs(getObjectbyNameAndNotes("Zone Duty Officer", playerColor).getObjects()) do
+            if dutyZoneObj.getName() == "Inert Dilithium" then
+              hasInertDilithium = true
+              break
+            end
+          end
+        end
+
         for _, object in pairs(getObjects()) do
           if object.getName() == "Dilithium Token" then
 
@@ -103,25 +120,32 @@ function returnPlayerNZObjects(buttonArea, playerColor, isBot)
 
             if xDistance <= 3.5 and zDistance <= 1.75 then
               dilithiumOnTalvathCount = dilithiumOnTalvathCount + 1
-              object.destruct()
+              if not (isBurnham and hasInertDilithium) then
+                object.destruct()
+              end
             end
           end
         end
 
-        if dilithiumOnTalvathCount > 0 then
+        local playerStr = getPlayerStr(playerColor)
+        local gloryCounter = getObjectbyName("Glory Counter " .. playerColor)
+        gloryCounter.call("pullStardateGlory", playerColor)
+
+        if not (isBurnham and hasInertDilithium) then
           local counter = getObjectbyName("Dilithium Counter " .. playerColor)
 
           if counter then
             local oldVal = counter.getVar("val")
             local newVal = oldVal + dilithiumOnTalvathCount
             counter.call("setValue", newVal)
-            local gloryCounter = getObjectbyName("Glory Counter " .. playerColor)
-            gloryCounter.call("pullStardateGlory", playerColor)
 
-            local playerStr = getPlayerStr(playerColor)
             local broadcastStr = string.format("%s - R.I.S. Talvath Dismissed during Control Step, gained 1 Glory, and %d Dilithium from card. (%d > %d)", playerStr, dilithiumOnTalvathCount, oldVal, newVal)
             Wait.time(function() broadcastToAll(broadcastStr, "White") end, 2)
           end
+
+        elseif (isBurnham and hasInertDilithium) then
+          local broadcastStr = string.format("%s - R.I.S. Talvath Dismissed during Control Step, gained 1 Glory. Place remaining %d Dilithium to Inert Dilithium.", playerStr, dilithiumOnTalvathCount)
+          broadcastToAll(broadcastStr, "White")
         end
       end
 
@@ -156,11 +180,25 @@ function returnOtherPlayerNZObjects(buttonArea, otherPlayerColor, isBot)
 
       -- account for R.I.S. Talvath
       local cardObj
-      if zoneObj.getName() == "R.I.S. Talvath" then
+      if zoneObj.getName() == "R.I.S. Talvath" and not checkPlayerColorIsBot(otherPlayerColor) then
 
         cardObj = getObjectbyNameAndType("R.I.S. Talvath", "Card")
         local cardPos = cardObj.getPosition()
         local dilithiumOnTalvathCount = 0
+        local isBurnham = getCaptainName(otherPlayerColor) == "Burnham"
+        local hasInertDilithium = false
+        if isBurnham then
+          for _, dutyZoneObj in pairs(getObjectbyNameAndNotes("Zone Duty Officer", otherPlayerColor).getObjects()) do
+            if dutyZoneObj.getName() == "Inert Dilithium" then
+              hasInertDilithium = true
+              break
+            end
+          end
+        end
+        local playerStr = getPlayerStr(otherPlayerColor)
+        local gloryCounter = getObjectbyName("Glory Counter " .. otherPlayerColor)
+        gloryCounter.call("pullStardateGlory", otherPlayerColor)
+
         for _, object in pairs(getObjects()) do
           if object.getName() == "Dilithium Token" then
 
@@ -170,27 +208,31 @@ function returnOtherPlayerNZObjects(buttonArea, otherPlayerColor, isBot)
 
             if xDistance <= 3.5 and zDistance <= 1.75 then
               dilithiumOnTalvathCount = dilithiumOnTalvathCount + 1
-              object.destruct()
+              if not (isBurnham and hasInertDilithium) then
+                object.destruct()
+              end
             end
           end
         end
 
-        if dilithiumOnTalvathCount > 0 then
+        if not (isBurnham and hasInertDilithium) then
           local counter = getObjectbyName("Dilithium Counter " .. otherPlayerColor)
 
           if counter then
             local oldVal = counter.getVar("val")
             local newVal = oldVal + dilithiumOnTalvathCount
             counter.call("setValue", newVal)
-            local gloryCounter = getObjectbyName("Glory Counter " .. otherPlayerColor)
-            gloryCounter.call("pullStardateGlory", otherPlayerColor)
 
-            local playerStr = getPlayerStr(otherPlayerColor)
             local broadcastStr = string.format("%s - R.I.S. Talvath Dismissed during Control Step, gained 1 Glory, and %d Dilithium from card. (%d > %d)", playerStr, dilithiumOnTalvathCount, oldVal, newVal)
             Wait.time(function() broadcastToAll(broadcastStr, "White") end, 2)
           end
+
+        elseif (isBurnham and hasInertDilithium) then
+          local broadcastStr = string.format("%s - R.I.S. Talvath Dismissed during Control Step, gained 1 Glory. Place remaining %d Dilithium to Inert Dilithium.", playerStr, dilithiumOnTalvathCount)
+          broadcastToAll(broadcastStr, "White")
         end
       end
+
       local shipObj = zoneObj
       cardObj = getObjectbyNameAndType(shipObj.getName(), "Card")
 
@@ -274,7 +316,6 @@ function takeControlledLocation(buttonArea, playerColor, isBot)
   -- returns either the found & placed NZ location card (for broadcast in wrapper), or, nil
 
   local controlledLocation = nil
-  local replacementLocation = nil
   local nzCheckZone = getObjectbyName("Zone NZ Location " .. buttonArea)
   local locationCheckZone = getObjectbyNameAndNotes("Zone Deploy Location", playerColor)
   local rotReturn = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
@@ -374,4 +415,110 @@ function replaceTakenLocation(buttonArea, playerColor, isBot)
   end
   local replacementCardName = replacementCard ~= nil and replacementCard.getName() or nil
   return replacementCardName
+end
+
+
+function getControlText(cardName)
+  -- simply returns the relevent control action text per Location
+  local controlActions = {
+    -- in order of periodic's database
+
+    -- picard
+    ["Farpoint Station"] = "Gain 1 Research.",
+    ["Daystrom Institute"] = "You may scan for a Synthetic.",
+    ["Starbase 74"] = "Find a Person. You may discard a different card to free play the found card.",
+
+    -- shran
+    ["Andoria"] = "If you have an Away Team here, draw a card. If you have 3+ total Away Teams on 1 or more controlled Location, draw a card.",
+    ["Weytahn"] = "You may free play a Cargo or a Ship.",
+    ["Coridan"] = "You may discard 2 cards to gain 2 Dilithium and 2 Latinum.",
+
+    -- koloth
+    ["Qo'nos"] = "Gain 1 Influence.",
+    ["Rura Penthe"] = "Gain 2 Dilithium.",
+    ["Boreth"] = "Find any card and free play it.",
+
+    -- sisko
+    ["The Wormhole"] = "Look at the top 3 Locations and put them on the top and/or the bottom of their deck in any order.",
+    ["Starbase 375"] = "You may find a Ship.",
+
+    -- sela
+    ["Remus"] = "Force your opponent to discard a card.",
+    ["Romulus"] = "You may free play a Ship.",
+
+    -- burnham
+    ["Ni'Var"] = "You may find [i]Inspire[/i] OR scan for an Ambassador.",
+    ["Earth"] = "You may gain a Person.",
+    ["Theta Zeta"] = "Recrystallize all Dilithium. Log [i]Inert Dilithium[-] (from play). Gain 4 Glory.",
+
+    -- georgiou
+    ["Vulcan Science Academy"] = "You may gain a Person. If the gained card is Vulcan, gain 2 Dilithium. If the gained card is Scientist, gain 1 Glory. If the gained card has both traits, gain both rewards.",
+    ["Kaminar"] = "Find a Kelpian. If the found card is a Person, you may promote them to Duty Officer.",
+    ["Binary Stars Comms Relay"] = "Up to three times: log a Starfleet from your hand to scan for a Klingon.",
+
+    -- soval
+    ["Paan Mokar"] = "You may free play a Cargo/Ship.",
+    ["Mount Seleya"] = "Draw a card for each Vulcan in your Log.",
+
+    -- kirk
+    ["Vulcan"] = "You may find a Vulcan. You may draw [i]Utilize[/i] from your Discard pile. You may free play an Incident.",
+    ["Automated Repair Station"] = "You may beam a Person here to scan 1 of Ship.",
+
+    -- rebner
+    ["Pakled Planet"] = "Find a Helmet, except in your Reserve deck.",
+    ["Karzill VI"] = "You may free play a Ship.",
+
+    -- khan
+    ["Vacated Regula I"] = "You may take an Incident to mark one trait of a card in the Junk pile.",
+    ["Mutara Nebula"] = "No effect.",
+
+    -- pike
+    ["Rigel VII"] = "Draw a card. You may beam a card here from your hand or Discard pile.",
+
+    -- riker
+    ["Starbase 25"] = "You may exhaust the [i]U.S.S. Titan[/i] to gain 1 Influence. You may spend 1 Dilithium to send an Away Team here.",
+    ["Nepenthe"] = "You may scan for a Synthetic.",
+
+    -- freeman
+    ["Douglas Station"] = "You may gain a Person. You may log a card from your hand or Discard pile.",
+    ["The Farm"] = "You may free play an Incident.",
+
+    -- Base commons
+    ["Amargosa Observatory"] = "You may gain a Person. If it is Scientist/Engineer gain 1 Glory.",
+    ["Ancient Relay Station"] = "You may put a card on the top of your deck and spend an action to enlist a Development.",
+    ["Archer IV"] = "No effect.",
+    ["Betazed"] = "Gain 2 Latinum.",
+    ["Corvan II"] = "No effect.",
+    ["Delta Vega"] = "No effect.",
+    ["Dozaria"] = "Gain 3 Dilithium.",
+    ["Indri VIII"] = " Gain an Action.",
+    ["Risa"] = "Find up to 3 Persons, except in your Reserve deck, and beam them here.",
+    ["Tulgana IV"] = "You may junk up to 2 cards from the Market.",
+    ["Ba'ku"] = "You may beam any number of Person here from your hand or Discard pile.",
+    ["Deep Space K-7"] = "No effect.",
+    ["Derna"] = "You may spend 2 Dilithium to scan for either Weapon or Doctor. Draw a card.",
+    ["Freecloud"] = "You may spend 1 Latinum to scan for Business.",
+    ["Kelvas Docks"] = "No effect.",
+    ["Memory Alpha"] = "You may log a card. You may duplicate a play operation of a Person / Cargo / Ally / Directive from your Log.",
+    ["Regula I"] = "ou may find a Scientist OR you may spend 3 Dilithium to scan for Scientist.",
+    ["Solum"] = "Take an Incident and put it on the bottom of your Draw deck.",
+    ["Verex III"] = "Gain 1 Glory.",
+    ["Xahea"] = "No effect.",
+
+    -- TBG commons
+    ["Argus Array"] = "No effect.",
+    ["Cold Station 12"] = "You may beam a card from your hand or Discard pile here.",
+    ["Denaxi Depot"] = "You may discard a card to send an Away Team here. If the discarded card is Business, gain 2 Latinum.",
+    ["Tahal-Meeroj"] = "You may enlist a Reserve. Draw 2 cards.",
+    ["Azati Prime"] = "You may put a card on the top of your deck to gain a Cargo/Ship. If the gained card is Weapon, gain 2 Glory.",
+    ["Babel One"] = "No effect.",
+    ["Khitomer"] = "You may free play a Starfleet.",
+    ["Tanuga IV"] = "You may spend 3 Dilithium to scan for either a Scientist or a Weapon.",
+    ["Tellar Prime"] = "No effect.",
+
+    -- second contact locations
+    ["Krulmuth-B"] = "You may take an Incident to scan for an Orion.",
+    ["Orion"] = "You may spend 1 latinum to gain a Ship from the top of the deck, and free play it, if able.",
+  }
+  return controlActions[cardName]
 end

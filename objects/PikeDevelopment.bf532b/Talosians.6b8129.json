@@ -45,7 +45,8 @@
     "playNoAction",
     "playNoAction2",
     "snap_card",
-    "suit_ally"
+    "suit_ally",
+    "trait_telepath"
   ],
   "Tooltip": true,
   "Transform": {

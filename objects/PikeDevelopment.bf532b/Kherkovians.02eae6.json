@@ -45,7 +45,10 @@
     "playAction",
     "playNoAction",
     "snap_card",
-    "suit_ally"
+    "suit_ally",
+    "trait_alien",
+    "trait_anomaly",
+    "trait_doctor"
   ],
   "Tooltip": true,
   "Transform": {

@@ -48,7 +48,8 @@
     "playReaction",
     "snap_card",
     "suit_person",
-    "trait_doctor"
+    "trait_doctor",
+    "trait_nx01"
   ],
   "Tooltip": true,
   "Transform": {

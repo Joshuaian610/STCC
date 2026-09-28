@@ -154,6 +154,7 @@ function deployShip(_, value, _)
 
   local bagShipFigures = getObjectbyName("Ship Figurine Bag")
   for _, bagObj in pairs(bagShipFigures.getObjects()) do
+
     if bagObj.name == shipCard.getName() then
       foundShip = bagShipFigures.takeObject({ guid = bagObj.guid })
       break

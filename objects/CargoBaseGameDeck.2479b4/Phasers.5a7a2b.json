@@ -48,6 +48,7 @@
     "playReaction",
     "snap_card",
     "suit_cargo",
+    "trait_ongoing",
     "trait_security",
     "trait_starfleet",
     "trait_weapon"

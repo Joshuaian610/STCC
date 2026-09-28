@@ -47,7 +47,10 @@
     "playActivation2",
     "skill_research",
     "snap_card",
-    "suit_person"
+    "suit_person",
+    "trait_engineer",
+    "trait_human",
+    "trait_starfleet"
   ],
   "Tooltip": true,
   "Transform": {

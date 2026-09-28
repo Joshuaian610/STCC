@@ -36,7 +36,8 @@ function createSearchButton()
   -- both this and the counter should perform same functionality
 
   local position = self.getName() == "Beamed Cards" and { 0, 0.17, 0.70 } or { 0, 0.17, 0.02 }
-  local height = self.getName() == "Beamed Cards" and 145 or 450
+  local height = self.getName() == "Beamed Cards" and 145 or 380
+  local width = self.getName() == "Beamed Cards" and 450 or 380
   local tooltip = self.getName() == "Beamed Cards" and
                   "Left click to search Beamed Cards, Right click to dismiss all Beamed Cards." or
                   "Click to search Captain's Log."
@@ -47,7 +48,7 @@ function createSearchButton()
     label          = "",
     position       = position,
     rotation       = { 0, 180, 0 },
-    width          = 450,
+    width          = width,
     height         = height,
     scale          = { 2.3, 2.3, 2.3 },
     color          = { 1, 1, 1, .2 },

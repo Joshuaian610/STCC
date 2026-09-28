@@ -42,8 +42,8 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "playReaction",
     "cleanup_target",
+    "playReaction",
     "snap_card",
     "suit_status"
   ],

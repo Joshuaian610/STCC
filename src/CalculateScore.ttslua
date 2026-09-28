@@ -310,8 +310,11 @@ function getEndgameCount()
 
       -- Genesis Device: score the points from completed missions again
       elseif cardList[i] == "Genesis Device" then
-        endgameCardList, notebookStr = checkGenesisDevice()
+        endgameCardList, notebookStr = checkGenesisDevice(checkZones, isBot, playerColor, endgameCardList, notebookStr)
 
+      -- Golden Statue of O'Brien: score 1 for every engineer in captain's log
+      elseif cardList[i] == "Golden Statue of O'Brien" then
+        endgameCardList, notebookStr = checkOBrien(bagCaptainsLog, isBot, endgameCardList, notebookStr)
 
 
       -- SHIP SPECIAL CONDITIONS
@@ -479,7 +482,7 @@ function checkDerna(deployCheckZones, playerColor, beamBags, isBot, endgameCardL
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
 
     local beamBag = getAssociatedBeamBag(posCard, beamBags, playerColor)
     local weaponCount = 0
@@ -528,7 +531,7 @@ function checkBaku(deployCheckZones, beamBags, playerColor, isBot, endgameCardLi
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
 
     local beamBag = getAssociatedBeamBag(posCard, beamBags, playerColor)
     local personCount = 0
@@ -569,7 +572,7 @@ function checkRegulaI(checkZones, deployCheckZones, bagCaptainsLog, beamBags, is
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
 
     local anomalyCount = 0
 
@@ -639,7 +642,7 @@ function checkDaystromInstitute(checkZones, deployCheckZones, bagCaptainsLog, be
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
 
     local syntheticCount = 0
 
@@ -711,7 +714,7 @@ function checkBoreth(deployCheckZones, inPlayCheckZones, isBot, endgameCardList,
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
     -- check slots: captain, staging, ships, locations, duty officers
     local researchCount = 0
     local influenceCount = 0
@@ -785,7 +788,7 @@ function checkThetaZeta(deployCheckZones, isBot, playerColor, endgameCardList, n
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
     if not isBot then
       local dilithiumCount = getObjectbyName("Dilithium Counter " .. playerColor).getVar("val")
       if dilithiumCount > 1 then
@@ -818,7 +821,7 @@ function checkCoridan(deployCheckZones, isBot, playerColor, endgameCardList, not
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
     if not isBot then
       local dilithiumCount = getObjectbyName("Dilithium Counter " .. playerColor).getVar('val')
       if dilithiumCount > 3 then
@@ -849,7 +852,7 @@ function checkWeytahn(deployCheckZones, isBot, playerColor, endgameCardList, not
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
     if not isBot then
       local tokenCount = 0
       local tokenTag = "away_" .. string.lower(playerColor)
@@ -906,7 +909,7 @@ function checkColdStation(deployCheckZones, beamBags, playerColor, isBot, endgam
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
 
     local beamBag = getAssociatedBeamBag(posCard, beamBags, playerColor)
     local augmentCount = 0
@@ -949,7 +952,7 @@ function checkAzatiPrime(checkZones, deployCheckZones, bagCaptainsLog, beamBags,
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
 
     local xindiCount = 0
 
@@ -1021,7 +1024,7 @@ function checkBabelOne(inPlayCheckZones, deployCheckZones, playerColor, beamBags
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
 
     -- first need to check if influence is 6+ if not automatically giving 5 score for bot endgame
     if not isBot then
@@ -1099,7 +1102,7 @@ function checkTellarPrime(deployCheckZones, isBot, endgameCardList, notebookStr)
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
     local locationCount = 0
     for i = 1, #deployCheckZones do
       for _, zoneObj in pairs(deployCheckZones[i].getObjects()) do
@@ -1134,7 +1137,7 @@ function checkKarzillVI(deployCheckZones, isBot, playerColor, endgameCardList, n
   end
 
 
-  if cardInPlay then
+  if cardInPlay or isBot then
     if not isBot then
       local gloryCount = getObjectbyName("Glory Counter " .. playerColor).getVar('val')
       if gloryCount > 3 then
@@ -1169,7 +1172,7 @@ function checkMountSeleya(inPlayCheckZones, deployCheckZones, beamBags, isBot, e
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
 
     local telepathCount = 0
 
@@ -1229,7 +1232,7 @@ function checkPaanMokar(deployCheckZones, isBot, playerColor, endgameCardList, n
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
     if not isBot then
       local tokenCount = 0
       local tokenTag = "away_" .. string.lower(playerColor)
@@ -1281,7 +1284,7 @@ function checkVulcanKirk(deployCheckZones, isBot, playerColor, endgameCardList, 
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
 
     if isBot then
       table.insert(endgameCardList, {["Kirk (Vulcan)"] = 5})
@@ -1322,7 +1325,7 @@ function checkOrion(checkZones, deployCheckZones, bagCaptainsLog, beamBags, isBo
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
 
     local orionCount = 0
 
@@ -1395,7 +1398,7 @@ function checkNepenthe(deployCheckZones, playerColor, isBot, endgameCardList, no
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
     -- first need to check if research is 9+ if not automatically giving 5 score for bot endgame
     if not isBot then
       local researchCounter = getObjectbyNameAndNotes("Research Counter " .. playerColor) -- riker card, no khan check required
@@ -1802,8 +1805,8 @@ function checkKirk(isBot, playerColor, endgameCardList, notebookStr)
   -- Kirk: score 1 for every second step on lowest skill counter
 
   if isBot then
-    table.insert(endgameCardList, {["Kirk"] = 5})
-    notebookStr = notebookStr .. "\nKirk: 5"
+    table.insert(endgameCardList, {["James T. Kirk"] = 5})
+    notebookStr = notebookStr .. "\nJames T. Kirk: 5"
 
   elseif not isBot then
     local influenceCount = getObjectbyName("Influence Counter " .. playerColor).getVar("val")
@@ -1814,8 +1817,8 @@ function checkKirk(isBot, playerColor, endgameCardList, notebookStr)
     local kirkScore = math.floor(lowestSkill / 2)
 
     if kirkScore > 0 then
-      table.insert(endgameCardList, {["Kirk"] = kirkScore})
-      notebookStr = notebookStr .. "\nKirk: " .. kirkScore
+      table.insert(endgameCardList, {["James T. Kirk"] = kirkScore})
+      notebookStr = notebookStr .. "\nJames T. Kirk: " .. kirkScore
     end
   end
 
@@ -1905,8 +1908,8 @@ function checkFreeman(bagCaptainsLog, isBot, endgameCardList, notebookStr)
   end
 
   if freemanScore > 0 then
-    table.insert(endgameCardList, {["Freeman"] = freemanScore})
-    notebookStr = notebookStr .. "\nFreeman: " .. freemanScore
+    table.insert(endgameCardList, {["Carol Freeman"] = freemanScore})
+    notebookStr = notebookStr .. "\nCarol Freeman: " .. freemanScore
   end
 
   return endgameCardList, notebookStr
@@ -1929,7 +1932,7 @@ function checkLivingWitness(checkZones, isBot, endgameCardList, notebookStr)
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
     local livingWitnessScore = 4
 
     if isBot then
@@ -1941,6 +1944,51 @@ function checkLivingWitness(checkZones, isBot, endgameCardList, notebookStr)
   end
 
   return endgameCardList, notebookStr
+end
+
+
+function checkOBrien(bagCaptainsLog, isBot, endgameCardList, notebookStr)
+
+  -- golden statue of o'brien: score 1 for every engineer in captain's log
+
+  local cardInPlay = false
+
+  for i = 1, #checkZones do
+    for _, zoneObj in pairs(checkZones[i].getObjects()) do
+      if zoneObj.getName() == "The Living Witness" then
+        cardInPlay = true
+      end
+    end
+  end
+
+  if cardInPlay or isBot then
+    local engineerCount = 0
+
+    for _, bagObj in ipairs(bagCaptainsLog.getObjects()) do
+      if bagObj.tags then
+        for _, tag in ipairs(bagObj.tags) do
+          if tag == "trait_engineer" then
+            engineerCount = engineerCount + 1
+            break
+          end
+        end
+      end
+    end
+
+    local oBrienScore = engineerCount
+
+    if isBot then
+      oBrienScore = 5
+    end
+
+    if oBrienScore > 0 then
+      table.insert(endgameCardList, {["Golden Statue of O'Brien"] = oBrienScore})
+      notebookStr = notebookStr .. "\nGolden Statue of O'Brien: " .. oBrienScore
+    end
+  end
+
+  return endgameCardList, notebookStr
+
 end
 
 
@@ -1960,7 +2008,7 @@ function checkGenesisDevice(checkZones, isBot, playerColor, endgameCardList, not
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
     local genesisDeviceScore = 0
 
     if isBot then
@@ -2003,7 +2051,7 @@ function checkUSSFederation(deployCheckZones, checkZones, bagCaptainsLog, beamBa
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
 
     local focusCount = 0
     -- check owned card zones for influence/military focus cards
@@ -2063,7 +2111,7 @@ function checkRedAngel(checkZones, bagCaptainsLog, beamBags, isBot, endgameCardL
     end
   end
 
-  if cardInPlay then
+  if cardInPlay or isBot then
     local anomalyCount = 0
 
     for i = 1, #checkZones do
@@ -2087,9 +2135,6 @@ function checkRedAngel(checkZones, bagCaptainsLog, beamBags, isBot, endgameCardL
     end
 
     for _, bagObj in pairs(bagCaptainsLog.getObjects()) do
-      if bagObj.hasTag("trait_anomaly") then
-        anomalyCount = anomalyCount + 1
-      end
       local bagObjTags = bagObj.tags
 
       for j = 1, #bagObjTags do
@@ -2101,9 +2146,6 @@ function checkRedAngel(checkZones, bagCaptainsLog, beamBags, isBot, endgameCardL
 
     for i = 1, #beamBags do
       for _, bagObj in pairs(beamBags[i].getObjects()) do
-        if bagObj.hasTag("trait_anomaly") then
-          anomalyCount = anomalyCount + 1
-        end
         local bagObjTags = bagObj.tags
 
         for j = 1, #bagObjTags do
@@ -2143,6 +2185,8 @@ function getVPCount()
   local militaryFocusCardListRed = {}
   local researchFocusCardListBlue = {}
   local researchFocusCardListRed = {}
+  local bestFocusCardListBlue = {}
+  local bestFocusCardListRed = {}
   local notebookStrVPBlue = ""
   local notebookStrVPRed = ""
   local notebookStrInfluenceBlue = ""
@@ -2151,6 +2195,8 @@ function getVPCount()
   local notebookStrMilitaryRed = ""
   local notebookStrResearchBlue = ""
   local notebookStrResearchRed = ""
+  local notebookStrBestBlue = ""
+  local notebookStrBestRed = ""
   local playerColors = { "Blue", "Red" }
 
   for i = 1, #playerColors do
@@ -2160,25 +2206,38 @@ function getVPCount()
     local captainName = getCaptainName(playerColor)
 
     local influenceMultiplier = 0
-    local militaryMultiplier = 0
-    local researchMultiplier = 0
+    local militaryMultiplier  = 0
+    local researchMultiplier  = 0
 
     local influenceCount = captainName == "Khan" and 0 or getObjectbyName("Influence Counter " .. playerColor).getVar("val")
-    local militaryCount = captainName == "Khan" and 0 or getObjectbyName("Military Counter " .. playerColor).getVar("val")
-    local researchCount = captainName == "Khan" and 0 or getObjectbyName("Research Counter " .. playerColor).getVar("val")
+    local militaryCount  = captainName == "Khan" and 0 or getObjectbyName("Military Counter " .. playerColor).getVar("val")
+    local researchCount  = captainName == "Khan" and 0 or getObjectbyName("Research Counter " .. playerColor).getVar("val")
 
     local vpCardList = i == 1 and vpCardListBlue or vpCardListRed
     local influenceFocusCardList = i == 1 and influenceFocusCardListBlue or influenceFocusCardListRed
-    local militaryFocusCardList = i == 1 and militaryFocusCardListBlue or militaryFocusCardListRed
-    local researchFocusCardList = i == 1 and researchFocusCardListBlue or researchFocusCardListRed
+    local militaryFocusCardList  = i == 1 and militaryFocusCardListBlue  or militaryFocusCardListRed
+    local researchFocusCardList  = i == 1 and researchFocusCardListBlue  or researchFocusCardListRed
+    local bestFocusCardList      = i == 1 and bestFocusCardListBlue      or bestFocusCardListRed
     influenceMultiplier, militaryMultiplier, researchMultiplier = getTrackMultipliers(
       captainName, influenceCount, militaryCount, researchCount
     )
+    local function getBestFocus()
+      -- will determine and return which focus counter is highest, ties don't matter
+      if researchMultiplier >= influenceMultiplier and researchMultiplier >= militaryMultiplier then
+        return researchMultiplier
+      elseif influenceMultiplier >= militaryMultiplier then
+        return influenceMultiplier
+      else
+        return militaryMultiplier
+      end
+    end
+    local bestMultiplier = getBestFocus()
 
-    local notebookStrVP = i == 1 and notebookStrVPBlue or notebookStrVPRed
+    local notebookStrVP        = i == 1 and notebookStrVPBlue        or notebookStrVPRed
     local notebookStrInfluence = i == 1 and notebookStrInfluenceBlue or notebookStrInfluenceRed
-    local notebookStrMilitary = i == 1 and notebookStrMilitaryBlue or notebookStrMilitaryRed
-    local notebookStrResearch = i == 1 and notebookStrResearchBlue or notebookStrResearchRed
+    local notebookStrMilitary  = i == 1 and notebookStrMilitaryBlue  or notebookStrMilitaryRed
+    local notebookStrResearch  = i == 1 and notebookStrResearchBlue  or notebookStrResearchRed
+    local notebookStrBest      = i == 1 and notebookStrBestBlue      or notebookStrBestRed
 
     local notebookStrColor = i == 1 and "1E87FF" or "DB1B18"
 
@@ -2190,6 +2249,21 @@ function getVPCount()
         hasIncidentModifier = true
         break
       end
+    end
+
+    local specialCardScores = {
+      ["Lieutenant Dax"]    = -1,
+      ["Ensign Mariner"]    = -1,
+      ["Chef Riker"]        = -1,
+      ["Chancellor Gowron"] = -2,
+      ["Barry Waddle"]      = -2,
+      ["Ensign Boimler"]    = -2,
+      ["Ambassador Spock"]  = -2,
+    }
+    local captainLogCards = {}
+    local bagCaptainsLog = getObjectbyNameAndNotes("Captain's Log", playerColor)
+    for _, bagObj in pairs(bagCaptainsLog.getObjects()) do
+      captainLogCards[bagObj.name] = true
     end
 
     local checkZones = {
@@ -2209,6 +2283,10 @@ function getVPCount()
         if zoneObj.type == "Card" then
           local cardName = zoneObj.getName()
           local vpCount = tonumber(zoneObj.getGMNotes():match("VP=(-?%d+)"))
+
+          if specialCardScores[cardName] and not captainLogCards[cardName] then
+            vpCount = specialCardScores[cardName]
+          end
 
           if vpCount then
             if hasIncidentModifier and zoneObj.hasTag("suit_incident") then
@@ -2234,11 +2312,20 @@ function getVPCount()
             notebookStrResearch = notebookStrResearch .. "\n" .. cardName .. ": " .. researchMultiplier
           end
 
+          if zoneObj.getGMNotes() == "best_multi" and bestMultiplier > 0 then
+            table.insert(bestFocusCardList, {[cardName] = bestMultiplier})
+            notebookStrBest = notebookStrBest .. "\n" .. cardName .. ": " .. bestMultiplier
+          end
+
         end
         if zoneObj.type == "Deck" then
           for _, deckObj in pairs(zoneObj.getObjects()) do
             local cardName = deckObj.name
             local vpCount = tonumber(deckObj.gm_notes:match("VP=(-?%d+)"))
+
+            if specialCardScores[cardName] and not captainLogCards[cardName] then
+              vpCount = specialCardScores[cardName]
+            end
 
             if vpCount then
               if hasIncidentModifier and deckObj.tags then
@@ -2267,6 +2354,11 @@ function getVPCount()
             if deckObj.gm_notes == "sci_multi" and researchMultiplier > 0 then
               table.insert(researchFocusCardList, {[cardName] = researchMultiplier})
               notebookStrResearch = notebookStrResearch .. "\n" .. cardName .. ": " .. researchMultiplier
+            end
+
+            if deckObj.gm_notes == "best_multi" and bestMultiplier > 0 then
+              table.insert(bestFocusCardList, {[cardName] = bestMultiplier})
+              notebookStrBest = notebookStrBest .. "\n" .. cardName .. ": " .. bestMultiplier
             end
           end
         end
@@ -2307,6 +2399,11 @@ function getVPCount()
         table.insert(researchFocusCardList, {[cardName] = researchMultiplier})
         notebookStrResearch = notebookStrResearch .. "\n" .. cardName .. ": " .. researchMultiplier
       end
+
+      if bagObj.gm_notes == "best_multi" and bestMultiplier > 0 then
+        table.insert(bestFocusCardList, {[cardName] = bestMultiplier})
+        notebookStrBest = notebookStrBest .. "\n" .. cardName .. ": " .. bestMultiplier
+      end
     end
 
     local beamBags = {}
@@ -2319,6 +2416,10 @@ function getVPCount()
       for _, bagObj in pairs(beamBags[j].getObjects()) do
         local cardName = bagObj.name
         local vpCount = tonumber(bagObj.gm_notes:match("VP=(-?%d+)"))
+
+        if specialCardScores[cardName] and not captainLogCards[cardName] then
+          vpCount = specialCardScores[cardName]
+        end
 
         if vpCount then
           if hasIncidentModifier and bagObj.tags then
@@ -2348,6 +2449,11 @@ function getVPCount()
           table.insert(researchFocusCardList, {[cardName] = researchMultiplier})
           notebookStrResearch = notebookStrResearch .. "\n" .. cardName .. ": " .. researchMultiplier
         end
+
+        if bagObj.gm_notes == "best_multi" and bestMultiplier > 0 then
+          table.insert(bestFocusCardList, {[cardName] = bestMultiplier})
+          notebookStrBest = notebookStrBest .. "\n" .. cardName .. ": " .. bestMultiplier
+        end
       end
     end
 
@@ -2357,26 +2463,30 @@ function getVPCount()
       notebookStrInfluenceBlue = notebookStrInfluence
       notebookStrMilitaryBlue = notebookStrMilitary
       notebookStrResearchBlue = notebookStrResearch
+      notebookStrBestBlue = notebookStrBest
 
       vpCardListBlue = vpCardList
       influenceFocusCardListBlue = influenceFocusCardList
       militaryFocusCardListBlue = militaryFocusCardList
       researchFocusCardListBlue = researchFocusCardList
+      bestFocusCardListBlue = bestFocusCardList
     elseif i == 2 then
       notebookStrVPRed = notebookStrVP
       notebookStrInfluenceRed = notebookStrInfluence
       notebookStrMilitaryRed = notebookStrMilitary
       notebookStrResearchRed = notebookStrResearch
+      notebookStrBestRed = notebookStrBest
 
       vpCardListRed = vpCardList
       influenceFocusCardListRed = influenceFocusCardList
       militaryFocusCardListRed = militaryFocusCardList
       researchFocusCardListRed = researchFocusCardList
+      bestFocusCardListRed = bestFocusCardList
     end
   end
 
-  return vpCardListBlue, influenceFocusCardListBlue, militaryFocusCardListBlue, researchFocusCardListBlue, notebookStrVPBlue, notebookStrInfluenceBlue, notebookStrMilitaryBlue, notebookStrResearchBlue,
-         vpCardListRed, influenceFocusCardListRed, militaryFocusCardListRed, researchFocusCardListRed, notebookStrVPRed, notebookStrInfluenceRed, notebookStrMilitaryRed, notebookStrResearchRed
+  return vpCardListBlue, influenceFocusCardListBlue, militaryFocusCardListBlue, researchFocusCardListBlue, bestFocusCardListBlue, notebookStrVPBlue, notebookStrInfluenceBlue, notebookStrMilitaryBlue, notebookStrResearchBlue, notebookStrBestBlue,
+         vpCardListRed, influenceFocusCardListRed, militaryFocusCardListRed, researchFocusCardListRed,  bestFocusCardListRed, notebookStrVPRed, notebookStrInfluenceRed, notebookStrMilitaryRed, notebookStrResearchRed, notebookStrBestRed
 end
 
 
@@ -2385,7 +2495,16 @@ function calculateScore(buttonObj, _, _)
 
   animateButton(buttonObj)
 
-    -- prime notebook for action
+  local isCadet = getObjectbyName("Pad Stardate").getGMNotes() == "Cadet" and true or false
+  local blueHasPlayer = true
+  local redHasPlayer = true
+
+  if isCadet then
+    blueHasPlayer = getCaptainName("Blue") ~= "None"
+    redHasPlayer = getCaptainName("Red") ~= "None"
+  end
+
+  -- prime notebook for action
   local bluePlayerStr = getPlayerStr("Blue")
   local redPlayerStr = getPlayerStr("Red")
   local notebookStr = "Current Score Breakdown as it stands:"
@@ -2393,12 +2512,26 @@ function calculateScore(buttonObj, _, _)
   -- glory count
   local gloryCountBlue = getObjectbyName("Glory Counter Blue").getVar("val")
   local gloryCountRed = getObjectbyName("Glory Counter Red").getVar("val")
-  notebookStr = string.format("%s\n\n%s Glory Score: %s\n%s Glory Score: %s", notebookStr, bluePlayerStr, gloryCountBlue, redPlayerStr, gloryCountRed)
+
+  if blueHasPlayer then
+    notebookStr = string.format("%s\n\n%s Glory Score: %s", notebookStr, bluePlayerStr, gloryCountBlue)
+  end
+
+  if redHasPlayer then
+    notebookStr = string.format("%s\n\n%s Glory Score: %s", notebookStr, redPlayerStr, gloryCountRed)
+  end
 
 
   -- neutral location count
   local blueNZCount, redNZCount = getNZCount()
-  notebookStr = string.format("%s\n\n\n%s Neutral Zone Score: %s\n%s Neutral Zone Score: %s", notebookStr, bluePlayerStr, blueNZCount, redPlayerStr, redNZCount)
+
+  if blueHasPlayer then
+    notebookStr = string.format("%s\n\n\n%s Neutral Zone Score: %s", notebookStr, bluePlayerStr, blueNZCount)
+  end
+
+  if redHasPlayer then
+    notebookStr = string.format("%s\n%s Neutral Zone Score: %s", notebookStr, redPlayerStr, redNZCount)
+  end
 
 
   -- endgame scoring cards
@@ -2407,14 +2540,15 @@ function calculateScore(buttonObj, _, _)
   local redEndgameScore = 0
 
   -- compile endgame score counts from card lists
-  if #endgameCardListBlue > 0 then
+  if blueHasPlayer and #endgameCardListBlue > 0 then
     for _, item in pairs(endgameCardListBlue) do
       for _, scoreCount in pairs(item) do
         blueEndgameScore = blueEndgameScore + scoreCount
       end
     end
   end
-  if #endgameCardListRed > 0 then
+
+  if redHasPlayer and #endgameCardListRed > 0 then
     for _, item in pairs(endgameCardListRed) do
       for _, scoreCount in pairs(item) do
         redEndgameScore = redEndgameScore + scoreCount
@@ -2422,45 +2556,101 @@ function calculateScore(buttonObj, _, _)
     end
   end
 
+
+  -- bot resource scoring
+  local blueBotResourceScore = 0
+  local redBotResourceScore = 0
+
+  if blueHasPlayer and checkPlayerColorIsBot("Blue") then
+    local blueDilithium = getObjectbyName("Dilithium Counter Blue").getVar("val")
+    local blueLatinum = getObjectbyName("Latinum Counter Blue").getVar("val")
+    local blueCaptainName = getCaptainName("Blue")
+
+    if blueCaptainName == "Burnham" then
+      blueBotResourceScore = blueDilithium
+    else
+      blueBotResourceScore = math.floor((blueDilithium + blueLatinum) / 2)
+    end
+
+    notebookStr = string.format("%s\n\n%s Bot Resource Score: %s", notebookStr, bluePlayerStr, blueBotResourceScore)
+  end
+
+  if redHasPlayer and checkPlayerColorIsBot("Red") then
+    local redDilithium = getObjectbyName("Dilithium Counter Red").getVar("val")
+    local redLatinum = getObjectbyName("Latinum Counter Red").getVar("val")
+    local redCaptainName = getCaptainName("Red")
+
+    if redCaptainName == "Burnham" then
+      redBotResourceScore = redDilithium
+    else
+      redBotResourceScore = math.floor((redDilithium + redLatinum) / 2)
+    end
+
+    notebookStr = string.format("%s\n\n%s Bot Resource Score: %s", notebookStr, redPlayerStr, redBotResourceScore)
+  end
+
+
   -- build notebookStr for endgame score counts
-  notebookStr = string.format("%s\n\n\n%s End Game Cards Score: %s:", notebookStr, bluePlayerStr, blueEndgameScore)
-  notebookStr = string.format("%s\n%s End Game Cards Score: %s:", notebookStr, redPlayerStr, redEndgameScore)
+  if blueHasPlayer then
+    notebookStr = string.format("%s\n\n\n%s End Game Cards Score: %s:", notebookStr, bluePlayerStr, blueEndgameScore)
+  end
+
+  if redHasPlayer then
+    notebookStr = string.format("%s\n%s End Game Cards Score: %s:", notebookStr, redPlayerStr, redEndgameScore)
+  end
 
   -- build notebookStr for breakdowns of endgame score cards
-  if blueEndgameScore > 0 then
+  if blueHasPlayer and blueEndgameScore > 0 then
     notebookStr = string.format("%s\n\n%s End Game Cards Breakdown: %s", notebookStr, bluePlayerStr, notebookStrEndgameBlue)
   end
-  if redEndgameScore > 0 then
+
+  if redHasPlayer and redEndgameScore > 0 then
     notebookStr = string.format("%s\n\n%s End Game Cards Breakdown: %s", notebookStr, redPlayerStr, notebookStrEndgameRed)
   end
 
 
   -- VP scoring cards
-  local vpCardListBlue, influenceFocusCardListBlue, militaryFocusCardListBlue, researchFocusCardListBlue, notebookStrVPBlue, notebookStrInfluenceBlue, notebookStrMilitaryBlue, notebookStrResearchBlue,
-  vpCardListRed, influenceFocusCardListRed, militaryFocusCardListRed, researchFocusCardListRed, notebookStrVPRed, notebookStrInfluenceRed, notebookStrMilitaryRed, notebookStrResearchRed = getVPCount()
+  local vpCardListBlue, influenceFocusCardListBlue, militaryFocusCardListBlue, researchFocusCardListBlue, bestFocusCardListBlue, notebookStrVPBlue, notebookStrInfluenceBlue, notebookStrMilitaryBlue, notebookStrResearchBlue, notebookStrBestBlue,
+  vpCardListRed, influenceFocusCardListRed, militaryFocusCardListRed, researchFocusCardListRed, bestFocusCardListRed, notebookStrVPRed, notebookStrInfluenceRed, notebookStrMilitaryRed, notebookStrResearchRed, notebookStrBestRed = getVPCount()
 
   local blueVPScore = 0
   local redVPScore = 0
 
   -- compile VP score counts from card lists
-  for _, item in pairs(vpCardListBlue) do
-    for _, scoreCount in pairs(item) do
-      blueVPScore = blueVPScore + scoreCount
+  if blueHasPlayer then
+    for _, item in pairs(vpCardListBlue) do
+      for _, scoreCount in pairs(item) do
+        blueVPScore = blueVPScore + scoreCount
+      end
     end
   end
-  for _, item in pairs(vpCardListRed) do
-    for _, scoreCount in pairs(item) do
-      redVPScore = redVPScore + scoreCount
+
+  if redHasPlayer then
+    for _, item in pairs(vpCardListRed) do
+      for _, scoreCount in pairs(item) do
+        redVPScore = redVPScore + scoreCount
+      end
     end
   end
 
   -- build notebookStr for VP score counts
-  notebookStr = string.format("%s\n\n\n%s Card Victory Points Score: %s", notebookStr, bluePlayerStr, blueVPScore)
-  notebookStr = string.format("%s\n%s Card Victory Points Score: %s", notebookStr, redPlayerStr, redVPScore)
+  if blueHasPlayer then
+    notebookStr = string.format("%s\n\n\n%s Card Victory Points Score: %s", notebookStr, bluePlayerStr, blueVPScore)
+  end
+
+  if redHasPlayer then
+    notebookStr = string.format("%s\n%s Card Victory Points Score: %s", notebookStr, redPlayerStr, redVPScore)
+  end
 
   -- build notebookStr for breakdown of VP score cards
-  notebookStr = string.format("%s\n\n%s Card Victory Points Breakdown: %s", notebookStr, bluePlayerStr, notebookStrVPBlue)
-  notebookStr = string.format("%s\n\n%s Card Victory Points Breakdown: %s", notebookStr, redPlayerStr, notebookStrVPRed)
+  if blueHasPlayer then
+    notebookStr = string.format("%s\n\n%s Card Victory Points Breakdown: %s", notebookStr, bluePlayerStr, notebookStrVPBlue)
+  end
+
+  if redHasPlayer then
+    notebookStr = string.format("%s\n\n%s Card Victory Points Breakdown: %s", notebookStr, redPlayerStr, notebookStrVPRed)
+  end
+
   notebookStr = notebookStr .. "\n"
 
   -- focus multiplier cards
@@ -2475,106 +2665,187 @@ function calculateScore(buttonObj, _, _)
   local blueInfluenceScore = 0
   local blueMilitaryScore = 0
   local blueResearchScore = 0
+  local blueBestScore = 0
   local redInfluenceScore = 0
   local redMilitaryScore = 0
   local redResearchScore = 0
+  local redBestScore = 0
 
-  for _, v in pairs(influenceFocusCardListBlue) do
-    for _, scoreCount in pairs(v) do
-      blueInfluenceScore = blueInfluenceScore + scoreCount
+  if blueHasPlayer then
+    for _, v in pairs(influenceFocusCardListBlue) do
+      for _, scoreCount in pairs(v) do
+        blueInfluenceScore = blueInfluenceScore + scoreCount
+      end
     end
-  end
-  for _, v in pairs(militaryFocusCardListBlue) do
-    for _, scoreCount in pairs(v) do
-      blueMilitaryScore = blueMilitaryScore + scoreCount
-    end
-  end
-  for _, v in pairs(researchFocusCardListBlue) do
-    for _, scoreCount in pairs(v) do
-      blueResearchScore = blueResearchScore + scoreCount
-    end
-  end
 
-  for _, v in pairs(influenceFocusCardListRed) do
-    for _, scoreCount in pairs(v) do
-      redInfluenceScore = redInfluenceScore + scoreCount
+    for _, v in pairs(militaryFocusCardListBlue) do
+      for _, scoreCount in pairs(v) do
+        blueMilitaryScore = blueMilitaryScore + scoreCount
+      end
     end
-  end
-  for _, v in pairs(militaryFocusCardListRed) do
-    for _, scoreCount in pairs(v) do
-      redMilitaryScore = redMilitaryScore + scoreCount
+
+    for _, v in pairs(researchFocusCardListBlue) do
+      for _, scoreCount in pairs(v) do
+        blueResearchScore = blueResearchScore + scoreCount
+      end
     end
-  end
-  for _, v in pairs(researchFocusCardListRed) do
-    for _, scoreCount in pairs(v) do
-      redResearchScore = redResearchScore + scoreCount
+
+    for _, v in pairs(bestFocusCardListBlue) do
+      for _, scoreCount in pairs(v) do
+        blueBestScore = blueBestScore + scoreCount
+      end
     end
   end
 
-  if (goalCompletedBlue or checkPlayerColorIsBot("Blue")) and getCaptainName("Blue") ~= "Khan" then
-
-    if blueResearchScore > 0 then
-      notebookStr = string.format("%s\n\n%s [%s]Research[-] Focus Cards Score: %s", notebookStr, bluePlayerStr, researchColor, blueResearchScore)
-      notebookStr = string.format("%s\n%s [%s]Research[-] Focus Cards Breakdown: %s", notebookStr, bluePlayerStr, researchColor, notebookStrResearchBlue)
+  if redHasPlayer then
+    for _, v in pairs(influenceFocusCardListRed) do
+      for _, scoreCount in pairs(v) do
+        redInfluenceScore = redInfluenceScore + scoreCount
+      end
     end
-    if blueInfluenceScore > 0 then
-      notebookStr = string.format("%s\n\n%s [%s]Influence[-] Focus Cards Score: %s", notebookStr, bluePlayerStr, influenceColor, blueInfluenceScore)
-      notebookStr = string.format("%s\n%s [%s]Influence[-] Focus Cards Breakdown: %s", notebookStr, bluePlayerStr, influenceColor, notebookStrInfluenceBlue)
-    end
-    if blueMilitaryScore > 0 then
-      notebookStr = string.format("%s\n\n%s [%s]Military[-] Focus Cards Score: %s", notebookStr, bluePlayerStr, militaryColor, blueMilitaryScore)
-      notebookStr = string.format("%s\n%s [%s]Military[-] Focus Cards Breakdown: %s", notebookStr, bluePlayerStr, militaryColor, notebookStrMilitaryBlue)
-    end
-    notebookStr = notebookStr .. "\n"
 
-  elseif not goalCompletedBlue and not checkPlayerColorIsBot("Blue") and getCaptainName("Blue") ~= "Khan" then
-    notebookStr = string.format("%s\n%s Focus Cards Score: 0 (No Captain Goals Completed)", notebookStr, bluePlayerStr)
-    blueInfluenceScore = 0
-    blueMilitaryScore = 0
-    blueResearchScore = 0
+    for _, v in pairs(militaryFocusCardListRed) do
+      for _, scoreCount in pairs(v) do
+        redMilitaryScore = redMilitaryScore + scoreCount
+      end
+    end
 
-  elseif getCaptainName("Blue") == "Khan" then
-    notebookStr = string.format("%s\n%s Focus Cards Score Under Wrathful Khan", notebookStr, bluePlayerStr)
-    blueInfluenceScore = 0
-    blueMilitaryScore = 0
-    blueResearchScore = 0
+    for _, v in pairs(researchFocusCardListRed) do
+      for _, scoreCount in pairs(v) do
+        redResearchScore = redResearchScore + scoreCount
+      end
+    end
+
+    for _, v in pairs(bestFocusCardListRed) do
+      for _, scoreCount in pairs(v) do
+        redBestScore = redBestScore + scoreCount
+      end
+    end
   end
 
-  if (goalCompletedRed or checkPlayerColorIsBot("Red")) and getCaptainName("Red") ~= "Khan" then
+  local blueCaptainName = getCaptainName("Blue")
+  local redCaptainName = getCaptainName("Red")
 
-    if redResearchScore > 0 then
-      notebookStr = string.format("%s\n\n%s [%s]Research[-] Focus Cards Score: %s", notebookStr, redPlayerStr, researchColor, redResearchScore)
-      notebookStr = string.format("%s\n%s [%s]Research[-] Focus Cards Breakdown: %s", notebookStr, redPlayerStr, researchColor, notebookStrResearchRed)
-    end
-    if redInfluenceScore > 0 then
-      notebookStr = string.format("%s\n\n%s [%s]Influence[-] Focus Cards Score: %s", notebookStr, redPlayerStr, influenceColor, redInfluenceScore)
-      notebookStr = string.format("%s\n%s [%s]Influence[-] Focus Cards Breakdown: %s", notebookStr, redPlayerStr, influenceColor, notebookStrInfluenceRed)
-    end
-    if redMilitaryScore > 0 then
-      notebookStr = string.format("%s\n\n%s [%s]Military[-] Focus Cards Score: %s", notebookStr, redPlayerStr, militaryColor, redMilitaryScore)
-      notebookStr = string.format("%s\n%s [%s]Military[-] Focus Cards Breakdown: %s", notebookStr, redPlayerStr, militaryColor, notebookStrMilitaryRed)
-    end
-    notebookStr = notebookStr .. "\n"
+  local blueInfluenceCount = blueCaptainName == "Khan" and 0 or getObjectbyName("Influence Counter Blue").getVar("val")
+  local blueMilitaryCount = blueCaptainName == "Khan" and 0 or getObjectbyName("Military Counter Blue").getVar("val")
+  local blueResearchCount = blueCaptainName == "Khan" and 0 or getObjectbyName("Research Counter Blue").getVar("val")
+  local redInfluenceCount = redCaptainName == "Khan" and 0 or getObjectbyName("Influence Counter Red").getVar("val")
+  local redMilitaryCount = redCaptainName == "Khan" and 0 or getObjectbyName("Military Counter Red").getVar("val")
+  local redResearchCount = redCaptainName == "Khan" and 0 or getObjectbyName("Research Counter Red").getVar("val")
 
-  elseif not goalCompletedRed and not checkPlayerColorIsBot("Red") and getCaptainName("Red") ~= "Khan" then
-    notebookStr = string.format("%s\n%s Focus Cards Score: 0 (No Captain Goals Completed)", notebookStr, redPlayerStr)
-    redInfluenceScore = 0
-    redMilitaryScore = 0
-    redResearchScore = 0
+  local blueInfluenceMultiplier, blueMilitaryMultiplier, blueResearchMultiplier = getTrackMultipliers(
+    blueCaptainName, blueInfluenceCount, blueMilitaryCount, blueResearchCount
+  )
+  local redInfluenceMultiplier, redMilitaryMultiplier, redResearchMultiplier = getTrackMultipliers(
+    redCaptainName, redInfluenceCount, redMilitaryCount, redResearchCount
+  )
 
-  elseif getCaptainName("Red") == "Khan" then
-    notebookStr = string.format("%s\n%s Focus Cards Score Under Wrathful Khan", notebookStr, redPlayerStr)
-    redInfluenceScore = 0
-    redMilitaryScore = 0
-    redResearchScore = 0
+  if blueHasPlayer then
+    if blueResearchMultiplier >= blueInfluenceMultiplier and blueResearchMultiplier >= blueMilitaryMultiplier then
+      blueResearchScore = blueResearchScore + blueBestScore
+    elseif blueInfluenceMultiplier >= blueMilitaryMultiplier then
+      blueInfluenceScore = blueInfluenceScore + blueBestScore
+    else
+      blueMilitaryScore = blueMilitaryScore + blueBestScore
+    end
   end
+
+  if redHasPlayer then
+    if redResearchMultiplier >= redInfluenceMultiplier and redResearchMultiplier >= redMilitaryMultiplier then
+      redResearchScore = redResearchScore + redBestScore
+    elseif redInfluenceMultiplier >= redMilitaryMultiplier then
+      redInfluenceScore = redInfluenceScore + redBestScore
+    else
+      redMilitaryScore = redMilitaryScore + redBestScore
+    end
+  end
+
+  if blueHasPlayer then
+    if (goalCompletedBlue or checkPlayerColorIsBot("Blue")) and getCaptainName("Blue") ~= "Khan" then
+
+      if blueResearchScore - blueBestScore > 0 then
+        notebookStr = string.format("%s\n\n%s [%s]Research[-] Focus Cards Score: %s", notebookStr, bluePlayerStr, researchColor, blueResearchScore - blueBestScore)
+        notebookStr = string.format("%s\n%s [%s]Research[-] Focus Cards Breakdown: %s", notebookStr, bluePlayerStr, researchColor, notebookStrResearchBlue)
+      end
+
+      if blueInfluenceScore - blueBestScore > 0 then
+        notebookStr = string.format("%s\n\n%s [%s]Influence[-] Focus Cards Score: %s", notebookStr, bluePlayerStr, influenceColor, blueInfluenceScore - blueBestScore)
+        notebookStr = string.format("%s\n%s [%s]Influence[-] Focus Cards Breakdown: %s", notebookStr, bluePlayerStr, influenceColor, notebookStrInfluenceBlue)
+      end
+
+      if blueMilitaryScore - blueBestScore > 0 then
+        notebookStr = string.format("%s\n\n%s [%s]Military[-] Focus Cards Score: %s", notebookStr, bluePlayerStr, militaryColor, blueMilitaryScore - blueBestScore)
+        notebookStr = string.format("%s\n%s [%s]Military[-] Focus Cards Breakdown: %s", notebookStr, bluePlayerStr, militaryColor, notebookStrMilitaryBlue)
+      end
+
+      if blueBestScore > 0 then
+        notebookStr = string.format("%s\n\n%s Best Focus Cards Score: %s", notebookStr, bluePlayerStr, blueBestScore)
+        notebookStr = string.format("%s\n%s Best Focus Cards Breakdown: %s", notebookStr, bluePlayerStr, notebookStrBestBlue)
+      end
+
+      notebookStr = notebookStr .. "\n"
+
+    elseif not goalCompletedBlue and not checkPlayerColorIsBot("Blue") and getCaptainName("Blue") ~= "Khan" then
+      notebookStr = string.format("%s\n%s Focus Cards Score: 0 (No Captain Goals Completed)", notebookStr, bluePlayerStr)
+      blueInfluenceScore = 0
+      blueMilitaryScore = 0
+      blueResearchScore = 0
+      blueBestScore = 0
+
+    elseif getCaptainName("Blue") == "Khan" then
+      notebookStr = string.format("%s\n%s Focus Cards Score Under Wrathful Khan", notebookStr, bluePlayerStr)
+      blueInfluenceScore = 0
+      blueMilitaryScore = 0
+      blueResearchScore = 0
+      blueBestScore = 0
+    end
+  end
+
+  if redHasPlayer then
+    if (goalCompletedRed or checkPlayerColorIsBot("Red")) and getCaptainName("Red") ~= "Khan" then
+
+      if redResearchScore - redBestScore > 0 then
+        notebookStr = string.format("%s\n\n%s [%s]Research[-] Focus Cards Score: %s", notebookStr, redPlayerStr, researchColor, redResearchScore - redBestScore)
+        notebookStr = string.format("%s\n%s [%s]Research[-] Focus Cards Breakdown: %s", notebookStr, redPlayerStr, researchColor, notebookStrResearchRed)
+      end
+
+      if redInfluenceScore - redBestScore > 0 then
+        notebookStr = string.format("%s\n\n%s [%s]Influence[-] Focus Cards Score: %s", notebookStr, redPlayerStr, influenceColor, redInfluenceScore - redBestScore)
+        notebookStr = string.format("%s\n%s [%s]Influence[-] Focus Cards Breakdown: %s", notebookStr, redPlayerStr, influenceColor, notebookStrInfluenceRed)
+      end
+
+      if redMilitaryScore - redBestScore > 0 then
+        notebookStr = string.format("%s\n\n%s [%s]Military[-] Focus Cards Score: %s", notebookStr, redPlayerStr, militaryColor, redMilitaryScore - redBestScore)
+        notebookStr = string.format("%s\n%s [%s]Military[-] Focus Cards Breakdown: %s", notebookStr, redPlayerStr, militaryColor, notebookStrMilitaryRed)
+      end
+
+      if redBestScore > 0 then
+        notebookStr = string.format("%s\n\n%s Best Focus Cards Score: %s", notebookStr, redPlayerStr, redBestScore)
+        notebookStr = string.format("%s\n%s Best Focus Cards Breakdown: %s", notebookStr, redPlayerStr, notebookStrBestRed)
+      end
+
+      notebookStr = notebookStr .. "\n"
+
+    elseif not goalCompletedRed and not checkPlayerColorIsBot("Red") and getCaptainName("Red") ~= "Khan" then
+      notebookStr = string.format("%s\n%s Focus Cards Score: 0 (No Captain Goals Completed)", notebookStr, redPlayerStr)
+      redInfluenceScore = 0
+      redMilitaryScore = 0
+      redResearchScore = 0
+      redBestScore = 0
+
+    elseif getCaptainName("Red") == "Khan" then
+      notebookStr = string.format("%s\n%s Focus Cards Score Under Wrathful Khan", notebookStr, redPlayerStr)
+      redInfluenceScore = 0
+      redMilitaryScore = 0
+      redResearchScore = 0
+      redBestScore = 0
+    end
+  end
+
   notebookStr = notebookStr .. "\n"
 
   local blueBasicBoard = false
   local redBasicBoard = false
-
-  local blueCaptainName = getCaptainName("Blue")
-  local redCaptainName = getCaptainName("Red")
 
   for _, object in pairs(getObjects()) do
     if object.getName() == blueCaptainName .. " Crew Board Basic" then
@@ -2593,7 +2864,7 @@ function calculateScore(buttonObj, _, _)
   local blueAdvTooltip = "Goal"
   local redAdvTooltip = "Goal"
 
-  if goalCompletedBlue and not blueBasicBoard then
+  if blueHasPlayer and goalCompletedBlue and not blueBasicBoard then
     for goalName, scoreCount in pairs(blueCompletedGoals) do
       blueAdvancedGoalScore = blueAdvancedGoalScore + scoreCount
 
@@ -2608,7 +2879,7 @@ function calculateScore(buttonObj, _, _)
     notebookStr = string.format("%s\n%s Goal Breakdown:\n%s", notebookStr, bluePlayerStr, blueAdvancedGoalBreakdown)
   end
 
-  if goalCompletedRed and not redBasicBoard then
+  if redHasPlayer and goalCompletedRed and not redBasicBoard then
     for goalName, scoreCount in pairs(redCompletedGoals) do
       redAdvancedGoalScore = redAdvancedGoalScore + scoreCount
 
@@ -2639,236 +2910,288 @@ function calculateScore(buttonObj, _, _)
     scorePads[i].clearButtons()
 
     -- create score text field buttons on every slot (reversed in color)
-    local leftColor           = i == 1 and blueLuaColor              or redLuaColor
-    local rightColor          = i == 1 and redLuaColor               or blueLuaColor
+    local leftColor             = i == 1 and blueLuaColor              or redLuaColor
+    local rightColor            = i == 1 and redLuaColor               or blueLuaColor
 
-    local leftStr             = i == 1 and blueStr                   or redStr
-    local rightStr            = i == 1 and redStr                    or blueStr
+    local leftStr               = i == 1 and blueStr                   or redStr
+    local rightStr              = i == 1 and redStr                    or blueStr
 
-    local leftGloryCount      = i == 1 and gloryCountBlue             or gloryCountRed
-    local rightGloryCount     = i == 1 and gloryCountRed              or gloryCountBlue
+    local leftGloryCount        = i == 1 and gloryCountBlue             or gloryCountRed
+    local rightGloryCount       = i == 1 and gloryCountRed              or gloryCountBlue
 
-    local leftAwayCount       = i == 1 and blueNZCount                or redNZCount
-    local rightAwayCount      = i == 1 and redNZCount                 or blueNZCount
+    local leftAwayCount         = i == 1 and blueNZCount                or redNZCount
+    local rightAwayCount        = i == 1 and redNZCount                 or blueNZCount
 
-    local leftEndgameCount    = i == 1 and blueEndgameScore            or redEndgameScore
-    local rightEndgameCount   = i == 1 and redEndgameScore             or blueEndgameScore
+    local leftEndgameCount      = i == 1 and blueEndgameScore            or redEndgameScore
+    local rightEndgameCount     = i == 1 and redEndgameScore             or blueEndgameScore
 
-    local leftVPCount         = i == 1 and blueVPScore                 or redVPScore
-    local rightVPCount        = i == 1 and redVPScore                  or blueVPScore
+    local leftVPCount           = i == 1 and blueVPScore                 or redVPScore
+    local rightVPCount          = i == 1 and redVPScore                  or blueVPScore
 
-    local leftResearchCount   = i == 1 and blueResearchScore           or redResearchScore
-    local rightResearchCount  = i == 1 and redResearchScore            or blueResearchScore
+    local leftResearchCount     = i == 1 and blueResearchScore           or redResearchScore
+    local rightResearchCount    = i == 1 and redResearchScore            or blueResearchScore
 
-    local leftInfluenceCount  = i == 1 and blueInfluenceScore          or redInfluenceScore
-    local rightInfluenceCount = i == 1 and redInfluenceScore           or blueInfluenceScore
+    local leftInfluenceCount    = i == 1 and blueInfluenceScore          or redInfluenceScore
+    local rightInfluenceCount   = i == 1 and redInfluenceScore             or blueInfluenceScore
 
-    local leftMilitaryCount   = i == 1 and blueMilitaryScore            or redMilitaryScore
-    local rightMilitaryCount  = i == 1 and redMilitaryScore             or blueMilitaryScore
+    local leftMilitaryCount     = i == 1 and blueMilitaryScore            or redMilitaryScore
+    local rightMilitaryCount    = i == 1 and redMilitaryScore             or blueMilitaryScore
 
-    local leftGoalCount       = i == 1 and blueAdvancedGoalScore        or redAdvancedGoalScore
-    local rightGoalCount      = i == 1 and redAdvancedGoalScore         or blueAdvancedGoalScore
+    local leftGoalCount         = i == 1 and blueAdvancedGoalScore        or redAdvancedGoalScore
+    local rightGoalCount        = i == 1 and redAdvancedGoalScore         or blueAdvancedGoalScore
 
-    local leftAdvTooltip      = i == 1 and blueAdvTooltip               or redAdvTooltip
-    local rightAdvTooltip     = i == 1 and redAdvTooltip                or blueAdvTooltip
+    local leftAdvTooltip        = i == 1 and blueAdvTooltip               or redAdvTooltip
+    local rightAdvTooltip       = i == 1 and redAdvTooltip                or blueAdvTooltip
 
-    scorePads[i].createButton({
-      click_function = "nullFunc",
-      function_owner = self,
-      label          = leftGloryCount,
-      position       = { 0.06, 0.21, -0.65 },
-      width          = 180,
-      height         = 180,
-      font_size      = 100,
-      scale          = { 0.5, 0.5, 0.5 },
-      color          = leftColor,
-      font_color     = { 1, 1, 1, 1 },
-      tooltip        = "Current " .. leftStr .. " Glory points.",
-    })
+    local leftBotResourceCount  = i == 1 and blueBotResourceScore         or redBotResourceScore
+    local rightBotResourceCount = i == 1 and redBotResourceScore          or blueBotResourceScore
 
-    scorePads[i].createButton({
-      click_function = "nullFunc",
-      function_owner = self,
-      label          = rightGloryCount,
-      position       = { 0.55, 0.21, -0.65 },
-      width          = 180,
-      height         = 180,
-      font_size      = 100,
-      scale          = { 0.5, 0.5, 0.5 },
-      color          = rightColor,
-      font_color     = { 1, 1, 1, 1 },
-      tooltip        = "Current " .. rightStr .. " Glory points.",
-    })
+    local leftHasPlayer         = i == 1 and blueHasPlayer              or redHasPlayer
+    local rightHasPlayer        = i == 1 and redHasPlayer               or blueHasPlayer
 
-    scorePads[i].createButton({
-      click_function = "nullFunc",
-      function_owner = self,
-      label          = leftAwayCount,
-      position       = { 0.06, 0.21, -0.45 },
-      width          = 180,
-      height         = 180,
-      font_size      = 100,
-      scale          = { 0.5, 0.5, 0.5 },
-      color          = leftColor,
-      font_color     = { 1, 1, 1, 1 },
-      tooltip        = "Current " .. leftStr .. " Neutral Zone token points.",
-    })
+    if not redHasPlayer then
+      leftHasPlayer = i == 1
+      rightHasPlayer = i == 2
+    elseif not blueHasPlayer then
+      leftHasPlayer = i == 2
+      rightHasPlayer = i == 1
+    end
 
-    scorePads[i].createButton({
-      click_function = "nullFunc",
-      function_owner = self,
-      label          = rightAwayCount,
-      position       = { 0.55, 0.21, -0.45 },
-      width          = 180,
-      height         = 180,
-      font_size      = 100,
-      scale          = { 0.5, 0.5, 0.5 },
-      color          = rightColor,
-      font_color     = { 1, 1, 1, 1 },
-      tooltip        = "Current " .. rightStr .. " Neutral Zone token points.",
-    })
+    if checkPlayerColorIsBot(leftStr) then
+      leftGoalCount = leftBotResourceCount
+      leftAdvTooltip = "Bot Resource"
+    end
 
-    scorePads[i].createButton({
-      click_function = "nullFunc",
-      function_owner = self,
-      label          = leftEndgameCount,
-      position       = { 0.06, 0.21, -0.25 },
-      width          = 180,
-      height         = 180,
-      font_size      = 100,
-      scale          = { 0.5, 0.5, 0.5 },
-      color          = leftColor,
-      font_color     = { 1, 1, 1, 1 },
-      tooltip        = "Current " .. leftStr .. " Endgame Scoring points.",
-    })
+    if checkPlayerColorIsBot(rightStr) then
+      rightGoalCount = rightBotResourceCount
+      rightAdvTooltip = "Bot Resource"
+    end
 
-    scorePads[i].createButton({
-      click_function = "nullFunc",
-      function_owner = self,
-      label          = rightEndgameCount,
-      position       = { 0.55, 0.21, -0.25 },
-      width          = 180,
-      height         = 180,
-      font_size      = 100,
-      scale          = { 0.5, 0.5, 0.5 },
-      color          = rightColor,
-      font_color     = { 1, 1, 1, 1 },
-      tooltip        = "Current " .. rightStr .. " Endgame Scoring points.",
-    })
+    if leftHasPlayer then
+      scorePads[i].createButton({
+        click_function = "nullFunc",
+        function_owner = self,
+        label          = leftGloryCount,
+        position       = { 0.06, 0.21, -0.65 },
+        width          = 180,
+        height         = 180,
+        font_size      = 100,
+        scale          = { 0.5, 0.5, 0.5 },
+        color          = leftColor,
+        font_color     = { 1, 1, 1, 1 },
+        tooltip        = "Current " .. leftStr .. " Glory points.",
+      })
+    end
 
-    scorePads[i].createButton({
-      click_function = "nullFunc",
-      function_owner = self,
-      label          = leftVPCount,
-      position       = { 0.06, 0.21, -0.05 },
-      width          = 180,
-      height         = 180,
-      font_size      = 100,
-      scale          = { 0.5, 0.5, 0.5 },
-      color          = leftColor,
-      font_color     = { 1, 1, 1, 1 },
-      tooltip        = "Current " .. leftStr .. " Printed Victory points.",
-    })
+    if rightHasPlayer then
+      scorePads[i].createButton({
+        click_function = "nullFunc",
+        function_owner = self,
+        label          = rightGloryCount,
+        position       = { 0.55, 0.21, -0.65 },
+        width          = 180,
+        height         = 180,
+        font_size      = 100,
+        scale          = { 0.5, 0.5, 0.5 },
+        color          = rightColor,
+        font_color     = { 1, 1, 1, 1 },
+        tooltip        = "Current " .. rightStr .. " Glory points.",
+      })
+    end
 
-    scorePads[i].createButton({
-      click_function = "nullFunc",
-      function_owner = self,
-      label          = rightVPCount,
-      position       = { 0.55, 0.21, -0.05 },
-      width          = 180,
-      height         = 180,
-      font_size      = 100,
-      scale          = { 0.5, 0.5, 0.5 },
-      color          = rightColor,
-      font_color     = { 1, 1, 1, 1 },
-      tooltip        = "Current " .. rightStr .. " Printed Victory points.",
-    })
+    if leftHasPlayer then
+      scorePads[i].createButton({
+        click_function = "nullFunc",
+        function_owner = self,
+        label          = leftAwayCount,
+        position       = { 0.06, 0.21, -0.45 },
+        width          = 180,
+        height         = 180,
+        font_size      = 100,
+        scale          = { 0.5, 0.5, 0.5 },
+        color          = leftColor,
+        font_color     = { 1, 1, 1, 1 },
+        tooltip        = "Current " .. leftStr .. " Neutral Zone token points.",
+      })
+    end
 
-    scorePads[i].createButton({
-      click_function = "nullFunc",
-      function_owner = self,
-      label          = leftResearchCount,
-      position       = { 0.06, 0.21, 0.15 },
-      width          = 180,
-      height         = 180,
-      font_size      = 100,
-      scale          = { 0.5, 0.5, 0.5 },
-      color          = leftColor,
-      font_color     = { 1, 1, 1, 1 },
-      tooltip        = "Current " .. leftStr .. " Research Multiplier points.",
-    })
+    if rightHasPlayer then
+      scorePads[i].createButton({
+        click_function = "nullFunc",
+        function_owner = self,
+        label          = rightAwayCount,
+        position       = { 0.55, 0.21, -0.45 },
+        width          = 180,
+        height         = 180,
+        font_size      = 100,
+        scale          = { 0.5, 0.5, 0.5 },
+        color          = rightColor,
+        font_color     = { 1, 1, 1, 1 },
+        tooltip        = "Current " .. rightStr .. " Neutral Zone token points.",
+      })
+    end
 
-    scorePads[i].createButton({
-      click_function = "nullFunc",
-      function_owner = self,
-      label          = rightResearchCount,
-      position       = { 0.55, 0.21, 0.15 },
-      width          = 180,
-      height         = 180,
-      font_size      = 100,
-      scale          = { 0.5, 0.5, 0.5 },
-      color          = rightColor,
-      font_color     = { 1, 1, 1, 1 },
-      tooltip        = "Current " .. rightStr .. " Research Multiplier points.",
-    })
+    if leftHasPlayer then
+      scorePads[i].createButton({
+        click_function = "nullFunc",
+        function_owner = self,
+        label          = leftEndgameCount,
+        position       = { 0.06, 0.21, -0.25 },
+        width          = 180,
+        height         = 180,
+        font_size      = 100,
+        scale          = { 0.5, 0.5, 0.5 },
+        color          = leftColor,
+        font_color     = { 1, 1, 1, 1 },
+        tooltip        = "Current " .. leftStr .. " Endgame Scoring points.",
+      })
+    end
 
-    scorePads[i].createButton({
-      click_function = "nullFunc",
-      function_owner = self,
-      label          = leftInfluenceCount,
-      position       = { 0.06, 0.21, 0.35 },
-      width          = 180,
-      height         = 180,
-      font_size      = 100,
-      scale          = { 0.5, 0.5, 0.5 },
-      color          = leftColor,
-      font_color     = { 1, 1, 1, 1 },
-      tooltip        = "Current " .. leftStr .. " Influence Multiplier points.",
-    })
+    if rightHasPlayer then
+      scorePads[i].createButton({
+        click_function = "nullFunc",
+        function_owner = self,
+        label          = rightEndgameCount,
+        position       = { 0.55, 0.21, -0.25 },
+        width          = 180,
+        height         = 180,
+        font_size      = 100,
+        scale          = { 0.5, 0.5, 0.5 },
+        color          = rightColor,
+        font_color     = { 1, 1, 1, 1 },
+        tooltip        = "Current " .. rightStr .. " Endgame Scoring points.",
+      })
+    end
 
-    scorePads[i].createButton({
-      click_function = "nullFunc",
-      function_owner = self,
-      label          = rightInfluenceCount,
-      position       = { 0.55, 0.21, 0.35 },
-      width          = 180,
-      height         = 180,
-      font_size      = 100,
-      scale          = { 0.5, 0.5, 0.5 },
-      color          = rightColor,
-      font_color     = { 1, 1, 1, 1 },
-      tooltip        = "Current " .. rightStr .. " Influence Multiplier points.",
-    })
+    if leftHasPlayer then
+      scorePads[i].createButton({
+        click_function = "nullFunc",
+        function_owner = self,
+        label          = leftVPCount,
+        position       = { 0.06, 0.21, -0.05 },
+        width          = 180,
+        height         = 180,
+        font_size      = 100,
+        scale          = { 0.5, 0.5, 0.5 },
+        color          = leftColor,
+        font_color     = { 1, 1, 1, 1 },
+        tooltip        = "Current " .. leftStr .. " Printed Victory points.",
+      })
+    end
 
-    scorePads[i].createButton({
-      click_function = "nullFunc",
-      function_owner = self,
-      label          = leftMilitaryCount,
-      position       = { 0.06, 0.21, 0.55 },
-      width          = 180,
-      height         = 180,
-      font_size       = 100,
-      scale          = { 0.5, 0.5, 0.5 },
-      color          = leftColor,
-      font_color      = { 1, 1, 1, 1 },
-      tooltip         = "Current " .. leftStr .. " Military Multiplier points.",
-    })
+    if rightHasPlayer then
+      scorePads[i].createButton({
+        click_function = "nullFunc",
+        function_owner = self,
+        label          = rightVPCount,
+        position       = { 0.55, 0.21, -0.05 },
+        width          = 180,
+        height         = 180,
+        font_size      = 100,
+        scale          = { 0.5, 0.5, 0.5 },
+        color          = rightColor,
+        font_color     = { 1, 1, 1, 1 },
+        tooltip        = "Current " .. rightStr .. " Printed Victory points.",
+      })
+    end
 
-    scorePads[i].createButton({
-      click_function = "nullFunc",
-      function_owner = self,
-      label          = rightMilitaryCount,
-      position       = { 0.55, 0.21, 0.55 },
-      width          = 180,
-      height         = 180,
-      font_size       = 100,
-      scale           = { 0.5, 0.5, 0.5 },
-      color           = rightColor,
-      font_color      = { 1, 1, 1, 1 },
-      tooltip         = "Current " .. rightStr .. " Military Multiplier points.",
-    })
+    if leftHasPlayer then
+      scorePads[i].createButton({
+        click_function = "nullFunc",
+        function_owner = self,
+        label          = leftResearchCount,
+        position       = { 0.06, 0.21, 0.15 },
+        width          = 180,
+        height         = 180,
+        font_size      = 100,
+        scale          = { 0.5, 0.5, 0.5 },
+        color          = leftColor,
+        font_color     = { 1, 1, 1, 1 },
+        tooltip        = "Current " .. leftStr .. " Research Multiplier points.",
+      })
+    end
 
-    if leftGoalCount > 0 then
+    if rightHasPlayer then
+      scorePads[i].createButton({
+        click_function = "nullFunc",
+        function_owner = self,
+        label          = rightResearchCount,
+        position       = { 0.55, 0.21, 0.15 },
+        width          = 180,
+        height         = 180,
+        font_size      = 100,
+        scale          = { 0.5, 0.5, 0.5 },
+        color          = rightColor,
+        font_color     = { 1, 1, 1, 1 },
+        tooltip        = "Current " .. rightStr .. " Research Multiplier points.",
+      })
+    end
+
+    if leftHasPlayer then
+      scorePads[i].createButton({
+        click_function = "nullFunc",
+        function_owner = self,
+        label          = leftInfluenceCount,
+        position       = { 0.06, 0.21, 0.35 },
+        width          = 180,
+        height         = 180,
+        font_size      = 100,
+        scale          = { 0.5, 0.5, 0.5 },
+        color          = leftColor,
+        font_color     = { 1, 1, 1, 1 },
+        tooltip        = "Current " .. leftStr .. " Influence Multiplier points.",
+      })
+    end
+
+    if rightHasPlayer then
+      scorePads[i].createButton({
+        click_function = "nullFunc",
+        function_owner = self,
+        label          = rightInfluenceCount,
+        position       = { 0.55, 0.21, 0.35 },
+        width          = 180,
+        height         = 180,
+        font_size      = 100,
+        scale          = { 0.5, 0.5, 0.5 },
+        color          = rightColor,
+        font_color     = { 1, 1, 1, 1 },
+        tooltip        = "Current " .. rightStr .. " Influence Multiplier points.",
+      })
+    end
+
+    if leftHasPlayer then
+      scorePads[i].createButton({
+        click_function = "nullFunc",
+        function_owner = self,
+        label          = leftMilitaryCount,
+        position       = { 0.06, 0.21, 0.55 },
+        width          = 180,
+        height         = 180,
+        font_size      = 100,
+        scale          = { 0.5, 0.5, 0.5 },
+        color          = leftColor,
+        font_color     = { 1, 1, 1, 1 },
+        tooltip         = "Current " .. leftStr .. " Military Multiplier points.",
+      })
+    end
+
+    if rightHasPlayer then
+      scorePads[i].createButton({
+        click_function = "nullFunc",
+        function_owner = self,
+        label          = rightMilitaryCount,
+        position       = { 0.55, 0.21, 0.55 },
+        width          = 180,
+        height         = 180,
+        font_size      = 100,
+        scale          = { 0.5, 0.5, 0.5 },
+        color          = rightColor,
+        font_color     = { 1, 1, 1, 1 },
+        tooltip         = "Current " .. rightStr .. " Military Multiplier points.",
+      })
+    end
+
+    if leftHasPlayer and leftGoalCount > 0 then
       scorePads[i].createButton({
         click_function = "nullFunc",
         function_owner = self,
@@ -2884,7 +3207,7 @@ function calculateScore(buttonObj, _, _)
       })
     end
 
-    if rightGoalCount > 0 then
+    if rightHasPlayer and rightGoalCount > 0 then
       scorePads[i].createButton({
         click_function = "nullFunc",
         function_owner = self,
@@ -2903,33 +3226,37 @@ function calculateScore(buttonObj, _, _)
     local leftTotal = leftGloryCount + leftAwayCount + leftEndgameCount + leftVPCount + leftResearchCount + leftInfluenceCount + leftMilitaryCount + leftGoalCount
     local rightTotal = rightGloryCount + rightAwayCount + rightEndgameCount + rightVPCount + rightResearchCount + rightInfluenceCount + rightMilitaryCount + rightGoalCount
 
-    scorePads[i].createButton({
-      click_function = "nullFunc",
-      function_owner = self,
-      label          = leftTotal,
-      position       = { 0.06, 0.21, 0.92 },
-      width          = 260,
-      height         = 180,
-      font_size      = 100,
-      scale          = { 0.5, 0.5, 0.5 },
-      color          = leftColor,
-      font_color     = { 1, 1, 1, 1 },
-      tooltip        = "Current " .. leftStr .. " Total points.",
-    })
+    if leftHasPlayer then
+      scorePads[i].createButton({
+        click_function = "nullFunc",
+        function_owner = self,
+        label          = leftTotal,
+        position       = { 0.06, 0.21, 0.92 },
+        width          = 260,
+        height         = 180,
+        font_size      = 100,
+        scale          = { 0.5, 0.5, 0.5 },
+        color          = leftColor,
+        font_color     = { 1, 1, 1, 1 },
+        tooltip        = "Current " .. leftStr .. " Total points.",
+      })
+    end
 
-    scorePads[i].createButton({
-      click_function = "nullFunc",
-      function_owner = self,
-      label          = rightTotal,
-      position       = { 0.55, 0.21, 0.92 },
-      width          = 260,
-      height         = 180,
-      font_size      = 100,
-      scale          = { 0.5, 0.5, 0.5 },
-      color          = rightColor,
-      font_color     = { 1, 1, 1, 1 },
-      tooltip        = "Current " .. rightStr .. " Total points.",
-    })
+    if rightHasPlayer then
+      scorePads[i].createButton({
+        click_function = "nullFunc",
+        function_owner = self,
+        label          = rightTotal,
+        position       = { 0.55, 0.21, 0.92 },
+        width          = 260,
+        height         = 180,
+        font_size      = 100,
+        scale          = { 0.5, 0.5, 0.5 },
+        color          = rightColor,
+        font_color     = { 1, 1, 1, 1 },
+        tooltip        = "Current " .. rightStr .. " Total points.",
+      })
+    end
   end
 
   -- finally, build notebook

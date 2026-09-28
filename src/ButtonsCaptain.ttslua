@@ -403,11 +403,139 @@ function reportCurrentSkills(playerColor)
       end
     end
 
+    -- up to 3 military for each person with starfleet not including "Tactical Officer (U.S.S. Titan)"
+    if zoneObj.getName() == "Tactical Officer (U.S.S. Titan)" then
+      local personCount = 0
+      for i = 1, #checkZones do
+        for _, tacticalCheckObj in pairs(checkZones[i].getObjects()) do
+          if tacticalCheckObj.hasTag("suit_person") and tacticalCheckObj.hasTag("trait_starfleet") and
+          tacticalCheckObj.getName() ~= "Tactical Officer (U.S.S. Titan)" then
+            personCount = personCount + 1
+          end
+        end
+      end
+
+      for i = 1, #checkBeamBagObjs do
+        for _, bagObj in pairs(checkBeamBagObjs[i].getObjects()) do
+          local cardCounted = false
+          for _, tag in pairs(bagObj.tags) do
+            if tag == "suit_person" then
+              for _, secondTag in pairs(bagObj.tags) do
+                if secondTag == "trait_starfleet" and bagObj.name ~= "Tactical Officer (U.S.S. Titan)" then
+                  personCount = personCount + 1
+                  cardCounted = true
+                  break
+                end
+              end
+            end
+            if cardCounted then break end
+          end
+        end
+      end
+      if personCount > 3 then personCount = 3 end
+      if personCount > 0 then
+        skillIcons["military"] = skillIcons["military"] + personCount
+        table.insert(inPlaySkillCards["military"], "Tactical Officer (U.S.S. Titan): " .. personCount)
+      end
+    end
+
     -- 1 science while in DO slot
     if zoneObj.getName() == "T'Ana" then
       skillIcons["research"] = skillIcons["research"] + 1
       table.insert(inPlaySkillCards["research"], "T'Ana: 1")
     end
+  end
+
+  -- check if Solving Science Mysteries is currently in play
+  local solvingScienceMysteriesInPlay = false
+  for i = 1, #checkZones do
+    for _, zoneObj in pairs(checkZones[i].getObjects()) do
+      if zoneObj.getName() == "Solving Science Mysteries" then
+        solvingScienceMysteriesInPlay = true
+        break
+      end
+    end
+    if solvingScienceMysteriesInPlay then
+      break
+    end
+  end
+
+  -- all military icons count as science while Solving Science Mysteries is in play
+  if solvingScienceMysteriesInPlay then
+    skillIcons["research"] = skillIcons["research"] + skillIcons["military"]
+    skillIcons["military"] = 0
+
+    inPlaySkillIcons["research"] = inPlaySkillIcons["research"] + inPlaySkillIcons["military"]
+    inPlaySkillIcons["military"] = 0
+
+    beamedSkillIcons["research"] = beamedSkillIcons["research"] + beamedSkillIcons["military"]
+    beamedSkillIcons["military"] = 0
+
+    for _, line in ipairs(inPlaySkillCards["military"]) do
+      table.insert(inPlaySkillCards["research"], line)
+    end
+    inPlaySkillCards["military"] = {}
+  end
+
+  -- check if La'An Noonien Singh is in the DO slot
+  local laanInDO = false
+  for _, zoneObj in pairs(checkZoneDO.getObjects()) do
+    if zoneObj.getName() == "La'An Noonien Singh" then
+      laanInDO = true
+      break
+    end
+  end
+
+  -- check if a weapon is in play
+  local weaponInPlay = false
+  if laanInDO then
+    for i = 1, #checkZones do
+      for _, zoneObj in pairs(checkZones[i].getObjects()) do
+        if zoneObj.hasTag("trait_weapon") then
+          weaponInPlay = true
+          break
+        end
+      end
+      if weaponInPlay then
+        break
+      end
+    end
+
+    if not weaponInPlay then
+      for i = 1, #checkBeamBagObjs do
+        for _, bagObj in pairs(checkBeamBagObjs[i].getObjects()) do
+          for _, tag in pairs(bagObj.tags) do
+            if tag == "trait_weapon" then
+              weaponInPlay = true
+              break
+            end
+          end
+          if weaponInPlay then
+            break
+          end
+        end
+        if weaponInPlay then
+          break
+        end
+      end
+    end
+  end
+
+  -- all military icons count as wildcard while La'An Noonien Singh is in the DO slot with a weapon in play
+  if laanInDO and weaponInPlay then
+    skillIcons["wildcard"] = skillIcons["wildcard"] + skillIcons["military"]
+    skillIcons["military"] = 0
+
+    inPlaySkillIcons["wildcard"] = inPlaySkillIcons["wildcard"] + inPlaySkillIcons["military"]
+    inPlaySkillIcons["military"] = 0
+
+    beamedSkillIcons["wildcard"] = beamedSkillIcons["wildcard"] + beamedSkillIcons["military"]
+    beamedSkillIcons["military"] = 0
+
+    for _, line in ipairs(inPlaySkillCards["military"]) do
+      table.insert(inPlaySkillCards["wildcard"], line)
+    end
+    inPlaySkillCards["military"] = {}
   end
 
   -- put the broadcast together
@@ -440,7 +568,7 @@ function reportCurrentSkills(playerColor)
 
     for k, v in pairs(skillIcons) do
       if v > 0 then
-        local altText = k:sub(1, 1):upper() .. k:sub(2)
+        local altText = k == "wildcard" and "Any Skills" or k:sub(1, 1):upper() .. k:sub(2)
         local reportColor = reportColors[k]
 
         if beamedSkillIcons[k] > 0 then
@@ -611,6 +739,7 @@ function reportCurrentTraits(playerColor, buttonType)
       vulcan       = 0,
       xb           = 0,
       xindi        = 0,
+      wildcard     = 0
     },
     Regular = {
       ambassador    = 0,
@@ -644,6 +773,7 @@ function reportCurrentTraits(playerColor, buttonType)
       telepath      = 0,
       timetravel    = 0,
       weapon        = 0,
+      wildcard      = 0,
     },
     Other = {
       attack      = 0,
@@ -766,6 +896,107 @@ function reportCurrentTraits(playerColor, buttonType)
     end
   end
 
+  -- Pelia: while in play, if an engineer is also in play, Pelia gains the wildcard trait
+  local peliaFound = false
+  for i = 1, #checkZones do
+    for _, zoneObj in pairs(checkZones[i].getObjects()) do
+      if zoneObj.getName() == "Pelia" then
+        peliaFound = true
+        break
+      end
+    end
+    if peliaFound then
+      break
+    end
+  end
+
+  if peliaFound then
+    local engineerFound = false
+
+    for i = 1, #checkZones do
+      for _, zoneObj in pairs(checkZones[i].getObjects()) do
+        if zoneObj.hasTag("trait_engineer") then
+          engineerFound = true
+          break
+        end
+      end
+      if engineerFound then
+        break
+      end
+    end
+
+    if not engineerFound then
+      for i = 1, #checkBeamBagObjs do
+        for _, bagObj in pairs(checkBeamBagObjs[i].getObjects()) do
+          for _, tag in pairs(bagObj.tags) do
+            if tag == "trait_engineer" then
+              engineerFound = true
+              break
+            end
+          end
+          if engineerFound then
+            break
+          end
+        end
+        if engineerFound then
+          break
+        end
+      end
+    end
+
+    if engineerFound then
+      traitCounts.wildcard = traitCounts.wildcard + 1
+    end
+  end
+
+  -- Vadic's Splinter Group: while in play, if a Borg is also in play, Vadic's Splinter Group gains the wildcard trait
+  local vadicFound = false
+  for _, zoneObj in pairs(checkZoneStaging.getObjects()) do
+    if zoneObj.getName() == "Vadic's Splinter Group" then
+      vadicFound = true
+      break
+    end
+  end
+
+  if vadicFound then
+    local borgFound = false
+
+    for i = 1, #checkZones do
+      for _, zoneObj in pairs(checkZones[i].getObjects()) do
+        if zoneObj.hasTag("trait_borg") then
+          borgFound = true
+          break
+        end
+      end
+      if borgFound then
+        break
+      end
+    end
+
+    if not borgFound then
+      for i = 1, #checkBeamBagObjs do
+        for _, bagObj in pairs(checkBeamBagObjs[i].getObjects()) do
+          for _, tag in pairs(bagObj.tags) do
+            if tag == "trait_borg" then
+              borgFound = true
+              break
+            end
+          end
+          if borgFound then
+            break
+          end
+        end
+        if borgFound then
+          break
+        end
+      end
+    end
+
+    if borgFound then
+      traitCounts.wildcard = traitCounts.wildcard + 1
+    end
+  end
+
   -- put the broadcast together
   local traitsFound = false
   for k, v in pairs(traitCounts) do
@@ -786,6 +1017,17 @@ function reportCurrentTraits(playerColor, buttonType)
     for k, v in pairs(traitCounts) do
       if v > 0 then
         local altText = k:sub(1, 1):upper() .. k:sub(2)
+        local traitNames = {
+          lowerdecker = "Lower Decker",
+          vaunakat = "Vau N'Akat",
+          mindcontrol = "Mind Control",
+          nx01 = "NX-01",
+          pathofsurak = "Path Of Surak",
+          timetravel = "Time Travel",
+        }
+        if traitNames[k] then
+          altText = traitNames[k]
+        end
         local listStr = string.format(
           "[%s]*[-] %dx %s",
           Color.fromString(playerColor):toHex(),
@@ -1305,14 +1547,18 @@ function handleTurnResupplyBroadcast(playerColor)
   if #matchCards > 0 then
     local playerStr = getPlayerStr(playerColor)
     local headlineStr = string.format("[%s]Reminder[-] - Current in play Resupply Step Cards for %s:", Color.fromString(playerColor):toHex(), playerStr)
-    broadcastToAll(headlineStr, "White")
     Wait.time(function()
 
-      for i = 1, #matchCards do
-        broadcastToAll(matchCards[i].getName(), "White")
-      end
+      broadcastToAll(headlineStr, "White")
+      Wait.time(function()
 
-    end, 0.5)
+        for i = 1, #matchCards do
+          broadcastToAll(matchCards[i].getName(), "White")
+        end
+
+      end, 0.5)
+
+    end, 3.0)
   end
 end
 
@@ -1371,10 +1617,16 @@ function refreshPlayerArea(playerColor)
     getObjectbyNameAndNotes("Zone Deploy Location", playerColor),
   }
   local rotRefresh = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+  local refreshedCards = {}
+
   for i = 1, #checkZones do
     for _, zoneObj in pairs(checkZones[i].getObjects()) do
-      if zoneObj.tag == "Card" then
+      if zoneObj.tag == "Card" and not refreshedCards[zoneObj.getGUID()] then
+        refreshedCards[zoneObj.getGUID()] = true
+
         zoneObj.setRotationSmooth(rotRefresh, false, true)
+        zoneObj.clearContextMenu()
+        loadContextActions(checkZones[i], zoneObj)
       end
     end
   end
@@ -1414,6 +1666,27 @@ function refreshPlayerArea(playerColor)
   --         end
   --     end
   -- end
+end
+
+
+function renameCaptainDeck(zone, type)
+  -- handles the renaming of a captain's discard or draw deck when a card or deck is dropped into zone
+  -- type == "Discard" or "Draw"
+  local playerColor = zone.getGMNotes()
+  local captainName = getCaptainName(playerColor)
+  local nameStr = string.format("%s %s Deck", captainName, type)
+
+  Wait.time(function()
+
+    for _, zoneObj in pairs(zone.getObjects()) do
+      if zoneObj.type == "Deck" then
+        zoneObj.setName(nameStr)
+        break
+      end
+    end
+
+  end, 1)
+
 end
 
 

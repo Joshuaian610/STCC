@@ -1,0 +1,100 @@
+-- object based scripting to handle collision trigger of ship actions
+-- Blue Location Duty Officer Pad is owner object
+
+function onCollisionEnter(info)
+  if info.collision_object.hasTag("suit_person") and not info.collision_object.hasTag("currentDutyOfficer") and not info.collision_object.is_face_down then
+    local enterObj = info.collision_object
+    local zones = enterObj.getZones()
+    for _, zone in pairs(zones) do
+      if zone.getName() == "Zone Duty Officer" then
+        local playerColor = zone.getGMNotes()
+        local playerStr = Global.call("getPlayerStr", playerColor)
+        if enterObj.hasTag('suit_person') then
+          local broadcastStr = string.format("%s has Promoted Duty Officer: %s", playerStr, enterObj.getName())
+          broadcastToAll(broadcastStr, "White")
+
+          -- tag card as DO for removal cleanliness
+          enterObj.addTag("currentDutyOfficer")
+
+          -- if playerColor isBot, try to find bot suits card to flip to DO side
+          local isBot = Global.call("checkPlayerColorIsBot", playerColor)
+          if isBot then
+            local botCaptainName = Global.call("getCaptainName", playerColor)
+            local suitsCard = Global.call("getObjectbyName", "Suits " .. botCaptainName)
+            if suitsCard ~= nil then
+              local rotSuitsCard = suitsCard.getRotation()
+              rotSuitsCard.z = 180.00
+              suitsCard.setRotationSmooth(rotSuitsCard, false, true)
+            end
+          end
+
+          -- if playerColor not bot, and Duty Officer is Wesley Crusher, clear context menu on person cards in Zone In Play, remake
+          if not isBot and info.collision_object.getName() == "Wesley Crusher" then
+            local zoneStaging = getObjectbyNameAndNotes("Zone In Play", playerColor)
+            for _, zoneObj in pairs(zoneStaging.getObjects()) do
+              if zoneObj.hasTag("suit_person") then
+                Global.call("reloadStagingPerson", zoneObj)
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+
+function onObjectLeaveZone(zone, leaveObj)
+  if zone.getName() == "Zone Duty Officer" and leaveObj.hasTag("currentDutyOfficer") then
+    local playerColor = zone.getGMNotes()
+    local playerStr = Global.call("getPlayerStr", playerColor)
+    local isBot = Global.call("checkPlayerColorIsBot", playerColor)
+
+    -- if not bot and leave object is Wesley Crusher, reload context menu items on Persons in staging
+    if not isBot and leaveObj.getName() == "Wesley Crusher" then
+
+      local zoneStaging = getObjectbyNameAndNotes("Zone In Play", playerColor)
+      for _, zoneObj in pairs(zoneStaging.getObjects()) do
+        if zoneObj.hasTag("suit_person") then
+          Global.call("reloadStagingPerson", zoneObj)
+        end
+      end
+    end
+
+    local broadcastStr = string.format("%s has Dismissed Duty Officer: %s", playerStr, leaveObj.getName())
+    broadcastToAll(broadcastStr, "White")
+
+    -- untag card as DO for cleanliness
+    leaveObj.removeTag("currentDutyOfficer")
+
+    -- if playerColor isBot, try to find bot suits card to flip to DO side
+    if isBot then
+      -- first need to ensure bot has no other DO
+      local otherBotDO = false
+      for _, zoneObj in pairs(zone.getObjects()) do
+        if zoneObj.hasTag("currentDutyOfficer") then
+          otherBotDO = true
+        end
+      end
+      if not otherBotDO then
+        local botCaptainName = Global.call("getCaptainName", playerColor)
+        local suitsCard = Global.call("getObjectbyName", "Suits " .. botCaptainName)
+        if suitsCard ~= nil then
+          local rotSuitsCard = suitsCard.getRotation()
+          rotSuitsCard.z = 0.00
+          suitsCard.setRotationSmooth(rotSuitsCard, false, true)
+        end
+      end
+    end
+  end
+end
+
+
+function getObjectbyNameAndNotes(objName, objNotes)
+  for _, object in pairs(getObjects()) do
+    if object.getName() == objName and object.getGMNotes() == objNotes then
+      return object
+    end
+  end
+  return nil
+end

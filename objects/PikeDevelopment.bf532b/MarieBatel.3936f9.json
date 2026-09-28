@@ -46,7 +46,9 @@
     "playNoAction2",
     "playActivation",
     "snap_card",
-    "suit_person"
+    "suit_person",
+    "trait_human",
+    "trait_starfleet"
   ],
   "Tooltip": true,
   "Transform": {

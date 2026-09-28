@@ -11,6 +11,10 @@
     "r": 0
   },
   "CustomImage": {
+    "CustomFigurine": {
+      "MirroredBack": false,
+      "UseMinimalCollider": false
+    },
     "ImageScalar": 2,
     "ImageSecondaryURL": "https://steamusercontent-a.akamaihd.net/ugc/18187037950141623705/7C7BEBDFA37AF05ADF82CBADC14DF2446F798D0D/",
     "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/13727205115059862396/78990947911567ADA06D456A11FE3CF247C30158/",
@@ -19,7 +23,7 @@
   "Description": "",
   "DragSelectable": true,
   "GMNotes": "",
-  "GUID": "bbe316",
+  "GUID": "9f2208",
   "Grid": true,
   "GridProjection": false,
   "Hands": false,
@@ -40,9 +44,9 @@
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 75.617,
-    "posY": 3.114,
-    "posZ": 8.643,
+    "posX": 9.64,
+    "posY": 16.741,
+    "posZ": 39.748,
     "rotX": 0,
     "rotY": 0,
     "rotZ": 0,

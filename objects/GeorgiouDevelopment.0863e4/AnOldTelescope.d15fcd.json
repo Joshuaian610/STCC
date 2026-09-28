@@ -45,6 +45,7 @@
     "playNoAction",
     "playReaction",
     "snap_card",
+    "suit_cargo",
     "trait_ancient",
     "trait_ongoing",
     "trait_scientist"

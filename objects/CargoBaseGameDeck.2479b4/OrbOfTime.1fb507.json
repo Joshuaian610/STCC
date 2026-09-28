@@ -47,7 +47,8 @@
     "snap_card",
     "suit_cargo",
     "trait_bajoran",
-    "trait_timetravel"
+    "trait_timetravel",
+    "trait_transcendent"
   ],
   "Tooltip": true,
   "Transform": {

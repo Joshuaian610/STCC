@@ -46,6 +46,7 @@
     "playNoAction",
     "playReaction",
     "mix_remove",
+    "skill_influence",
     "snap_card",
     "suit_person",
     "trait_ambassador",

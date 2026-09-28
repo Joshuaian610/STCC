@@ -46,6 +46,7 @@
     "playActivation",
     "playActivation2",
     "snap_card",
+    "suit_cargo",
     "trait_ongoing"
   ],
   "Tooltip": true,
