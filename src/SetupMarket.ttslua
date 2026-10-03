@@ -469,12 +469,14 @@ function addMarketPromos()
   local posEncounters = { -12.50, 1.25, 19.25 }
   local posCargo = { -2.50, 1.25, 14.00 }
   local posShips = { 2.50, 1.25, 14.00 }
+  local posAllies = { 7.50, 1.25, 14.00 }
   local posIncidents = { 12.50, 1.25, 10.00 }
 
   -- simple, can use helper to pull from bag & place
   getObjectFromBagbyName("Wesley Crusher", bagUnusedObjs, rotEncounters, posEncounters, false)
   getObjectFromBagbyName("Cargo Promos Deck", bagUnusedObjs, rotFacedown, posCargo, false)
   getObjectFromBagbyName("Ships Promos Deck", bagUnusedObjs, rotFacedown, posShips, false)
+  getObjectFromBagbyName("Drones Of Cube 90182", bagUnusedObjs, rotFacedown, posAllies, false)
   getObjectFromBagbyName("Incidents Promos Deck", bagUnusedObjs, rotFacedown, posIncidents, false)
 end
 

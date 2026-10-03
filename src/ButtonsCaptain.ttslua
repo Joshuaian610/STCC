@@ -1460,7 +1460,7 @@ function enlistDevelopmentCard(devZone, playerColor, remainingToDraw, maxHandCou
       end, 1)
       Wait.time(function()
 
-        broadcastStr = string.format("%s: Afterwards, manually draw %d more cards, up to your hand size of %d.", playerStr, remainingToDraw - 1, maxHandCount)
+        broadcastStr = string.format("%s: Afterwards, manually draw up to your hand size of %d.", playerStr, maxHandCount)
         broadcastToColor(broadcastStr, playerColor, "White")
 
       end, 2)
@@ -1468,8 +1468,30 @@ function enlistDevelopmentCard(devZone, playerColor, remainingToDraw, maxHandCou
     end
   end
 
+  -- no deck or card found, simply finish drawing up whatever is possible (assume no discard, it just flipped over)
+  Wait.time(function()
+    broadcastStr = string.format("%s: No Reserves or Development found to enlist, drew up to hand size of %d.", playerStr, maxHandCount)
+    broadcastToColor(broadcastStr, playerColor, "White")
+    local zoneDrawDeck = getObjectbyNameAndNotes("Zone Draw Deck", playerColor)
+    for _, zoneObj in pairs(zoneDrawDeck.getObjects()) do
+      if zoneObj.type == "Deck" then
+        local deckCount = #zoneObj.getObjects()
+        if deckCount >= remainingToDraw then
+          zoneObj.deal(remainingToDraw, playerColor)
+        elseif deckCount < remainingToDraw then
+          zoneObj.deal(deckCount, playerColor)
+        end
+      elseif zoneObj.type == "Card" then
+        local posHand = getObjectbyNameAndNotes("Handzone", playerColor).getPosition()
+        zoneObj.setPositionSmooth(posHand, false, true)
+      end
+    end
+
+  end, 2)
+
   return false
 end
+
 
 
 function drawFromRefreshedDeck(drawDeck, remainingToDraw, playerColor)

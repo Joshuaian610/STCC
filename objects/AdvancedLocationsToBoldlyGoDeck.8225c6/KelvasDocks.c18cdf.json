@@ -42,6 +42,7 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "playActivation",
     "mix_remove",
     "snap_card",
     "suit_location",

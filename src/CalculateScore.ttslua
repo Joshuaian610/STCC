@@ -361,12 +361,13 @@ function getAssociatedBeamBag(posCard, beamBags, playerColor)
 
   if posCardX > 37.50 and posCardX < 39.50 or
   posCardX > -39.50 and posCardX < -37.50 then
-    for i = 8, 14 do
+    for i = 1, 7 do
       table.insert(possibleBags, beamBags[i])
     end
+
   elseif posCardX > 29.00 and posCardX < 31.00 or
   posCardX > -31.00 and posCardX < -29.00 then
-    for i = 1, 7 do
+    for i = 8, 14 do
       table.insert(possibleBags, beamBags[i])
     end
   end

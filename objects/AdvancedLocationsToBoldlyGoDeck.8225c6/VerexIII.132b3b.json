@@ -43,6 +43,7 @@
   "Sticky": true,
   "Tags": [
     "mix_remove",
+    "playActivation",
     "skill_influence",
     "snap_card",
     "suit_location",

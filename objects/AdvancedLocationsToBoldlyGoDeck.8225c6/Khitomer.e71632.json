@@ -42,6 +42,8 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "playReaction",
+    "playReaction2",
     "snap_card",
     "suit_location",
     "trait_human",

@@ -2,14 +2,16 @@
 -- Blue Location Deployment Pad is owner object
 
 function onCollisionEnter(info)
-  if info.collision_object.hasTag("suit_person") and not info.collision_object.hasTag("currentDutyOfficer") and not info.collision_object.is_face_down then
-    local enterObj = info.collision_object
+  local enterObj = info.collision_object
+  if (enterObj.hasTag("suit_person") or enterObj.getName() == "The Riker Maneuver") and
+     not enterObj.hasTag("currentDutyOfficer") and not enterObj.is_face_down then
+
     local zones = enterObj.getZones()
     for _, zone in pairs(zones) do
       if zone.getName() == "Zone Duty Officer" then
         local playerColor = zone.getGMNotes()
         local playerStr = Global.call("getPlayerStr", playerColor)
-        if enterObj.hasTag('suit_person') then
+        if enterObj.hasTag('suit_person') or enterObj.getName() == "The Riker Maneuver" then
           local broadcastStr = string.format("%s has Promoted Duty Officer: %s", playerStr, enterObj.getName())
           broadcastToAll(broadcastStr, "White")
 

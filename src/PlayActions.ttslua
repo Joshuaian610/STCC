@@ -65,15 +65,10 @@ function checkContextActions(cardObj)
   -- need to check if card is in a relevent zone
   local cardInZone = false
   for _, zone in pairs(cardObj.getZones()) do
-    if zone.getName() == "Handzone" then
-
-      cardInZone = true
-      break
-    end
-    if zone.getName() == "Zone In Play" or
-        zone.getName() == "Zone Deploy Ship" or zone.getName() == "Zone Deploy Location" or
-        zone.getName() == "Zone Duty Officer" or zone.getName() == "Zone Captain" then
-        loadContextActions(zone, cardObj)
+    if zone.getName() == "Handzone" or zone.getName() == "Zone In Play" or
+       zone.getName() == "Zone Deploy Ship" or zone.getName() == "Zone Deploy Location" or
+       zone.getName() == "Zone Duty Officer" or zone.getName() == "Zone Captain" then
+      loadContextActions(zone, cardObj)
       cardInZone = true
       break
     end
@@ -90,10 +85,11 @@ function loadDefaultContextActions(cardObj)
   -- handles cases where no play action menu items are required
   -- is the generic "default" context menu options given to a card on spawn if not in a relevant zone
   -- default 2 actions: Return (if marketCard tagged), Log
+  if cardObj == nil then return end
 
   cardObj.clearContextMenu()
 
-  if not cardObj.hasTag("suit_captain") then
+  if not cardObj.hasTag("suit_captain") and cardObj.type == "Card" then
     if cardObj.hasTag("marketCard") or cardObj.hasTag("suit_incident") or cardObj.hasTag("suit_encounter") then
       cardObj.addContextMenuItem("Return Card", returnMarketCardViaContext)
     end
@@ -117,15 +113,21 @@ function reloadStagingPerson(cardObj)
   loadContextActions(stagingZone, cardObj)
 end
 
+
 function loadContextActions(zone, cardObj)
   -- determines correct set of, and order of context menu actions by card, as determined by it's current relevent zone (or lack of)
   -- will be called on zone enter/leave for any card
 
+  if cardObj == nil then return end
   if zone.getName() ~= "Handzone" and zone.getName() ~= "Zone In Play" and
      zone.getName() ~= "Zone Deploy Ship" and zone.getName() ~= "Zone Deploy Location" and
      zone.getName() ~= "Zone Duty Officer" and zone.getName() ~= "Zone Captain" then
     return
   end
+  if cardObj.type ~= "Card" then return end
+
+  local playerColor = zone.getGMNotes()
+  local isBot = checkPlayerColorIsBot(playerColor)
 
   -- waits for a 1 second after call to ensure card remains in triggering zone
   Wait.time(function()
@@ -164,30 +166,60 @@ function loadContextActions(zone, cardObj)
       end
 
       if cardObj.hasTag("deployAction") then
-        cardObj.addContextMenuItem("Deploy (Action)", deployAction)
+        if cardObj.hasTag("suit_location") then
+          cardObj.addContextMenuItem("Control (Action)", deployAction)
+        else
+          cardObj.addContextMenuItem("Deploy (Action)", deployAction)
+        end
       end
       if cardObj.hasTag("deployAction2") then
-        cardObj.addContextMenuItem("2nd Deploy (Action)", deployAction2)
+        if cardObj.hasTag("suit_location") then
+          cardObj.addContextMenuItem("2nd Control (Action)", deployAction2)
+        else
+          cardObj.addContextMenuItem("2nd Deploy (Action)", deployAction2)
+        end
       end
       if cardObj.hasTag("deployAction3") then
-        cardObj.addContextMenuItem("3rd Deploy (Action)", deployAction3)
+        if cardObj.hasTag("suit_location") then
+          cardObj.addContextMenuItem("3rd Control (Action)", deployAction3)
+        else
+          cardObj.addContextMenuItem("3rd Deploy (Action)", deployAction3)
+        end
       end
 
       if cardObj.hasTag("deployNoAction") then
-        cardObj.addContextMenuItem("Deploy (No Action)", deployNoAction)
+        if cardObj.hasTag("suit_location") then
+          cardObj.addContextMenuItem("Control (No Action)", deployNoAction)
+        else
+          cardObj.addContextMenuItem("Deploy (No Action)", deployNoAction)
+        end
       end
       if cardObj.hasTag("deployNoAction2") then
-        cardObj.addContextMenuItem("2nd Deploy (No Action)", deployNoAction2)
+        if cardObj.hasTag("suit_location") then
+          cardObj.addContextMenuItem("2nd Control (No Action)", deployNoAction2)
+        else
+          cardObj.addContextMenuItem("2nd Deploy (No Action)", deployNoAction2)
+        end
       end
       if cardObj.hasTag("deployNoAction3") then
-        cardObj.addContextMenuItem("3rd Deploy (No Action)", deployNoAction3)
+        if cardObj.hasTag("suit_location") then
+          cardObj.addContextMenuItem("3rd Control (No Action)", deployNoAction3)
+        else
+          cardObj.addContextMenuItem("3rd Deploy (No Action)", deployNoAction3)
+        end
       end
 
       if cardObj.hasTag("playSupport") then
         cardObj.addContextMenuItem("Support", playSupport)
       end
 
-      if cardObj.hasTag("suit_person") then
+      if cardObj.hasTag("playSupport2") then
+        cardObj.addContextMenuItem("Support", playSupport2)
+      end
+
+      if ((cardObj.hasTag("suit_person") or cardObj.getName() == "The Riker Maneuver")) and
+         cardObj.getName() ~= "Miles O'Brien" and cardObj.getName() ~= "Ensign Boimler" and
+         cardObj.getName() ~= "Ensign Mariner" and cardObj.getName() ~= "Christine Chapel" then
         cardObj.addContextMenuItem("Promote Duty Officer", promoteDO)
       end
 
@@ -245,8 +277,60 @@ function loadContextActions(zone, cardObj)
         end
       end
 
-      if cardObj.hasTag("suit_person") then
+      if ((cardObj.hasTag("suit_person") or cardObj.getName() == "The Riker Maneuver")) and
+         cardObj.getName() ~= "Miles O'Brien" and cardObj.getName() ~= "Ensign Boimler" and
+         cardObj.getName() ~= "Ensign Mariner" and cardObj.getName() ~= "Christine Chapel" then
         cardObj.addContextMenuItem("Promote Duty Officer", promoteDO)
+      end
+
+      if cardObj.hasTag("deployAction") and not isBot then
+        if cardObj.hasTag("suit_location") then
+          cardObj.addContextMenuItem("Control (Action)", deployAction)
+        else
+          cardObj.addContextMenuItem("Deploy (Action)", deployAction)
+        end
+      end
+      if cardObj.hasTag("deployAction2") and not isBot then
+        if cardObj.hasTag("suit_location") then
+          cardObj.addContextMenuItem("2nd Control (Action)", deployAction2)
+        else
+          cardObj.addContextMenuItem("2nd Deploy (Action)", deployAction2)
+        end
+      end
+      if cardObj.hasTag("deployAction3") and not isBot then
+        if cardObj.hasTag("suit_location") then
+          cardObj.addContextMenuItem("3rd Control (Action)", deployAction3)
+        else
+          cardObj.addContextMenuItem("3rd Deploy (Action)", deployAction3)
+        end
+      end
+
+      if cardObj.hasTag("deployNoAction") and not isBot then
+        if cardObj.hasTag("suit_location") then
+          cardObj.addContextMenuItem("Control (No Action)", deployNoAction)
+        else
+          cardObj.addContextMenuItem("Deploy (No Action)", deployNoAction)
+        end
+      end
+      if cardObj.hasTag("deployNoAction2") and not isBot then
+        if cardObj.hasTag("suit_location") then
+          cardObj.addContextMenuItem("2nd Control (No Action)", deployNoAction2)
+        else
+          cardObj.addContextMenuItem("2nd Deploy (No Action)", deployNoAction2)
+        end
+      end
+      if cardObj.hasTag("deployNoAction3") and not isBot then
+        if cardObj.hasTag("suit_location") then
+          cardObj.addContextMenuItem("3rd Control (No Action)", deployNoAction3)
+        else
+          cardObj.addContextMenuItem("3rd Deploy (No Action)", deployNoAction3)
+        end
+      end
+
+      if isBot and not cardObj.hasTag("suit_location") and
+         (cardObj.hasTag("deployAction") or cardObj.hasTag("deployAction2") or cardObj.hasTag("deployAction3") or
+         cardObj.hasTag("deployNoAction1") or cardObj.hasTag("deployNoAction2") or cardObj.hasTag("deployNoAction3")) then
+        cardObj.addContextMenuItem("Deploy Card", deployNoAction)
       end
 
       cardObj.addContextMenuItem("Discard Card", discardViaContext)
@@ -398,18 +482,10 @@ function loadContextActions(zone, cardObj)
 end
 
 
-
-
-
-
-
-
-
-
-
-function returnMarketCardViaContext(playerColor, _, cardObj)
+function returnMarketCardViaContext(_, _, cardObj)
   -- handles the return of a market card, same as old pads, via right click context menu
 
+  local playerColor = getActualPlayerColor(cardObj)
   if playerColor ~= "Blue" and playerColor ~= "Red" then return end
 
   local cardSuit = (cardObj.hasTag("suit_encounter") and "Encounter") or
@@ -493,8 +569,10 @@ function returnMarketCardViaContext(playerColor, _, cardObj)
 end
 
 
-function logCardViaContext(playerColor, _, cardObj)
+function logCardViaContext(_, _, cardObj)
   -- handles the "log" action of a card
+
+  local playerColor = getActualPlayerColor(cardObj)
 
   if playerColor ~= "Blue" and playerColor ~= "Red" then return end
 
@@ -513,13 +591,46 @@ function logCardViaContext(playerColor, _, cardObj)
 end
 
 
+function getActualPlayerColor(cardObj)
+  -- this will determine the true playerColor of a cardObj by querying it's zone's gm notes
+  local cardZones = cardObj.getZones()
+  local actualPlayerColor
+  for _, zone in pairs(cardZones) do
+    if zone.getGMNotes() == "Blue" or zone.getGMNotes() == "Red" then
+      actualPlayerColor = zone.getGMNotes()
+    end
+  end
+  return actualPlayerColor
+end
 
-function placeStagingCard(actionRequired, playerColor, cardObj, opIndex)
+
+function refreshCard(playerColor, _, cardObj)
+  -- handles the refresh right click context menu actions (should not show for bot ever)
+  local rotRefresh = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+  cardObj.setRotationSmooth(rotRefresh, false, true)
+  cardObj.clearContextMenu()
+  local zones = cardObj.getZones()
+  for _, zone in pairs(zones) do
+    if zone.getName() == "Handzone" or zone.getName() == "Zone In Play" or
+       zone.getName() == "Zone Deploy Ship" or zone.getName() == "Zone Deploy Location" or
+       zone.getName() == "Zone Duty Officer" or zone.getName() == "Zone Captain" then
+      loadContextActions(zone, cardObj)
+      break
+    end
+  end
+end
+
+
+function placeStagingCard(actionRequired, opType, cardObj, opIndex)
   -- context menu helper that determines the next available staging slot, places card
   -- actionRequired parameter is boolean. true will first check for and place an available extra action token, then action token
   -- false will ignore action tokens
 
-  -- first need to check for action token if actionRequired == true, broadcast unable to perform report if required and not found
+  -- in case of bot owning card, get actual playerColor
+  local playerColor = getActualPlayerColor(cardObj)
+  if playerColor ~= "Blue" and playerColor ~= "Red" then return end
+
+  -- need to check for action token if actionRequired == true, broadcast unable to perform report if required and not found
   local actionToken
   if actionRequired then
     local checkZone = getObjectbyNameAndNotes("Zone Action Tokens", playerColor)
@@ -542,7 +653,7 @@ function placeStagingCard(actionRequired, playerColor, cardObj, opIndex)
     if actionToken == nil then
       -- broadcast unable to perform action
       local playerStr = getPlayerStr(playerColor)
-      local broadcastStr = string.format("%s has no Action Tokens remaining, is unable to perform Action.", playerStr)
+      local broadcastStr = string.format("%s has no Action Tokens remaining, is unable to perform Operation.", playerStr)
       broadcastToAll(broadcastStr, "White")
       return
     end
@@ -573,11 +684,13 @@ function placeStagingCard(actionRequired, playerColor, cardObj, opIndex)
     local slotOccupied = false
 
     for _, zoneObj in pairs(stagingZone.getObjects()) do
-      local cardZ = zoneObj.getPosition().z
+      if zoneObj.type == "Card" then
+        local cardZ = zoneObj.getPosition().z
 
-      if math.abs(cardZ - slotPos[3]) <= slotTolerance then
-        slotOccupied = true
-        break
+        if math.abs(cardZ - slotPos[3]) <= slotTolerance then
+          slotOccupied = true
+          break
+        end
       end
     end
 
@@ -599,6 +712,7 @@ function placeStagingCard(actionRequired, playerColor, cardObj, opIndex)
   cardObj.setRotation(rotCardPlacement)
   cardObj.setPosition(posCardPlacement)
 
+  -- if required, place found action token
   if actionRequired then
     local rotToken = playerColor == "Blue" and { 0.00, 120.00, 0.00 } or { 0.00, 300.00, 0.00 }
 
@@ -615,14 +729,23 @@ function placeStagingCard(actionRequired, playerColor, cardObj, opIndex)
     actionToken.setPositionSmooth(tokenPos, false, true)
   end
 
+  -- broadcast
   local playerStr = getPlayerStr(playerColor)
-  local broadcastStr = actionRequired == true and string.format("%s has spent an Action to perform %s Play Operation.", playerStr, cardObj.getName()) or
-                                                  string.format("%s has performed %s Actionless Play Operation.", playerStr, cardObj.getName())
-  broadcastToAll(broadcastStr, "White")
+  if opType ~= "Support" then
+    local actionText = actionRequired == true and getPlayAction(cardObj, opIndex) or getPlayNoAction(cardObj, opIndex)
+    local broadcastStr = actionRequired == true and string.format("%s has spent an Action to perform %s Play Operation%s", playerStr, cardObj.getName(), actionText ~= nil and ": " .. actionText or ".") or
+                                                    string.format("%s performs %s Actionless Play Operation%s", playerStr, cardObj.getName(), actionText ~= nil and ": " .. actionText or ".")
+    broadcastToAll(broadcastStr, "White")
+  elseif opType == "Support" then
+    local actionText = getSupport(cardObj, opIndex)
+    local broadcastStr = string.format("%s performs %s Support Operation%s", playerStr, cardObj.getName(), actionText ~= nil and ": " .. actionText or ".")
+
+    broadcastToAll(broadcastStr, "White")
+  end
 end
 
 
-function placeDeployCard(actionRequired, playerColor, cardObj, opIndex)
+function placeDeployCard(actionRequired, cardObj, opIndex)
   -- context menu helper that determines the next available deploy slot, places card
   -- locations deploy L-R on location pad
   -- encounters deploy R-L on location pad
@@ -630,6 +753,9 @@ function placeDeployCard(actionRequired, playerColor, cardObj, opIndex)
   -- cargo & directives deploy R-L on ship pad
   -- action parameter is boolean. true will first check for and place an available extra action token, then action token
   -- false will ignore action tokens
+
+  local playerColor = getActualPlayerColor(cardObj)
+  local isBot = checkPlayerColorIsBot(playerColor)
 
   -- first need to check for action token if action == true, broadcast unable to perform report if required and not found
   local actionToken
@@ -654,7 +780,7 @@ function placeDeployCard(actionRequired, playerColor, cardObj, opIndex)
     if actionToken == nil then
       -- broadcast unable to perform action
       local playerStr = getPlayerStr(playerColor)
-      local broadcastStr = string.format("%s has no Action Tokens remaining, is unable to perform Action.", playerStr)
+      local broadcastStr = string.format("%s has no Action Tokens remaining, is unable to perform Operation.", playerStr)
       broadcastToAll(broadcastStr, "White")
       return
     end
@@ -703,11 +829,12 @@ function placeDeployCard(actionRequired, playerColor, cardObj, opIndex)
   if cardObj.hasTag("suit_location") then
     cardPositions = posLocationCard
     deployZone = getObjectbyNameAndNotes("Zone Deploy Location", playerColor)
-  elseif cardObj.hasTag("suit_encounter") then
+  elseif (cardObj.hasTag("suit_encounter") or cardObj.hasTag("suit_ally")) and
+          cardObj.getName() ~= "Gomtuu" then
     cardPositions = posLocationCard
     deployZone = getObjectbyNameAndNotes("Zone Deploy Location", playerColor)
     reverseSlots = true
-  elseif cardObj.hasTag("suit_ship") then
+  elseif cardObj.hasTag("suit_ship") or cardObj.getName() == "Gomtuu" then
     cardPositions = posShipCard
     deployZone = getObjectbyNameAndNotes("Zone Deploy Ship", playerColor)
   elseif cardObj.hasTag("suit_cargo") or cardObj.hasTag("suit_directive") then
@@ -728,11 +855,13 @@ function placeDeployCard(actionRequired, playerColor, cardObj, opIndex)
       local slotOccupied = false
 
       for _, zoneObj in pairs(deployZone.getObjects()) do
-        local cardZ = zoneObj.getPosition().z
+        if zoneObj.type == "Card" then
+          local cardZ = zoneObj.getPosition().z
 
-        if math.abs(cardZ - slotPos[3]) <= slotTolerance then
-          slotOccupied = true
-          break
+          if math.abs(cardZ - slotPos[3]) <= slotTolerance then
+            slotOccupied = true
+            break
+          end
         end
       end
 
@@ -746,11 +875,13 @@ function placeDeployCard(actionRequired, playerColor, cardObj, opIndex)
       local slotOccupied = false
 
       for _, zoneObj in pairs(deployZone.getObjects()) do
-        local cardZ = zoneObj.getPosition().z
+        if zoneObj.type == "Card" then
+          local cardZ = zoneObj.getPosition().z
 
-        if math.abs(cardZ - slotPos[3]) <= slotTolerance then
-          slotOccupied = true
-          break
+          if math.abs(cardZ - slotPos[3]) <= slotTolerance then
+            slotOccupied = true
+            break
+          end
         end
       end
 
@@ -769,6 +900,7 @@ function placeDeployCard(actionRequired, playerColor, cardObj, opIndex)
   end
 
   local rotCardPlacement = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+  if isBot then rotCardPlacement = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 } end
   local posCardPlacement = cardPositions[firstAvailableSlot]
 
   cardObj.setRotation(rotCardPlacement)
@@ -790,15 +922,24 @@ function placeDeployCard(actionRequired, playerColor, cardObj, opIndex)
     actionToken.setPositionSmooth(tokenPos, false, true)
   end
 
+  -- broadcast
   local playerStr = getPlayerStr(playerColor)
-  local broadcastStr = actionRequired == true and string.format("%s has spent an Action to perform %s Deploy Operation.", playerStr, cardObj.getName()) or
-                                                  string.format("%s has performed %s Actionless Deploy Operation.", playerStr, cardObj.getName())
-  broadcastToAll(broadcastStr, "White")
+  local opType = cardObj.hasTag("suit_location") and "Control" or "Deploy"
+  local broadcastStr
+  if isBot then
+    broadcastStr = string.format("%s performs %s %s Operation.", playerStr, cardObj.getName(), opType)
+    broadcastToAll(broadcastStr, "White")
+    return
+  end
+
+  local actionText = (actionRequired == true) and getDeployAction(cardObj, opIndex) or getDeployNoAction(cardObj, opIndex)
+  broadcastStr = actionRequired == true and string.format("%s has spent an Action to perform %s %s Operation%s", playerStr, cardObj.getName(), opType, actionText ~= nil and ": " .. actionText or ".") or
+                                                  string.format("%s performs %s Actionless %s Operation%s", playerStr, cardObj.getName(), opType, actionText ~= nil and ": " .. actionText or ".")
   local controlText
   if cardObj.hasTag("suit_location") then
     controlText = getControlText(cardObj.getName())
   end
-  if controlText ~= nil then
+  if controlText ~= nil and not checkPlayerColorIsBot(playerColor) then
     Wait.time(function()
 
       local controlStr = string.format("Location Control Effect: %s", controlText)
@@ -834,7 +975,7 @@ function exhaustCardAction(actionRequired, playerColor, cardObj, opType, opIndex
     if actionToken == nil then
       -- broadcast unable to perform action
       local playerStr = getPlayerStr(playerColor)
-      local broadcastStr = string.format("%s has no Action Tokens remaining, is unable to perform Action.", playerStr)
+      local broadcastStr = string.format("%s has no Action Tokens remaining, is unable to perform Operation.", playerStr)
       broadcastToAll(broadcastStr, "White")
       return
     end
@@ -856,6 +997,8 @@ function exhaustCardAction(actionRequired, playerColor, cardObj, opType, opIndex
   cardObj.clearContextMenu()
 
   if not cardObj.hasTag("suit_captain") then
+    cardObj.addContextMenuItem("Refresh Card", refreshCard)
+
     cardObj.addContextMenuItem("Dismiss Card", dismissViaContext)
 
     if cardObj.hasTag("marketCard") or cardObj.hasTag("suit_incident") or cardObj.hasTag("suit_encounter") then
@@ -884,112 +1027,130 @@ function exhaustCardAction(actionRequired, playerColor, cardObj, opType, opIndex
   end
 
   local playerStr = getPlayerStr(playerColor)
-  local broadcastStr = string.format("%s has exhausted %s for %s.", playerStr, cardObj.getName(), opType)
-  broadcastToAll(broadcastStr, "White")
+
+  if opType ~= "Reaction" then
+    local actionText = actionRequired == true and getActivationAction(cardObj, opIndex) or getActivation(cardObj, opIndex)
+    local broadcastStr = actionRequired == true and string.format("%s spends an Action to perform %s Activation Operation%s", playerStr, cardObj.getName(), actionText ~= nil and ": " .. actionText or ".") or
+                                                    string.format("%s performs %s Activation Operation%s", playerStr, cardObj.getName(), actionText ~= nil and ": " .. actionText or ".")
+    broadcastToAll(broadcastStr, "White")
+
+  elseif opType == "Reaction" then
+    local actionText = getReaction(cardObj, opIndex)
+    local broadcastStr = string.format("%s performs %s Reaction Operation%s", playerStr, cardObj.getName(), actionText ~= nil and ": " .. actionText or ".")
+
+    broadcastToAll(broadcastStr, "White")
+  end
 end
 
 
-
-function playAction(playerColor, _, cardObj)
+function playAction(_, _, cardObj)
   -- handles the broadcast report of selected card's play requiring an action
 
-  placeStagingCard(true, playerColor, cardObj, 1)
+  placeStagingCard(true, "Play", cardObj, 1)
 
 end
 
 
-function playAction2(playerColor, _, cardObj)
+function playAction2(_, _, cardObj)
   -- handles the broadcast report of selected card's second play requiring an action
 
-  placeStagingCard(true, playerColor, cardObj, 2)
+  placeStagingCard(true, "Play", cardObj, 2)
 
 end
 
 
-function playAction3(playerColor, _, cardObj)
+function playAction3(_, _, cardObj)
   -- handles the broadcast report of selected card's third play requiring an action
 
-  placeStagingCard(true, playerColor, cardObj, 3)
+  placeStagingCard(true, "Play", cardObj, 3)
 
 end
 
 
-function playNoAction(playerColor, _, cardObj)
+function playNoAction(_, _, cardObj)
   -- handles the broadcast report of selected card's play not requiring an action
 
-  placeStagingCard(false, playerColor, cardObj, 1)
+  placeStagingCard(false, "Play", cardObj, 1)
 
 end
 
 
-function playNoAction2(playerColor, _, cardObj)
+function playNoAction2(_, _, cardObj)
   -- handles the broadcast report of selected card's second play not requiring an action
 
-  placeStagingCard(false, playerColor, cardObj, 2)
+  placeStagingCard(false, "Play", cardObj, 2)
 
 end
 
 
-function playNoAction3(playerColor, _, cardObj)
+function playNoAction3(_, _, cardObj)
   -- handles the broadcast report of selected card's third play not requiring an action
 
-  placeStagingCard(false, playerColor, cardObj, 3)
+  placeStagingCard(false, "Play", cardObj, 3)
 
 end
 
 
-function deployAction(playerColor, _, cardObj)
+function deployAction(_, _, cardObj)
   -- handles the broadcast report of selected card's deploy requiring an action
 
-  placeDeployCard(true, playerColor, cardObj, 1)
+  placeDeployCard(true, cardObj, 1)
 
 end
 
 
-function deployAction2(playerColor, _, cardObj)
+function deployAction2(_, _, cardObj)
   -- handles the broadcast report of selected card's second deploy requiring an action
 
-  placeDeployCard(true, playerColor, cardObj, 2)
+  placeDeployCard(true, cardObj, 2)
 
 end
 
 
-function deployAction3(playerColor, _, cardObj)
+function deployAction3(_, _, cardObj)
   -- handles the broadcast report of selected card's third deploy requiring an action
 
-  placeDeployCard(true, playerColor, cardObj, 3)
+  placeDeployCard(true, cardObj, 3)
 
 end
 
 
-function deployNoAction(playerColor, _, cardObj)
+function deployNoAction(_, _, cardObj)
   -- handles the broadcast report of selected card's deploy not requiring an action
 
-  placeDeployCard(false, playerColor, cardObj, 1)
+  placeDeployCard(false, cardObj, 1)
 
 end
 
 
-function deployNoAction2(playerColor, _, cardObj)
+function deployNoAction2(_, _, cardObj)
   -- handles the broadcast report of selected card's second deploy not requiring an action
 
-  placeDeployCard(false, playerColor, cardObj, 2)
+  placeDeployCard(false, cardObj, 2)
 
 end
 
 
-function deployNoAction3(playerColor, _, cardObj)
+function deployNoAction3(_, _, cardObj)
   -- handles the broadcast report of selected card's third deploy not requiring an action
 
-  placeDeployCard(false, playerColor, cardObj, 3)
+  placeDeployCard(false, cardObj, 3)
 
 end
 
 
-function playSupport(playerColor, _, cardObj)
-  -- handles the broadcast report of selected card's Support actions
+function playSupport(_, _, cardObj)
+  -- handles the broadcast report of selected card's Support action
 
-  placeStagingCard(false, playerColor, cardObj)
+  placeStagingCard(false, "Support", cardObj, 1)
+
+end
+
+
+function playSupport2(_, _, cardObj)
+  -- handles the broadcast report of selected card's 2nd Support action
+
+  placeStagingCard(false, "Support", cardObj, 2)
 
 end
 
@@ -1066,11 +1227,14 @@ function playReaction3(playerColor, _, cardObj)
 end
 
 
-function promoteDO(playerColor, _, cardObj)
+function promoteDO(_, _, cardObj)
   -- handles the promotion action of current DO
   -- ** will need a check similar to maxHandSize() to determine max DO count
   -- if max DO count is met, remove current DO and promote cardObj
   -- if maxDO count is NOT met, determine position slot & place
+
+  local playerColor = getActualPlayerColor(cardObj)
+  local isBot = checkPlayerColorIsBot(playerColor)
 
   local posDutyCard = playerColor == "Blue" and {
     { -30.00, 0.96, 10.11 },
@@ -1114,6 +1278,7 @@ function promoteDO(playerColor, _, cardObj)
   end
 
   local rotCardPlacement = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
+  if isBot then rotCardPlacement = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 } end
   local posCardPlacement = posDutyCard[firstAvailableSlot]
 
   cardObj.setRotation(rotCardPlacement)
@@ -1123,11 +1288,17 @@ function promoteDO(playerColor, _, cardObj)
 end
 
 
-function discardViaContext(playerColor, _, cardObj)
+function discardViaContext(_, _, cardObj)
   -- handles the discard actions and report of selected card
 
+  local playerColor = getActualPlayerColor(cardObj)
+  if playerColor ~= "Blue" and playerColor ~= "Red" then return end
+
+  local isBot = checkPlayerColorIsBot(playerColor)
+
   local rotDiscard = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
-  local posDiscard = playerColor == "Blue" and { -44.43, 0.96, -21.00 } or { 44.43, 0.96, 21.00 }
+  if isBot then rotDiscard = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 } end
+  local posDiscard = playerColor == "Blue" and { -44.43, 1.50, -21.00 } or { 44.43, 1.50, 21.00 }
 
   cardObj.setRotation(rotDiscard)
   cardObj.setPosition(posDiscard)
@@ -1138,15 +1309,21 @@ function discardViaContext(playerColor, _, cardObj)
 end
 
 
-function dismissViaContext(playerColor, _, cardObj)
+function dismissViaContext(_, _, cardObj)
   -- handles the dismiss actions and report of selected card
+
+  local playerColor = getActualPlayerColor(cardObj)
+  if playerColor ~= "Blue" and playerColor ~= "Red" then return end
 
   if cardObj.hasTag("suit_ship") then
     shipObj = getObjectbyNameAndType(cardObj.getName(), "Tileset")
     dismissShip(cardObj, shipObj)
   elseif not cardObj.hasTag("suit_ship") then
+    local isBot = checkPlayerColorIsBot(playerColor)
+
     local rotDiscard = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
-    local posDiscard = playerColor == "Blue" and { -44.43, 0.96, -21.00 } or { 44.43, 0.96, 21.00 }
+    if isBot then rotDiscard = playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 } end
+    local posDiscard = playerColor == "Blue" and { -44.43, 1.50, -21.00 } or { 44.43, 1.50, 21.00 }
 
     cardObj.setRotation(rotDiscard)
     cardObj.setPosition(posDiscard)
@@ -1222,7 +1399,7 @@ function runStrangeNewWorlds(playerColor, _, cardObj)
   end
 
   -- dismiss found ship
-  shipCard = getObjectbyNameAndType(cardObj.getName(), "Card")
+  local shipCard = getObjectbyNameAndType(shipObj.getName(), "Card")
   dismissShip(shipCard, shipObj)
 
   -- log location card, any cards found in associated beam bag
@@ -1234,6 +1411,7 @@ function runStrangeNewWorlds(playerColor, _, cardObj)
     end
   end
   local beamBag = getAssociatedBeamBag(posSNW, beamBags, playerColor)
+
   local logBag = getObjectbyNameAndNotes("Captain's Log", playerColor)
 
   logBag.putObject(cardObj)
@@ -1294,4 +1472,3023 @@ function runStrangeNewWorlds(playerColor, _, cardObj)
   local playerStr = getPlayerStr(playerColor)
   local broadcastStr = string.format("%s has declared %s a Strange New World! Encounters have been dealt, if available. Hold Alt + Shift while hovering over the facedown cards, then, Right click > Return to return unselected Encounter.", playerStr, cardObj.getName())
   broadcastToAll(broadcastStr, "White")
+end
+
+
+
+function getPlayAction(cardObj, opIndex)
+  -- handles detection and return of report text of action requiring play operations
+
+  local cardName = cardObj.getName()
+  local attackColor = Color.fromString("Red"):toHex()
+  local index = "playAction" .. tostring(opIndex)
+  local actionText
+
+  local playActionText = {
+    -- base game encounter play actions
+    ["Ancient Gene Fragments"] = {
+      ["playAction1"]  = "Draw a card for each controlled Location with 1+ Away Team you have. If you have a Scientist in play, gain an action.",
+      ["playAction2"] = "Scan 2 of either Person, Cargo, Ship, or Ally. If you have a Scientist in play, draw a card."
+    },
+    ["Iconian Gateway"] = {
+      ["playAction1"]  = "Send up to 3 Away Team to the same Location, ignoring any opponent Ship. For each Imperial you have in play (excluding this card) gain 1 Military.",
+    },
+    ["Sha Ka Ree"] = {
+      ["playAction1"]  = string.format("[%s](Attack)[-] Deploy this card. You may beam a Ship here. If you do, your opponent takes 2 Incidents.", attackColor),
+    },
+
+    -- base game person play actions
+    ["Admiral Jarok"] = {
+      ["playAction1"]  = "Your opponent may draw a card. Enlist a Development.",
+    },
+    ["Admiral Necheyev"] = {
+      ["playAction1"]  = "You may warp a Ship. You may free play a Directive from your hand or your Discard pile. Up to 3 times: beam a card to a Ship.",
+    },
+    ["Ambassador Kamarag"] = {
+      ["playAction1"]  = "Spend 2 Dilithium to gain 1 Military and you may scan for either a Klingon or a Starfleet.",
+    },
+    ["B-4"] = {
+      ["playAction1"]  = "Gain a Cargo from the Junk.",
+      ["playAction2"] = "Take an Incident to scan for a Synthetic, including from the Junk.",
+    },
+    ["Captain Dorg"] = {
+      ["playAction1"]  = "Discard a card. If the discarded card is a Weapon, gain a Ship. If it has Influence or Influence Focus or Military or Military Focus, gain 2 Glory.",
+    },
+    ["Harry Mudd"] = {
+      ["playAction1"]  = string.format("[%s](Attack)[-] Force your opponent to log a Person from their hand or Discard pile. If they do, they may draw a card. If they cannot, they take an Incident. You may promote this card to Duty Officer.", attackColor),
+    },
+    ["Joret Dal"] = {
+      ["playAction1"]  = "You may put a Person on the top of your deck to send an Away Team to a Location. You may log a Person from your hand or Discard pile. If you do both, gain 1 Glory and you may promote this card to Duty Officer.",
+    },
+    ["Lenara Kahn"] = {
+      ["playAction1"]  = "You may spend 1 Dilithium to gain 2 Research. You may take an Incident to scan for an Anomaly.",
+    },
+    ["Lursa"] = {
+      ["playAction1"]  = "Gain 1 Latinum. You may beam this card to a Ship to send an Away Team to its Location. You may spend 1 Dilithium and take an Incident to gain a Ship.",
+    },
+    ["Lwaxana Troi"] = {
+      ["playAction1"]  = "Spend 1 Latinum to gain 2 Influence.",
+    },
+    ["Phlkox"] = {
+      ["playAction1"]  = "Return an Incident from your hand.",
+      ["playAction2"] = "Return any number of Incident from your hand. You may return an Incident from your Discard pile. Beam this card to a deployed Ship, if able.",
+    },
+    ["Rom"] = {
+      ["playAction1"]  = "You may spend 1 Latinum to scan 2 of Cargo. You may spend 1 Latinum to free play a Cargo from your hand or Discard pile.",
+    },
+    ["Sakonna"] = {
+      ["playAction1"]  = "You may spend 1 Latinum to gain 1 Influence and 1 Military. You may discard a Weapon to gain 1 Influence or Military. You may find a Ferengi.",
+      ["playAction2"] = "If you have a Ship at The Badlands, scan for Weapon and draw a card.",
+    },
+    ["Talok"] = {
+      ["playAction1"]  = string.format("[%s](Attack)[-] Remove one of your Away Team from a Location to scan 1 of Person. Your opponent takes an Incident. If you have 2 or more Imperial in play, gain 2 Glory.", attackColor),
+    },
+    ["Tevrin Krit"] = {
+      ["playAction1"]  = "Spend 2 Dilithium to scan 3 of Person. You may immediately beam the gained card to a deployed Ship to gain 1 Latinum.",
+    },
+    ["Zefram Cochrane"] = {
+      ["playAction1"]  = "Draw 3 cards.",
+    },
+
+    -- base game cargo
+    ["Borg Spatial Trajector"] = {
+      ["playAction1"] = "Select up to 3 Persons from your hand or Discard pile. For each either: beam it to a Ship OR put it on the top of your deck to send an Away Team to a Location.",
+    },
+    ["Ferengi Wine"] = {
+      ["playAction1"] = "Spend 2 Latinum to scan 1 of Ally, including from the Junk. Junk a card from the Market.",
+    },
+    ["Holosuite"] = {
+      ["playAction1"] = "Gain 2 Latinum. You may refresh your Duty Officer. Junk a card from the Market.",
+      ["playAction2"] = " Spend 1/2/3 Latinum to scan 1/2/3 of either Person, Cargo, or Ally. If you spent 2 or more, draw a card.",
+    },
+    ["Phasers"] = {
+      ["playAction1"] = "Draw two cards. Junk a card from the Market. Deploy this card.",
+    },
+    ["Tribbles"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Gain 1 Influence. Gain 1 Latinum. Junk a card from the Market. Your opponent takes an Incident. Dismiss all of their Klingon Duty Officers. If any were dismissed, force them to discard a card.", attackColor),
+    },
+    ["Type III Disruptor Pistols"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Gain 1 Military. Junk a card from the Market. You may discard a Klingon or Romulan or Breen to remove up to 2 opponent Away Team from the same Location. Gain 1 Glory for each Away Team removed.", attackColor),
+    },
+    ["Unstable Wormhole"] = {
+      ["playAction1"] = "Spend 3 dilithium to draw the top Location and take control of it. Junk a card from the Market. Destroy this card (Place card in Unused Object Bag at top of table).",
+    },
+
+    -- base game ship
+    ["U.S.S. Pasteur"] = {
+      ["playAction1"] = "Spend 2 Dilithium to scan for either Communication, Doctor , Engineer, or Scientist.",
+    },
+
+    -- base game ally
+    ["Bolians"] = {
+      ["playAction1"] = "Gain 1 Influence. Draw a card. You may free play the drawn card.",
+    },
+    ["Bynars"] = {
+      ["playAction1"] = "Gain a Cargo. Log this card.",
+      ["playAction2"] = "Scan 3 of Cargo. Log this card.",
+    },
+    ["Denobulans"] = {
+      ["playAction1"] = "Gain a Person. Log this card.",
+      ["playAction2"] = "Scan 3 of Person. Log this card.",
+    },
+    ["Edosians"] = {
+      ["playAction1"] = "Put 3 cards on the top of your deck to look at the top 2 Encounter. Take one of them and return the other to the bottom of its deck. Log this card.",
+    },
+    ["Emerald Chain"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Gain 1 Military. Steal 1 Dilithium. You may free play a Business.", attackColor),
+    },
+    ["Kelpiens"] = {
+      ["playAction1"] = "Return up to 2 Incidents from your hand or Discard pile. Log this card.",
+    },
+    ["Letheans"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Dismiss an opponent Duty Officer. You may scan for a Shady. You may draw a Cargo from your Discard pile. Log this card.", attackColor),
+    },
+    ["Organians"] = {
+      ["playAction1"] = "Enlist a Reserve.",
+      ["playAction2"] = "Enlist a Development and log this card.",
+    },
+    ["Suliban"] = {
+      ["playAction1"] = "You may discard a card to recall a non-Time Travel card from your Staging Area. You may duplicate a play operation of an Ally from the Market.",
+    },
+    ["Tholians"] = {
+      ["playAction1"] = "You may draw a card. Gain 1 Latinum and 2 Dilithium for each controlled Location you have in play. Log this card.",
+    },
+
+    -- base game incident
+    ["Energy Drain"] = {
+      ["playAction1"] = "Spend 2 Dilithium to return this card. If you have an Engineer in play, gain an Action Token.",
+    },
+    ["Hostile Contact"] = {
+      ["playAction1"] = "Discard a card to return this card. If the discarded card has Military or Military Focus, gain 2 Dilithium.",
+      ["playAction2"] = "If you have a Communication in play, return this card and gain 2 Dilithium.",
+    },
+    ["Political Crisis"] = {
+      ["playAction1"] = "Discard a card to return this card. If the discarded card has Influence or Influence Focus, gain 1 Latinum.",
+      ["playAction2"] = "If you have an Ambassador in play, return this card and gain 1 Latinum.",
+    },
+    ["Red Alert"] = {
+      ["playAction1"] = "Put a card on the top of your deck to return this card. You may promote a Person from your Staging Area to Duty Officer.",
+    },
+    ["Subspace Phenomenon"] = {
+      ["playAction1"] = "Discard a card to return this card. If the discarded card has Research or Research Focus, draw 2 cards and discard one of them.",
+      ["playAction2"] = "If you have a Time Travel in play, return this card and draw 2 cards and discard one of them.",
+    },
+    ["Trade Embargo"] = {
+      ["playAction1"] = "Spend 1 Latinum to return this card. You may refresh a Ship.",
+    },
+
+    -- 2nd contact person
+    ["D'Erika Tendi"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Discard a card to choose 2 of the following: steal 1 Latinum OR gain a Ship from the Junk OR gain 1 Influence OR gain 1 Military. If you have another Orion in play, you may exhaust a Ship to do up to all 4 instead.", attackColor),
+    },
+    ["K'ranch"] = {
+      ["playAction1"] = "Gain 1 Military. Draw a card. You may log the drawn card to gain 2 Glory. If you do, you may promote this card to Duty Officer.",
+    },
+    ["Ma'ah"] = {
+      ["playAction1"] = "Dismiss a Duty Officer to gain 1 Influence, 1 Military, and 1 Glory.",
+    },
+
+    -- 2nd contact cargo
+    ["Gift Box"] = {
+      ["playAction1"] = "Deploy this card. You may discard a card to gain a Cargo.",
+    },
+    ["Moopsy"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Spend 1 Latinum to deploy this card. Force your opponent to log a Person from their hand, Discard pile, or in play.", attackColor),
+    },
+    ["Protocol 12"] = {
+      ["playAction1"] = "For each Doctor you have in play (excluding this card, max 3), send an Away Team to a Location. If you sent 3, gain 1 Glory.",
+    },
+
+    -- 2nd contact ally
+    ["Illyrians"] = {
+      ["playAction1"] = "Discard a Starfleet to scan 2 of Person. Promote the gained card to Duty Officer.",
+    },
+    ["Nova Fleet"] = {
+      ["playAction1"] = "Gain an Ally/Cargo from the Junk. Log this card.",
+    },
+
+    -- 2nd contact reward
+    ["Ambassador Spock"] = {
+      ["playAction1"] = "Log a card from your hand to gain 3 Dilithium. You may log a beamed card to scan for a Research.",
+    },
+    ["Barry Waddle"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Steal 2 Dilithium. You may spend 2 Latinum to scan for an Influence.", attackColor),
+    },
+    ["Chancellor Gowron"] = {
+      ["playAction1"] = "Find a Klingon or a Ship. If the found card is a Ship with Klingon, gain 1 Glory. You may spend 3 Dilithium to scan for a Military.",
+    },
+    ["Chef Riker"] = {
+      ["playAction1"] = "Draw a card from your Discard pile for each different one of Beverage or Engineer or NX-01 you have in play. You may duplicate a play operation of a Person/Directive from your Log. You may promote this card to Duty Officer.",
+    },
+    ["Lieutenant Dax"] = {
+      ["playAction1"] = "Gain 1 Research or Influence or Military. You may spend 1 Latinum to gain 1 Research or Influence or Military. If you have a Vulcan on duty, gain 1 Research or Influence or Military. You may promote this card to Duty Officer.",
+    },
+
+    -- TBG encounter
+    ["Delphic Expanse Sphere"] = {
+      ["playAction1"] = "Scan 1 of either Person, Cargo, Ship, Ally, or Mission. Gain 2 Dilithium.",
+    },
+    ["Stone of Gol"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Your opponent takes an Incident. Gain an Attack, including from the Junk. If you do, and you have a Telepath in play, you may free play the gained card.", attackColor),
+    },
+
+    -- TBG person
+    ["Degra"] = {
+      ["playAction1"] = "Take an Incident to scan for either an Anomaly or a Xindi. You may spend 1 Dilithium to draw 2 cards.",
+    },
+    ["Hoshi Sato"] = {
+      ["playAction1"] = "Discard a card with Research or Research Focus to scan for Any Species of your choice. (Name the species before scanning.)",
+    },
+    ["Jackabog"] = {
+      ["playAction1"] = "Spend 1 Dilithium and 1 Latinum to gain a Ship from the Junk. You may beam the gained card to a Ship.",
+      ["playAction2"] = "Dismiss a Ship with 2+ Ship beamed to it to take the top Encounter. Log this card.",
+    },
+    ["Malik"] = {
+      ["playAction1"] = "Log a Human or Klingon from your hand or Discard pile to enlist a Development and log this card.",
+    },
+    ["Petra Aberdeen"] = {
+      ["playAction1"] = "Reveal a card from your hand and put it on the top of your deck to gain a card of the same suit from the Junk. Log the gained card and gain 1 Glory. If the gained card is Ancient, draw 2 cards.",
+    },
+    ["President Rillak"] = {
+      ["playAction1"] = "Return up to 3 beamed Incidents. If you returned at least 2 Incidents this way, gain 2 Dilithium.",
+    },
+    ["Soji Asha"] = {
+      ["playAction1"] = "Spend 2 Dilithium to scan for a Borg.",
+    },
+    ["Va'Al Trask"] = {
+      ["playAction1"] = "You may discard a Starfleet to scan for a Weapon. You may log a Person from your hand or Discard pile. If you do both, gain 1 Glory, and you may promote this card to Duty Officer.",
+    },
+
+    -- TBG cargo
+    ["Kemocite"] = {
+      ["playAction1"] = "Spend 1 Dilithium to scan for Weapon.",
+    },
+    ["Medical Diagnostic Hat"] = {
+      ["playAction1"] = "Draw a card for each Doctor or Alien you have in play (max 5 cards). You may draw a Person from your Discard pile. You may free play an Incident from your hand or Discard pile.",
+    },
+    ["Saurian Brandy"] = {
+      ["playAction1"] = "Spend 2 Latinum to scan 2 of Person, including from the Junk. Junk a card from the Market.",
+    },
+    ["Universal Translator"] = {
+      ["playAction1"] = "Discard a Starfleet to scan for an Alien.",
+      ["playAction2"] = "If you have 3 non-Encounter cards with Alien in play, take the top Encounter card and discard it. Dismiss every Ship with Alien and every beamed Alien. Log this card.",
+    },
+
+    -- TBG ally
+    ["Tellarites"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Give your opponent an Incident from your hand. If you have another Tellarite in play, gain an Action Token.", attackColor),
+    },
+    ["Vidiians"] = {
+      ["playAction1"] = "Find and free play an Incident. Find a Person, except in your Reserve deck. Then, either: log the found Person to gain 1 Glory OR free play the found Person and log this card.",
+    },
+
+    -- TBG incident
+    ["Dilithium Shockwave"] = {
+      ["playAction1"] = "Spend all your Dilithium. Your opponent gains 2 Dilithium. Return this card.",
+      ["playAction2"] = "If you have a Kelpien in play, return this card, and you may spend 3 Dilithium to gain 1 Glory.",
+    },
+    ["Reed Alert"] = {
+      ["playAction1"] = "Put a card on the top of your deck to return this card. You may promote a Person from your Staging Area to Duty Officer. If you have Malcolm Reed in play, gain 1 Glory.",
+    },
+
+    -- promos
+    ["Wesley Crusher"] = {
+      ["playAction1"] = "Enlist a Reserve or a Development. Draw a card. Log this card.",
+    },
+    ["Flight Training Accident"] = {
+      ["playAction1"] = "Find and log a Ship to return this card. If you have 1+ Person on duty, gain an action.",
+      ["playAction2"] = "If you have a Pilot in play, return this card and gain 1 Glory.",
+    },
+    ["Whale Probe Incursion"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Recall a deployed Ship, if able. Force your opponent to recall a deployed Ship. If you have a Creature in play, return this card.", attackColor),
+    },
+    ["Subspace Rhapsody"] = {
+      ["playAction1"] = "Put a Directive in your Staging Area (without triggering its play operation) to return this card. You may sing the text of its first play operation to refresh either a Duty Officer or your Captain.",
+    },
+
+    -- burnham deck
+    ["Cleveland Booker"] = {
+      ["playAction1"] = "Spend 1 Dilithium to gain a Person or a Cargo.",
+    },
+    ["Joann Owosekun"] = {
+      ["playAction1"] = "ou may send an Away Team to the U.S.S. Discovery's Location. You may beam a card from your hand or Discard pile to the U.S.S. Discovery. If you do both, gain 1 Glory.",
+    },
+    ["Keyla Detmer"] = {
+      ["playAction1"] = "Discard the top card of your deck. You may discard a card to warp a Ship and send an Away Team to the Location you warped to.",
+    },
+    ["Paul Stamets"] = {
+      ["playAction1"] = "You may take an Incident to gain 2 Research. For each deployed Ship you have in play, recrystallize 1 Dilithium.",
+    },
+    ["Saru"] = {
+      ["playAction1"] = "You may take an Incident to scan for a Kelpien. Find a Directive. You may free play the found card.",
+    },
+    ["Sylvia Tilly"] = {
+      ["playAction1"] = "For each Scientist you have in play (excluding your Captain), draw a card. For each Engineer in play, refresh a Captain or Cargo or Ship.",
+    },
+    ["Inspire"] = {
+      ["playAction1"] = "Draw 2 cards and discard one of the drawn cards. Gain on one Specialty track (Research or Influence or Military) for each matching Skill icon you have in play (excluding beamed cards).",
+    },
+    ["Recover"] = {
+      ["playAction1"] = "Take an Incident to gain a Ship from the Junk.",
+      ["playAction2"] = "Spend 1 Latinum to gain a Cargo.",
+    },
+    ["Strange New Worlds"] = {
+      ["playAction1"] = "Select a controlled Location. If there is 1+ Away Team and 1+ Ship there, look at the top 2 Encounter. Take one of them and return the other to the bottom of its deck. Log the selected Location to gain 1 Research.",
+    },
+    ["Hugh Culber"] = {
+      ["playAction1"] = "You may find a Person/Incident. You may free play an Incident to gain 1 Glory.",
+    },
+    ["Admiral Vance"] = {
+      ["playAction1"] = "Gain an ALLY. Draw a card.",
+    },
+    ["Doctor Kovich"] = {
+      ["playAction1"] = "Draw a card. For each Anomaly you have in play, gain 1 Research. For each Ambassador you have in play, gain 1 Influence. For each Alien you have in play, gain 1 Military.",
+    },
+    ["Trance Worm"] = {
+      ["playAction1"] = "Junk a card from the Market. Spend 1 Latinum to gain a Person or a Cargo and log it. If the gained card has 3 or more traits, gain 1 Glory.",
+    },
+
+    -- koloth deck
+    ["Arne Darvin"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Gain 1 Dilithium and steal 1 Dilithium.", attackColor),
+      ["playAction2"] = string.format("[%s](Attack)[-] Force your opponent to dismiss a Duty Officer. You take 1 Incident and gain 3 Glory and log this card.", attackColor),
+    },
+    ["Krell"] = {
+      ["playAction1"] = "Spend 1 Dilithium to scan 2 of Cargo. If the gained card has Weapon, gain 1 Influence.",
+    },
+    ["Klingon Disruptors"] = {
+      ["playAction1"] =  string.format("[%s](Attack)[-] Discard a Klingon. If you do, up to twice: remove an opponent Away Team from a neutral LOCATION where you have an Away Team. Gain 1 Glory for each Away Team removed.", attackColor),
+      ["playAction2"] = "Gain 1 Military.",
+    },
+    ["Confiscate"] = {
+      ["playAction1"] = "Spend 4 Dilithium to gain a Ship.",
+      ["playAction2"] = "Spend 2 Dilithium to gain a Cargo.",
+    },
+    ["Conquer"] = {
+      ["playAction1"] = "You may discard a Person and take an Incident to send 2 Away Team to a Location where you have a Ship. You may dismiss a Ship to gain a Person or Ship or Ally.",
+    },
+    ["Good Day to Die"] = {
+      ["playAction1"] = "You may log a Person beamed to a Ship to gain 1 Military. Log a deployed Ship and dismiss another deployed Ship to look at the top 2 Encounters. Take one of them and return the other to the bottom of its deck.",
+    },
+    ["Utilize"] = {
+      ["playAction1"] = "Gain 1 Dilithium, and 2 Dilithium for each controlled Location you have in play.",
+      ["playAction2"] = "Gain on one Specialty track (Research or Influence or Military) for each matching Skill icon you have in play (excluding beamed cards).",
+    },
+    ["Mara"] = {
+      ["playAction1"] = "Spend 3 Dilithium to gain 2 Research or Influence or Military. You may discard a Person without Klingon to gain 1 Glory.",
+    },
+    ["Recruit"] = {
+      ["playAction1"] = "Put a card on the top of your deck to gain a Person.",
+      ["playAction2"] = "Take an Incident to gain an Ally.",
+    },
+    ["Kang, the Dahar Master"] = {
+      ["playAction1"] = "Return an Incidentfrom your hand or Discard pile and gain 1 Glory.",
+      ["playAction2"] = "If you have at least 15 glory, destroy this card (drop into Unused Object Bag at top of table) to take the top Encounter and gain 3 Glory.",
+    },
+    ["Sword of Kahless"] = {
+      ["playAction1"] = "Junk a card from the Market. Dismiss a Klingon Duty Officer to gain 4 Glory. Log this card.",
+    },
+
+    -- picard deck
+    ["Will Riker"] = {
+      ["playAction1"] = "Draw 2 cards from your Discard pile. You may spend 1 Dilithium to send an Away Team to a Location. If you targeted a controlled Location, trigger that card's Control operation.",
+    },
+    ["Worf"] = {
+      ["playAction1"] = "Take an Incident to your Discard pile. Discard the top card of your deck. Send 2 Away Team to a neutral Location.",
+    },
+    ["Analyze"] = {
+      ["playAction1"] = "Take an Incident to gain a Ship.",
+      ["playAction2"] = "Discard 2 cards to gain a Cargo.",
+    },
+    ["Diplomacy"] = {
+      ["playAction1"] = "Gain an Ally and log this card.",
+    },
+    ["Set a Course"] = {
+      ["playAction1"] = "Discard up to 3 Persons to send the same number of Away Team to the same Location.",
+    },
+    ["Beverly Crusher"] = {
+      ["playAction1"] = "Gain 1 Research. You may return an Incident from your Discard pile.",
+    },
+    ["Data"] = {
+      ["playAction1"] = "Gain 1 Research or Influence or Military.",
+    },
+    ["Type 7 Shuttlecraft"] = {
+      ["playAction1"] = "Send an Away Team to a Location where you have a Ship. You may put this card on the top of your deck.",
+    },
+    ["First Contact"] = {
+      ["playAction1"] = "Scan 2 of Ally. Log this card.",
+    },
+    ["Tamarians"] = {
+      ["playAction1"] = "Draw 3 cards. You may discard up to one of each of the following: Person, Cargo, Ship, Ally, Encounter, Incident. Gain 1 glory for each card discarded this way. Log this card.",
+    },
+
+    -- sela deck
+    ["General Movar"] = {
+      ["playAction1"] = "Discard an Attack and spend 1 Dilithium to scan for a Shady.",
+    },
+    ["Disruptor Rifles"] = {
+      ["playAction1"] = "Discard a Romulan. If you do, up to twice: remove an opponent Away Team from a neutral Location where you have a Ship. Gain 1 Glory for each Away Team removed. You may junk a card from the Market.",
+      ["playAction2"] = "Gain 1 Military. Junk a card from the Market.",
+    },
+    ["Infiltrate"] = {
+      ["playAction1"] = "Discard 2 cards and spend 1 Dilithium to gain a Person or Cargo or Ally.",
+    },
+    ["T'Pel"] = {
+      ["playAction1"] = "Spend 1 Latinum to trigger the control operation of one of your controlled Location(s). Draw a card.",
+    },
+    ["Tomalak"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Spend 2 Dilithium to gain a Ship. Dismiss all of your opponent's Starfleet Duty Officers. If any were dismissed, force them to discard a card.", attackColor),
+    },
+    ["Imperial Pride"] = {
+      ["playAction1"] = "Remove an Away Team from 3 different controlled Locations to look at the top 2 Encounters. Take one of them and return the other to the bottom of its deck.",
+      ["playAction2"] = "Spend 10 Dilithium and log a controlled Location to take the top Encounter. If the logged card shares no traits with your Captain, gain 1 Influence.",
+    },
+    ["Proconsul Neral"] = {
+      ["playAction1"] = "Find any card. You may free play an Incident. You may discard a Romulan to promote this card to Duty Officer.",
+    },
+    ["Shinzon"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Your opponent takes an Incident. You may spend 2 Latinum to scan for a Synthetic. You may free play the [i]Scimitar[/i] (from your hand).", attackColor),
+    },
+
+    -- shran deck
+    ["Talas"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Send an Away Team to a Location. Dismiss an opponent Vulcan or Tellarite or Romulan (of your choice).", attackColor),
+    },
+    ["Tarah"] = {
+      ["playAction1"] = "Send an Away Team to a Location.",
+    },
+    ["United Earth"] = {
+      ["playAction1"] = "Scan for a Human. Log this card.",
+      ["playAction2"] = "Take an Incident to scan 2 of Ally. You may free play the gained card. If you do, log this card.",
+    },
+    ["Ambassador Thoris"] = {
+      ["playAction1"] = "Both players may return an Incident from their hand or Discard pile. For each Incident returned, gain 1 Glory.",
+    },
+    ["Andorian Ale"] = {
+      ["playAction1"] = "Spend 2 Latinum to scan 1 of Ally, including from the Junk. Junk a card from the Market.",
+    },
+    ["Commando Unit"] = {
+      ["playAction1"] = "Scan for a Weapon and draw a card.",
+    },
+
+    -- sisko deck
+    ["Jadzia Dax"] = {
+      ["playAction1"] = "Gain 1 Research or Influence or Military, whichever is the lowest (you choose in a tie). You may spend 1 Latinum to do this a second time.",
+      ["playAction2"] = "Spend 1 Latinum to return an Incident and gain 1 Glory.",
+    },
+    ["Kira Nerys"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Find [i]People of Bajor[/i] and dismiss an opponent Cardassian or Dominion (of your choice). Promote this card to Duty Officer.", attackColor),
+      ["playAction2"] = "Gain 3 Military and 1 Glory. Your opponent gains 1 Influence.",
+    },
+    ["Quark"] = {
+      ["playAction1"] = "Spend 1 Latinum to scan 1 of Person. If the gained card is Business, draw a card. If the gained card is Shady, take an Incident.",
+    },
+    ["Miles O'Brien"] = {
+      ["playAction1"] = "Spend 1 Dilithium to draw a Ship from your Discard pile and free play it. Then, draw a card.",
+    },
+    ["Odo"] = {
+      ["playAction1"] = "Duplicate a play operation of a Person or a Cargo from the Market.",
+    },
+    ["Garak"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Choose 2 of the following: dismiss an opponent Duty Officer and you draw a card OR gain 1 Influence OR spend 1 Latinum to scan 2 of Person.", attackColor),
+    },
+    ["Worf, Son of Mogh"] = {
+      ["playAction1"] = "Discard 2 cards to send 2 Away Team to the same Location.",
+    },
+    ["Orb of Prophecy and Change"] = {
+      ["playAction1"] = "Discard a Person to enlist a Development, reducing the cost by 1 Dilithium and 1 Latinum. Log this card.",
+    },
+
+    -- archer deck
+    ["Shuttlepod 1"] = {
+      ["playAction1"] = "Send an Away Team to a Location where you have a Ship. You may either: beam a card to a Ship OR recall a card beamed to a Ship.",
+    },
+    ["\"Trip\" Tucker III"] = {
+      ["playAction1"] = "Gain a Cargo from the top of the deck and either: log it and gain 1 Dilithium or put it on top of your Reserve deck and place 1 Dilithium on Earth.",
+    },
+    ["Strength of the Soul"] = {
+      ["playAction1"] = "You may enlist a Reserve or a Development. You may take an Incident and exhaust your Captain to draw a card for every 2 controlled Location you have in play.",
+    },
+    ["Major Hayes, MACO"] = {
+      ["playAction1"] = "Send an Away Team to a Location.",
+    },
+    ["T'Pol"] = {
+      ["playAction1"] = "You may spend 1 Dilithium to scan for either Research, or Influence, or Military. You may draw a card. You may promote a Person from your hand or Staging Area to Duty Officer (can be this card).",
+    },
+    ["Reach Any Star"] = {
+      ["playAction1"] = "Take an Incident to draw the top Location and take control of it. Log this card.",
+    },
+    ["Founding the Federation"] = {
+      ["playAction1"] = "Enlist your entire Reserve deck. Gain all resources from Earth. You may beam up to 3 Ally from your Log to Earth. For each card beamed this way you may find and return an Incident. Log this card.",
+    },
+    ["Agent Daniels"] = {
+      ["playAction1"] = "Draw a card from your deck or Discard pile. For each Anomaly you have in play, gain 1 Research. For each Ambassador you have in play, gain 1 Influence. For each Alien or Xindi you have in play, gain 1 Military.",
+    },
+    ["Commander Shran"] = {
+      ["playAction1"] = "Scan for either an Andorian or a Weapon. Draw a card.",
+    },
+    ["Ambassador Soval"] = {
+      ["playAction1"] = "Scan for either a Vulcan or a Scientist. Draw a card.",
+    },
+    ["Xindi Council"] = {
+      ["playAction1"] = "Gain 2 Influence. Scan for XINDI, including from the Junk.",
+    },
+
+    -- georgiou deck
+    ["Class C Shuttlecraft"] = {
+      ["playAction1"] = "Send an Away Team to a Location where you have a Ship. You may put this card on the top of your deck.",
+    },
+    ["Danby Connor"] = {
+      ["playAction1"] = "Gain 1 Military for each Person with Starfleet you have in play. If you gained 3 or more, log this card.",
+    },
+    ["Lt. Detmer"] = {
+      ["playAction1"] = "Discard the top card of your deck. You may discard a card to warp a Ship and send an Away Team to the Location you warped to.",
+    },
+    ["Kamran Gant"] = {
+      ["playAction1"] = "Send an Away Team to a Location. If it is a controlled Location, gain 1 Dilithium.",
+    },
+    ["Lt. Saru"] = {
+      ["playAction1"] = "You may take an Incident to scan for a Kelpian. Find a Directive. If the card was found in your Reserve deck, take an Incident. You may free play the found card.",
+    },
+    ["Cmdr. Burnham"] = {
+      ["playAction1"] = "Discard a non-Starfleet card to scan for Any Species matching the discarded card.",
+    },
+    ["Ambassador Sarek"] = {
+      ["playAction1"] = "Gain 1 Influence for each Vulcan you have in play (including this card). You may promote [i]Ambassador Sarek[/i] and optionally another Person from your Staging Area to Duty Officer(s).",
+    },
+    ["Admiral Anderson"] = {
+      ["playAction1"] = "Enlist a Development and draw a card.",
+    },
+
+    -- khan deck
+    ["Marla McGivers"] = {
+      ["playAction1"] = "Gain 1 Dilithium for each Starfleet you have in play. Gain 1 Dilithium for each controlled Location you have in play. You may put 2 cards on the top of your deck to gain 1 Glory and promote this card to Duty Officer.",
+    },
+    ["Salvage"] = {
+      ["playAction1"] = "Spend 1 Latinum to gain Person or Cargo or Ship or Ally from the Junk to your Discard pile.",
+    },
+    ["Wajahut"] = {
+      ["playAction1"] = "Send an Away Team to a neutral Location. If you have [i]Ceti Alpha VI[/i] and [i]Joachim[/i] in play, gain an Action Token. If you have a Communication in play, up to twice draw a card from your deck or Discard pile.",
+    },
+    ["Joachim"] = {
+      ["playAction1"] = "Take an Incident to gain a Person from the top of the deck.",
+      ["playAction2"] = "Send an Away Team to a neutral Location. If you have [i]Ceti Alpha VI[/i] and [i]Wajahut]/i] in play, gain an action. If you have a WEAPON or SECURITY in play, up to twice draw a card from your deck or Discard pile.",
+    },
+    ["To the Last, I Will Grapple With Thee!"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Reveal a card and put it on the top of your deck to put this card in your opponent's Discard pile. If the revealed card shares a non-Human trait with your opponent's Captain, gain 1 Glory and they may draw a card.", attackColor),
+    },
+    ["From Hell's Heart, I Stab at Thee!"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Reveal a card and put it on the top of your deck to put this card in your opponent's Discard pile. If the revealed card shares a non-Human trait with your opponent's Captain, gain 1 Glory and they may draw a card.", attackColor),
+    },
+    ["I Spit My Last Breath at Thee!"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Reveal a card and put it on the top of your deck to put this card in your opponent's Discard pile. If the revealed card shares a non-Human trait with your opponent's Captain, gain 1 Glory and they may draw a card.", attackColor),
+    },
+    ["Surprise Attack"] = {
+      ["playAction1"] = "Spend 1 Dilithium to scan for either a Cloak or a Spy , then draw a card. Destroy this card (Place card in Unused Object Bag at top of table).",    },
+    ["Cpt. Terrell"] = {
+      ["playAction1"] = "Enlist a Development, at no Dilithium or Latinum or Incident cost. Log this card.",
+    },
+    ["Cmdr. Chekov"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Discard the top card of your deck. Send an Away Team to a Location. If your opponent has at least one Away Team at the same Location, force them to discard a card.", attackColor),
+    },
+    ["Revenge Is a Dish Best Served Cold"] = {
+      ["playAction1"] =  string.format("[%s](Attack)[-] Gain 1 Glory. Force your opponent to find any card, and log it. You may select a card in their Discard pile and mark one trait of it.", attackColor),
+    },
+    ["Two Dimensional Thinking"] = {
+      ["playAction1"] = "Draw a card from your Discard pile. Your opponent may warp a Ship. If you have no Augment in play, you may free play an Incident. Return this card.",
+    },
+
+    -- kirk deck
+    ["Nyota Uhura"] = {
+      ["playAction1"] = "Spend 2 Dilithium to gain a Person or Ally.",
+      ["playAction2"] = "Spend 2 Dilithium to gain an Alien, including from the Junk.",
+    },
+    ["Leonard McCoy"] = {
+      ["playAction1"] = "Gain 1 Research. You may return an Incident.",
+    },
+    ["Captain Spock"] = {
+      ["playAction1"] = "Log a card from your hand or Discard pile to gain 3 Dilithium. If the logged card has 1+ Research or Influence or Military or Research Focus or Influence Focus or Military Focus, gain 1 on the matching Specialty track (choose one if multiple, or if it has Any/Any).",
+    },
+    ["Montgomery \"Scotty\" Scott"] = {
+      ["playAction1"] = "Dismiss a deployed Ship to trigger a controlled Location's control operation and draw a card.",
+    },
+    ["Pavel Chekov"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Discard the top card of your deck. Send an Away Team to a Location. If your opponent has at least one Away Team at the same Location, force them to discard a card.", attackColor),
+    },
+    ["What Have I Done"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Log a deployed Ship to send up to 3 Away Team to the same Location. If that Location is neutral and now secured, take control of it. Your opponent takes an Incident. Force your opponent to dismiss (one of) their Duty Officer(s). Log this card.", attackColor),
+    },
+    ["Hikaru Sulu"] = {
+      ["playAction1"] = "Take an Incident to your Discard pile. Send 2 Away Team to a Location where you have a Ship.",
+    },
+    ["Sarek"] = {
+      ["playAction1"] = "Gain 1 Influence for each Vulcan you have in play (including this card). You may promote Sarek and optionally another Person from your Staging Area to Duty Officer(s).",
+    },
+
+    -- rebner deck
+    ["Grebnedlog"] = {
+      ["playAction1"] = " Gain a Person.",
+      ["playAction2"] = "Spend 1 Dilithium to scan for an Engineer.",
+      ["playAction3"] = "Spend 1 Latinum to scan for either a Shady or a Scientist.",
+    },
+    ["Rebelution"] = {
+      ["playAction1"] = "Gain 1 glory. Dismiss every Helmet.",
+    },
+    ["Rumdar"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Send an Away Team to a neutral Location. Force your opponent to discard a card. You may dismiss an opponent Spy to gain 1 Glory.", attackColor),
+    },
+    ["Ambassador Grubdin"] = {
+      ["playAction1"] = "Send an Away Team to a Location. You may discard a Business/Shady to send an (additional) Away Team to a Location.",
+    },
+    ["Even Bigger Helmet"] = {
+      ["playAction1"] = "Take an Incident to enlist [i]Big Enough Helmet[/i].",
+    },
+    ["Reginod"] = {
+      ["playAction1"] = "You may draw a Pakled from your Discard pile. You may discard a Cargo to gain 4 Dilithium. If the discarded card is Weapon, gain 1 Military.",
+    },
+    ["Varuvian Bomb"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Your opponent takes an Incident. Log a controlled Location you have in play. Gain 1 Military, and 2 Military for each Research or Influence or Military or Any Skill the logged card has. Then, either: discard a Shady OR log this card.", attackColor),
+    },
+    ["The Pakled Emperor"] = {
+      ["playAction1"] = "Find any card. You may free play an Incident.",
+    },
+
+    -- soval deck
+    ["Stel"] = {
+      ["playAction1"] = "Send an Away Team to a controlled Location. You may beam a card to a deployed Ship.",
+    },
+    ["Muroc"] = {
+      ["playAction1"] = "Choose 2 of the following: gain 1 Influence OR gain 1 Military OR send an Away Team to a Location where you have a Ship. If you have 6+ Influence you may choose all 3 instead. If you do, log this card.",
+    },
+    ["Infinite Diversity in Infinite Combinations"] = {
+      ["playAction1"] = "You may remove an Away Team from a controlled Location, log a non-Vulcan Person or Cargo or Ally from your Staging Area, and dismiss a deployed Ship. If you do all three, look at the top 2 Encounters. Take one of them and put it on the top of your deck, and return the other to the bottom of its deck.",
+    },
+    ["Advisory"] = {
+      ["playAction1"] = "Scan 2 of Person. Log this card.",
+    },
+    ["Sub-Commander T'Pol"] = {
+      ["playAction1"] = "You may spend 2 Dilithium to scan for either Research, or Influence, or Military. You may draw a card. You may promote a Person from your hand or Staging Area to Duty Officer (can be this card).",
+    },
+    ["V'Lar"] = {
+      ["playAction1"] = "Spend 1 Latinum to gain an Ally to your hand.",
+    },
+    ["Plomeek Tea"] = {
+      ["playAction1"] = "You may refresh your Captain and a Duty Officer. You may spend 1 Latinum to swap a card in the Junk with the card of the same suit in the Market.",
+    },
+    ["Vulcan Hello"] = {
+      ["playAction1"] = string.format("[%s](Attack)[-] Dismiss an opponent Ship at a neutral Location and you may send an Away Team to the same Location. If your opponent has Klingon in play, gain 1 Glory.", attackColor),
+    },
+    ["T'Pau"] = {
+      ["playAction1"] = "Draw a card. Both players may return an Incident from their hand or Discard pile. For each Incident returned, gain 1 Glory. You may promote a Person from your hand or Staging Area to Duty Officer (can be this card).",
+    },
+    ["Vulcan High Command"] = {
+      ["playAction1"] = "Scan for a Starfleet and draw 2 cards. Log this card.",
+    },
+
+    -- freeman deck
+    ["Second Contact"] = {
+      ["playAction1"] = "Draw a card. You may gain an Ally from the Junk. If your Reserve deck is empty, log this card; otherwise shuffle the gained card into your deck.",
+    },
+    ["Type 6A Shuttlecraft"] = {
+      ["playAction1"] = "Send an Away Team to a Location where you have a Ship. You may put this card on the top of your deck.",
+    },
+    ["Dooplers"] = {
+      ["playAction1"] = "Take an Incident to your Discard pile. Gain an Ally. Gain 1 Influence. Then either: spend 1 Latinum OR shuffle this card into your deck.",
+    },
+    ["Anomaly Consolidation Day"] = {
+      ["playAction1"] = "Junk a card from the Market. You may take an Incident. You may discard an Incident to gain a Cargo.",
+    },
+    ["Jack Ransom"] = {
+      ["playAction1"] = "ou may draw a non-Lower Decker card from your Discard pile. Spend 1 Dilithium to send an Away Team to a controlled Location. You may discard a Lower Decker to trigger that card's control operation.",
+    },
+    ["Beckett Mariner"] = {
+      ["playAction1"] = "Take 2 Incident to gain a Ship and free play the gained card.",
+    },
+    ["Samanthan Rutherford"] = {
+      ["playAction1"] = "Take an Incident to enlist a Development.",
+    },
+    ["D'Vana Tendi"] = {
+      ["playAction1"] = "Spend 1 Latinum to scan for Orion and free play the gained card.",
+    },
+    ["Apergosians"] = {
+      ["playAction1"] = "Find a Person or Cargo. Duplicate one of the found card's play operations up to two times, ignoring any effect that would log this card. Then, log the found card. Gain 2 Glory. Log this card.",
+    },
+    ["Kayshon"] = {
+      ["playAction1"] = "Draw a card. You may discard up to one of each of the following: Person, Cargo, Ship, Ally, Encounter, Incident. Gain 1 Glory for each card discarded this way. Promote this card to Duty Officer.",
+    },
+
+    -- pike deck
+    ["Hemmer"] = {
+      ["playAction1"] = "Spend 3 Dilithium to gain a Ship from the top of the deck, if it is Attack, take an Incident.",
+    },
+    ["Lt. Spock"] = {
+      ["playAction1"] = "Log a card from your hand to gain 3 Dilithium and gain 1 Research or Influence or Military. If the logged card has Military or Military Focus gain 1 (additional) Influence.",
+    },
+    ["La'an Noonien Singh"] = {
+      ["playAction1"] = "Take an Incident to scan 1 of Cargo. For each controlled Location where you have an Away Team, draw a card. If you have 2+ Away Team on a neutral Location, gain 1 Military.",
+    },
+    ["Joseph M'Benga"] = {
+      ["playAction1"] = "Gain 1 Research. You may return an Incident. Junk a Person from the Market, if able. If you do both, gain 1 Glory.",
+    },
+    ["Cadet Uhura"] = {
+      ["playAction1"] = "Spend 2 Dilithium to gain a Person or Ally.",
+      ["playAction2"] = "Spend 2 Dilithium to gain an Alien, including from the Junk.",
+    },
+    ["Erica Ortegas"] = {
+      ["playAction1"] = "Select a Ship and warp it. You may spend 1 Dilithium to send an Away Team to its Location. You may take an Incident to send an Away Team to the same Location.",
+    },
+    ["Dak'rah"] = {
+      ["playAction1"] = "Take an Incident to scan 1 of Ally.",
+    },
+    ["Christine Chapel"] = {
+      ["playAction1"] = "Free play an Incident. If you do, you may beam this card to a deployed Ship to send an Away Team to its Location.",
+    },
+    ["Una \"Number One\" Chin-Riley"] = {
+      ["playAction1"] = "Discard a Starfleet to gain a Ship. You may discard a card to free play the gained card. Then, if you have no other Augment in play, take an Incident.",
+    },
+    ["Kerkhovians"] = {
+      ["playAction1"] = "Scan 2 of either Person, Cargo, or Ally. Gain 1 Glory for each Different Species on the gained card. Gain 1 Glory if you have another Doctor in play. Log this card.",
+    },
+    ["James Kirk (United Earth Fleet)"] = {
+      ["playAction1"] = "Take an Incident to scan 3 of Person and draw a card.",
+    },
+
+    -- riker deck
+    ["Warp in the Factor of 5, 6, 7, 8!"] = {
+      ["playAction1"] = "For each deployed Ship with Starfleet you have, send an Away Team to its Location.",
+    },
+    ["Swooping In"] = {
+      ["playAction1"] = "Warp a Ship to a controlled Location, if able. Gain 1 Dilithium, and 1 Dilithium for each controlled Location you have in play. If you have more Research than Military in play (excluding beamed cards), gain 1 Research. Otherwise, gain 1 Military.",
+    },
+    ["The Riker Maneuver"] = {
+      ["playAction1"] = "Dismiss a Duty Officer to send an Away Team to a Location. You may exhaust your Captain to promote this card to Duty Officer as if it is a Person, then exhaust this card.",
+    },
+    ["Chateau Picard"] = {
+      ["playAction1"] = "Spend 1 Latinum and discard a Directive to gain an Ally, including from the Junk. Junk a card from the Market.",
+    },
+    ["Holodeck"] = {
+      ["playAction1"] = "Spend 1 Dilithium to duplicate a play operation of a Person or Cargo or Ally from your hand or Discard pile. If you have an NX-01 in play, gain 1 Research or Influence or Military or Glory.",
+    },
+    ["Tactical Officer (U.S.S. Titan)"] = {
+      ["playAction1"] = "Send an Away Team to a Location. You may beam a card from your hand or Staging Area to a deployed Ship. If you have another Starfleet in your Staging Area, you may promote this card to Duty Officer.",
+    },
+    ["Chief Engineer (U.S.S. Titan)"] = {
+      ["playAction1"] = "Discard a Ship to scan for a Weapon and draw a card.",
+    }
+  }
+
+  return playActionText[cardName][index] or nil
+end
+
+
+function getPlayNoAction(cardObj, opIndex)
+  -- handles detection and return of report text of actionless play operations
+  local cardName = cardObj.getName()
+  local attackColor = Color.fromString("Red"):toHex()
+  local index = "playNoAction" .. tostring(opIndex)
+
+  local playNoActionText = {
+    -- base game encounter play actions
+    ["Boltzmann Brain"] = {
+      ["playNoAction1"] = "Draw a card. You may return an Incident.",
+    },
+    ["Omega Particle"] = {
+      ["playNoAction1"] = "Gain 3 Dilithium and 3 Latinum. For each Borg you have in play gain 1 Glory. If you gained 5+ Glory this way, destroy this card (Place into Unused Object Bag at top of table).",
+    },
+    ["V'Ger"] = {
+      ["playNoAction1"] = "Log up to 2 cards from your hand or Discard pile.",
+    },
+
+    -- base game person
+    ["Admiral Pressman"] = {
+      ["playNoAction1"] = "Free play an Attack. If you have no Duty Officer, you may promote a Person to Duty Officer from your hand or Discard pile.",
+    },
+    ["Bruce Maddox"] = {
+      ["playNoAction1"] = "Find and free play a Synthetic.",
+    },
+    ["Laas"] = {
+      ["playNoAction1"] = "Put a Person into your Staging Area (without triggering their play operation) to duplicate a play operation of a Person or Cargo from the Market or your Discard pile.",
+    },
+    ["Laris"] = {
+      ["playNoAction1"] = "Spend 1 Dilithium to gain 1 Research or Military. If you have an Android in play, draw 2 cards.",
+    },
+    ["Lwaxana Troi"] = {
+      ["playNoAction1"] = "Refresh your Captain or your Duty Officer.",
+    },
+    ["Mirok"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] You may log a Cloak from your hand or from play to force your opponent to log a Ship from their Discard pile. If they do, gain 1 Glory. If they cannot, they take an Incident. You may promote this card to Duty Officer.", attackColor),
+    },
+    ["Moriarty"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] You may spend 2 Dilithium to scan for either a Hologram or an Engineer. Force your opponent to discard 2 cards.", attackColor),
+    },
+    ["Peanut Hamper"] = {
+      ["playNoAction1"] = "Spend 2 Dilithium to scan 1 of Cargo.",
+      ["playNoAction2"] = "Gain 3 Dilithium. You may recall your Duty Officer. Promote this card to Duty Officer.",
+    },
+    ["Riva"] = {
+      ["playNoAction1"] = "Draw a card. You may log an Attack from your hand or Discard pile to gain 1 Glory.",
+    },
+
+    -- base game cargo
+    ["Biobed"] = {
+      ["playNoAction1"] = "Junk a card from the Market. Free play an Incident OR find a Doctor.",
+    },
+    ["Borg Spatial Trajector"] = {
+      ["playNoAction1"] = "If your Captain is Borg and you have 6+ Borg Collective value: regenerate 1 Borg Drone and you may send a Borg Drone to any Location (controlled, neutral, or opponent).",
+    },
+    ["Ferengi Wine"] = {
+      ["playNoAction1"] = "Gain 1 Latinum for each Ferengi and each Business you have in play (max 5). If you gained at least 3 Latinum this way, gain 1 Glory.",
+    },
+    ["Lirpa"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] Force your opponent to dismiss (one of) their Duty Officer(s). If they do, they may draw a card. You may put a card on the top of your deck to gain 1 Glory. Draw a card for each Vulcan you have in play (excluding this card).", attackColor),
+    },
+    ["Mek'leth"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] Discard a card to gain 1 Military. Force your opponent to reveal their hand. You may discard an Attack from their hand to gain 1 Glory.", attackColor),
+    },
+    ["Orb of Time"] = {
+      ["playNoAction1"] = "You may take an Incident to duplicate a play operation of a Person or Cargo or Ally from your Log. You may recall a non-Time Travel card from your Staging Area.",
+    },
+    ["Plasma Manifold"] = {
+      ["playNoAction1"] = "Spend 3 Dilithium to gain an Action Token.",
+    },
+    ["Tachyon Detection Grid"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] You may dismiss a deployed Ship to gain 2 Research. Force your opponent to log a Cloak from play. If they do, you gain 1 Glory. If you have a Security in play, gain 1 Military.", attackColor),
+    },
+    ["Unstable Wormhole"] = {
+      ["playNoAction1"] = "Look at the top 2 Locations or the top 2 Encounters, and put them on the top and/or bottom of their deck in any order. Draw a card.",
+    },
+
+    -- base game ship
+    ["Holographic Drone Ship"] = {
+      ["playNoAction1"] = "Draw a card. Duplicate a play operation of a non-Time Travel Ship from the Market or deployed by any player.",
+    },
+
+    -- base game ally
+    ["Arin'Sen"] = {
+      ["playNoAction1"] = "For each Klingon you have in play (max 5 times): Gain 2 Dilithium OR gain 1 Latinum OR discard a card to gain 1 Glory. Log this card.",
+    },
+    ["Edosians"] = {
+      ["playNoAction1"] = "Draw 2 cards and discard one of them.",
+    },
+    ["Halkan Council"] = {
+      ["playNoAction1"] = "Gain 3 Dilithium.",
+    },
+    ["Karemma"] = {
+      ["playNoAction1"] = "Gain 1 Latinum.",
+      ["playNoAction2"] = "Spend 2 Latinum to gain an Action Token.",
+    },
+
+    -- 2nd contact person
+    ["Jennifer Sh'reyan"] = {
+      ["playNoAction1"] = "Beam this card to a deployed Ship to gain 2 Dilithium. You may recall another card beamed to that Ship. You may warp that Ship.",
+    },
+    ["Parmen"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] Find any card in your Draw deck. Exhaust an opponent Duty Officer and their Captain.", attackColor),
+      ["playNoAction2"] = "Discard a card to gain 1 Latinum and 1 Influence.",
+    },
+
+    -- 2nd contact cargo
+    ["Protocol 12"] = {
+      ["playNoAction1"] = "Take an Incident and log a Person or Directive from your hand or in play to gain 1 Military.",
+    },
+
+    -- 2nd contact ally
+    ["Betazed Intelligence"] = {
+      ["playNoAction1"] = "Find a Beverage or Ambassador or Telepath, except in your Reserve deck.",
+    },
+    ["Illyrians"] = {
+      ["playNoAction1"] = "Promote a Person from your hand or the Staging Area to Duty Officer.",
+    },
+
+    -- 2nd contact reward
+    ["Ensign Boimler"] = {
+      ["playNoAction1"] = " Discard 3 cards to gain an Action Token.",
+    },
+    ["Ensign Mariner"] = {
+      ["playNoAction1"] = "Gain 1 Latinum. Up to twice: take an Incident to your Discard pile to find any card, except in your Reserve deck.",
+    },
+    ["The Living Witness"] = {
+      ["playNoAction1"] = "Draw a card. You may free play an Incident. If you have an Ancient in play, log this card and you may (additionally) find and return an Incident.",
+    },
+
+    -- TBG encounter
+    ["Delphic Expanse Sphere"] = {
+      ["playNoAction1"] = "You may send an Away Team to a controlled Location. Gain 1 Dilithium or Latinum for each Xindi you have in play.",
+    },
+    ["New Federation Applicants"] = {
+      ["playNoAction1"] = "Take an Incident to draw 2 cards. You may beam an Incident to a deployed Ship with Starfleet to gain 1 Glory.",
+      ["playNoAction2"] = "Return a beamed Incident to refresh a Location.",
+    },
+    ["Species 10-C"] = {
+      ["playNoAction1"] = "Gain 1 Research or Influence or Military.",
+      ["playNoAction2"] = "Select a controlled Location. For each trait and Skill icon the selected card has, find any card, except in your Reserve deck. Then, log the selected Location. If you have another Communication in play, gain 1 Glory.",
+    },
+    ["Stone of Gol"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] For each Duty Officer your opponent has in play, force them to either: dismiss it OR exhaust it and you gain 1 Glory.", attackColor),
+    },
+
+    -- TBG person
+    ["Ambassador Gral"] = {
+      ["playNoAction1"] = "Find a card with Influence or Influence Focus.",
+      ["playNoAction2"] = string.format("[%s](Attack)[-] Dismiss an opponent Vulcan or Andorian (of your choice) to gain 1 Glory. You may promote a Person with Tellarite from your hand or Staging Area to Duty Officer (can be this card).", attackColor),
+    },
+    ["Ash Tyler"] = {
+      ["playNoAction1"] = "Requires Starfleet ≥ Klingon in play: Find a card with Military or Military Focus.",
+      ["playNoAction2"] = string.format("[%s](Attack)[-] Requires Klingon ≥ Starfleet in play: Dismiss an opponent Duty Officer to gain 2 Glory. You may promote this card to Duty Officer.", attackColor),
+    },
+    ["Commander Tysess"] = {
+      ["playNoAction1"] = "Find a non-Time Travel Person, except in your Reserve deck, and promote them to Duty Officer. You may spend an Action Token to duplicate a play operation of the promoted card. You may spend 1 Dilithium to beam this card to a deployed Ship.",
+    },
+    ["Hoshi Sato"] = {
+      ["playNoAction1"] = "Find a card with Research or Research Focus.",
+    },
+    ["Malcolm Reed"] = {
+      ["playNoAction1"] = "Gain 1 Military. Discard a card from your hand or the top of your deck. Gain 1 Military for each different one of Augment or Xindi or Romulan you have in your Discard pile.",
+    },
+    ["Malik"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] Discard a Weapon to steal 1 Glory.", attackColor),
+      ["playNoAction2"] = "Log a Human or Klingon from your hand or Discard pile to enlist a Development and log this card.",
+    },
+    ["Sarina Douglas"] = {
+      ["playNoAction1"] = "Discard a Doctor or Augment to either: free play a card with Research or Research Focus OR look at the top card of a Market deck.",
+    },
+    ["Soji Asha"] = {
+      ["playNoAction1"] = "Log a card from your Discard pile to gain 1 Dilithium.",
+    },
+    ["Thelev"] = {
+      ["playNoAction1"] = "Gain 1 Latinum for each Ambassador you have in play. Draw a card for each Ambassador your opponent has in play. If you have 6+ Treachery, you may refresh a Duty Officer.",
+    },
+    ["Travis Mayweather"] = {
+      ["playNoAction1"] = "Select a Ship and warp it. You may spend 2 Dilithium to send an Away Team to its Location. You may exhaust your Captain to send an Away Team to the same Location.",
+    },
+    ["Vice Admiral Pasalk"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] Refresh a Starfleet and force your opponent to discard a card. If your opponent has an Augment in play, repeat this and gain 1 Glory.", attackColor),
+    },
+
+    -- TBG cargo
+    ["Computer Virus"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] Deploy this card. Force your opponent to dismiss a card beamed to a Ship. If they cannot, they take an Incident.", attackColor),
+    },
+    ["Kemocite"] = {
+      ["playNoAction1"] = "Find and free play a Weapon. If the card was found in your Reserve deck, take an Incident.",
+      ["playNoAction2"] = "Dismiss a deployed Ship to recall a non-Time Travel card from your Staging Area and draw 2 cards.",
+    },
+    ["Saurian Brandy"] = {
+      ["playNoAction1"] = "Gain 1 Latinum for each Starfleet you have in play (max 3). Refresh your Captain and a Duty Officer.",
+    },
+
+    -- TBG ally
+    ["Orion Syndicate"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] If you have 3+ Ship deployed, gain 2 Latinum. If your opponent has 3+ Ship deployed, steal 2 Dilithium. If you have 8+ Treachery, find a Shady.", attackColor),
+      ["playNoAction2"] = "Discard a Shady to gain an Action Token. If you have another Orion in play, draw 2 cards. Log this card.",
+    },
+    ["Red Squadron"] = {
+      ["playNoAction1"] = "Draw 2 cards and discard one of the drawn cards. You may beam a card from your Staging Area to a Ship (can be this card). You may warp a Ship.",
+      ["playNoAction2"] = string.format("[%s](Attack)[-] Find a Starfleet or Dominion. Draw 2 cards. Force your opponent to dismiss a deployed Ship. Log this card.", attackColor),
+    },
+    ["Salt Vampires"] = {
+      ["playNoAction1"] = "Draw 2 cards.",
+    },
+    ["Unimatrix Zero"] = {
+      ["playNoAction1"] = "Spend 1 Dilithium for each Borg you have in play (excluding this card). Draw 2 cards, and 1 more for each XB you have in play (max 6 cards total). If you have no other Borg in play, log this card.",
+    },
+    ["Vadic's Splinter Group"] = {
+      ["playNoAction1"] = "You may duplicate a play operation of a Person or Cargo you or your opponent has in play (excluding beamed cards). Then either: put a Person into your Staging Area (without triggering their play operation) OR take an Incident.",
+    },
+
+    -- promos, conspiracy & reinforce
+    ["Conspiracy"] = {
+      ["playNoAction1"] = "Discard a Person from your hand to discard this card and draw a card.",
+    },
+    ["Reinforce"] = {
+      ["playNoAction1"] = "Take a card from your Reinforcement pile",
+      ["playNoAction2"] = "If your Reinforcement pile is empty, draw a card, then log this card.",
+    },
+    ["Sehlat"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] Find a Vulcan. Force your opponent to discard a Person.", attackColor),
+      ["playNoAction2"] = " Free play a Person with Vulcan.",
+      ["playNoAction3"] = "Promote a Person with Vulcan from your hand or Staging Area to Duty Officer.",
+    },
+    ["Drones Of Cube 90182"] = {
+      ["playNoAction1"] = "Beam this card to a Ship. Either: refresh that Shi[] OR draw a card. You may spend 1 Dilithium to do both instead.",
+    },
+    ["Frank Hollander"] = {
+      ["playNoAction1"] = "Log a Cargo from your hand, Discard pile, or in play to gain 1 Glory. You may free play a Hologram or Incident.",
+    },
+
+    -- burnham deck
+    ["Cleveland Booker"] = {
+      ["playNoAction1"] = "Gain 1 Dilithium and 1 Latinum.",
+    },
+    ["Sylvia Tilly"] = {
+      ["playNoAction1"] = "Log a card from your hand or Discard pile to recrystallize 1 Dilithium.",
+    },
+    ["Maximum Warp"] = {
+      ["playNoAction1"] = "Draw 2 cards and discard one of the drawn cards. You may warp a Ship.",
+    },
+    ["Grudge"] = {
+      ["playNoAction1"] = "You may free play [i]Cleveland Booker[/i] or [i]Book's Ship[/i]. You may beam this card and another card to [i]Book's Ship[/i]. Junk a card from the Market.",
+    },
+    ["Adira Tal"] = {
+      ["playNoAction1"] = "Log a card from your hand or Discard pile to find any card.",
+    },
+    ["Jett Reno"] = {
+      ["playNoAction1"] = "Gain 3 Dilithium.",
+      ["playNoAction2"] = "Recrystallize 2 Dilithium.",
+    },
+
+    -- koloth deck
+    ["Korax"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] Gain 1 Glory and discard the top card of your opponent's Draw deck. If it is a Person, you both take an Incident.", attackColor),
+    },
+    ["Curzon Dax"] = {
+      ["playNoAction1"] = "Gain 1 Influence or Military, whichever is the lower (you choose in a tie).",
+      ["playNoAction2"] = "Return an Incident.",
+    },
+    ["Kor, the Dahar Master"] = {
+      ["playNoAction1"] = "Send an Away Team to a neutral Location. If that Location is now secured, you may spend an action to take control of it. If you do, log this card.",
+    },
+    ["Prototype Cloak"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] Deploy this card. Refresh a Ship. Junk a card from the Market. If the opponent has 2 or more Ship deployed, force them to either: dismiss one OR take an Incident.", attackColor),
+    },
+
+    -- picard deck
+    ["Analyze"] = {
+      ["playNoAction1"] = "Gain 2 Dilithium.",
+    },
+    ["Diplomacy"] = {
+      ["playNoAction1"] = "Spend 1 Dilithium to draw 2 cards and discard one of them, and gain 1 Influence.",
+    },
+    ["Type 7 Shuttlecraft"] = {
+      ["playNoAction1"] = "Gain 1 Dilithium. Then you may either: beam a card to a Ship OR recall a card beamed to a Ship.",
+    },
+    ["Deanna Troi"] = {
+      ["playNoAction1"] = "Draw a card, then either: keep it OR discard it to gain 1 Glory OR log it.",
+    },
+    ["Geordi La Forge"] = {
+      ["playNoAction1"] = "You may find a Ship. You may refresh a Ship.",
+    },
+    ["U.S.S. Bozeman"] = {
+      ["playNoAction1"] = "Recall a non-Time Travel card from your Staging Area.",
+    },
+    ["Make It So"] = {
+      ["playNoAction1"] = "Return an Incident from your hand or Discard pile.",
+      ["playNoAction2"] = "Select a secured neutral Location and take control of it. Log this card.",
+    },
+
+    -- sela deck
+    ["Sub-Commander T'Rul"] = {
+      ["playNoAction1"] = "Draw a card. You may discard a card to draw a Cloak from your Discard pile.",
+    },
+    ["Infiltrate"] = {
+      ["playNoAction1"] = "You may warp up to 3 of your Ships with Cloak.",
+    },
+    ["Remans"] = {
+      ["playNoAction1"] = "Put a card on the top of your deck to send an Away Team to a Location. Then either: log this card OR your opponent may draw a card.",
+    },
+    ["Donatra"] = {
+      ["playNoAction1"] = "Draw 3 cards. For each: spend 1 Dilithium OR discard it. Refresh a Ship.",
+    },
+
+    -- shran deck
+    ["Tarah"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] Gain 1 Glory and discard the top card of your opponent's Draw deck. If it is a Person, you both take an Incident.", attackColor),
+    },
+    ["Ushaan-Tor"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] Discard an Andorian to gain 1 Glory and to force your opponent to dismiss (one of) their Duty Officer(s).", attackColor),
+    },
+    ["Jhamel"] = {
+      ["playNoAction1"] = "Draw a card, then either: keep it OR discard it to gain 1 Glory OR log it.",
+    },
+    ["Aenar"] = {
+      ["playNoAction1"] = "Draw 3 cards. You may log one of the drawn cards. You may discard one of the drawn cards to gain 1 Influence.",
+    },
+    ["Tenebian Amethyst"] = {
+      ["playNoAction1"] = "Gain 2 Latinum. You may log a Person from your hand or Discard pile to log this card.",
+    },
+    ["Commando Unit"] = {
+      ["playNoAction1"] = "Send an Away Team to a Location where you have a Ship. You may find a Weapon.",
+    },
+
+    -- sisko deck
+    ["U.S.S. Rio Grande"] = {
+      ["playNoAction1"] = "Gain 1 Dilithium. Then you may either: beam a card to a Ship OR recall a card beamed to a Ship.",
+    },
+    ["Miles O'Brien"] = {
+      ["playNoAction1"] = "Draw 2 cards and discard 1 of them.",
+    },
+    ["People of Bajor"] = {
+      ["playNoAction1"] = "Take an Incident to gain 1 Influence and draw a card.",
+      ["playNoAction2"] = "Send an Away Team to a Location. You may spend 2 Latinum to send another Away Team to the same Location1. Log this card.",
+    },
+    ["Julian Bashir"] = {
+      ["playNoAction1"] = "Free play an Incident from your hand or Discard pile. If you do, gain 1 Research.",
+    },
+    ["Orb of Prophecy and Change"] = {
+      ["playNoAction1"] = "Refresh a Bajoran to draw a card.",
+      ["playNoAction2"] = "Discard a card to find a Bajoran.",
+    },
+
+    -- archer deck
+    ["Strength of the Soul"] = {
+      ["playNoAction1"] = "Draw a Directive or Encounter from your Discard pile.",
+    },
+    ["Faith of the Heart"] = {
+      ["playNoAction1"] = "Exhaust your Captain to scan for NX-01. Put the gained card on top of your Reserve deck.",
+      ["playNoAction2"] = "Look at the top 2 cards of your Reserve deck. Put them on the top and/or bottom in any order. You may promote a Person with Starfleet from your hand or Staging Area to Duty Officer.",
+    },
+    ["Major Hayes, MACO"] = {
+      ["playNoAction1"] = "You may log a card from your hand or Discard pile to gain all resources from a card in the Market. Junk a card from the Market.",
+    },
+    ["Reach Any Star"] = {
+      ["playNoAction1"] = "Draw a card OR warp a Ship OR exhaust your Captain to do both. You may spend 1 Dilithium to send an Away Team to a Location where you have a Ship.",
+    },
+    ["Porthos"] = {
+      ["playNoAction1"] = "Find a Person. If the card was found in your Reserve deck, discard it. You may refresh your Captain. If you have an Alien in play, you gain 1 glory and both players take an Incident. This is not an Attack.",
+    },
+    ["Admiral Forrest"] = {
+      ["playNoAction1"] = "You may free play an Incident or a Directive. You may promote [i]Admiral Forrest[/i] and up to 2 other Person from your hand, Discard pile, or Staging Area to Duty Officer(s).",
+    },
+    ["Xindi Council"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] If your opponent has Xindi in play, you both take an Incident. Exhaust an opponent controlled Location (of your choice). Take the top Encounter. Log this card.", attackColor),
+    },
+
+    -- georgiou deck
+    ["Class C Shuttlecraft"] = {
+      ["playNoAction1"] = "Gain 1 Dilithium. Then you may either: beam a card to a Ship OR recall a card beamed to a Ship.",
+    },
+    ["Cmdr. Burnham"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] Dismiss a Duty Officer. Force your opponent to either: log (one of) their Duty Officer(s) OR dismiss (one of) their Duty Officer(s) and you gain 3 Glory.", attackColor),
+    },
+    ["Thruster Pack"] = {
+      ["playNoAction1"] = "Deploy this card. You may find up to 3 Person and beam them here. If you beamed at least 2, gain an Action Token.",
+    },
+
+    -- khan deck
+    ["Salvage"] = {
+      ["playNoAction1"] = "Junk a card from the Market to draw a card.",
+    },
+    ["Wajahut"] = {
+      ["playNoAction1"] = "Discard a card to draw a card from your Discard pile.",
+    },
+    ["Surprise Attack"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] Spend 1 Dilithium to give your opponent an Incident (from your hand).", attackColor),
+    },
+    ["Cpt. Terrell"] = {
+      ["playNoAction1"] = "Draw 2 cards and discard 1 of them.",
+    },
+    ["Ceti Eel"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] Dismiss an opponent Duty Officer to send 2 Away Team to a neutral Location where either of you have a token, ignoring any opponent Ship. Put this card back in your Development pile. Your opponent may draw 2 cards.", attackColor),
+      ["playNoAction2"] = "Find any card and log the found card. You may return an Incident. Log this card.",
+    },
+    ["Revenge Is a Dish Best Served Cold"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] Discard an Augment to give this card and optionally an Incident to your opponent, and force them to log the card(s) given.", attackColor),
+    },
+    ["Genesis Device"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] Mark any one trait. Destroy a neutral Location. (No glory compensation is given for removed tokens.) Deploy this card.", attackColor),
+    },
+
+    -- kirk deck
+    ["Levitation Boots"] = {
+      ["playNoAction1"] = "Deploy this card. You may beam up to 3 Person from your hand or Discard pile here.",
+    },
+    ["Montgomery \"Scotty\" Scott"] = {
+      ["playNoAction1"] = "Find a Ship. If the card was found in your Reserve deck, take an Incident.",
+    },
+    ["Needs of the Many"] = {
+      ["playNoAction1"] = "Dismiss a deployed Ship or a Duty Officer, then log the dismissed card to enlist a Person from your Development pile. Log this card.",
+    },
+    ["Time Warp"] = {
+      ["playNoAction1"] = "Find any card.",
+      ["playNoAction2"] = "Recall a non-Time Travel card from your Staging Area.",
+    },
+
+    -- rebner deck
+    ["Big Helmet"] = {
+      ["playNoAction1"] = "Gain 1 Latinum.",
+      ["playNoAction2"] = "Draw 2 cards and discard 1 of them.",
+      ["playNoAction3"] = "Promote a Person from your hand to Duty Officer.",
+    },
+    ["Rebelution"] = {
+      ["playNoAction1"] = "Dismiss every Helmet and exhaust every unexhausted Ongoing or Location you have in play. If you dismissed at least 2 Helmet, send an Away Team to a Location.",
+    },
+    ["Even Bigger Helmet"] = {
+      ["playNoAction1"] = "Gain 1 Latinum and 1 Dilithium. Promote a Person from your hand or Staging Area to Duty Officer.",
+    },
+    ["Big Enough Helmet"] = {
+      ["playNoAction1"] = "Gain 1 Latinum, 1 Dilithium, and 1 Glory. You may refresh your Captain.",
+    },
+
+    -- soval deck
+    ["Stel"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] Force your opponent to dismiss a Romulan or Andorian. If they do, gain 1 Glory. You may log a card from your hand or Discard pile.", attackColor),
+    },
+    ["Advisory"] = {
+      ["playNoAction1"] = "Spend 1 Dilithium to gain 1 Influence and draw a card. You may beam a Human to a deployed Ship.",
+    },
+    ["V'Lar"] = {
+      ["playNoAction1"] = "Take an Incident to draw a card and send an Away Team to a Location where you have a Ship.",
+    },
+    ["Plomeek Tea"] = {
+      ["playNoAction1"] = "Gain 1 Latinum.",
+    },
+    ["Vulcan Hello"] = {
+      ["playNoAction1"] = "Select a neutral Location not secured by your opponent. Take control of it and log this card.",
+    },
+    ["Minister Kuvak"] = {
+      ["playNoAction1"] = "Gain 1 Dilithium for each card you have beamed to a Ship or Location.",
+    },
+    ["Kir'Shara"] = {
+      ["playNoAction1"] = "If you have 7+ Vulcan in play (excluding your Captain), take an Incident to take the top Encounter card. Log this card.",
+    },
+    ["Vulcan High Command"] = {
+      ["playNoAction1"] = "Send an Away Team to a Location where you have a Ship. You may find a Vulcan.",
+    },
+
+    -- freeman deck
+    ["Type 6A Shuttlecraft"] = {
+      ["playNoAction1"] = "Gain 1 Dilithium. Then you may either: beam a card to a Ship OR recall a card beamed to a Ship.",
+    },
+    ["Bradward Boimler"] = {
+      ["playNoAction1"] = "Spend all your remaining Action Tokens (possibly none). For each Action Token spent this way, draw a card; then draw one additional card. Free play one of the drawn cards.",
+    },
+    ["T'Ana"] = {
+      ["playNoAction1"] = "Gain 1 Research. You may return an Incident from your Discard pile.",
+    },
+    ["T88 Diagnostic Tool"] = {
+      ["playNoAction1"] = "You may refresh a Ship. Deploy this card.",
+    },
+    ["Shaxs"] = {
+      ["playNoAction1"] = "Log a Ship from your hand to gain 2 Glory. Return up to 2 Incidents.",
+    },
+
+    -- pike deck
+    ["Negotiate"] = {
+      ["playNoAction1"] = "Gain 1 Latinum or 2 Dilithium. You may discard up to 3 Cargo or Ship or Ally. Gain 1 Latinum and 1 Dilithium for each card discarded this way. You may find an Encounter.",
+    },
+    ["Time Crystal"] = {
+      ["playNoAction1"] = "Discard a card to recall a non-Time Travel card from your Staging Area. Log a Time Travel from in play (can be this card).",
+      ["playNoAction2"] = "Take an Incident to duplicate a play operation of a Person or Ally from your Development pile.",
+    },
+    ["Lt. Scott"] = {
+      ["playNoAction1"] = "Dismiss a deployed Ship to trigger a controlled Location's control operation. You may exhaust a Ship to draw 2 cards and discard one of them.",
+    },
+    ["Talosians"] = {
+      ["playNoAction1"] = "Select one of Person or Cargo or Ship or Ally. You may swap a card of the selected suit between the Market and the Junk. You may draw a card of the selected suit from your Discard pile.",
+      ["playNoAction2"] = "Draw 2 cards for each Telepath you have in play (max 6 cards), then put 1 card on the top of your deck for each Telepath you have in play.",
+    },
+    ["Kerkhovians"] = {
+      ["playNoAction1"] = "Find a card with multiple Different Species.",
+    },
+    ["Pelia"] = {
+      ["playNoAction1"] = "You may find and free play a Cargo.",
+    },
+    ["James Kirk (United Earth Fleet)"] = {
+      ["playNoAction1"] = "You may draw a Directive from your Discard pile. You may free play a Directive.",
+    },
+    ["Marie Batel"] = {
+      ["playNoAction1"] = "Free play a Starfleet.",
+      ["playNoAction2"] = "Promote [i]Marie Batel[/i] and a Person from your hand, Staging Area, or your Discard pile to Duty Officers.",
+    },
+    ["Hit It"] = {
+      ["playNoAction1"] = "Draw 2 cards and discard one of the drawn cards. You may warp a Ship.",
+      ["playNoAction2"] = "If the [i]U.S.S. Enterprise[/i] is at a controlled Location, take an Incident to trigger that card's control operation.",
+    },
+
+    -- riker deck
+    ["Deanna Troi-Riker"] = {
+      ["playNoAction1"] = "Draw a card, then either: put it on the top of your deck OR discard it OR log it.",
+    },
+    ["First Officer (U.S.S. Titan)"] = {
+      ["playNoAction1"] = " If you have a Scientist in play, you may spend 2 Dilithium to gain an action. If you have a Weapon in play, gain 1 Military. You may exhaust your Captain to recall a card beamed to a Ship.",
+    },
+    ["Warp in the Factor of 5, 6, 7, 8!"] = {
+      ["playNoAction1"] = "Draw 2 cards and discard one of the drawn cards. You may warp up to 3 Ships with Starfleet.",
+    },
+    ["Chateau Picard"] = {
+      ["playNoAction1"] = "Discard a Starfleet to return an Incident from your hand or Discard pile.",
+    },
+    ["Holodeck"] = {
+      ["playNoAction1"] = "You may recall a Duty Officer. You may draw a card. Put a card on the top of your deck and junk a card from the Market.",
+    },
+    ["Chief Engineer (U.S.S. Titan)"] = {
+      ["playNoAction1"] = "Find a Ship and gain 1 Dilithium.",
+    },
+    ["Brad Boimler, Lt. JG"] = {
+      ["playNoAction1"] = "Spend all your remaining Action Tokens (possibly none). For each Action Token spent this way, draw a card; then draw one additional card. Free play one of the drawn cards.",
+    },
+    ["Solving Science Mysteries"] = {
+      ["playNoAction1"] = "Take an Incident to deploy this card.",
+    },
+    ["Proximity Blast"] = {
+      ["playNoAction1"] = string.format("[%s](Attack)[-] Dismiss an opponent Ship sharing a Location with one of your Ships. You may spend 2 Dilithium to draw 2 cards. If you do, your opponent takes an Incident.", attackColor),
+      ["playNoAction2"] = "Dismiss 3 Weapons beamed to the same Ship to take control of its neutral Location. Log this card.",
+    },
+  }
+  return playNoActionText[cardName][index] or nil
+end
+
+
+function getDeployAction(cardObj, opIndex)
+  -- handles detection and return of report text of actionless deploy operations
+  local cardName = cardObj.getName()
+  local attackColor = Color.fromString("Red"):toHex()
+  local index = "deployAction" .. tostring(opIndex)
+
+  local deployActionText = {
+
+    -- base game cargo
+    ["Cloaking Device"] = {
+      ["deployAction1"] = "Refresh up to 3 of your Ship. Draw 2 cards. Junk a card from the Market. Deploy this card.",
+    },
+    ["Forced Singularity"] = {
+      ["deployAction1"] = "You may discard a card to find an Engineer or Ops. Junk a card from the Market. Spend 2 Dilithium to deploy this card.",
+    },
+    ["Horta"] = {
+      ["deployAction1"] = "Junk a card from the Market. You may log an Attack to enlist a Development. Deploy this card.",
+    },
+
+    -- base game ship
+    ["Bird-of-Prey"] = {
+      ["deployAction1"] = "Deploy this ship. You may discard a card to send an Away Team to a Location, ignoring any opponent Ship. If the discarded card is Imperial, gain 1 Glory.",
+    },
+    ["D'Kyr Cruiser"] = {
+      ["deployAction1"] = "Deploy and warp this ship. You may discard a card to gain 1 Research.",
+      ["deployAction2"] = "Deploy and warp this ship. You may send an Away Team to this ship's Location.",
+    },
+    ["K't'inga Battlecruiser"] = {
+      ["deployAction1"] = "Deploy this ship. You may send an Away Team to a Location.",
+    },
+    ["Kazon Raider"] = {
+      ["deployAction1"] = string.format("[%s](Attack)[-] Deploy this ship. Force your opponent to discard a card. You may discard a card to gain 1 Latinum.", attackColor),
+    },
+    ["Pakled Freighter"] = {
+      ["deployAction1"] = "Deploy this ship. You may gain a Cargo from the Junk. If the gained card is Weapon or Anomaly, gain 1 Military.",
+    },
+    ["Son'a Battlecruiser"] = {
+      ["deployAction1"] = string.format("[%s](Attack)[-] Deploy this ship. Steal 1 Dilithium.", attackColor),
+      ["deployAction2"] = string.format("[%s](Attack)[-] Deploy this ship. Steal 2 Dilithium. Force your opponent to discard a card.", attackColor),
+    },
+    ["U.S.S. Enterprise-C"] = {
+      ["deployAction1"] = "Deploy this ship. Up to twice: beam a card here OR warp this ship. Exhaust this ship.",
+    },
+    ["U.S.S. Pasteur"] = {
+      ["deployAction1"] = "Deploy this ship. You may free play a Communication or Doctor.",
+    },
+    ["U.S.S. Reliant"] = {
+      ["deployAction1"] = "Deploy and warp this ship.",
+    },
+    ["Voth Research Vessel"] = {
+      ["deployAction1"] = "Discard a card to deploy and warp this ship.",
+    },
+    ["Xindi-Reptilian Battleship"] = {
+      ["deployAction1"] = "Deploy this ship. You may gain a Cargo. If the gained card is Weapon, beam it here and gain 1 Glory.",
+      ["deployAction2"] = "Deploy this ship. Gain 1 Glory per Time Travel you have in play (max 3).",
+    },
+
+    -- 2nd contact cargo
+    ["Gift Box"] = {
+      ["deployAction1"] = "Deploy this card. You may discard a card to gain a Cargo.",
+    },
+
+    -- 2nd contact ship
+    ["R.I.S. Talvath"] = {
+      ["deployAction1"] = "Deploy this ship. You may warp this ship.",
+    },
+
+    -- TBG cargo
+    ["Augmentation Plague"] = {
+      ["deployAction1"] = "Spend 3 Dilithium and 1 Latinum to deploy this card. Gain 2 Military. If your Captain is Klingon take an Incident to draw 3 cards.",
+    },
+    ["Borg Spatial Trajector"] = {
+      ["deployAction1"] = "Select up to 3 Persons from your hand or Discard pile. For each either: beam it to a Ship OR put it on the top of your deck to send an Away Team to a Location.",
+    },
+    ["EVA Suits"] = {
+      ["deployAction1"] = "Deploy this card. You may beam a Person from your hand or Discard pile here.",
+    },
+    ["Jago's Epigenetic Implant"] = {
+      ["deployAction1"] = "Discard a card to deploy this card. If the discarded card is Doctor or Business, gain 2 Latinum and you may free play an Incident.",
+    },
+
+    -- TBG ship
+    ["D'Kora Marauder"] = {
+      ["deployAction1"] = string.format("[%s](Attack)[-] Deploy this ship. Steal 1 Latinum.", attackColor),
+    },
+    ["Medusan Vessel"] = {
+      ["deployAction1"] = "Deploy this ship. You may discard a card to scan for a Telepath.",
+    },
+    ["Vor'cha Attack Cruiser"] = {
+      ["deployAction1"] = "Deploy and warp this ship. You may discard a card to send an Away Team to this ship's Location, ignoring any opponent Ship.",
+    },
+    ["Xindi-Aquatic Cruiser"] = {
+      ["deployAction1"] = "Deploy this ship. You may discard a card to beam a card here.",
+    },
+
+    -- TBG ally
+    ["Kaelon II Science Ministry"] = {
+      ["deployAction1"] = "Deploy this card. Place 3 Dilithium on this card and exhaust this card.",
+    },
+
+    -- promos
+    ["U.S.S. Enterprise-B"] = {
+      ["deployAction1"] = "Discard a card to deploy this ship and gain 1 Glory. If it is a Tuesday, you may send an Away Team to a Location.",
+    },
+    ["U.S.S. Cabot"] = {
+      ["deployAction1"] = "Deploy this ship. You may take an Incident to scan for a Creature.",
+    },
+
+    -- burnham deck
+    ["U.S.S. Discovery-A"] = {
+      ["deployAction1"] = "Deploy this ship. You may discard a card to free play a Person.",
+    },
+    ["Ni'Var"] = {
+      ["deployAction1"] = "Take control of this location. Remove 1 Glory from the Stardate card.",
+    },
+    ["Book's Ship"] = {
+      ["deployAction1"] = "Deploy this ship. You may send an Away Team to a Location, ignoring any opponent Ship.",
+    },
+    ["Earth"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+    ["Theta Zeta"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+    ["U.S.S. Federation"] = {
+      ["deployAction1"] = "Deploy this ship. You may spend 1 Dilithium to warp this ship.",
+    },
+
+    -- koloth deck
+    ["Qo'noS"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+    ["Rura Penthe"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+    ["Boreth"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+
+    -- picard deck
+    ["U.S.S. Enterprise-D"] = {
+      ["deployAction1"] = "Deploy this ship. Warp this ship OR beam a card here.",
+    },
+    ["Farpoint Station"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+    ["Daystrom Institute"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+    ["Starbase 74"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+    ["Phasing Cloak"] = {
+      ["deployAction1"] = "Deploy this card. Junk a card from the Market.",
+    },
+    ["U.S.S. Bozeman"] = {
+      ["deployAction1"] = "Deploy this ship. You may enlist a Development.",
+    },
+
+    -- sela deck
+    ["I.R.W. Goraxus"] = {
+      ["deployAction1"] = "Deploy this ship. You may send an Away Team to a Location, ignoring any opponent Ship.",
+    },
+    ["Remus"] = {
+      ["deployAction1"] = "Take control of this card.",
+    },
+    ["Romulus"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+    ["I.R.W. Khazara"] = {
+      ["deployAction1"] = "Deploy this ship. You may send an Away Team to a Location, ignoring any opponent Ship.",
+    },
+    ["I.R.W. Terix"] = {
+      ["deployAction1"] = "Deploy this ship. You may send an Away Team to a Location, ignoring any opponent Ship.",
+    },
+    ["I.R.W. Valdore"] = {
+      ["deployAction1"] = "Deploy this ship. You may send an Away Team to a Location, ignoring any opponent Ship.",
+    },
+    ["Scimitar"] = {
+      ["deployAction1"] = "Find a Romulan and destroy the found card. Beam a card to Remus. If you do both, deploy this ship.",
+    },
+
+    -- shran deck
+    ["Kumari"] = {
+      ["deployAction1"] = "Deploy this ship. Warp this ship OR beam a card here.",
+    },
+    ["Andoria"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+    ["Plasma Rifles"] = {
+      ["deployAction1"] = "Spend 1 Dilithium to gain 1 Military. Junk a card from the Market. Deploy this card.",
+    },
+    ["Weytahn"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+    ["Coridan"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+    ["Andorian Cruiser"] = {
+      ["deployAction1"] = "Deploy this ship. You may spend 1 Dilithium to warp this ship.",
+    },
+
+    -- sisko deck
+    ["Deep Space 9"] = {
+      ["deployAction1"] = "Deploy this card.",
+    },
+    ["The Wormhole"] = {
+      ["deployAction1"] = "Take control of this location. You may free play a Ship.",
+    },
+    ["U.S.S. Rio Grande"] = {
+      ["deployAction1"] = "Deploy this ship.",
+    },
+    ["U.S.S. Defiant"] = {
+      ["deployAction1"] = string.format("[%s](Attack)[-] Deploy and warp this ship. If the opponent has at least one Ship at the U.S.S. Defiant's Location, force them to discard 2 cards.", attackColor),
+      ["deployAction2"] = "Deploy this ship. You may send an Away Team to a Location, ignoring any opponent Ship.",
+    },
+    ["Starbase 375"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+
+    -- archer deck
+    ["NX-01 Enterprise"] = {
+      ["deployAction1"] = "Deploy this ship. You may exhaust a Duty Officer to warp this ship.",
+    },
+    ["Automated Repair Station"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+
+    -- georgiou deck
+    ["U.S.S. Shenzhou"] = {
+      ["deployAction1"] = "Deploy this ship. Warp this ship OR beam a card here.",
+    },
+    ["Vulcan Science Academy"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+    ["Kaminar"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+    ["Binary Stars Comms Relay"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+
+    -- khan deck
+    ["Vacated Regula I"] = {
+      ["deployAction1"] = "If you have a Ship at a neutral Location, take control of this location.",
+    },
+    ["Mutara Nebula"] = {
+      ["deployAction1"] = "Junk a card from the Market. If you have 7+ traits marked, gain a Ship from the Junk, otherwise discard 2 cards. Take control of this location.",
+    },
+    ["Hijacked U.S.S. Reliant"] = {
+      ["deployAction1"] = "Deploy this ship. If your opponent has at most 1 Ship deployed: send an Away Team to a Location and draw a card.",
+    },
+
+    -- kirk deck
+    ["U.S.S. Enterprise [Refit]"] = {
+      ["deployAction1"] = "Deploy this ship. Warp this ship OR beam a card here.",
+    },
+    ["U.S.S. Enterprise-A"] = {
+      ["deployAction1"] = "Deploy this ship. Warp this ship OR beam a card here. You may discard a card to beam a (different) card here.",
+    },
+    ["Excelsior"] = {
+      ["deployAction1"] = string.format("[%s](Attack)[-] Deploy this ship. If the opponent has at least one Ship at a neutral Location, they take an Incident. You may find [i]Set a Course[/i].", attackColor),
+    },
+    ["Vulcan (Kirk)"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+
+    -- rebner deck
+    ["Mondor"] = {
+      ["deployAction1"] = "Deploy this ship. You may gain a Cargo from the Junk. If the gained card is Weapon or Anomaly, gain 1 Military.",
+    },
+    ["Pakled Decree"] = {
+      ["deployAction1"] = "Deploy this card.",
+    },
+    ["Samaritan Snare"] = {
+      ["deployAction1"] = "Deploy this card."
+    },
+    ["Pakled Planet"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+    ["The Clumpship Pakled"] = {
+      ["deployAction1"] = string.format("[%s](Attack)[-] Deploy this ship. For each Ship your opponent has in play, draw and reveal a card. You may log a drawn card with Weapon to force your opponent to log a Ship from their hand, Discard pile, or in play.", attackColor),
+    },
+    ["Karzill VI"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+    ["Jackabog's Clumpship"] = {
+      ["deployAction1"] = string.format("[%s](Attack)[-] Deploy this ship. For each Ship your opponent has in play, draw and reveal a card. You may log a drawn card with Weapon to force your opponent to log a Ship from their hand, Discard pile, or in play.", attackColor),
+    },
+    ["Harpy"] = {
+      ["deployAction1"] = "Deploy this ship. Gain 1 Military for each Military you have in play (excluding beamed cards).",
+    },
+
+    -- soval deck
+    ["Ti'Mur"] = {
+      ["deployAction1"] = "Deploy this ship. You may discard a card to gain 1 Military.",
+      ["deployAction2"] = "Deploy and warp this ship. You may send an Away Team to this ship's Location.",
+    },
+    ["Seleya (D'Kyr)"] = {
+      ["deployAction1"] = "Deploy and warp this ship. You may discard a card to gain 1 Research.",
+      ["deployAction2"] = "Deploy and warp this ship. You may send an Away Team to this ship's Location.",
+    },
+    ["Paan Mokar"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+    ["Mount Seleya"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+
+    -- freeman deck
+    ["U.S.S. Cerritos"] = {
+      ["deployAction1"] = "Deploy this ship. You may beam a card here from your hand or Discard pile. You may spend 1 Dilithium to gain 1 Research or Influence or Military, whichever is the lowest. Exhaust this ship.",
+    },
+    ["Douglas Station"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+    ["U.S.S. Carlsbad"] = {
+      ["deployAction1"] = "Deploy this ship. You may beam a card here from your hand or Discard pile. You may spend 1 Dilithium to gain 1 Research or Influence or Military, whichever is the lowest. Exhaust this ship.",
+    },
+    ["A Fleet of 30 California-Class Ships"] = {
+      ["deployAction1"] = "Deploy and warp this ship. Refresh every deployed Ship.",
+    },
+    ["The Farm"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+
+    -- pike deck
+    ["Knowledge of a Terrible Fate"] = {
+      ["deployAction1"] = "Deploy this card.",
+    },
+    ["U.S.S. Enterprise"] = {
+      ["deployAction1"] = "Deploy this ship. Warp this ship OR beam a card here.",
+    },
+    ["Rigel VII"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+
+    -- riker deck
+    ["U.S.S. Titan"] = {
+      ["deployAction1"] = "Deploy this ship. Warp this ship OR beam a card here.",
+    },
+    ["Starbase 25"] = {
+      ["deployAction1"] = "Take control of this location.",
+    },
+    ["U.S.S. Zheng He"] = {
+      ["deployAction1"] = string.format("[%s](Attack)[-] Deploy this ship. If the opponent has at least one Ship at a neutral Location, they take an Incident. Refresh your Captain.", attackColor),
+    },
+    ["Solving Science Mysteries"] = {
+      ["deployAction1"] = "Spend 4 Dilithium to scan for a Scientist and draw a card. Deploy this card."
+    }
+  }
+  return deployActionText[cardName][index]
+
+end
+
+
+function getDeployNoAction(cardObj, opIndex)
+  -- handles detection and return of report text of actionless deploy operations
+  local cardName = cardObj.getName()
+  local attackColor = Color.fromString("Red"):toHex()
+  local index = "deployNoAction" .. tostring(opIndex)
+
+  local deployNoActionText = {
+    -- base game encounter
+    ["Guardian Of Forever"] = {
+      ["deployNoAction1"] = "Gain 1 Influence and 1 Research. Deploy this card.",
+    },
+
+    -- base game cargo
+    ["Phasers"] = {
+      ["deployNoAction1"] = "Draw two cards. Junk a card from the Market. Deploy this card.",
+      ["deployNoAction2"] = "Spend 1 Dilithium to gain an action. Junk a card from the Market. Deploy this card.",
+    },
+
+    -- base game ship
+    ["Borg Probe"] = {
+      ["deployNoAction1"] = "Deploy and warp this ship. You may spend an action and 1 Dilithium to gain a Person and log the gained card. If your Captain is Borg, assimilate it instead.",
+    },
+    ["Holographic Drone Ship"] = {
+      ["deployNoAction1"] = "Discard a Telepath to deploy and warp this ship.",
+    },
+    ["U.S.S. Reliant"] = {
+      ["deployNoAction1"] = "If your opponent has at most 1 Ship deployed, deploy this ship then choose 2 of the following: send an Away Team to a Location OR draw a card OR discard an Augment to gain 2 Glory.",
+    },
+
+    -- 2nd contact cargo
+    ["Protocol 12"] = {
+      ["deployNoAction1"] = "Take an Incident and log a Person or Directive from your hand or in play to gain 1 Military.",
+    },
+
+    -- 2nd contact ship
+    ["Fesarius"] = {
+      ["deployNoAction1"] = "Deploy and warp this ship.",
+    },
+
+    -- TBG encounter
+    ["Gomtuu"] = {
+      ["deployNoAction1"] = "Deploy this card. You may spend an Action Token to gain 1 Military for each Research you have in play (excluding beamed cards).",
+    },
+
+    -- TBG cargo
+    ["Computer Virus"] = {
+      ["deployNoAction1"] = string.format("[%s](Attack)[-] Deploy this card. Force your opponent to dismiss a card beamed to a Ship. If they cannot, they take an Incident.", attackColor),
+      ["deployNoAction2"] = "",
+      ["deployNoAction3"] = "",
+    },
+
+    -- TBG ship
+    ["D'Var"] = {
+      ["deployNoAction1"] = "Deploy this ship.",
+    },
+
+    -- promos, conspiracy & reinforce
+    ["Golden Statue of O'Brien"] = {
+      ["deployNoAction1"] = "You may find an Engineer, except in your Reserve deck. Deploy this card.",
+    },
+
+    -- koloth deck
+    ["I.K.S. Gr'Oth"] = {
+      ["deployNoAction1"] = "Deploy this ship.",
+    },
+    ["I.K.S. Klothos"] = {
+      ["deployNoAction1"] = "Deploy this ship.",
+    },
+    ["Prototype Cloak"] = {
+      ["deployNoAction1"] = string.format("[%s](Attack)[-] Deploy this card. Refresh a Ship. Junk a card from the Market. If the opponent has 2 or more Ships deployed, force them to either: dismiss one OR take an Incident.", attackColor)
+    },
+    ["I.K.S. Devisor"] = {
+      ["deployNoAction1"] = "Deploy this ship. Gain 1 Glory.",
+    },
+
+    -- sisko deck
+    ["Self-Replicating Mines"] = {
+      ["deployNoAction1"] = string.format("[%s](Attack)[-] Force your opponent to discard a card. Draw two cards and discard one of them. Deploy this card.", attackColor),
+    },
+
+    -- georgiou deck
+    ["Red Angel"] = {
+      ["deployNoAction1"] = "Deploy this card.",
+    },
+    ["An Old Telescope"] = {
+      ["deployNoAction1"] = "Deploy this card.",
+    },
+    ["Thruster Pack"] = {
+      ["deployNoAction1"] = "Deploy this card. You may find up to 3 Persons and beam them here. If you beamed at least 2, gain an Action Token.",
+    },
+
+    -- khan deck
+    ["S.S. Botany Bay"] = {
+      ["deployNoAction1"] = "Take an Incident to deploy this ship. You may promote a Person from your hand or Discard pile to Duty Officer. You may beam a Person here.",
+    },
+
+    -- kirk deck
+    ["Levitation Boots"] = {
+      ["deployNoAction1"] = "Deploy this card. You may beam up to 3 Persons from your hand or Discard pile here.",
+    },
+    ["H.M.S. Bounty"] = {
+      ["deployNoAction1"] = "Deploy this ship.",
+      ["deployNoAction2"] = "Deploy this ship. You may discard an Incident to send an Away Team to a Location, ignoring any opponent Ship.",
+    },
+
+    -- freeman deck
+    ["T88 Diagnostic Tool"] = {
+      ["deployNoAction1"] = "You may refresh a Ship. Deploy this card.",
+    },
+
+    -- riker deck
+    ["Nepenthe"] = {
+      ["deployNoAction1"] = "Exhaust your Captain to take control of this location.",
+    },
+    ["Solving Science Mysteries"] = {
+      ["deployNoAction1"] = "Take an Incident to deploy this card.",
+    },
+  }
+  return deployNoActionText[cardName][index]
+
+end
+
+
+function getActivationAction(cardObj, opIndex)
+  -- handles detection and return of report text of action requiring activation operations
+  local cardName = cardObj.getName()
+  local attackColor = Color.fromString("Red"):toHex()
+  local index = "playActivationAction" .. tostring(opIndex)
+
+  local activationActionText = {
+    -- base game ship
+    ["Bird-of-Prey"] = {
+      ["playActivationAction1"] = string.format("[%s](Attack)[-] Warp this ship. You may spend 1 Dilithium to force your opponent to recall a Ship.", attackColor),
+    },
+    ["Voth Research Vessel"] = {
+      ["playActivationAction1"] = "Dismiss a Person with Human that is beamed here to take the top Encounter card. Log this card.",
+    },
+
+    -- TBG person
+    ["Hoshi Sato"] = {
+      ["playActivationAction1"] = "Draw a card for each Alien you have in play (max 3 cards). You may find a card in your Reserve deck and put the found card in your Staging Area (without triggering its play operation).",
+    },
+    ["Landru"] = {
+      ["playActivationAction1"] = "Log 2 Person beamed here to draw the top Location and take control of it. Junk a card from the Market and recall this card.",
+    },
+
+    -- TBG ship
+    ["Vor'cha Attack Cruiser"] = {
+      ["playActivationAction1"] = "Send an Away Team to this ship's Location.",
+    },
+
+    -- burnham deck
+    ["Paul Stamets"] = {
+      ["playActivationAction1"] = "Dismiss [i]U.S.S. Discovery[/i] and this card and spend 3 Dilithium to take the top Encounter.",
+    },
+
+    -- koloth deck
+    ["I.K.S. Gr'Oth"] = {
+      ["playActivationAction1"] = "Send an Away Team to this ship's Location.",
+    },
+    ["I.K.S. Klothos"] = {
+      ["playActivationAction1"] = "Send an Away Team to this ship's Location.",
+    },
+    ["Curzon Dax"] = {
+      ["playActivationAction1"] = "Discard a card to scan 2 of Ally.",
+    },
+    ["I.K.S. Devisor"] = {
+      ["playActivationAction1"] = "Send an Away Team to this ship's Location.",
+    },
+
+    -- sela deck
+    ["Sela"] = {
+      ["playActivationAction1"] = " Discard either [i]Infiltrate[/i] or [i]Conquer[/i] and spend 3 Latinum to scan for either Klingon, Vulcan, or Starfleet.",
+    },
+    ["Shinzon"] = {
+      ["playActivationAction1"] = string.format("[%s](Attack)[-] Gain 1 Military. Your opponent takes an Incident.", attackColor),
+    },
+
+    -- shran deck
+    ["Thy'lek Shran"] = {
+      ["playActivationAction1"] = "Discard a Cargo to send an Away Team to a controlled Location.",
+    },
+    ["Andorian Cruiser"] = {
+      ["playActivationAction1"] = "Send an Away Team to this ship's Location.",
+    },
+
+    -- sisko deck
+    ["Benjamin Sisko"] = {
+      ["playActivationAction1"] = "Send an Away Team to a Location with Starfleet or Starbase.",
+    },
+    [""] = {
+      ["playActivationAction1"] = "",
+      ["playActivationAction2"] = "",
+      ["playActivationAction3"] = "",
+    },
+
+    -- archer deck
+    ["Major Hayes, MACO"] = {
+      ["playActivationAction1"] = string.format("[%s](Attack) Remove all opponent Away Team from a Location where you have a Ship. Gain 1 glory for each Away Team removed. If you have a Security in play, you may send an Away Team to the same Location. Log this card.[-]", attackColor),
+    },
+
+    -- georgiou deck
+    -- khan deck
+    ["S.S. Botany Bay"] = {
+      ["playActivationAction1"] = " If there are 3+ Persons beamed here, dismiss all of them to look at the top 2 Locations, take control of one of them and return the other to the bottom of its deck. Log this card.",
+    },
+
+    -- rebner deck
+    ["Pakled Decree"] = {
+      ["playActivationAction1"] = "Beam a Helmet here to gain a Cargo.",
+    },
+    ["Samaritan Snare"] = {
+      ["playActivationAction1"] = "Beam a Helmet here, and take an Incident to gain a Ship or Ally.",
+    },
+    ["The Pakled Emperor"] = {
+      ["playActivationAction1"] = "If [i]The Pakled Emperor[/i] is wearing the [i]Big Enough Helmet[/i], spend 4 Dilithium to take the top Encounter. Log this card (along with the Helmet).",
+    },
+
+    -- freeman deck
+    ["Bradward Boimler"] = {
+      ["playActivationAction1"] = "Dismiss 4 Lower Deckers (one of them can be this card) and take an Incident to take the top Encounter.",
+    },
+    ["Beckett Mariner"] = {
+      ["playActivationAction1"] = "Gain on one Specialty track (Research or Influence or Military) for each matching Skill icon you have in play (excluding beamed cards). If you gained 3+ Research or Influence or Military, dismiss this card.",
+    },
+    ["Samanthan Rutherford"] = {
+      ["playActivationAction1"] = "Gain 1 Dilithium, and 2 Dilithium for each controlled Location you have in play. If you have another Engineer in play, you may discard a card to gain an Action Token.",
+    },
+
+    -- pike deck
+    ["Hemmer"] = {
+      ["playActivationAction1"] = "You may free play an Incident. Log this card to select a secured neutral Location and take control of it.",
+    },
+    ["Una \"Number One\" Chin-Riley"] = {
+      ["playActivationAction1"] = "Discard a card to send an Away Team to a Location.",
+    },
+    ["Rigel VII"] = {
+      ["playActivationAction1"] = "Draw a card. Log all cards beamed here. For every 2 cards logged this way, gain 1 Glory.",
+    },
+    ["Pelia"] = {
+      ["playActivationAction1"] = "Discard a card to gain a Cargo from the Junk. You may spend 1 Latinum to draw a card and gain 1 Glory.",
+    },
+    ["James Kirk (United Earth Fleet)"] = {
+      ["playActivationAction1"] = "Discard a Person to gain a Person or Ship. Draw a card. Dismiss this card.",
+    },
+
+    -- riker deck
+    ["William T. Riker"] = {
+      ["playActivationAction1"] = "Take an Incident to send an Away Team to a Location. If you targeted a controlled Location, you may spend 1 Latinum to trigger that card's control operation.",
+    },
+    ["First Officer (U.S.S. Titan)"] = {
+      ["playActivationAction1"] = "Gain a Cargo.",
+    },
+    ["Brad Boimler, Lt. JG"] = {
+      ["playActivationAction1"] = "Discard a card with Research and take an Incident to enlist a Development.",
+    },
+  }
+  return activationActionText[cardName][index]
+
+end
+
+
+function getActivation(cardObj, opIndex)
+  -- handles detection and return of report text of actionless activation operations
+
+  local cardName = cardObj.getName()
+  local attackColor = Color.fromString("Red"):toHex()
+  local index = "playActivation" .. tostring(opIndex)
+
+  local activationText = {
+    -- base game encounter
+    ["Guardian Of Forever"] = {
+      ["playActivation1"] = "Recall a non-Time Travel card from your Staging Area. You may take an Incident to gain an Action Token. Log this card.",
+    },
+
+    -- base game person
+    ["Admiral Necheyev"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp any number of your Ship.",
+    },
+    ["Admiral Pressman"] = {
+      ["playActivation1"] = "Dismiss a Cloak you have in play to log this card and gain 3 Glory.",
+    },
+    ["B-4"] = {
+      ["playActivation1"] = string.format("[%s](Attack)[-] Log a card from your hand. If you do, your opponent takes an Incident and you gain 1 Dilithium for every 2 cards in your Log (rounded down).", attackColor),
+    },
+    ["Harry Mudd"] = {
+      ["playActivation1"] = "Dismiss this card to recall a non-Time Travel card from your Staging Area.",
+    },
+    ["Laas"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to find a card in your Draw deck.",
+    },
+    ["Laris"] = {
+      ["playActivation1"] = "Spend 2 Dilithium or 1 Latinum to refresh a Captain or Cargo or Ship or Location.",
+    },
+    ["Lenara Kahn"] = {
+      ["playActivation1"] = "Spend 1 Latinum to gain 1 Glory for each Anomaly you have in play (max 3). Dismiss this card.",
+    },
+    ["Lursa"] = {
+      ["playActivation1"] = "Discard a card to draw a card. If the discarded card is Romulan, gain 1 Military. If it is Business, gain 1 Latinum. If it has both traits, gain both rewards.",
+    },
+
+    -- base game cargo
+    ["Forced Singularity"] = {
+      ["playActivation1"] = "Discard an Engineer to draw 2 cards and put one of them on the top of your deck.",
+    },
+
+    -- base game ship
+    ["Bird-of-Prey"] = {
+      ["playActivation1"] = "Discard a card to beam a card here.",
+    },
+    ["Borg Probe"] = {
+      ["playActivation1"] = "Warp this ship.",
+      ["playActivation2"] = "Beam a card here from your hand or Discard pile.",
+    },
+    ["D'Kyr Cruiser"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+    ["Holographic Drone Ship"] = {
+      ["playActivation1"] = "Warp this ship.",
+    },
+    ["K't'inga Battlecruiser"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+    ["Kazon Raider"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+    ["Pakled Freighter"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+    ["Son'a Battlecruiser"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+    ["U.S.S. Enterprise-C"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Dismiss this ship and discard a card to gain 1 Glory, 1 Action Token and recall a non-Time Travel card from your Staging Area.",
+    },
+    ["U.S.S. Pasteur"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+    ["U.S.S. Reliant"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+    ["Voth Research Vessel"] = {
+      ["playActivation1"] = "Warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+    ["Xindi-Reptilian Battleship"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+
+    -- base game NZ location
+    ["Risa"] = {
+      ["playActivation1"] = "Beam a Person here.",
+      ["playActivation2"] = "Recall a card beamed here to gain 1 Latinum.",
+    },
+    ["Tulgana IV"] = {
+      ["playActivation1"] = "Spend 1 Latinum to send an Away Team to a Location where you have a Ship.",
+      ["playActivation2"] = "Discard a Cargo to draw a card from your deck or Discard pile.",
+    },
+    ["Ba'ku"] = {
+      ["playActivation1"] = "Beam your Duty Officer here to gain an Action Token.",
+      ["playActivation2"] = "Spend 1 Dilithium to recall one Person beamed here.",
+    },
+    ["Deep Space K-7"] = {
+      ["playActivation1"] = "Put a Directive or a Security on the top of your deck to gain an Action Token.",
+    },
+    ["Derna"] = {
+      ["playActivation1"] = "Beam a Weapon here from your hand or Discard pile.",
+      ["playActivation2"] = "Discard a Weapon to gain 1 Dilithium and return an Incident.",
+    },
+    ["Freecloud"] = {
+      ["playActivation1"] = "Discard a card to gain 1 Latinum.",
+      ["playActivation2"] = "Spend 2 Latinum to find any card.",
+    },
+    ["Kelvas Docks"] = {
+      ["playActivation1"] = "You may spend 3 Dilithium to free play a Ship. You may refresh a Ship.",
+    },
+    ["Verex III"] = {
+      ["playActivation1"] = "Log a PERSON to gain 2 Latinum.",
+    },
+
+    -- 2nd contact person
+    ["Chef Riker"] = {
+      ["playActivation1"] = "Free play a Ship with Starfleet.",
+      ["playActivation2"] = "Draw a Ship or Hologram or NX-01 from your Discard pile.",
+    },
+    ["D'Erika Tendi"] = {
+      ["playActivation1"] = string.format("[%s](Attack)[-] Spend 2 Latinum to send an Away Team to a neutral Location. You may remove an opponent Away Team from the same Location to gain 1 Glory.", attackColor),
+    },
+    ["Jennifer Sh'reyan"] = {
+      ["playActivation1"] = "Warp a Ship to draw 2 cards and discard one of them.",
+    },
+    ["Ma'ah"] = {
+      ["playActivation1"] = "Log a Klingon or Shady or Lower Decker from your hand or Discard pile to gain 1 Influence and draw 2 cards.",
+    },
+
+    -- 2nd contact cargo
+    ["Gift Box"] = {
+      ["playActivation1"] = "Beam a Cargo from your Discard pile here. Your opponent may draw a card.",
+    },
+
+    -- 2nd contact ship
+    ["Fesarius"] = {
+      ["playActivation1"] = "Warp this ship.",
+      ["playActivation2"] = "Spend 1 Dilithium to beam a card here.",
+      ["playActivation3"] = "Log a Person with Starfleet that is beamed here, discard a Directive, and exhaust another Ship to take the top Encounter to your Discard pile. Log this card.",
+    },
+
+    -- 2nd contact NZ location
+    ["Krulmuth-B"] = {
+      ["playActivation1"] = "Remove an Away Team from here to look at 2 random Crossover from the Reward pile. Take one of them and destroy the other (Place into Unused Object Bag at top of table).",
+    },
+    ["Orion"] = {
+      ["playActivation1"] = "Log a Ship from your hand or Discard pile to gain an action and 1 Dilithium or Latinum.",
+    },
+
+    -- TBG encounter
+    ["Gomtuu"] = {
+      ["playActivation1"] = "Warp this ship.",
+      ["playActivation2"] = string.format("[%s](Attack)[-] You may beam a card here. You may warp an opponent Ship from this ship's Location to another neutral Location.", attackColor),
+    },
+
+    -- TBG person
+    ["Degra"] = {
+      ["playActivation1"] = "Dismiss a Weapon and spend 4 Dilithium to take the top Encounter. Log this card.",
+    },
+    ["Jackabog"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to beam a Helmet here.",
+    },
+    ["Landru"] = {
+      ["playActivation1"] = "Beam a Person here.",
+    },
+    ["Petra Aberdeen"] = {
+      ["playActivation1"] = "Gain 1 Latinum. You may discard a Starfleet to gain 1 Latinum.",
+    },
+    ["Sarina Douglas"] = {
+      ["playActivation1"] = "Free play an Incident from your Discard pile.",
+    },
+
+    -- TBG cargo
+    ["EVA Suits"] = {
+      ["playActivation1"] = "Beam a Person from your hand or Discard pile here.",
+    },
+
+    -- TBG ship
+    ["D'Kora Marauder"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Spend 1 Latinum to send an Away Team to this ship's Location.",
+    },
+    ["D'Var"] = {
+      ["playActivation1"] = " Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Spend 1 Latinum to gain 1 Research for each Research you have in play (excluding beamed cards). If you gained 3+ Research, dismiss this card.",
+    },
+    ["Medusan Vessel"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+    ["Vor'cha Attack Cruiser"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+    ["Xindi-Aquatic Cruiser"] = {
+      ["playActivation1"] = "Spend 2 Dilithium to warp this ship. You may free play a card beamed here.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+
+    -- TBG NZ location
+    ["Denaxi Depot"] = {
+      ["playActivation1"] = "Spend 1 Latinum and discard a card to find a Ship, except in your Reserve deck.",
+    },
+    ["Tellar Prime"] = {
+      ["playActivation1"] = "Discard a card to find an Incident.",
+      ["playActivation2"] = "Put a card on the top of your deck to send an Away Team to a Location with Starfleet.",
+    },
+
+    -- promos, conspiracy & reinforce
+    ["U.S.S. Enterprise-B"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Log a Person from your hand or your Staging Area to draw a card and gain an action.",
+    },
+    ["U.S.S. Cabot"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "After exhausting this card, either: free play [i]Tribbles[/i] OR draw [i]Tribbles[/i] from your Discard pile.",
+    },
+
+    -- burnham deck
+    ["Michael Burnham"] = {
+      ["playActivation1"] = "Spend 3 Dilithium to gain an Ally and 1 Glory.",
+    },
+    ["U.S.S. Discovery-A"] = {
+      ["playActivation1"] = "Warp this ship, then refresh this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Promote a Person from your hand to Duty Officer.",
+    },
+    ["Cleveland Booker"] = {
+      ["playActivation1"] = "For each Creature you have in play either: draw a card OR gain 1 Glory.",
+    },
+    ["Joann Owosekun"] = {
+      ["playActivation1"] = "Exhaust a Ship to refresh its Location.",
+    },
+
+    -- koloth deck
+    ["Koloth, the Dahar Master"] = {
+      ["playActivation1"] = "Put a card on the top of your deck to send an Away Team to a Location. Your opponent may draw a card.",
+    },
+    ["I.K.S. Gr'Oth"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Promote a Person from your hand to Duty Officer.",
+    },
+    ["Korax"] = {
+      ["playActivation1"] = "Refresh the [i]I.K.S. Gr'oth[/i]. You may discard a card to refresh another Ship with Klingon.",
+    },
+    ["Qo'noS"] = {
+      ["playActivation1"] = "If you have an Away Team here, draw a card. If you have 3+ total Away Team on 1 or more controlled Location(s), draw a card. You may spend 2 Dilithium and discard a card to draw a card.",
+    },
+    ["I.K.S. Klothos"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+    ["Rura Penthe"] = {
+      ["playActivation1"] = "Beam a Person here.",
+    },
+    ["Boreth"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to draw the bottom card of your deck.",
+      ["playActivation2"] = "Spend 1 Dilithium and discard a card to recall a non-Time Travel card from your Staging Area.",
+    },
+
+    -- picard deck
+    ["U.S.S. Enterprise-D"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Promote a Person from your hand to Duty Officer.",
+    },
+    ["Will Riker"] = {
+      ["playActivation1"] = "Free play a Ship with Starfleet.",
+      ["playActivation2"] = "Draw a Ship from your Discard pile.",
+    },
+    ["Worf"] = {
+      ["playActivation1"] = string.format("[%s](Attack)[-] Discard a card to remove an opponent Away Team from a Location where you have an Away Team. If you do, gain 1 Glory.", attackColor),
+    },
+    ["Farpoint Station"] = {
+      ["playActivation1"] = "If you have an Away Team here, draw a card. If you have 3+ total Away Team on 1 or more controlled Location(s), draw a card.",
+    },
+    ["Data"] = {
+      ["playActivation1"] = "Log a card from your hand. If you do, gain 1 Research or Influence or Military for every 5 cards in your Log (rounded down).",
+    },
+    ["Daystrom Institute"] = {
+      ["playActivation1"] = "Find a Synthetic and gain 1 Glory.",
+      ["playActivation2"] = "Draw a card.",
+    },
+    ["Phasing Cloak"] = {
+      ["playActivation1"] = "Free play a Ship.",
+    },
+    ["U.S.S. Bozeman"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+
+    -- sela deck
+    ["I.R.W. Goraxus"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Promote a Person from your hand to Duty Officer.",
+    },
+    ["General Movar"] = {
+      ["playActivation1"] = " Take an Incident to gain 1 Dilithium. If you do, you may free play an Attack.",
+    },
+    ["Romulus"] = {
+      ["playActivation1"] = "If you have an Away Team here, draw a card. If you have 3+ total Away Team on 1 or more controlled Location(s), draw a card.",
+    },
+    ["I.R.W. Khazara"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+    ["I.R.W. Terix"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+    ["Tomalak"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to draw a Ship from your Discard pile.",
+      ["playActivation2"] = "Discard a card to draw an Attack from your Discard pile.",
+    },
+    ["Donatra"] = {
+      ["playActivation1"] = "Discard a card to warp a Ship.",
+      ["playActivation2"] = "Dismiss a Ship to draw 2 cards.",
+    },
+    ["I.R.W. Valdore"] = {
+      ["playActivation1"] = "You may spend 1 Dilithium to warp this ship and you may beam a card here.",
+      ["playActivation2"] = string.format("[%s](Attack)[-] Spend 2 Dilithium to draw a card and force your opponent to dismiss a Ship.", attackColor),
+    },
+    ["Scimitar"] = {
+      ["playActivation1"] = "Warp this ship.",
+      ["playActivation2"] = string.format("[%s](Attack)[-] Log an opponent Location. Gain 1 glory for each Skill icon the logged card has. Dismiss this ship.", attackColor),
+      ["playActivation3"] = "Take control of this ship's (neutral) Location.",
+    },
+
+    -- shran deck
+    ["Kumari"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Promote a Person from your hand to Duty Officer.",
+    },
+    ["Talas"] = {
+      ["playActivation1"] = "Discard 2 cards to send an Away Team to a Location.",
+    },
+    ["Tarah"] = {
+      ["playActivation1"] = "Discard a card to refresh a Ship and a Location. If the discarded card is Weapon, gain 2 Glory.",
+    },
+    ["Andoria"] = {
+      ["playActivation1"] = "If you have an Away Team here, draw a card. If you have 3+ total Away Team on 1 or more controlled Location(s), draw a card.",
+    },
+    ["Plasma Rifles"] = {
+      ["playActivation1"] = string.format("[%s](Attack)[-] Discard an Andorian to remove 1 opponent Away Team from a Location. If an Away Team was removed this way from a Location controlled by your opponent, they take an Incident. Dismiss this card.", attackColor),
+    },
+    ["Weytahn"] = {
+      ["playActivation1"] = "Discard a card with at least one of Weapon or Military or Military Focus to send an Away Team here and gain 1 Influence.",
+    },
+    ["Ambassador Thoris"] = {
+      ["playActivation1"] = "Gain 1 Glory for each Ally you have in play.",
+    },
+    ["Andorian Cruiser"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Send an Away Team to this ship's Location.",
+    },
+
+    -- sisko deck
+    ["Deep Space 9"] = {
+      ["playActivation1"] = "Discard a card to either: beam a card here OR recall a card beamed here.",
+      ["playActivation2"] = "Promote a Person from your hand to Duty Officer.",
+    },
+    ["Bajor"] = {
+      ["playActivation1"] = "If you have an Away Team here, draw a card. If you have 3+ total Away Team on 1 or more controlled Location, draw a card.",
+    },
+    ["The Wormhole"] = {
+      ["playActivation1"] = "Discard a Person to warp a Ship.",
+      ["playActivation2"] = "Discard a card to find an Anomaly.",
+    },
+    ["U.S.S. Rio Grande"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+    ["Odo"] = {
+      ["playActivation1"] = "Log a Person from your hand or Discard pile to draw a card. If the logged card is Shady, gain 1 Glory.",
+    },
+    ["U.S.S. Defiant"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+    ["Julian Bashir"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to choose 2 of the following: find a Person with Spy OR find a Person with Augment OR find [i]Miles O'Brien[/i] OR return an Incident.",
+    },
+    ["Worf, Son of Mogh"] = {
+      ["playActivation1"] = string.format("[%s](Attack)[-] Remove an opponent Away Team from a neutral Location. Gain 1 Glory.", attackColor),
+    },
+
+    -- archer deck
+    ["NX-01 Enterprise"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Spend 1 Dilithium to beam a card here.",
+      ["playActivation3"] = "Promote a Person from your hand to Duty Officer.",
+    },
+    ["\"Trip\" Tucker III"] = {
+      ["playActivation1"] = "Refresh a Ship or Cargo.",
+    },
+    ["T'Pol"] = {
+      ["playActivation1"] = "Discard a Human or Engineer to draw a Cargo or Directive from your Discard pile.",
+    },
+    ["Agent Daniels"] = {
+      ["playActivation1"] = "Discard a card to recall a non-Time Travel card from your Staging Area.",
+    },
+    ["Commander Shran"] = {
+      ["playActivation1"] = "Discard a card to send an Away Team to a Location. If the discarded card is a Directive or Cargo, gain 2 Dilithium.",
+    },
+    ["Ambassador Soval"] = {
+      ["playActivation1"] = "Discard a Human to draw 2 cards and gain 1 Research or Influence or Military.",
+    },
+    ["Admiral Forrest"] = {
+      ["playActivation1"] = "Discard a card to place 1 Glory on Earth.",
+    },
+    ["Automated Repair Station"] = {
+      ["playActivation1"] = "If you have a Ship here, draw a card.",
+    },
+
+    -- georgiou deck
+    ["Philippa Georgiou"] = {
+      ["playActivation1"] = "Remove an Away Team from a Location to return an Incident.",
+    },
+    ["U.S.S. Shenzhou"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Promote a Person from your hand to Duty Officer.",
+    },
+    ["Vulcan Science Academy"] = {
+      ["playActivation1"] = "If you have an Away Team here, draw a card. If you have 3+ total Away Team on 1 or more controlled Location(s), draw a card.",
+    },
+    ["Danby Connor"] = {
+      ["playActivation1"] = "Log a card from your hand to either draw a card OR gain 2 Dilithium.",
+    },
+    ["Kamran Gant"] = {
+      ["playActivation1"] = string.format("[%s](Attack)[-] You may refresh a Ship. For each Directive you have in play: you may remove an opponent Away Team from a Location where you have a Ship.", attackColor),
+    },
+    ["Kaminar"] = {
+      ["playActivation1"] = "You may spend 1 Dilithium to free play a Kelpian. If you have an Away Team here, draw a card.",
+      ["playActivation2"] = "Return an Incident.",
+    },
+    ["Red Angel"] = {
+      ["playActivation1"] = "Take an Incident to gain an Action Token. You may recall a non-Time Travel, non-Encounter card from your Staging Area.",
+    },
+    ["Thruster Pack"] = {
+      ["playActivation1"] = "Recall a Person beamed here.",
+      ["playActivation2"] = "Spend 1 Dilithium to beam a Person here from your hand or Discard pile. You may spend 1 Dilithium to refresh this card.",
+    },
+
+    -- khan deck
+    ["Khan Noonien Singh"] = {
+      ["playActivation1"] = "Discard an Incident to draw 2 cards and discard one of them.",
+    },
+    ["Ceti Alpha VI"] = {
+      ["playActivation1"] = "Gain 1 Latinum.",
+      ["playActivation2"] = "Spend 1 Dilithium from this card, spend 1 Latinum, and take an Incident to take control of a secured Location.",
+    },
+    ["Vacated Regula I"] = {
+      ["playActivation1"] = "Take an Incident and destroy a card from your Development pile to gain 1 Glory.",
+    },
+    ["Marla McGivers"] = {
+      ["playActivation1"] = "Refresh your Captain. You may discard a card to find an Augment.",
+    },
+    ["Mutara Nebula"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp a Ship from here, then send an Away Team to the Location you warped to.",
+    },
+    ["S.S. Botany Bay"] = {
+      ["playActivation1"] = "Beam a Person here.",
+    },
+    ["Hijacked U.S.S. Reliant"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Promote a Person from your hand to Duty Officer.",
+    },
+    ["Devastated Ceti Alpha V"] = {
+      ["playActivation1"] = "If you have no Away Team here, draw a card.",
+      ["playActivation2"] = "",
+      ["playActivation3"] = "",
+    },
+
+    -- kirk deck
+    ["James T. Kirk"] = {
+      ["playActivation1"] = "Put a card on the top of your deck to draw a Directive from your Discard pile.",
+    },
+    ["U.S.S. Enterprise [Refit]"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Promote a Person from your hand to Duty Officer.",
+    },
+    ["Levitation Boots"] = {
+      ["playActivation1"] = "Recall a Person beamed here.",
+      ["playActivation2"] = "Spend 1 Dilithium to beam a Person here from your hand or Discard pile.",
+      ["playActivation3"] = "",
+    },
+    ["Nyota Uhura"] = {
+      ["playActivation1"] = "For each Different Species you have in play, excluding cards with Starfleet (max 3 times): you may spend 1 Dilithium to gain 1 Glory.",
+    },
+    ["H.M.S. Bounty"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+    ["Montgomery \"Scotty\" Scott"] = {
+      ["playActivation1"] = "Gain 2 Dilithium. Refresh a Ship or Cargo.",
+    },
+    ["U.S.S. Enterprise-A"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Promote a PERSON from your hand to Duty Officer.",
+    },
+    ["U.S.S. Excelsior"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Spend 1 Dilithium to recall this ship.",
+    },
+
+    -- rebner deck
+    ["Rebner"] = {
+      ["playActivation1"] = "If your hand is empty, draw 2 cards.",
+      ["playActivation2"] = "Spend 1 Latinum to draw 2 cards.",
+    },
+    ["Mondor"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Promote a Person from your hand to Duty Officer.",
+    },
+    ["Pakled Decree"] = {
+      ["playActivation1"] = "If you have 15 Military, log a Weapon from your hand or Discard pile to draw 3 cards and discard one of them.",
+    },
+    ["Samaritan Snare"] = {
+      ["playActivation1"] = "Discard an Incident to gain 1 Military.",
+    },
+    ["Grebnedlog"] = {
+      ["playActivation1"] = "You may discard a Person to gain 3 Dilithium. If the discarded card is Engineer, gain 1 Glory. If [i]Grebnedlog[/i] is wearing a Helmet, gain 1 Military.",
+    },
+    ["Pakled Planet"] = {
+      ["playActivation1"] = "Beam a Helmet here to send an Away Team to a Location. If you have a Ship at that Location, gain 1 Glory.",
+      ["playActivation2"] = "Beam a Helmet to your Duty Officer.",
+    },
+    ["Ambassador Grubdin"] = {
+      ["playActivation1"] = "You may spend an action to gain 1 Military for each Helmet you have in play. If [i]Ambassador Grubdin[/i] is wearing a Helmet, gain 1 Latinum and 1 Glory.",
+    },
+    ["The Clumpship Pakled"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+    ["Reginod"] = {
+      ["playActivation1"] = "If Reginod is wearing a Helmet, you may draw a Person from your Discard pile. Regardless: You may warp a Ship and you may beam a card to a Ship.",
+    },
+    ["Jackabog's Clumpship"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+    ["Harpy"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a Helmet to dismiss this ship, then put this card on the top of your deck.",
+    },
+
+    -- soval deck
+    ["Soval"] = {
+      ["playActivation1"] = "Dismiss a Human to draw 2 cards.",
+    },
+    ["Vulcan (Soval)"] = {
+      ["playActivation1"] = "If you have an Away Team here, draw a card. If you have 3+ total Away Team on 1 or more controlled Location(s), draw a card.",
+    },
+    ["Stel"] = {
+      ["playActivation1"] = "You may exhaust a deployed Ship to recall a card beamed to it. You may free play an Incident.",
+    },
+    ["Muroc"] = {
+      ["playActivation1"] = "Free play a Ship with Vulcan.",
+      ["playActivation2"] = "Draw a Ship from your Discard pile.",
+    },
+    ["Sub-Commander T'Pol"] = {
+      ["playActivation1"] = "Discard a Human or Engineer to draw a Cargo or Directive from your Discard pile.",
+    },
+    ["Ti'Mur"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+    },
+    ["Seleya (D'Kyr)"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Promote a Person from your hand to Duty Officer.",
+    },
+    ["Paan Mokar"] = {
+      ["playActivation1"] = "Discard a card with at least one of Weapon or Military or Military Focus to send an Away Team here and gain 1 Influence.",
+    },
+    ["Mount Seleya"] = {
+      ["playActivation1"] = "Discard a Person to find any card.",
+    },
+
+    -- freeman deck
+    ["U.S.S. Cerritos"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Promote a Person from your hand to Duty Officer.",
+    },
+    ["Douglas Station"] = {
+      ["playActivation1"] = "If you have an Away Team here, draw a card. If you have 4+ Lower Decker in play, draw a card and gain 1 Dilithium.",
+    },
+    ["Jack Ransom"] = {
+      ["playActivation1"] = "Put a card on the top of your deck to gain a Person to your Discard pile.",
+    },
+    ["U.S.S. Carlsbad"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Promote a Person from your hand to Duty Officer.",
+    },
+    ["The Farm"] = {
+      ["playActivation1"] = "Beam a card here.",
+      ["playActivation2"] = "Log all cards beamed here. If at least 2 of the logged cards have Anomaly, take the top Encounter and log this card.",
+    },
+    ["Kayshon"] = {
+      ["playActivation1"] = "Send an Away Team to a Location. Repeat this for each Spy your opponent has in play.",
+    },
+    ["Shaxs"] = {
+      ["playActivation1"] = string.format("[%s](Attack)[-] Remove an opponent Away Team from a neutral Location to gain 1 Glory.", attackColor),
+    },
+
+    -- pike deck
+    ["Starbase One"] = {
+      ["playActivation1"] = "For every 2 Ship you have in play, draw a card (max 3 cards).",
+      ["playActivation2"] = "Promote a Person from your hand to Duty Officer.",
+    },
+    ["Knowledge of a Terrible Fate"] = {
+      ["playActivation1"] = "Log an Encounter (from your hand) to destroy this card.",
+    },
+    ["U.S.S. Enterprise"] = {
+      ["playActivation1"] = " Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Promote a Person from your hand to Duty Officer to refresh [i]Improbable, Unstoppable, Sensational[/i].",
+    },
+    ["Lt. Spock"] = {
+      ["playActivation1"] = "Discard a Research or Research Focus to find any card, except in your Reserve deck.",
+    },
+    ["La'an Noonien Singh"] = {
+      ["playActivation1"] = "Beam a card to a Ship.",
+    },
+    ["Lt. Scott"] = {
+      ["playActivation1"] = "Gain 2 Dilithium. Then, either find a Ship OR refresh a Ship.",
+      ["playActivation2"] = "Discard a card to refresh a Location.",
+    },
+    ["Marie Batel"] = {
+      ["playActivation1"] = "Refresh [i]Improbable, Unstoppable, Sensational[/i].",
+    },
+
+    -- riker deck
+    ["William T. Riker"] = {
+      ["playActivation1"] = "Put a card on the top of your deck to draw a card of the same suit from your Discard pile.",
+    },
+    ["U.S.S. Titan"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Promote a Person from your hand to Duty Officer.",
+    },
+    ["Deanna Troi-Riker"] = {
+      ["playActivation1"] = "Refresh your Captain.",
+    },
+    ["Starbase 25"] = {
+      ["playActivation1"] = "If you have an Away Team here, draw a card. If you have 3+ total Away Team on 1 or more controlled Location, draw a card.",
+    },
+    ["The Riker Maneuver"] = {
+      ["playActivation1"] = "Choose up to 2 of the following: gain 2 Latinum OR free play a Directive or Person OR promote a Person from your hand to Duty Officer. Dismiss this card.",
+    },
+    ["Chief Engineer (U.S.S. Titan)"] = {
+      ["playActivation1"] = "Discard a card to discard the top card of your draw deck and gain 1 Glory.",
+    },
+    ["Nepenthe"] = {
+      ["playActivation1"] = "Log a card from your hand or Discard pile. You may return an Incident from the same place. If the logged card is Android, gain 3 Glory.",
+    },
+    ["U.S.S. Zheng He"] = {
+      ["playActivation1"] = "Spend 1 Dilithium to warp this ship.",
+      ["playActivation2"] = "Discard a card to beam a card here.",
+      ["playActivation3"] = "Spend 1 Dilithium to recall this ship.",
+    }
+  }
+  return activationText[cardName][index]
+
+end
+
+
+function getReaction(cardObj, opIndex)
+  -- handles detection and return of report text of reaction operations
+
+  local cardName = cardObj.getName()
+  local attackColor = Color.fromString("Red"):toHex()
+  local index = "playReaction" .. tostring(opIndex)
+
+  local playReactionText = {
+    -- base game encounter
+    ["Lwaxana Troi"] = {
+      ["playReaction1"] = "After putting a Person into play, draw a card.",
+    },
+    ["Mirok"] = {
+      ["playReaction1"] = "After putting a Cargo into play, draw a card.",
+    },
+    ["Moriarty"] = {
+      ["playReaction1"] = "After putting a Synthetic into play, gain 1 Glory. After putting a Hologram into play, draw a card. If the card you put in play has both traits, gain both rewards.",
+    },
+    ["Peanut Hamper"] = {
+      ["playReaction1"] = "After putting a Shady into play, put this card on the top of your deck and gain 1 Latinum.",
+    },
+    ["Phlox"] = {
+      ["playReaction1"] = "After sending an Away Team to a neutral Location, spend 1 Dilithium to gain 1 Research.",
+    },
+    ["Riva"] = {
+      ["playReaction1"] = "When you would be attacked, discard a card to ignore the negative effect. Gain 1 Glory for each trait the discarded card shares with [i]Riva[/i].",
+    },
+    ["Rom"] = {
+      ["playReaction1"] = "After gaining Latinum, you may draw a card from your Draw deck and/or a card from your Discard pile.",
+    },
+    ["Admiral Jarok"] = {
+      ["playReaction1"] = "After you are attacked, gain 1 Glory. Then, you may log a card from your hand or Discard pile.",
+    },
+    ["Ambassador Kamarag"] = {
+      ["playReaction1"] = "After your opponent takes control of a Location, return an Incident from your hand or Discard pile.",
+    },
+    ["Bruce Maddox"] = {
+      ["playReaction1"] = " After putting an Android into play, draw a card and gain 2 Glory.",
+    },
+    ["Captain Dorg"] = {
+      ["playReaction1"] = "After putting a Shady into play, dismiss a Klingon (can be this card) to gain an Action Token.",
+      ["playReaction2"] = string.format("[%s](Attack)[-] After putting a Klingon or Pakled into play, remove up to 2 opponent Away Teams from the same Location. Gain 1 Glory for each Away Team removed this way.", attackColor),
+    },
+
+    -- base game cargo
+    ["Cloaking Device"] = {
+      ["playReaction1"] = "After deploying a Ship without Cloak, that Ship is additionally treated as Cloak for the remainder of your turn, and you may discard a card to send an Away Team to a Location, ignoring any opponent Ship.",
+    },
+    ["Horta"] = {
+      ["playReaction1"] = "After gaining Dilithium, gain 2 additional Dilithium.",
+    },
+    ["Phasers"] = {
+      ["playReaction1"] = "When you would be forced by an attack to remove 1 or more Away Teams, dismiss this card to ignore the negative effect.",
+    },
+
+    -- base game ship
+    ["Kazon Raider"] = {
+      ["playReaction1"] = "After gaining a card to the top of your deck, spend 1 latinum to draw a card and refresh this card.",
+    },
+
+    -- 2nd contact person
+    ["Ambassador Spock"] = {
+      ["playReaction1"] = "After putting an Encounter into play, gain 1 Research or Influence or Military.",
+    },
+    ["Barry Waddle"] = {
+      ["playReaction1"] = "After spending latinum, refresh another card that shares a trait with this card.",
+    },
+    ["Chancellor Gowron"] = {
+      ["playReaction1"] = "After taking control of a Location, choose 2 of the following: draw a card OR junk a card from the Market OR discard a card to gain 1 Glory.",
+    },
+    ["Lieutenant Dax"] = {
+      ["playReaction1"] = "When you would gain a card, scan 2 of the same suit instead, then draw a card.",
+    },
+    ["K'ranch"] = {
+      ["playReaction1"] = "After gaining a card, log the gained card to gain 1 Dilithium and draw a card.",
+    },
+    ["Parmen"] = {
+      ["playReaction1"] = "After gaining a Person, except during your Resupply Step, discard a card to free play the gained card.",
+    },
+
+    -- 2nd contact cargo
+    ["Gift Box"] = {
+      ["playReaction1"] = "After putting a Betazoid into play (including this card), gain 1 Latinum.",
+    },
+    ["Moopsy"] = {
+      ["playReaction1"] = "After you or your opponent logs a Person, draw a card.",
+    },
+
+    -- 2nd contact ship
+    ["R.I.S. Talvath"] = {
+      ["playReaction1"] = "After you or your opponent puts an Anomaly or Communication or Time Travel into play, place 1 Dilithium on this card and you may warp this ship.",
+    },
+
+    -- TBG person
+    ["Ambassador Gral"] = {
+      ["playReaction1"] = string.format("[%s](Attack)[-] When you would return an Incident, give it to your opponent instead.", attackColor),
+    },
+    ["Commander Tysess"] = {
+      ["playReaction1"] = "After sending an Away Team to a controlled Location, spend 1 Dilithium to trigger that card's control operation.",
+    },
+    ["Malcolm Reed"] = {
+      ["playReaction1"] = "After your opponent deploys a Ship, either find a Weapon OR send an Away Team to a Location where you have an Away Team.",
+    },
+    ["Malik"] = {
+      ["playReaction1"] = "After putting an Attack into play (including this), discard a card to gain an Action Token.",
+    },
+    ["Petra Aberdeen"] = {
+      ["playReaction1"] = "After putting a Cargo or Alien or Ancient into play, spend 1 Latinum to gain 2 Research.",
+    },
+    ["President Rillak"] = {
+      ["playReaction1"] = "After playing Utilize or Inspire, discard an Ally to gain an action.",
+    },
+    ["Soji Asha"] = {
+      ["playReaction1"] = "After putting a Synthetic into play (including this card), log a card from your hand to draw a card for every 5 cards in your Log.",
+    },
+    ["Travis Mayweather"] = {
+      ["playReaction1"] = " After deploying a Ship, take an Incident to gain an action, and you may warp the deployed Ship.",
+    },
+
+    -- TBG cargo
+    ["Augmentation Plague"] = {
+      ["playReaction1"] = string.format("[%s](Attack)[-] After your opponent puts a Klingon into play force them to discard a card.", attackColor),
+      ["playReaction2"] = "After putting a Klingon into play, gain 1 Glory.",
+    },
+    ["Computer Virus"] = {
+      ["playReaction1"] =  string.format("[%s](Attack)[-] After your opponent warps a Ship during their Action Step, recall this card.", attackColor),
+    },
+    ["EVA Suits"] = {
+      ["playReaction1"] = "After warping a Ship, send an Away Team to the Location you warped to for each Person beamed here. Dismiss this card.",
+    },
+
+    -- TBG ally
+    ["Kaelon II Science Ministry"] = {
+      ["playReaction1"] = "After logging a Person or Directive, you may gain 1 Dilithium from here and you may draw a card from your Discard pile.",
+    },
+
+    -- promos, conspiracy & reinforce
+    ["Starbase 80"] = {
+      ["playReaction1"] = "When gaining a card, log a card beamed here to include the Junk.",
+    },
+    ["Golden Statue of O'Brien"] = {
+      ["playReaction1"] = "After logging an Engineer, recall a beamed card.",
+    },
+
+    -- burnham deck
+    ["Sylvia Tilly"] = {
+      ["playReaction1"] = "After gaining a Person, discard an Incident to send an Away Team to a Location.",
+    },
+    ["Hugh Culber"] = {
+      ["playReaction1"] = "After taking an Incident, discard a Person or Directive to return it and gain 1 Research.",
+    },
+    ["Book's Ship"] = {
+      ["playReaction1"] = "When an attack would dismiss your Duty Officer, dismiss a card beamed here to ignore the effect.",
+    },
+    ["Adira Tal"] = {
+      ["playReaction1"] = "When you would gain a card, scan 2 of the same suit instead and gain 1 Glory.",
+    },
+
+    -- koloth deck
+    ["Kang, the Dahar Master"] = {
+      ["playReaction1"] = "After gaining at least 1 Influence, gain 1 Influence and 1 Glory.",
+      ["playReaction2"] = "",
+      ["playReaction3"] = "",
+    },
+    ["Kor, the Dahar Master"] = {
+      ["playReaction1"] = "After gaining at least 1 Influence, gain 1 Military and you may warp a Ship.",
+    },
+    ["Prototype Cloak"] = {
+      ["playReaction1"] = "After deploying a Ship without Cloak, that Ship is additionally treated as Cloak for the remainder of your turn. Then, you may discard a card to send an Away Team to a Location, ignoring any opponent Ship.",
+    },
+
+    -- picard deck
+    ["Jean-Luc Picard"] = {
+      ["playReaction1"] = "After gaining an Ally, discard a card to gain 1 Glory and you may beam the gained card to a Ship.",
+    },
+    ["Beverly Crusher"] = {
+      ["playReaction1"] = "After taking an Incident, discard a different card to return the Incident and gain 1 Glory.",
+    },
+    ["Geordi La Forge"] = {
+      ["playReaction1"] = "After gaining a Ship, gain 1 Glory and you may immediately free play it.",
+    },
+
+    -- sela deck
+    ["Sela"] = {
+      ["playReaction1"] = "After attacking your opponent, gain 1 Dilithium or Latinum.",
+    },
+    ["Sub-Commander T'Rul"] = {
+      ["playReaction1"] = "After putting a Cloak into play, gain 1 Latinum.",
+    },
+    ["Proconsul Neral"] = {
+      ["playReaction1"] = "After you take control of a Location, discard a card to gain an Action Token.",
+    },
+
+    -- shran deck
+    ["You Owe Me One"] = {
+      ["playReaction1"] = "After you or your opponent plays Utilize, choose: draw a card and your opponent gains 2 Dilithium OR gain 2 Dilithium and your opponent may draw a card.",
+    },
+
+    -- sisko deck
+    ["Benjamin Sisko"] = {
+      ["playReaction1"] = "After you take control of a Location, gain 2 Dilithium.",
+    },
+    ["Jadzia Dax"] = {
+      ["playReaction1"] = "When you would gain a card, scan 2 of the same suit instead.",
+    },
+    ["Kira Nerys"] = {
+      ["playReaction1"] = "After your opponent takes control of a Location, draw a card and gain 1 Dilithium.",
+    },
+    ["Quark"] = {
+      ["playReaction1"] = "After resolving an operation with a Latinum cost, gain 1 Glory.",
+    },
+    ["Starbase 375"] = {
+      ["playReaction1"] = "After putting a Ship into play, free play a Person.",
+    },
+    ["Worf, Son of Mogh"] = {
+      ["playReaction1"] = "When you would be attacked, dismiss this card to ignore the negative effect.",
+    },
+    ["Self-Replicating Mines"] = {
+      ["playReaction1"] = "After your opponent gains Influence or Military, recall this card.",
+    },
+
+    -- archer deck
+    ["Earth"] = {
+      ["playReaction1"] = "After discarding a Directive during your Action Step, place 1 Dilithium or Latinum here.",
+    },
+    ["\"Trip\" Tucker III"] = {
+      ["playReaction1"] = "After dismissing a Ship, discard a Directive to draw it from your Discard pile.",
+    },
+    ["Automated Repair Station"] = {
+      ["playReaction1"] = "After deploying or warping a Ship, log a Person from your hand or Discard pile to draw a card, gain 1 Dilithium, and refresh this card.",
+    },
+
+    -- georgiou deck
+    ["Lt. Detmer"] = {
+      ["playReaction1"] = "After warping a Ship, draw a card.",
+    },
+    ["Binary Stars Comms Relay"] = {
+      ["playReaction1"] = "After deploying a Ship, gain 1 Glory.",
+    },
+    ["An Old Telescope"] = {
+      ["playReaction1"] = "After gaining Research, gain 1 Glory.",
+    },
+
+    -- khan deck
+    ["Wrathful Khan"] = {
+      ["playReaction1"] = "After your opponent returns an Incident, discard a card to gain 1 Dilithium or Latinum.",
+    },
+    ["Vacated Regula I"] = {
+      ["playReaction1"] = "After putting a Scientist into play, return an Incident from your hand or Discard pile.",
+    },
+    ["Wajahut"] = {
+      ["playReaction1"] = "After you take control of a Location, discard a card to either: gain an Action Token OR spend an Action Token to enlist a Development and dismiss this card.",
+    },
+    ["Joachim"] = {
+      ["playReaction1"] = "After deploying a Ship, discard a card to send an Away Team to a neutral Location.",
+    },
+    ["Cpt. Terrell"] = {
+      ["playReaction1"] = "After taking an Incident, spend 1 Dilithium to send an Away Team to a Location where you have a Ship.",
+    },
+    ["Cmdr. Chekov"] = {
+      ["playReaction1"] = "After warping a Ship to a neutral Location, discard a Person to send an Away Team to the same Location and gain 1 Glory.",
+    },
+    ["Devastated Ceti Alpha V"] = {
+      ["playReaction1"] = "After putting an Augment into play, draw a card and you may enlist a Development.",
+    },
+
+    -- kirk deck
+    ["James T. Kirk"] = {
+      ["playReaction1"] = "After putting a Klingon into play, discard a card to gain 1 Military.",
+    },
+    ["Leonard McCoy"] = {
+      ["playReaction1"] = "After discarding or logging a Person during your Action Step, free play an Incident from your hand or Discard pile.",
+    },
+    ["Captain Spock"] = {
+      ["playReaction1"] = "After gaining a Person, spend 1 Dilithium to send an Away Team to a Location where you have a Ship. If you do, gain 1 Glory.",
+    },
+    ["Pavel Chekov"] = {
+      ["playReaction1"] = "After warping a Ship to a neutral Location, discard a Person to send an Away Team to the same Location, and gain 1 Glory.",
+    },
+    ["Hikaru Sulu"] = {
+      ["playReaction1"] = "When you would be attacked, exhaust a Ship to ignore the negative effect.",
+    },
+
+    -- rebner deck
+    ["Rumdar"] = {
+      ["playReaction1"] = "After drawing cards due to [i]Rebner's[/i] operations, draw 2 cards. If Rumdar is wearing a Helmet, you may take an Incident to enlist a Development.",
+    },
+
+    -- soval deck
+    ["Vulcan Science Directorate"] = {
+      ["playReaction1"] = "After putting an Anomaly or a Scientist into play, gain 2 Dilithium or 1 Glory.",
+    },
+    ["V'Lar"] = {
+      ["playReaction1"] = "After putting an Ally into play, draw a card, gain 1 Glory and 1 Latinum.",
+    },
+
+    -- freeman deck
+    ["Carol Freeman"] = {
+      ["playReaction1"] = "After gaining Research or Influence pr Military, discard a Person to send an Away Team to the location of the [i]U.S.S. Cerritos[/i].",
+    },
+    ["T'Ana"] = {
+      ["playReaction1"] = "After taking an Incident, return it, then put this card on the bottom of your deck and gain an Action Token.",
+    },
+    ["T'Lyn"] = {
+      ["playReaction1"] = "After gaining a card, except during your Resupply Step, gain 1 Research and you may spend 1 Dilithium to free play the gained card.",
+    },
+    ["T88 Diagnostic Tool"] = {
+      ["playReaction1"] = "When you would gain a card, scan 2 of the same suit instead.",
+    },
+
+    -- pike deck
+    ["Christopher Pike"] = {
+      ["playReaction1"] = "After putting a Time Travel into play, log an Incident (from your hand) to gain 1 Glory.",
+    },
+    ["Improbable, Unstoppable, Sensational"] = {
+      ["playReaction1"] = "After you put a card with one or more Skill icons into play (excluding beaming), gain 1 on the Specialty track matching one of those icons.",
+    },
+    ["Knowledge of a Terrible Fate"] = {
+      ["playReaction1"] = "After taking an Incident, draw 2 cards.",
+    },
+    ["Joseph M'Benga"] = {
+      ["playReaction1"] = "After discarding a card with Military or Any Skill during your Action step, return an Incident from your hand or Discard pile.",
+    },
+    ["Cadet Uhura"] = {
+      ["playReaction1"] = "After exhausting [i]Improbable, Unstoppable, Sensational[/i], discard a card to draw a card from your Discard pile.",
+    },
+    ["Erica Ortegas"] = {
+      ["playReaction1"] = "After deploying a Ship, you may discard a card to gain 1 Glory, and you may discard a card to find [i]Hit it[/i].",
+    },
+  }
+  return playReactionText[cardName][index]
+
+end
+
+
+function getSupport(cardObj, opIndex)
+  -- handles detection and return of report text of support operations
+  local cardName = cardObj.getName()
+  local index = "playSupport" .. tostring(opIndex)
+
+  log("found cardName: " .. cardName)
+  log("found index: " .. index)
+
+  local supportText = {
+    ["Ensign Boimler"] = {
+      ["playSupport1"] = "After you junk or promote a Person, duplicate a play operation of that card.",
+    },
+    ["Ensign Mariner"] = {
+      ["playSupport1"] = "After you exhaust a Duty Officer, refresh it and you may send an Away Team to a Location where you have a Ship.",
+    },
+    ["Jennifer Sh'reyan"] = {
+      ["playSupport1"] = "After gaining a Person, draw a card and you may send an Away Team to a controlled Location.",
+    },
+    ["Ma'ah"] = {
+      ["playSupport1"] = "After putting a Klingon into play, gain a Ship. Then, either spend an action and discard an Incident OR take an Incident.",
+    },
+    ["Nova Fleet"] = {
+      ["playSupport1"] = "When you junk a card from the Market, gain it to your hand instead. If your opponent has a Lower Decker in play, take an Incident.",
+    },
+    ["Brad Boimler, Lt. JG"] = {
+      ["playSupport1"] = "After promoting a Person, duplicate a play operation of that card.",
+    },
+    ["William Boimler, Lt. JG"] = {
+      ["playSupport1"] = "After exhausting your Captain, discard a card to scan 1 of Cargo. If the gained card is Beverage, draw it.",
+    },
+    ["Bradward Boimler"] = {
+      ["playSupport1"] = "After promoting a Person, duplicate a play operation of that card.",
+    },
+    ["Beckett Mariner"] = {
+      ["playSupport1"] = "After putting an Ally into play, gain 1 Latinum and send an Away Team to a Location where you have a Ship.",
+    },
+    ["Samanthan Rutherford"] = {
+      ["playSupport1"] = "After exhausting a Ship, refresh it and you may beam this card to it. If you have another Synthetic in play, gain 1 Glory.",
+    },
+    ["D'Vana Tendi"] = {
+      ["playSupport1"] = "After promoting a Lower Decker, gain 2 Research or Influence or Military and you may promote this card to Duty Officer.",
+    },
+    ["T'Lyn"] = {
+      ["playSupport1"] = "After logging a card, either gain 2 Dilithium OR draw a card from your Discard pile. Then, you may either free play a Lower Decker OR promote a Lower Decker to Duty Officer from your hand or the Staging Area (can be this card).",
+    },
+    ["Drones of Cube 90182"] = {
+      ["playSupport1"] = "After putting a Borg into play, spend 1 Dilithium to draw a card and gain 2 Research.",
+      ["playSupport2"] = "After assimilating a card, gain 1 Borg Collective and draw 2 cards.",
+    },
+  }
+  return supportText[cardName][index]
+
 end

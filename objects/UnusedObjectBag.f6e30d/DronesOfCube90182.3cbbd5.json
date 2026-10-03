@@ -5,27 +5,27 @@
     "z": 0
   },
   "Autoraise": true,
-  "CardID": 18704,
+  "CardID": 79200,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
   "CustomDeck": {
-    "187": {
+    "792": {
       "BackIsHidden": true,
       "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/25438728964915679/63CA7F37C6D72F3F0C96EDCA63F4E4C522F80463/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/17222648268448340498/8E47E9D9E5CB53B1C3DF338B45F7ADAB5BC244F7/",
-      "NumHeight": 3,
-      "NumWidth": 7,
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/16737079701902139242/BA177B4017940062036712E9319FCB686B92BBD8/",
+      "NumHeight": 1,
+      "NumWidth": 1,
       "Type": 0,
       "UniqueBack": false
     }
   },
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "VP=2",
-  "GUID": "2a315e",
+  "GMNotes": "VP=3",
+  "GUID": "3cbbd5",
   "Grid": true,
   "GridProjection": false,
   "Hands": true,
@@ -36,30 +36,29 @@
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "Card",
-  "Nickname": "Moopsy",
+  "Name": "CardCustom",
+  "Nickname": "Drones Of Cube 90182",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
     "marketCard",
-    "deployAction",
-    "playReaction",
-    "resupply",
+    "playNoAction",
+    "playSupport",
+    "playSupport2",
     "snap_card",
-    "suit_cargo",
-    "trait_creature",
-    "trait_attack",
-    "trait_ongoing"
+    "suit_ally",
+    "trait_borg",
+    "trait_lowerdecker"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": -17.569,
-    "posY": 0.897,
-    "posZ": 8.44,
+    "posX": -22.967,
+    "posY": 10.129,
+    "posZ": 34.468,
     "rotX": 0,
     "rotY": 180,
-    "rotZ": 359,
+    "rotZ": 0,
     "scaleX": 1.75,
     "scaleY": 1,
     "scaleZ": 1.75

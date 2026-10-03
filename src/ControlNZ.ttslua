@@ -60,7 +60,7 @@ function controlNZLocation(buttonObj, _, _)
       broadcastToAll(broadcastStr, "White")
 
       local controlText = getControlText(controlledLocation)
-      if controlText ~= nil then
+      if controlText ~= nil and not isBot then
         local controlStr = string.format("%s Control Effect: %s", controlledLocation, controlText)
         Wait.time(function()
 

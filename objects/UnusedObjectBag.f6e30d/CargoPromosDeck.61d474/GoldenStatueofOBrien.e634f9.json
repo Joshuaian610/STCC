@@ -42,7 +42,8 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "playNoAction",
+    "deployNoAction",
+    "marketCard",
     "playReaction",
     "snap_card",
     "suit_cargo",

@@ -42,6 +42,8 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "marketCard",
+    "playAction",
     "skill_x2_wildcard",
     "snap_card",
     "suit_encounter",
@@ -53,9 +55,9 @@
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 1.947,
-    "posY": 1.985,
-    "posZ": -74.224,
+    "posX": -14.613,
+    "posY": 15.672,
+    "posZ": 37.668,
     "rotX": 0,
     "rotY": 180,
     "rotZ": 0,

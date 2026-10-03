@@ -42,6 +42,7 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "playActivation",
     "skill_influence",
     "snap_card",
     "suit_location",

@@ -499,6 +499,10 @@
     {
       "displayed": "playNoAction2",
       "normalized": "playnoaction2"
+    },
+    {
+      "displayed": "playSupport2",
+      "normalized": "playsupport2"
     }
   ]
 }
