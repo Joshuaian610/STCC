@@ -165,6 +165,20 @@ function loadContextActions(zone, cardObj)
         cardObj.addContextMenuItem("Play 3rd (No Action)", playNoAction3)
       end
 
+      if cardObj.hasTag("playAction") or cardObj.hasTag("playAction2") or cardObj.hasTag("playAction3") or
+         cardObj.hasTag("playNoAction") or cardObj.hasTag("playNoAction2") or cardObj.hasTag("playNoAction3") then
+        cardObj.addContextMenuItem("Free Play", playFreeAction)
+      end
+
+      if cardObj.hasTag("deployAction") or cardObj.hasTag("deployAction2") or cardObj.hasTag("deployAction3") or
+         cardObj.hasTag("deployNoAction") or cardObj.hasTag("deployNoAction2") or cardObj.hasTag("deployNoAction3") then
+        if cardObj.hasTag("suit_location") then
+          cardObj.addContextMenuItem("Free Control", playFreeAction)
+        elseif not cardObj.hasTag("suit_location") then
+          cardObj.addContextMenuItem("Free Deploy", playFreeAction)
+        end
+      end
+
       if cardObj.hasTag("deployAction") then
         if cardObj.hasTag("suit_location") then
           cardObj.addContextMenuItem("Control (Action)", deployAction)
@@ -482,10 +496,11 @@ function loadContextActions(zone, cardObj)
 end
 
 
-function returnMarketCardViaContext(_, _, cardObj)
+function returnMarketCardViaContext(clickerColor, _, cardObj)
   -- handles the return of a market card, same as old pads, via right click context menu
 
   local playerColor = getActualPlayerColor(cardObj)
+  if playerColor == nil then playerColor = clickerColor end
   if playerColor ~= "Blue" and playerColor ~= "Red" then return end
 
   local cardSuit = (cardObj.hasTag("suit_encounter") and "Encounter") or
@@ -569,11 +584,11 @@ function returnMarketCardViaContext(_, _, cardObj)
 end
 
 
-function logCardViaContext(_, _, cardObj)
+function logCardViaContext(clickerColor, _, cardObj)
   -- handles the "log" action of a card
 
   local playerColor = getActualPlayerColor(cardObj)
-
+  if playerColor == niil then playerColor = clickerColor end
   if playerColor ~= "Blue" and playerColor ~= "Red" then return end
 
   local bagLog = getObjectbyNameAndNotes("Captain's Log", playerColor)
@@ -731,7 +746,7 @@ function placeStagingCard(actionRequired, opType, cardObj, opIndex)
 
   -- broadcast
   local playerStr = getPlayerStr(playerColor)
-  if opType ~= "Support" then
+  if opType ~= "Support" and opType ~= "Free" then
     local actionText = actionRequired == true and getPlayAction(cardObj, opIndex) or getPlayNoAction(cardObj, opIndex)
     local broadcastStr = actionRequired == true and string.format("%s has spent an Action to perform %s Play Operation%s", playerStr, cardObj.getName(), actionText ~= nil and ": " .. actionText or ".") or
                                                     string.format("%s performs %s Actionless Play Operation%s", playerStr, cardObj.getName(), actionText ~= nil and ": " .. actionText or ".")
@@ -739,6 +754,10 @@ function placeStagingCard(actionRequired, opType, cardObj, opIndex)
   elseif opType == "Support" then
     local actionText = getSupport(cardObj, opIndex)
     local broadcastStr = string.format("%s performs %s Support Operation%s", playerStr, cardObj.getName(), actionText ~= nil and ": " .. actionText or ".")
+
+    broadcastToAll(broadcastStr, "White")
+  elseif opType == "Free" then
+    local broadcastStr = string.format("%s performs %s Free Play Operation.", playerStr, cardObj.getName())
 
     broadcastToAll(broadcastStr, "White")
   end
@@ -1071,6 +1090,14 @@ function playNoAction(_, _, cardObj)
   -- handles the broadcast report of selected card's play not requiring an action
 
   placeStagingCard(false, "Play", cardObj, 1)
+
+end
+
+
+function playFreeAction(_, _, cardObj)
+  -- handles the broadcast report of selected card's free play
+
+  placeStagingCard(false, "Free", cardObj, 1)
 
 end
 
@@ -4443,9 +4470,6 @@ function getSupport(cardObj, opIndex)
   -- handles detection and return of report text of support operations
   local cardName = cardObj.getName()
   local index = "playSupport" .. tostring(opIndex)
-
-  log("found cardName: " .. cardName)
-  log("found index: " .. index)
 
   local supportText = {
     ["Ensign Boimler"] = {
