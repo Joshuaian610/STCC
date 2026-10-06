@@ -1860,22 +1860,23 @@ function getOperativeIcon(cardObj)
   elseif captainName == "Khan" then
     -- need to determine if khan in exile still in play
     local khanInExile = getKhanInExile()
+
     if khanInExile then
       if cardObj.hasTag("trait_augment") then
         return "Augment", "Send an Away Team to a neutral [b]unmarked[/b] > Augment or Scientist > Location. Take an Incident to gain a Person."
-      elseif cardObj.hasTag("trait_incident") then
+      elseif cardObj.hasTag("suit_incident") then
         return "Incident", "Discard the top card of the Bot deck. If the discarded card shares a non-Human trait with [b]your[/b] Captain, gain 1 Glory. Return this card."
-      elseif cardObj.hasTag("trait_ship") then
+      elseif cardObj.hasTag("suit_ship") then
         return "Ship", "Junk the most valuable card in the Market (ignoring any with tokens). Send an Away Team to a neutral [b]unmarked[/b] > Location."
-      elseif cardObj.hasTag("trait_directive") then
+      elseif cardObj.hasTag("suit_directive") then
         return "Directive", "Junk the most valuable card in the Market (ignoring any with tokens). Gain an [b]unmarked[/b] > Person or Cargo or Ship or Ally from the Junk."
-      elseif cardObj.hasTag("trait_person") then
+      elseif cardObj.hasTag("suit_person") then
         return "Person", "Discard the top card of the Bot deck. If this card is a Location taken during the Control Step, gain an Incident, and spend 1 Dilithium, if able. If this card is a Person, gain 1 Glory [b]from the supply[/b] (** Drag Glory Token from Central Bag, drop into Bot Glory Counter bag)."
-      elseif cardObj.hasTag("trait_cargo") then
+      elseif cardObj.hasTag("suit_cargo") then
         return "Cargo", "Discard the top card of the Bot deck. If this card is a Location taken during the Control Step, gain an Incident, and spend 1 Dilithium, if able. If this card is a Person, gain 1 Glory [b]from the supply[/b] (** Drag Glory Token from Central Bag, drop into Bot Glory Counter bag)."
-      elseif cardObj.hasTag("trait_ally") then
+      elseif cardObj.hasTag("suit_ally") then
         return "Ally", "Discard the top card of the Bot deck. If this card is a Location taken during the Control Step, gain an Incident, and spend 1 Dilithium, if able. If this card is a Person, gain 1 Glory [b]from the supply[/b] (** Drag Glory Token from Central Bag, drop into Bot Glory Counter bag)."
-      elseif cardObj.hasTag("trait_location") then
+      elseif cardObj.hasTag("suit_location") then
         return "Location", "Discard the top card of the Bot deck. If this card is a Location taken during the Control Step, gain an Incident, and spend 1 Dilithium, if able. If this card is a Person, gain 1 Glory [b]from the supply[/b] (** Drag Glory Token from Central Bag, drop into Bot Glory Counter bag)."
       end
 

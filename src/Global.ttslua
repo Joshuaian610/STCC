@@ -334,3 +334,65 @@ function onObjectLeaveZone(zone, leaveObj)
     loadDefaultContextActions(leaveObj)
   end
 end
+
+
+function onObjectRotate(object, _, _, playerColor, _, _)
+  -- handle khan captain card rename on flip
+  if object.getName() == "Khan Noonien Singh" or object.getName() == "Wrathful Khan" then
+    local actualPlayerColor = getActualPlayerColor(object) or playerColor
+    local playerStr = getPlayerStr(actualPlayerColor)
+    Wait.time(function()
+
+      local broadcastStr
+      if object.is_face_down then
+        object.setName("Wrathful Khan")
+        broadcastStr = string.format("%s has flipped to Wrathful Khan.", playerStr)
+      else
+        object.setName("Khan Noonien Singh")
+        broadcastStr = string.format("%s has flipped to Khan Noonien Singh.", playerStr)
+      end
+      if broadcastStr ~= nil then broadcastToAll(broadcastStr, "White") end
+
+    end, 1)
+  end
+
+  -- handle khan CA V rename on flip
+  if object.getName() == "Ceti Alpha V" or object.getName() == "Devastated Ceti Alpha V" then
+    local actualPlayerColor = getActualPlayerColor(object) or playerColor
+    local playerStr = getPlayerStr(actualPlayerColor)
+    Wait.time(function()
+
+      local broadcastStr
+      if object.is_face_down then
+        object.setName("Devastated Ceti Alpha V")
+        broadcastStr = string.format("%s has flipped to Devastated Ceti Alpha V.", playerStr)
+      else
+        object.setName("Ceti Alpha V")
+        broadcastStr = string.format("%s has flipped to Ceti Alpha V.", playerStr)
+      end
+      if broadcastStr ~= nil then broadcastToAll(broadcastStr, "White") end
+
+    end, 1)
+  end
+
+  -- handle khan trait tracker flip report
+  if object.getName():find("Khan Trait Tracker") then
+    local actualPlayerColor = getActualPlayerColor(object) or playerColor
+    local playerStr = getPlayerStr(actualPlayerColor)
+    Wait.time(function()
+
+      local broadcastStr
+      local trackerName = object.getName()
+      trackerName = trackerName:gsub("Khan Trait Tracker ", "")
+      if object.is_face_down then
+        broadcastStr = string.format("%s has Marked: %s.", playerStr, trackerName)
+        object.setColorTint(actualPlayerColor)
+      else
+        broadcastStr = string.format("%s has Unmarked: %s.", playerStr, trackerName)
+        object.setColorTint("Black")
+      end
+      if broadcastStr ~= nil then broadcastToAll(broadcastStr, "White") end
+
+    end, 1)
+  end
+end

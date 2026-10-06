@@ -43,6 +43,10 @@
   "Sticky": true,
   "Tags": [
     "cleanup_target",
+    "deployAction",
+    "playActivation",
+    "playActivation2",
+    "playActivation3",
     "skill_wildcard",
     "snap_card",
     "suit_ship",

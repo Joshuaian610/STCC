@@ -443,7 +443,7 @@ function getControlText(cardName)
     ["Starbase 375"] = "You may find a Ship.",
 
     -- sela
-    ["Remus"] = "Force your opponent to discard a card.",
+    ["Remus"] = string.format("[%s](Attack)[-] Force your opponent to discard a card.", Color.fromString("Red"):toHex()),
     ["Romulus"] = "You may free play a Ship.",
 
     -- burnham

@@ -719,7 +719,7 @@ function placeResource(buttonObj, playerColor, altClick)
     if cardStardate ~= nil and not isEndgame then
       local rotStardateCard = otherPlayerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0 }
       if checkPlayerColorIsBot(otherPlayerColor) then rotStardateCard = otherPlayerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0 } end
-      local posStardateCard = otherPlayerColor == "Blue" and { -24.00, 0.76, 15.00 } or { 24.00, 0.76, -15.00 }
+      local posStardateCard = otherPlayerColor == "Blue" and { -24.00, 0.76, 6.30 } or { 24.00, 0.76, -6.30 }
       local stardateName = cardStardate.getName()
       if not isCadet then
         cardStardate.setRotation(rotStardateCard)

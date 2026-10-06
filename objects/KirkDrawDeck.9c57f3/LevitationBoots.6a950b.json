@@ -42,7 +42,7 @@
   "Snap": true,
   "Sticky": true,
   "Tags": [
-    "playNoAction",
+    "deployNoAction",
     "playActivation",
     "playActivation2",
     "snap_card",

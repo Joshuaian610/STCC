@@ -170,15 +170,6 @@ function loadContextActions(zone, cardObj)
         cardObj.addContextMenuItem("Free Play", playFreeAction)
       end
 
-      if cardObj.hasTag("deployAction") or cardObj.hasTag("deployAction2") or cardObj.hasTag("deployAction3") or
-         cardObj.hasTag("deployNoAction") or cardObj.hasTag("deployNoAction2") or cardObj.hasTag("deployNoAction3") then
-        if cardObj.hasTag("suit_location") then
-          cardObj.addContextMenuItem("Free Control", playFreeAction)
-        elseif not cardObj.hasTag("suit_location") then
-          cardObj.addContextMenuItem("Free Deploy", playFreeAction)
-        end
-      end
-
       if cardObj.hasTag("deployAction") then
         if cardObj.hasTag("suit_location") then
           cardObj.addContextMenuItem("Control (Action)", deployAction)
@@ -220,6 +211,15 @@ function loadContextActions(zone, cardObj)
           cardObj.addContextMenuItem("3rd Control (No Action)", deployNoAction3)
         else
           cardObj.addContextMenuItem("3rd Deploy (No Action)", deployNoAction3)
+        end
+      end
+
+      if cardObj.hasTag("deployAction") or cardObj.hasTag("deployAction2") or cardObj.hasTag("deployAction3") or
+         cardObj.hasTag("deployNoAction") or cardObj.hasTag("deployNoAction2") or cardObj.hasTag("deployNoAction3") then
+        if cardObj.hasTag("suit_location") then
+          cardObj.addContextMenuItem("Free Control", playFreeAction)
+        elseif not cardObj.hasTag("suit_location") then
+          cardObj.addContextMenuItem("Free Deploy", playFreeAction)
         end
       end
 
@@ -343,7 +343,7 @@ function loadContextActions(zone, cardObj)
 
       if isBot and not cardObj.hasTag("suit_location") and
          (cardObj.hasTag("deployAction") or cardObj.hasTag("deployAction2") or cardObj.hasTag("deployAction3") or
-         cardObj.hasTag("deployNoAction1") or cardObj.hasTag("deployNoAction2") or cardObj.hasTag("deployNoAction3")) then
+         cardObj.hasTag("deployNoAction") or cardObj.hasTag("deployNoAction2") or cardObj.hasTag("deployNoAction3")) then
         cardObj.addContextMenuItem("Deploy Card", deployNoAction)
       end
 
@@ -414,7 +414,7 @@ function loadContextActions(zone, cardObj)
     end
 
     -- load duty officer zone actions
-    if zone.getName() == "Zone Duty Officer" and cardObj.hasTag("suit_person") then
+    if zone.getName() == "Zone Duty Officer" and (cardObj.hasTag("suit_person") or cardObj.hasTag("suit_status")) then
       if cardObj.hasTag("playActivationAction") then
         cardObj.addContextMenuItem("Activate (Action)", playActivationAction)
       end
@@ -951,9 +951,11 @@ function placeDeployCard(actionRequired, cardObj, opIndex)
     return
   end
 
-  local actionText = (actionRequired == true) and getDeployAction(cardObj, opIndex) or getDeployNoAction(cardObj, opIndex)
+  local actionText = actionRequired == true and getDeployAction(cardObj, opIndex) or getDeployNoAction(cardObj, opIndex)
   broadcastStr = actionRequired == true and string.format("%s has spent an Action to perform %s %s Operation%s", playerStr, cardObj.getName(), opType, actionText ~= nil and ": " .. actionText or ".") or
                                                   string.format("%s performs %s Actionless %s Operation%s", playerStr, cardObj.getName(), opType, actionText ~= nil and ": " .. actionText or ".")
+  broadcastToAll(broadcastStr, "White")
+
   local controlText
   if cardObj.hasTag("suit_location") then
     controlText = getControlText(cardObj.getName())
@@ -2111,6 +2113,9 @@ function getPlayAction(cardObj, opIndex)
     ["Sarek"] = {
       ["playAction1"] = "Gain 1 Influence for each Vulcan you have in play (including this card). You may promote Sarek and optionally another Person from your Staging Area to Duty Officer(s).",
     },
+    ["Set A Course"] = {
+      ["playAction1"] = "Discard up to 3 Persons to send the same number of Away Teams to the same Location.",
+    },
 
     -- rebner deck
     ["Grebnedlog"] = {
@@ -2211,7 +2216,7 @@ function getPlayAction(cardObj, opIndex)
     ["Lt. Spock"] = {
       ["playAction1"] = "Log a card from your hand to gain 3 Dilithium and gain 1 Research or Influence or Military. If the logged card has Military or Military Focus gain 1 (additional) Influence.",
     },
-    ["La'an Noonien Singh"] = {
+    ["La'An Noonien Singh"] = {
       ["playAction1"] = "Take an Incident to scan 1 of Cargo. For each controlled Location where you have an Away Team, draw a card. If you have 2+ Away Team on a neutral Location, gain 1 Military.",
     },
     ["Joseph M'Benga"] = {
@@ -2689,6 +2694,9 @@ function getPlayNoAction(cardObj, opIndex)
       ["playNoAction1"] = "Find any card.",
       ["playNoAction2"] = "Recall a non-Time Travel card from your Staging Area.",
     },
+    ["Set A Course"] = {
+      ["playNoAction1"] = "Draw a card, then discard a card. Warp up to 2 of your Ships.",
+      },
 
     -- rebner deck
     ["Big Helmet"] = {
@@ -3076,7 +3084,7 @@ function getDeployAction(cardObj, opIndex)
     ["U.S.S. Enterprise-A"] = {
       ["deployAction1"] = "Deploy this ship. Warp this ship OR beam a card here. You may discard a card to beam a (different) card here.",
     },
-    ["Excelsior"] = {
+    ["U.S.S. Excelsior"] = {
       ["deployAction1"] = string.format("[%s](Attack)[-] Deploy this ship. If the opponent has at least one Ship at a neutral Location, they take an Incident. You may find [i]Set a Course[/i].", attackColor),
     },
     ["Vulcan (Kirk)"] = {
@@ -4085,7 +4093,7 @@ function getActivation(cardObj, opIndex)
     ["Lt. Spock"] = {
       ["playActivation1"] = "Discard a Research or Research Focus to find any card, except in your Reserve deck.",
     },
-    ["La'an Noonien Singh"] = {
+    ["La'An Noonien Singh"] = {
       ["playActivation1"] = "Beam a card to a Ship.",
     },
     ["Lt. Scott"] = {
