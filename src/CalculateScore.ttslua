@@ -2761,8 +2761,32 @@ function calculateScore(buttonObj, _, _)
     end
   end
 
-  if blueHasPlayer then
+    if blueHasPlayer then
     if (goalCompletedBlue or checkPlayerColorIsBot("Blue")) and getCaptainName("Blue") ~= "Khan" then
+
+      if blueResearchScore - blueBestScore > 0 then
+        notebookStr = string.format("%s\n\n%s [%s]Research[-] Focus Cards Score: %s", notebookStr, bluePlayerStr, researchColor, blueResearchScore - blueBestScore)
+        notebookStr = string.format("%s\n%s [%s]Research[-] Focus Cards Breakdown: %s", notebookStr, bluePlayerStr, researchColor, notebookStrResearchBlue)
+      end
+
+      if blueInfluenceScore - blueBestScore > 0 then
+        notebookStr = string.format("%s\n\n%s [%s]Influence[-] Focus Cards Score: %s", notebookStr, bluePlayerStr, influenceColor, blueInfluenceScore - blueBestScore)
+        notebookStr = string.format("%s\n%s [%s]Influence[-] Focus Cards Breakdown: %s", notebookStr, bluePlayerStr, influenceColor, notebookStrInfluenceBlue)
+      end
+
+      if blueMilitaryScore - blueBestScore > 0 then
+        notebookStr = string.format("%s\n\n%s [%s]Military[-] Focus Cards Score: %s", notebookStr, bluePlayerStr, militaryColor, blueMilitaryScore - blueBestScore)
+        notebookStr = string.format("%s\n%s [%s]Military[-] Focus Cards Breakdown: %s", notebookStr, bluePlayerStr, militaryColor, notebookStrMilitaryBlue)
+      end
+
+      if blueBestScore > 0 then
+        notebookStr = string.format("%s\n\n%s Best Focus Cards Score: %s", notebookStr, bluePlayerStr, blueBestScore)
+        notebookStr = string.format("%s\n%s Best Focus Cards Breakdown: %s", notebookStr, bluePlayerStr, notebookStrBestBlue)
+      end
+
+      notebookStr = notebookStr .. "\n"
+
+    elseif getCaptainName("Blue") == "Khan" and checkPlayerColorIsBot("Blue") then
 
       if blueResearchScore - blueBestScore > 0 then
         notebookStr = string.format("%s\n\n%s [%s]Research[-] Focus Cards Score: %s", notebookStr, bluePlayerStr, researchColor, blueResearchScore - blueBestScore)
@@ -2793,12 +2817,6 @@ function calculateScore(buttonObj, _, _)
       blueResearchScore = 0
       blueBestScore = 0
 
-    elseif getCaptainName("Blue") == "Khan" then
-      notebookStr = string.format("%s\n%s Focus Cards Score Under Wrathful Khan", notebookStr, bluePlayerStr)
-      blueInfluenceScore = 0
-      blueMilitaryScore = 0
-      blueResearchScore = 0
-      blueBestScore = 0
     end
   end
 
@@ -2827,15 +2845,32 @@ function calculateScore(buttonObj, _, _)
 
       notebookStr = notebookStr .. "\n"
 
+    elseif getCaptainName("Red") == "Khan" and checkPlayerColorIsBot("Red") then
+
+      if redResearchScore - redBestScore > 0 then
+        notebookStr = string.format("%s\n\n%s [%s]Research[-] Focus Cards Score: %s", notebookStr, redPlayerStr, researchColor, redResearchScore - redBestScore)
+        notebookStr = string.format("%s\n%s [%s]Research[-] Focus Cards Breakdown: %s", notebookStr, redPlayerStr, researchColor, notebookStrResearchRed)
+      end
+
+      if redInfluenceScore - redBestScore > 0 then
+        notebookStr = string.format("%s\n\n%s [%s]Influence[-] Focus Cards Score: %s", notebookStr, redPlayerStr, influenceColor, redInfluenceScore - redBestScore)
+        notebookStr = string.format("%s\n%s [%s]Influence[-] Focus Cards Breakdown: %s", notebookStr, redPlayerStr, influenceColor, notebookStrInfluenceRed)
+      end
+
+      if redMilitaryScore - redBestScore > 0 then
+        notebookStr = string.format("%s\n\n%s [%s]Military[-] Focus Cards Score: %s", notebookStr, redPlayerStr, militaryColor, redMilitaryScore - redBestScore)
+        notebookStr = string.format("%s\n%s [%s]Military[-] Focus Cards Breakdown: %s", notebookStr, redPlayerStr, militaryColor, notebookStrMilitaryRed)
+      end
+
+      if redBestScore > 0 then
+        notebookStr = string.format("%s\n\n%s Best Focus Cards Score: %s", notebookStr, redPlayerStr, redBestScore)
+        notebookStr = string.format("%s\n%s Best Focus Cards Breakdown: %s", notebookStr, redPlayerStr, notebookStrBestRed)
+      end
+
+      notebookStr = notebookStr .. "\n"
+
     elseif not goalCompletedRed and not checkPlayerColorIsBot("Red") and getCaptainName("Red") ~= "Khan" then
       notebookStr = string.format("%s\n%s Focus Cards Score: 0 (No Captain Goals Completed)", notebookStr, redPlayerStr)
-      redInfluenceScore = 0
-      redMilitaryScore = 0
-      redResearchScore = 0
-      redBestScore = 0
-
-    elseif getCaptainName("Red") == "Khan" then
-      notebookStr = string.format("%s\n%s Focus Cards Score Under Wrathful Khan", notebookStr, redPlayerStr)
       redInfluenceScore = 0
       redMilitaryScore = 0
       redResearchScore = 0
