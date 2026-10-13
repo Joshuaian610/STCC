@@ -1161,6 +1161,7 @@ function botControlStep()
 end
 
 
+
 function botActionStep()
   -- handles the click of next action button for bot action step
 
@@ -1302,7 +1303,7 @@ function botActionStep()
     UI.setAttribute("bot_next_action_action", "active", "true")
   end, 1)
 
-    -- starting from next facedown card next to discard, flip card up
+  -- starting from next facedown card next to discard, flip card up
   local nextFacedownSlot = 0
   local cardSlots = { false, false, false, false, false }
   local stagingCards = { nil, nil, nil, nil, nil }
@@ -1313,7 +1314,8 @@ function botActionStep()
     local position = zoneObj.getPosition()
     local rotation = zoneObj.getRotation()
 
-    if position.z > -3.85 and position.z < -1.85 then
+    if (botColor == "Blue" and position.z > 1.85 and position.z < 3.85) or
+       (botColor == "Red" and position.z > -3.85 and position.z < -1.85) then
 
       if rotation.z > 179.00 and rotation.z < 181.00 then
         cardSlots[1] = true
@@ -1321,7 +1323,8 @@ function botActionStep()
         facedownCards = facedownCards + 1
       end
 
-    elseif position.z > 0.06 and position.z < 2.06 then
+    elseif (botColor == "Blue" and position.z > -2.06 and position.z < -0.06) or
+           (botColor == "Red" and position.z > 0.06 and position.z < 2.06) then
 
       if rotation.z > 179.00 and rotation.z < 181.00 then
         cardSlots[2] = true
@@ -1329,7 +1332,8 @@ function botActionStep()
         facedownCards = facedownCards + 1
       end
 
-    elseif position.z > 3.98 and position.z < 5.98 then
+    elseif (botColor == "Blue" and position.z > -5.98 and position.z < -3.98) or
+           (botColor == "Red" and position.z > 3.98 and position.z < 5.98) then
 
       if rotation.z > 179.00 and rotation.z < 181.00 then
         cardSlots[3] = true
@@ -1337,7 +1341,8 @@ function botActionStep()
         facedownCards = facedownCards + 1
       end
 
-    elseif position.z > 7.90 and position.z < 9.90 then
+    elseif (botColor == "Blue" and position.z > -9.90 and position.z < -7.90) or
+           (botColor == "Red" and position.z > 7.90 and position.z < 9.90) then
 
       if rotation.z > 179.00 and rotation.z < 181.00 then
         cardSlots[4] = true
@@ -1345,7 +1350,8 @@ function botActionStep()
         facedownCards = facedownCards + 1
       end
 
-    elseif position.z > 11.82 and position.z < 13.82 then
+    elseif (botColor == "Blue" and position.z > -13.82 and position.z < -11.82) or
+           (botColor == "Red" and position.z > 11.82 and position.z < 13.82) then
 
       if rotation.z > 179.00 and rotation.z < 181.00 then
         cardSlots[5] = true

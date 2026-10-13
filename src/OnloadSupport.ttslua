@@ -114,6 +114,21 @@ function gloryStardateCounterVisibility(stardateGloryCounterVisibility)
 end
 
 
+-- function traitPanelVisibility(scanTraitPanelVisibility)
+--   -- handles the hide/show of the scan trait panel
+--   local traitPanel = getObjectbyName("Scan Trait Board")
+--   if traitPanel == nil then return end
+--   local posPanel = traitPanel.getPosition()
+--   if scanTraitPanelVisibility then
+--     posPanel.y = 0.75
+--   elseif not scanTraitPanelVisibility then
+--     posPanel.y = -1.00
+--   end
+--   traitPanel.setPosition(posPanel)
+-- end
+
+
+
 function showStardateGloryCounter()
   -- this should allow for showing and creation of stardate glory counter
   local counter = getObjectbyName("Glory Counter Stardate")

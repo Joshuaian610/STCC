@@ -911,7 +911,7 @@ function placeCaptainDecks(captainName, playerColor, isBot)
   if not isBot then
     local rotReserveDeck = playerColor == "Blue" and { 0.00, 0.00, 180.00 } or { 0.00, 180.00, 180.00 }
     local rotDevelopmentDeck = playerColor == "Blue" and { 0.00, 270.00, 0.00 } or { 0.00, 90.00, 0.00 }
-    local posDecks = playerColor == "Blue" and { -24.00, 1.25, 20.00 } or { 24.00, 1.25, -20.00 }
+    local posDecks = playerColor == "Blue" and { -21.50, 1.25, 20.00 } or { 21.50, 1.25, -20.00 }
     local developmentDeck = getObjectbyName(captainName .. " Development")
     if developmentDeck ~= nil then
       developmentDeck.setLock(false)
@@ -933,7 +933,7 @@ function placeCaptainDecks(captainName, playerColor, isBot)
 
   elseif isBot then
     local rotDecks = playerColor == "Blue" and { 0.00, 90.00, 180.00 } or { 0.00, 270.00, 180.00 }
-    local posDecks = playerColor == "Blue" and { -24.00, 1.25, 20.00 } or { 24.00, 1.25, -20.00 }
+    local posDecks = playerColor == "Blue" and { -21.50, 1.25, 20.00 } or { 21.50, 1.25, -20.00 }
     local developmentDeck = getObjectbyName(captainName .. " Development")
     if developmentDeck ~= nil then
       developmentDeck.setLock(false)
@@ -1553,10 +1553,10 @@ function flipBotUI(playerColor)
     playerColor == "Blue" and { 0.00, 90.00, 0.00 } or { 0.00, 270.00, 0.00 },
   }
   local posResourceCounters = {
-    playerColor == "Blue" and { -24.45, 0.79, 5.72 }  or { 24.45, 0.79, -5.72 },
-    playerColor == "Blue" and { -24.45, 0.96, 6.96 } or { 24.45, 0.96, -6.96 },
-    playerColor == "Blue" and { -24.45, 0.85, 10.44 } or { 24.45, 0.85, -10.44 },
-    playerColor == "Blue" and { -24.45, 0.85, 10.44 } or { 24.45, 0.85, -10.44 },
+    playerColor == "Blue" and { -24.45, 0.79, 10.00 }  or { 24.45, 0.79, -10.00 },
+    playerColor == "Blue" and { -24.45, 0.96, 11.88 } or { 24.45, 0.96, -11.88 },
+    playerColor == "Blue" and { -24.45, 0.85, 16.00 } or { 24.45, 0.85, -16.00 },
+    playerColor == "Blue" and { -24.45, 0.85, 16.00 } or { 24.45, 0.85, -16.00 },
   }
   for i = 1, 4 do
     local counterObj = resourceCounterObjs[i]

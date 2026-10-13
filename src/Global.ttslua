@@ -47,6 +47,10 @@ function onLoad()
   local stardateGloryCounterVisibility = false
   gloryStardateCounterVisibility(stardateGloryCounterVisibility)
 
+  -- manually hide/show scan trait panel
+  -- local scanTraitPanelVisibility = true
+  -- traitPanelVisibility(scanTraitPanelVisibility)
+
   -- show & update stardate glory counter onLoad() if game is in progress
   gloryCounterStardateInProgress()
 
@@ -251,22 +255,34 @@ function onObjectEnterContainer(container, object)
     local playerColor = container.getGMNotes()
     local counter = getObjectbyName("Glory Counter " .. playerColor)
     local val = counter.getVar("val")
+    local oldVal = val
     local newVal = val + 1
     counter.call("setValue", newVal)
+    local playerStr = getPlayerStr(playerColor)
+    local broadcastStr = string.format("%s has gained +1 Glory (%d > %d)", playerStr, oldVal, newVal)
+    broadcastToAll(broadcastStr, "White")
 
   -- handle dilithium token drop increasing related counters
   elseif container.getName():find("Dilithium Counter") and object.getName() == "Dilithium Token" then
     local counter = container
     local val = counter.getVar("val")
+    local oldVal = val
     local newVal = val + 1
     counter.call("setValue", newVal)
+    local playerStr = getPlayerStr(playerColor)
+    local broadcastStr = string.format("%s has gained +1 Dilithium (%d > %d)", playerStr, oldVal, newVal)
+    broadcastToAll(broadcastStr, "White")
 
   -- handle latinum token drop increasing related counters
   elseif container.getName():find("Latinum Counter") and object.getName() == "Latinum Token" then
     local counter = container
     local val = counter.getVar("val")
+    local oldVal = val
     local newVal = val + 1
     counter.call("setValue", newVal)
+    local playerStr = getPlayerStr(playerColor)
+    local broadcastStr = string.format("%s has gained +1 Latinum (%d > %d)", playerStr, oldVal, newVal)
+    broadcastToAll(broadcastStr, "White")
   end
 
   -- broadcast logging actions
